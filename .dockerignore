@@ -1,0 +1,9 @@
+# No copiar estos archivos al contenedor
+.git
+.gitignore
+.env.local
+.env.test
+node_modules
+var/cache
+var/log
+vendor

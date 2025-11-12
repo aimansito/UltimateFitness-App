@@ -1,0 +1,51 @@
+﻿services:
+  mysql:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    container_name: ultimatefitness_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: josefa
+      MYSQL_DATABASE: ultimatefitness_db
+      MYSQL_USER: jose
+      MYSQL_PASSWORD: josefa
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - ultimatefitness_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ujose", "-pjosefa"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ultimatefitness_backend
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./var:/var/www/html/var
+    environment:
+      DATABASE_URL: "mysql://jose:josefa@mysql:3306/ultimatefitness_db?serverVersion=8.0"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ultimatefitness_network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  ultimatefitness_network:
+    driver: bridge
