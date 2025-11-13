@@ -1,17 +1,29 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import Navbar from './components/layout/Navbar';  // ← layout minúscula
+import Login from './pages/public/Login';
 import Home from './pages/Home';
-import Login from './pages/Login';
-import Usuarios from './pages/Usuarios';
 
 function App() {
   return (
-    <BrowserRouter>
+    <div className="min-h-screen bg-uf-darker">
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/usuarios" element={<Usuarios />} />
+        
+        <Route path="/*" element={
+          <>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={
+                <div className="text-white p-8 text-center text-2xl">
+                  Dashboard - En construcción
+                </div>
+              } />
+            </Routes>
+          </>
+        } />
       </Routes>
-    </BrowserRouter>
+    </div>
   );
 }
 
