@@ -1,120 +1,183 @@
+// ============================================
+// LOGIN PAGE - Página de inicio de sesión
+// ============================================
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Input, Button } from '../../components/common';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(false);
+  // ============================================
+  // HOOKS Y ESTADO
+  // ============================================
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    rememberMe: false
+  });
+  
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // ============================================
+  // FUNCIONES
+  // ============================================
   
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
+    
+    if (error) setError('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    
     setError('');
-
-    const result = await login(email, password);
+    setLoading(true);
     
-    if (result.success) {
-      navigate('/dashboard');
-    } else {
-      setError(result.error);
+    try {
+      if (!formData.email || !formData.password) {
+        setError('Por favor completa todos los campos');
+        setLoading(false);
+        return;
+      }
+      
+      const result = await login(formData.email, formData.password);
+      
+      if (result.success) {
+        navigate('/dashboard');
+      } else {
+        setError(result.error || 'Error al iniciar sesión');
+      }
+    } catch (err) {
+      console.error('Error en login:', err);
+      setError('Error de conexión. Intenta de nuevo.');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
+  // ============================================
+  // RENDER
+  // ============================================
   return (
-    <div className="min-h-screen bg-uf-darker flex items-center justify-center px-4">
-      {/* Banner superior */}
-      <div className="absolute top-0 left-0 right-0 bg-uf-gold py-6">
-        <h1 className="text-center text-black font-bold text-3xl uppercase tracking-wider">
-          INICIAR SESIÓN
-        </h1>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-uf-darker to-black px-4 py-12">
+      
+      {/* ============================================ */}
+      {/* HEADER DORADO */}
+      {/* ============================================ */}
+      <div className="w-full max-w-md">
+        <div className="bg-uf-gold py-6 text-center rounded-t-lg">
+          <h1 className="text-3xl font-bold text-black uppercase tracking-wider">
+            Iniciar Sesión
+          </h1>
+        </div>
 
-      {/* Formulario */}
-      <div className="w-full max-w-md bg-white rounded-lg shadow-2xl p-8 mt-20">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <Input
-            label="Email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="tu@email.com"
-            required
-          />
-
-          <Input
-            label="Contraseña"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            required
-          />
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="remember"
-              checked={remember}
-              onChange={(e) => setRemember(e.target.checked)}
-              className="w-4 h-4 text-uf-blue border-gray-300 rounded focus:ring-uf-blue"
-            />
-            <label htmlFor="remember" className="ml-2 text-sm text-gray-700">
-              Guardar credenciales de sesión
-            </label>
-          </div>
-
+        {/* ============================================ */}
+        {/* FORMULARIO */}
+        {/* ============================================ */}
+        <div className="bg-white p-8 rounded-b-lg shadow-2xl">
+          
+          {/* Mostrar errores */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-sm">
               {error}
             </div>
           )}
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            disabled={loading}
-            className="w-full"
-          >
-            {loading ? 'INICIANDO SESIÓN...' : 'INICIAR SESIÓN'}
-          </Button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {/* Email */}
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2 text-sm">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="tu@email.com"
+                required
+                className="w-full px-4 py-3 border-b-2 border-uf-gold focus:outline-none focus:border-uf-blue transition bg-white text-gray-800"
+              />
+            </div>
 
-        <div className="mt-6 text-center">
-          <Link to="/forgot-password" className="text-uf-blue hover:text-uf-gold text-sm">
-            ¿Has olvidado tu contraseña?
-          </Link>
+            {/* Contraseña */}
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2 text-sm">
+                Contraseña <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+                className="w-full px-4 py-3 border-b-2 border-uf-gold focus:outline-none focus:border-uf-blue transition bg-white text-gray-800"
+              />
+            </div>
+
+            {/* Checkbox - Guardar credenciales */}
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                name="rememberMe"
+                id="rememberMe"
+                checked={formData.rememberMe}
+                onChange={handleChange}
+                className="w-4 h-4 text-uf-gold border-gray-300 rounded focus:ring-uf-gold"
+              />
+              <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-600">
+                Guardar credenciales de sesión
+              </label>
+            </div>
+
+            {/* Botón submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-uf-gold text-black font-bold py-3 rounded uppercase tracking-wider hover:bg-uf-blue hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+            </button>
+          </form>
+
+          {/* Links adicionales */}
+          <div className="mt-6 text-center space-y-3">
+            <Link 
+              to="/recuperar-password" 
+              className="block text-sm text-uf-blue hover:text-uf-gold transition"
+            >
+              ¿Has olvidado tu contraseña?
+            </Link>
+            
+            <div className="text-gray-600 text-sm">
+              ¿No tienes cuenta?{' '}
+              <Link 
+                to="/registro" 
+                className="text-uf-gold hover:text-uf-blue font-semibold transition"
+              >
+                Crear Cuenta
+              </Link>
+            </div>
+          </div>
+
+          {/* Usuario de prueba */}
+          <div className="mt-6 bg-gray-100 rounded p-4 text-xs text-gray-600">
+            <strong className="block mb-1">Usuario de prueba:</strong>
+            Email: juan.perez@email.com<br/>
+            Contraseña: (cualquiera)
+          </div>
         </div>
-
-        <div className="mt-4 text-center">
-          <span className="text-gray-600 text-sm">¿No tienes cuenta? </span>
-          <Link to="/registro" className="text-uf-gold hover:text-uf-blue font-semibold text-sm">
-            Crear Cuenta
-          </Link>
-        </div>
-
-        {/* Usuario de prueba */}
-        <div className="mt-8 bg-gray-50 p-4 rounded border border-gray-200">
-          <p className="text-xs text-gray-600 font-semibold mb-2">Usuario de prueba:</p>
-          <p className="text-xs text-gray-700">Email: juan.perez@email.com</p>
-          <p className="text-xs text-gray-700">Contraseña: (cualquiera)</p>
-        </div>
-      </div>
-
-      {/* Footer con logo */}
-      <div className="absolute bottom-8 left-8">
-        <Link to="/">
-          <img src="/logo.png" alt="Ultimate Fitness" className="h-16" />
-        </Link>
       </div>
     </div>
   );

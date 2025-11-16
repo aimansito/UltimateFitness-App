@@ -1,6 +1,12 @@
+// ============================================
+// HOME PAGE - Página principal
+// ============================================
 import { Link } from 'react-router-dom';
 
 function Home() {
+  // ============================================
+  // DATOS - Cards de servicios
+  // ============================================
   const servicios = [
     {
       icon: '💻',
@@ -30,53 +36,71 @@ function Home() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - CENTRADO Y MEJORADO */}
+
+      {/* ============================================ */}
+      {/* HERO SECTION - Buscador arriba */}
+      {/* ============================================ */}
       <div className="relative">
         <div
-          className="h-[700px] bg-cover bg-center relative flex items-center justify-center"
+          className="min-h-[700px] bg-cover bg-center relative flex items-start justify-center pt-8 pb-20"
           style={{
             backgroundImage: 'url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920)',
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
+          {/* Overlay oscuro */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80"></div>
 
-          {/* Barra de búsqueda arriba */}
-          <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4 z-20">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Buscar ejercicios, dietas, entrenadores..."
-                className="w-full bg-uf-gold/95 backdrop-blur-sm text-black placeholder-black/70 px-6 py-4 rounded-lg font-semibold focus:outline-none focus:ring-4 focus:ring-uf-blue transition-all"
-              />
-              <svg className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+          {/* CONTENIDO */}
+          <div className="container mx-auto px-4 relative z-10">
+
+            {/* 1. BUSCADOR - PEGADO ARRIBA */}
+            <div className="max-w-2xl mx-auto mb-0">
+              <div className="relative group">
+                <input
+                  type="text"
+                  placeholder="Buscar ejercicios, dietas, entrenadores..."
+                  className="w-full bg-white/10 backdrop-blur-md text-white placeholder-white/70 px-6 py-4 pr-16 rounded-full font-medium focus:outline-none focus:ring-4 focus:ring-uf-gold/50 transition-all border-2 border-white/20 hover:border-uf-gold/50"
+                />
+                {/* Icono de búsqueda */}
+                <button className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-uf-gold text-black p-3 rounded-full hover:bg-uf-blue hover:scale-110 transition-all">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Contenido centrado */}
-          <div className="container mx-auto px-4 relative z-10 text-center">
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-uf-gold/95 backdrop-blur-md px-12 py-6 inline-block rounded-xl mb-8 shadow-2xl transform hover:scale-105 transition-all duration-300">
-                <h1 className="text-black font-bold text-4xl md:text-5xl uppercase tracking-wider">
+            {/* 2. CONTENIDO CENTRAL - MÁS ESPACIO ARRIBA */}
+            <div className="text-center space-y-10 mt-32">
+
+              {/* Título principal */}
+              <div className="inline-block">
+                <h1 className="bg-uf-gold text-black font-anton font-bold text-3xl md:text-4xl uppercase tracking-wider px-12 py-4 rounded-lg shadow-2xl hover:scale-105 transition-transform duration-300">
                   Conviértete en Ultimate
                 </h1>
               </div>
-              <p className="text-white text-2xl md:text-3xl mb-12 font-light tracking-wide drop-shadow-lg">
+
+              {/* Texto descriptivo */}
+              <p className="text-white text-lg md:text-xl font-light tracking-wide max-w-3xl mx-auto">
                 Aquí mostraremos la manera más eficaz de mantenerte en forma
               </p>
 
               {/* Botones CTA */}
-              <div className="flex justify-center space-x-6">
+              <div className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-8">
+
+                {/* Botón principal */}
                 <Link
                   to="/registro"
-                  className="bg-uf-gold hover:bg-uf-blue text-black hover:text-white font-bold px-10 py-4 rounded-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-110 hover:shadow-2xl text-lg"
+                  className="group relative overflow-hidden bg-uf-gold hover:bg-uf-blue text-black hover:text-white font-bold px-10 py-3.5 rounded-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl text-sm"
                 >
                   Comenzar Ahora
+                  <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></span>
                 </Link>
+
+                {/* Botón secundario */}
                 <Link
                   to="/servicios"
-                  className="bg-transparent border-2 border-uf-gold hover:bg-uf-gold text-uf-gold hover:text-black font-bold px-10 py-4 rounded-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-110 text-lg"
+                  className="bg-transparent border-2 border-white/30 hover:border-uf-gold text-white hover:text-uf-gold font-bold px-10 py-3.5 rounded-lg uppercase tracking-wider transition-all duration-300 text-sm backdrop-blur-sm hover:bg-white/5"
                 >
                   Ver Servicios
                 </Link>
@@ -85,8 +109,9 @@ function Home() {
           </div>
         </div>
       </div>
-
-      {/* Servicios Grid */}
+      {/* ============================================ */}
+      {/* SERVICIOS GRID */}
+      {/* ============================================ */}
       <div className="container mx-auto px-4 py-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {servicios.map((servicio, index) => (
@@ -123,10 +148,12 @@ function Home() {
         </div>
       </div>
 
-      {/* CTA Section */}
+      {/* ============================================ */}
+      {/* CTA SECTION - Llamada a la acción final */}
+      {/* ============================================ */}
       <div className="container mx-auto px-4 pb-20">
         <div className="bg-gradient-to-r from-uf-gold/20 to-transparent border-2 border-uf-gold rounded-lg p-12 text-center">
-          <h2 className="text-4xl font-bold text-uf-gold mb-4 uppercase">
+          <h2 className="text-4xl font-anton font-bold text-uf-gold mb-4 uppercase">
             ¿LISTO PARA TRANSFORMARTE?
           </h2>
           <p className="text-gray-300 text-xl mb-8">
@@ -134,13 +161,13 @@ function Home() {
           </p>
           <Link
             to="/registro"
-            className="inline-block bg-transparent border-2 border-uf-gold hover:bg-uf-gold text-uf-gold hover:text-black font-semibold px-8 py-3 rounded-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-105 text-sm"
+            className="inline-block bg-uf-gold hover:bg-uf-blue text-black font-bold px-8 py-3 rounded-lg uppercase tracking-wider transition transform hover:scale-105 text-sm"
           >
             Conviértete en Ultimate
           </Link>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

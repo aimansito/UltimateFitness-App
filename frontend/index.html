@@ -1,13 +1,42 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
+    <!-- ============================================ -->
+    <!-- META TAGS - Información básica del sitio -->
+    <!-- ============================================ -->
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    
+    <!-- Título que aparece en la pestaña del navegador -->
+    <title>Ultimate Fitness - Tu entrenamiento definitivo</title>
+    
+    <!-- Descripción para SEO -->
+    <meta name="description" content="Plataforma completa de fitness y nutrición con entrenadores profesionales" />
+    
+    <!-- Icono de la página (favicon) -->
+    <link rel="icon" type="image/png" href="/logos/logo.png" />
+    
+    <!-- ============================================ -->
+    <!-- GOOGLE FONTS - Fuentes tipográficas -->
+    <!-- ============================================ -->
+    <!-- Preconexión para optimizar la carga -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Importar fuentes Anton y Audiowide -->
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Audiowide&display=swap" rel="stylesheet">
   </head>
+  
   <body>
+    <!-- ============================================ -->
+    <!-- ROOT - Aquí React inyecta toda la aplicación -->
+    <!-- ============================================ -->
     <div id="root"></div>
+    
+    <!-- ============================================ -->
+    <!-- SCRIPT - Carga la aplicación React -->
+    <!-- ============================================ -->
+    <!-- type="module" permite usar import/export ES6 -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

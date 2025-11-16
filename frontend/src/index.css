@@ -1,9 +1,68 @@
+/* ============================================ */
+/* TAILWIND CSS v4 - Nueva sintaxis */
+/* ============================================ */
 @import "tailwindcss";
 
+/* ============================================ */
+/* IMPORTAR FUENTES DE GOOGLE */
+/* ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Audiowide&display=swap');
+
+/* ============================================ */
+/* THEME - Variables personalizadas */
+/* ============================================ */
 @theme {
+  /* ---------------------------------------- */
+  /* COLORES PERSONALIZADOS */
+  /* ---------------------------------------- */
   --color-uf-gold: #CC941A;
   --color-uf-blue: #00AEFF;
-  --color-uf-red: #DC2626;
+  --color-uf-red: #FF0000;
   --color-uf-dark: #1a1a1a;
-  --color-uf-darker: #0d0d0d;
+  --color-uf-darker: #0a0a0a;
+  
+  /* ---------------------------------------- */
+  /* FUENTES PERSONALIZADAS */
+  /* ---------------------------------------- */
+  --font-family-anton: 'Anton', sans-serif;
+  --font-family-audiowide: 'Audiowide', sans-serif;
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* ============================================ */
+/* ESTILOS GLOBALES */
+/* ============================================ */
+body {
+  background-color: var(--color-uf-darker);
+  color: white;
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Títulos usan Anton por defecto */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-anton);
+}
+
+/* Links sin subrayado */
+a {
+  text-decoration: none;
+}
+
+/* ============================================ */
+/* UTILIDADES PERSONALIZADAS */
+/* ============================================ */
+/* Scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ocultar scrollbar pero mantener funcionalidad */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
