@@ -5,6 +5,9 @@ import Login from './pages/public/Login';
 import Home from './pages/public/Home';
 import Dashboard from './pages/private/Dashboard';
 import Usuarios from './pages/private/admin/Usuarios';
+import Servicios from './pages/public/Servicios';
+import Contacto from './pages/public/Contacto';
+
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin/usuarios" element={<Usuarios />} />
+          <Route path="/servicios" element={<Servicios />} />
+          <Route path="/contacto" element={<Contacto />} />
+
           
           {/* Ruta por defecto */}
           <Route path="*" element={

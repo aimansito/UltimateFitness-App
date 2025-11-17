@@ -1,63 +1,56 @@
 // ============================================
 // IMPORTS - Librerías y componentes necesarios
 // ============================================
-import { Link, useLocation, useNavigate } from 'react-router-dom'; // Para navegación entre páginas
-import { useState } from 'react'; // Para manejar estados (menús abiertos/cerrados)
-import { useAuth } from '../../context/AuthContext'; // Para saber si hay usuario logueado
-import Badge from '../common/Badge'; // Componente para mostrar "PREMIUM"
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import Badge from '../common/Badge';
 
 function Navbar() {
   // ============================================
-  // HOOKS - Funcionalidades de React
+  // HOOKS
   // ============================================
-  const location = useLocation(); // Para saber en qué página estamos
-  const navigate = useNavigate(); // Para redirigir a otras páginas
-  const { user, logout, isPremium, isAuthenticated } = useAuth(); // Datos del usuario logueado
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout, isPremium, isAuthenticated } = useAuth();
 
   // ============================================
-  // ESTADOS - Variables que cambian (abrir/cerrar menús)
+  // ESTADOS
   // ============================================
-  const [menuOpen, setMenuOpen] = useState(false); // Menú hamburguesa móvil (true/false)
-  const [userMenuOpen, setUserMenuOpen] = useState(false); // Menú desplegable de usuario
-  const [entrenamientosOpen, setEntrenamientosOpen] = useState(false); // Submenú "Entrenamientos"
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [entrenamientosOpen, setEntrenamientosOpen] = useState(false);
 
   // ============================================
-  // FUNCIONES - Acciones que puede hacer el usuario
+  // FUNCIONES
   // ============================================
-
-  // Verifica si estamos en una ruta específica (para resaltar el menú activo)
   const isActive = (path) => location.pathname === path;
 
-  // Función para cerrar sesión
   const handleLogout = () => {
-    logout(); // Llama a la función logout del contexto
-    setUserMenuOpen(false); // Cierra el menú de usuario
-    navigate('/'); // Redirige al home
+    logout();
+    setUserMenuOpen(false);
+    navigate('/');
   };
 
   // ============================================
-  // DATOS - Links del menú principal
+  // DATOS - Links del menú
   // ============================================
   const navLinks = [
-    { path: '/', label: 'Inicio', hasSubmenu: false },
-    { path: '/servicios', label: 'Servicios', hasSubmenu: false },
-    // Este tiene submenú - SE ABRE SOLO AL HACER CLICK (no automáticamente)
+    { path: '/', label: 'INICIO', hasSubmenu: false },
+    { path: '/servicios', label: 'SERVICIOS', hasSubmenu: false },
     {
-      label: 'Entrenamientos',
+      label: 'ENTRENAMIENTOS',
       hasSubmenu: true,
       submenu: [
         { path: '/gym', label: 'Gym' },
         { path: '/workout', label: 'Workout' }
       ]
     },
-    { path: '/alimentacion', label: 'Alimentación', hasSubmenu: false },
-    { path: '/blog', label: 'Blog', hasSubmenu: false },
-    { path: '/contacto', label: 'Contacto', hasSubmenu: false },
+    { path: '/alimentacion', label: 'ALIMENTACIÓN', hasSubmenu: false },
+    { path: '/blog', label: 'BLOG', hasSubmenu: false },
+    { path: '/contacto', label: 'CONTACTO', hasSubmenu: false },
   ];
 
-  // ============================================
-  // RENDERIZADO - Lo que se muestra en pantalla
-  // ============================================
   return (
     <nav className={`border-b sticky top-0 z-50 shadow-xl ${isPremium ? 'bg-black border-uf-red/30' : 'bg-black border-uf-gold/20'}`}>
       <div className="w-full px-6">
@@ -86,7 +79,7 @@ function Navbar() {
               </span>
             </Link>
 
-            {/* SEPARADOR VERTICAL - Cambia a rojo si es premium */}
+            {/* SEPARADOR VERTICAL */}
             <div className={`h-10 w-px ${isPremium ? 'bg-uf-red/50' : 'bg-uf-gold/30'}`}></div>
 
             {/* MENÚ DE NAVEGACIÓN */}
@@ -98,16 +91,16 @@ function Navbar() {
                     <Link
                       to={link.path}
                       className={`
-                      font-audiowide font-bold text-xs uppercase tracking-widest pb-1 border-b-2 transition-all duration-300
-                      ${isActive(link.path)
+                        font-audiowide font-bold text-xs uppercase tracking-widest pb-1 border-b-2 transition-all duration-300
+                        ${isActive(link.path)
                           ? isPremium
-                            ? 'text-uf-red border-uf-red'  // PREMIUM: rojo
-                            : 'text-uf-gold border-uf-gold' // NORMAL: dorado
+                            ? 'text-uf-red border-uf-red'
+                            : 'text-uf-gold border-uf-gold'
                           : isPremium
                             ? 'text-white border-transparent hover:text-uf-red hover:border-uf-red'
                             : 'text-white border-transparent hover:text-uf-gold hover:border-uf-gold'
                         }
-                    `}
+                      `}
                     >
                       {link.label}
                     </Link>
@@ -116,12 +109,12 @@ function Navbar() {
                       <button
                         onClick={() => setEntrenamientosOpen(!entrenamientosOpen)}
                         className={`
-                        font-audiowide font-bold text-xs uppercase tracking-widest pb-1 border-b-2 transition-all duration-300
-                        ${isPremium
+                          font-audiowide font-bold text-xs uppercase tracking-widest pb-1 border-b-2 transition-all duration-300
+                          ${isPremium
                             ? 'text-white border-transparent hover:text-uf-red hover:border-uf-red'
                             : 'text-white border-transparent hover:text-uf-gold hover:border-uf-gold'
                           }
-                      `}
+                        `}
                       >
                         {link.label}
                         <svg
@@ -207,8 +200,138 @@ function Navbar() {
           </div>
         </div>
 
-        {/* VERSIÓN MÓVIL - igual que antes */}
-        {/* ... resto del código móvil ... */}
+        {/* ========================================== */}
+        {/* VERSIÓN MÓVIL */}
+        {/* ========================================== */}
+        <div className="md:hidden flex justify-between items-center h-16">
+
+          {/* Logo móvil */}
+          <Link to="/">
+            <img
+              src={isPremium ? "/logos/logo-premium.png" : "/logos/logo.png"}
+              alt="Ultimate Fitness"
+              className="h-12"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'block';
+              }}
+            />
+            <span className="hidden font-audiowide text-uf-gold font-bold text-lg uppercase">
+              💪 UF
+            </span>
+          </Link>
+
+          {/* Usuario móvil */}
+          <div className="flex items-center space-x-3">
+            {isAuthenticated && (
+              <Link to="/dashboard" className="text-uf-gold">
+                <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+              </Link>
+            )}
+
+            {/* Hamburguesa */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-white focus:outline-none"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Menú móvil desplegable */}
+        {menuOpen && (
+          <div className="md:hidden bg-uf-dark border-t-2 border-uf-gold/30 py-4">
+            {navLinks.map((link, index) => (
+              <div key={index}>
+                {!link.hasSubmenu ? (
+                  <Link
+                    to={link.path}
+                    onClick={() => setMenuOpen(false)}
+                    className={`block px-4 py-3 text-white font-bold hover:bg-uf-gold hover:text-black transition ${isActive(link.path) ? 'bg-uf-gold/20 text-uf-gold' : ''}`}
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => setEntrenamientosOpen(!entrenamientosOpen)}
+                      className="w-full text-left px-4 py-3 text-white font-bold hover:bg-uf-gold hover:text-black transition flex justify-between items-center"
+                    >
+                      {link.label}
+                      <svg
+                        className={`w-4 h-4 transition-transform ${entrenamientosOpen ? 'rotate-180' : ''}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {entrenamientosOpen && (
+                      <div className="bg-uf-darker">
+                        {link.submenu.map((sublink, subIndex) => (
+                          <Link
+                            key={subIndex}
+                            to={sublink.path}
+                            onClick={() => {
+                              setMenuOpen(false);
+                              setEntrenamientosOpen(false);
+                            }}
+                            className="block px-8 py-2 text-gray-300 hover:text-uf-gold transition"
+                          >
+                            {sublink.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            ))}
+
+            {/* Botones móvil */}
+            <div className="px-4 mt-4 space-y-2">
+              {isAuthenticated ? (
+                <>
+                  <div className="text-white text-sm mb-2">Hola, {user.nombre}</div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full bg-uf-red text-white font-bold py-2 px-4 rounded"
+                  >
+                    Cerrar Sesión
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={() => setMenuOpen(false)}
+                    className="block w-full text-center bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Iniciar Sesión
+                  </Link>
+                  <Link
+                    to="/registro"
+                    onClick={() => setMenuOpen(false)}
+                    className="block w-full text-center bg-uf-gold text-black font-bold py-2 px-4 rounded"
+                  >
+                    Crear Cuenta
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
 
       </div>
     </nav>

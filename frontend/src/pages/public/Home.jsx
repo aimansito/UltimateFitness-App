@@ -99,7 +99,7 @@ function Home() {
 
                 {/* Botón secundario */}
                 <Link
-                  to="/servicios"
+                  to="/servicios"  // ← Debe estar así
                   className="bg-transparent border-2 border-white/30 hover:border-uf-gold text-white hover:text-uf-gold font-bold px-10 py-3.5 rounded-lg uppercase tracking-wider transition-all duration-300 text-sm backdrop-blur-sm hover:bg-white/5"
                 >
                   Ver Servicios
