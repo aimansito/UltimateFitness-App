@@ -211,11 +211,27 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     }
     public function getRoles(): array
     {
-        return $this->esPremium ? ['ROLE_PREMIUM', 'ROLE_USER'] : ['ROLE_USER'];
+        $roles = ['ROLE_USER'];
+
+        if ($this->esPremium) {
+            $roles[] = 'ROLE_PREMIUM';
+        }
+
+        if ($this->entrenador) {
+            $roles[] = 'ROLE_TRAINER';
+        }
+
+        return array_unique($roles);
     }
+
     public function getPassword(): string
     {
         return $this->passwordHash;
+    }
+    public function setPassword(string $password): static
+    {
+        $this->passwordHash = $password;
+        return $this;
     }
     public function eraseCredentials(): void {}
 

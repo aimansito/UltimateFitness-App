@@ -1,5 +1,15 @@
+# Rutas personalizadas (prioridad alta)
+ejercicio_controller:
+    resource: ../src/Controller/EjercicioController.php
+    type: attribute
+    prefix: /api
+    
 controllers:
     resource:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+api_login_check:
+    path: /api/login
+    methods: POST
