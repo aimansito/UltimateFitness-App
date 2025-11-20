@@ -7,6 +7,8 @@ import Dashboard from './pages/private/Dashboard';
 import Usuarios from './pages/private/admin/Usuarios';
 import Servicios from './pages/public/Servicios';
 import Contacto from './pages/public/Contacto';
+import Gym from './pages/public/Gym';
+
 
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
           <Route path="/admin/usuarios" element={<Usuarios />} />
           <Route path="/servicios" element={<Servicios />} />
           <Route path="/contacto" element={<Contacto />} />
+          <Route path="/gym" element={<Gym />} />
+
 
           
           {/* Ruta por defecto */}
