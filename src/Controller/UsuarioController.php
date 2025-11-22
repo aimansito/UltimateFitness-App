@@ -62,7 +62,7 @@ class UsuarioController extends AbstractController
     // ============================================
     // DIETAS AGENDADAS DEL USUARIO
     // ============================================
-    #[Route('/usuarios/{id}/dietas', name: 'usuarios_dietas', methods: ['GET'])]
+     #[Route('/usuarios/{id}/dietas', name: 'usuarios_dietas', methods: ['GET'])]
     public function dietas(
         int $id,
         EntityManagerInterface $entityManager

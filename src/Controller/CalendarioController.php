@@ -2,10 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\CalendarioUsuario;
-use App\Entity\Usuario;
-use App\Entity\Entrenamiento;
-use App\Entity\Dieta;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,180 +9,179 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/custom')]
+/**
+ * Controlador para gestionar el calendario semanal del usuario
+ * Permite asignar dietas a cada día de la semana
+ */
+#[Route('/api/custom/calendario')]
 class CalendarioController extends AbstractController
 {
     // ============================================
-    // VER CALENDARIO DEL USUARIO
+    // OBTENER PLAN SEMANAL DEL USUARIO
     // ============================================
-    #[Route('/calendario/{userId}', name: 'calendario_usuario', methods: ['GET'])]
-    public function ver(
-        int $userId,
-        Request $request,
+    #[Route('/usuario/{usuarioId}', name: 'calendario_usuario', methods: ['GET'])]
+    public function obtenerCalendario(
+        int $usuarioId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
-        $usuario = $entityManager->getRepository(Usuario::class)->find($userId);
+        $connection = $entityManager->getConnection();
         
-        if (!$usuario) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Usuario no encontrado'
-            ], Response::HTTP_NOT_FOUND);
-        }
-
-        $year = $request->query->get('year', date('Y'));
-        $month = $request->query->get('month', date('m'));
-
-        $calendarios = $entityManager->getRepository(CalendarioUsuario::class)
-            ->findBy(['usuario' => $usuario]);
+        $sql = 'SELECT cu.*, d.nombre as dieta_nombre, d.descripcion as dieta_descripcion,
+                       d.valoracion_promedio, d.total_valoraciones
+                FROM calendario_usuario cu
+                LEFT JOIN dietas d ON cu.dieta_id = d.id
+                WHERE cu.usuario_id = :usuarioId
+                AND cu.fecha_asignacion >= CURDATE()
+                ORDER BY FIELD(cu.dia_semana, "lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo")';
+        
+        $stmt = $connection->prepare($sql);
+        $result = $stmt->executeQuery(['usuarioId' => $usuarioId]);
+        $calendario = $result->fetchAllAssociative();
 
         return $this->json([
             'success' => true,
-            'year' => $year,
-            'month' => $month,
-            'total' => count($calendarios),
-            'eventos' => array_map(function($calendario) {
-                return $this->serializeCalendario($calendario);
-            }, $calendarios)
+            'calendario' => $calendario
         ]);
     }
 
     // ============================================
-    // AGENDAR ENTRENAMIENTO
+    // GUARDAR PLAN SEMANAL COMPLETO
     // ============================================
-    #[Route('/calendario/agendar', name: 'calendario_agendar', methods: ['POST'])]
-    public function agendar(
+    #[Route('/guardar', name: 'calendario_guardar', methods: ['POST'])]
+    public function guardarCalendario(
         Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         
-        $usuarioId = $data['usuarioId'] ?? null;
-        $entrenamientoId = $data['entrenamientoId'] ?? null;
-        $dietaId = $data['dietaId'] ?? null;
-        $diaSemana = $data['diaSemana'] ?? null;
-
-        if (!$usuarioId || !$diaSemana) {
+        if (!isset($data['usuario_id']) || !isset($data['plan'])) {
             return $this->json([
                 'success' => false,
-                'error' => 'Faltan parámetros: usuarioId, diaSemana'
+                'error' => 'Faltan parámetros: usuario_id, plan'
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $usuario = $entityManager->getRepository(Usuario::class)->find($usuarioId);
-        if (!$usuario) {
+        $usuarioId = $data['usuario_id'];
+        $plan = $data['plan'];
+        $connection = $entityManager->getConnection();
+
+        try {
+            $connection->beginTransaction();
+
+            // Eliminar asignaciones antiguas del usuario
+            $connection->executeStatement(
+                'DELETE FROM calendario_usuario WHERE usuario_id = :usuarioId',
+                ['usuarioId' => $usuarioId]
+            );
+
+            // Insertar nuevas asignaciones
+            foreach ($plan as $dia) {
+                if ($dia['dieta_id']) {
+                    $connection->executeStatement(
+                        'INSERT INTO calendario_usuario 
+                        (usuario_id, dieta_id, dia_semana, completado, fecha_asignacion, notas) 
+                        VALUES (:usuarioId, :dietaId, :diaSemana, :completado, :fechaAsignacion, :notas)',
+                        [
+                            'usuarioId' => $usuarioId,
+                            'dietaId' => $dia['dieta_id'],
+                            'diaSemana' => $dia['dia_semana'],
+                            'completado' => $dia['completado'] ? 1 : 0,
+                            'fechaAsignacion' => $dia['fecha_asignacion'],
+                            'notas' => $dia['notas'] ?? null
+                        ]
+                    );
+                }
+            }
+
+            $connection->commit();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Calendario guardado exitosamente'
+            ]);
+
+        } catch (\Exception $e) {
+            $connection->rollBack();
             return $this->json([
                 'success' => false,
-                'error' => 'Usuario no encontrado'
-            ], Response::HTTP_NOT_FOUND);
+                'error' => 'Error al guardar el calendario: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $calendario = new CalendarioUsuario();
-        $calendario->setUsuario($usuario);
-        $calendario->setDiaSemana($diaSemana);
-        
-        if ($entrenamientoId) {
-            $entrenamiento = $entityManager->getRepository(Entrenamiento::class)->find($entrenamientoId);
-            if ($entrenamiento) {
-                $calendario->setEntrenamiento($entrenamiento);
-            }
-        }
-        
-        if ($dietaId) {
-            $dieta = $entityManager->getRepository(Dieta::class)->find($dietaId);
-            if ($dieta) {
-                $calendario->setDieta($dieta);
-            }
-        }
-
-        if (isset($data['notas'])) {
-            $calendario->setNotas($data['notas']);
-        }
-
-        $entityManager->persist($calendario);
-        $entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Evento agendado correctamente',
-            'evento' => $this->serializeCalendario($calendario)
-        ], Response::HTTP_CREATED);
     }
 
     // ============================================
-    // MARCAR COMO COMPLETADO
+    // MARCAR DÍA COMO COMPLETADO
     // ============================================
-    #[Route('/calendario/{id}/completar', name: 'calendario_completar', methods: ['PUT', 'PATCH'])]
-    public function completar(
+    #[Route('/completar/{id}', name: 'calendario_completar', methods: ['PATCH'])]
+    public function marcarCompletado(
         int $id,
+        Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
-        $calendario = $entityManager->getRepository(CalendarioUsuario::class)->find($id);
-        
-        if (!$calendario) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Evento no encontrado'
-            ], Response::HTTP_NOT_FOUND);
-        }
+        $data = json_decode($request->getContent(), true);
+        $completado = $data['completado'] ?? false;
 
-        $calendario->setCompletado(!$calendario->isCompletado());
-        $entityManager->flush();
+        $connection = $entityManager->getConnection();
+        $connection->executeStatement(
+            'UPDATE calendario_usuario SET completado = :completado WHERE id = :id',
+            ['completado' => $completado ? 1 : 0, 'id' => $id]
+        );
 
         return $this->json([
             'success' => true,
-            'message' => $calendario->isCompletado() ? 'Marcado como completado' : 'Marcado como pendiente',
-            'evento' => $this->serializeCalendario($calendario)
+            'message' => 'Estado actualizado'
         ]);
     }
 
     // ============================================
-    // ELIMINAR EVENTO
+    // ACTUALIZAR NOTAS DE UN DÍA
     // ============================================
-    #[Route('/calendario/{id}', name: 'calendario_eliminar', methods: ['DELETE'])]
-    public function eliminar(
+    #[Route('/notas/{id}', name: 'calendario_notas', methods: ['PATCH'])]
+    public function actualizarNotas(
         int $id,
+        Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
-        $calendario = $entityManager->getRepository(CalendarioUsuario::class)->find($id);
-        
-        if (!$calendario) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Evento no encontrado'
-            ], Response::HTTP_NOT_FOUND);
-        }
+        $data = json_decode($request->getContent(), true);
+        $notas = $data['notas'] ?? '';
 
-        $entityManager->remove($calendario);
-        $entityManager->flush();
+        $connection = $entityManager->getConnection();
+        $connection->executeStatement(
+            'UPDATE calendario_usuario SET notas = :notas WHERE id = :id',
+            ['notas' => $notas, 'id' => $id]
+        );
 
         return $this->json([
             'success' => true,
-            'message' => 'Evento eliminado'
+            'message' => 'Notas actualizadas'
         ]);
     }
 
     // ============================================
-    // HELPER
+    // OBTENER ESTADÍSTICAS SEMANALES
     // ============================================
-    private function serializeCalendario(CalendarioUsuario $calendario): array
-    {
-        $entrenamiento = $calendario->getEntrenamiento();
-        $dieta = $calendario->getDieta();
+    #[Route('/estadisticas/{usuarioId}', name: 'calendario_estadisticas', methods: ['GET'])]
+    public function obtenerEstadisticas(
+        int $usuarioId,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $connection = $entityManager->getConnection();
+        
+        $sql = 'SELECT 
+                    COUNT(*) as dias_planificados,
+                    SUM(completado) as dias_completados,
+                    SUM(CASE WHEN dieta_id IS NOT NULL THEN 1 ELSE 0 END) as dias_con_dieta
+                FROM calendario_usuario 
+                WHERE usuario_id = :usuarioId
+                AND fecha_asignacion >= CURDATE()';
+        
+        $stmt = $connection->prepare($sql);
+        $result = $stmt->executeQuery(['usuarioId' => $usuarioId]);
+        $stats = $result->fetchAssociative();
 
-        return [
-            'id' => $calendario->getId(),
-            'diaSemana' => $calendario->getDiaSemana(),
-            'completado' => $calendario->isCompletado(),
-            'notas' => $calendario->getNotas(),
-            'entrenamiento' => $entrenamiento ? [
-                'id' => $entrenamiento->getId(),
-                'nombre' => $entrenamiento->getNombre()
-            ] : null,
-            'dieta' => $dieta ? [
-                'id' => $dieta->getId(),
-                'nombre' => $dieta->getNombre()
-            ] : null
-        ];
+        return $this->json([
+            'success' => true,
+            'estadisticas' => $stats
+        ]);
     }
 }

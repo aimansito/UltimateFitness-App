@@ -54,6 +54,13 @@ class DietaAlimento
     #[ORM\OneToMany(targetEntity: ValoracionPlato::class, mappedBy: 'dietaAlimento', orphanRemoval: true)]
     private Collection $valoraciones;
 
+    #[ORM\Column(length: 50, options: ['default' => 'comida'])]
+    private string $momentoDia = 'comida';
+
+    #[ORM\ManyToOne(targetEntity: Plato::class, inversedBy: 'dietaAlimentos')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Plato $plato = null;
+
     public function __construct()
     {
         $this->valoraciones = new ArrayCollection();
@@ -147,6 +154,27 @@ class DietaAlimento
     public function getValoraciones(): Collection
     {
         return $this->valoraciones;
+    }
+    public function getMomentoDia(): string
+    {
+        return $this->momentoDia;
+    }
+
+    public function setMomentoDia(string $momentoDia): static
+    {
+        $this->momentoDia = $momentoDia;
+        return $this;
+    }
+
+    public function getPlato(): ?Plato
+    {
+        return $this->plato;
+    }
+
+    public function setPlato(?Plato $plato): self
+    {
+        $this->plato = $plato;
+        return $this;
     }
 
     public function addValoracione(ValoracionPlato $valoracione): static

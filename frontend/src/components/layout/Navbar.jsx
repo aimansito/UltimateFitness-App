@@ -20,6 +20,7 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [entrenamientosOpen, setEntrenamientosOpen] = useState(false);
+  const [alimentacionOpen, setAlimentacionOpen] = useState(false);
 
   // ============================================
   // FUNCIONES
@@ -42,11 +43,20 @@ function Navbar() {
       label: 'ENTRENAMIENTOS',
       hasSubmenu: true,
       submenu: [
-        { path: '/gym', label: 'Gym' },
-        { path: '/workout', label: 'Workout' }
+        { path: '/gym', label: '💪 Gym' },
+        { path: '/workout', label: '🏃 Workout' }
       ]
     },
-    { path: '/alimentacion', label: 'ALIMENTACIÓN', hasSubmenu: false },
+    {
+      label: 'ALIMENTACIÓN',
+      hasSubmenu: true,
+      submenu: [
+        { path: '/alimentacion', label: '🍽️ Dietas' },
+        { path: '/crear-dieta', label: '✨ Crear Mi Dieta' },
+        { path: '/mi-plan-semanal', label: '📅 Plan Semanal' },
+        { path: '/suplementos', label: '💊 Suplementos' }
+      ]
+    },
     { path: '/blog', label: 'BLOG', hasSubmenu: false },
     { path: '/contacto', label: 'CONTACTO', hasSubmenu: false },
   ];
@@ -56,9 +66,9 @@ function Navbar() {
       <div className="w-full px-6">
 
         {/* ========================================== */}
-        {/* VERSIÓN DESKTOP */}
+        {/* VERSIÓN DESKTOP (>1024px) */}
         {/* ========================================== */}
-        <div className="hidden md:flex justify-between items-center h-20">
+        <div className="hidden lg:flex justify-between items-center h-20">
 
           {/* IZQUIERDA: Logo + Separador + Menú */}
           <div className="flex items-center space-x-6">
@@ -107,7 +117,15 @@ function Navbar() {
                   ) : (
                     <>
                       <button
-                        onClick={() => setEntrenamientosOpen(!entrenamientosOpen)}
+                        onClick={() => {
+                          if (link.label === 'ENTRENAMIENTOS') {
+                            setEntrenamientosOpen(!entrenamientosOpen);
+                            setAlimentacionOpen(false);
+                          } else if (link.label === 'ALIMENTACIÓN') {
+                            setAlimentacionOpen(!alimentacionOpen);
+                            setEntrenamientosOpen(false);
+                          }
+                        }}
                         className={`
                           font-audiowide font-bold text-xs uppercase tracking-widest pb-1 border-b-2 transition-all duration-300
                           ${isPremium
@@ -118,7 +136,12 @@ function Navbar() {
                       >
                         {link.label}
                         <svg
-                          className={`w-3 h-3 ml-1 inline transition-transform duration-300 ${entrenamientosOpen ? 'rotate-180' : ''}`}
+                          className={`w-3 h-3 ml-1 inline transition-transform duration-300 ${
+                            (link.label === 'ENTRENAMIENTOS' && entrenamientosOpen) ||
+                            (link.label === 'ALIMENTACIÓN' && alimentacionOpen)
+                              ? 'rotate-180'
+                              : ''
+                          }`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -127,15 +150,19 @@ function Navbar() {
                         </svg>
                       </button>
 
-                      {entrenamientosOpen && (
+                      {((link.label === 'ENTRENAMIENTOS' && entrenamientosOpen) ||
+                        (link.label === 'ALIMENTACIÓN' && alimentacionOpen)) && (
                         <div
-                          className={`absolute left-0 top-full mt-2 w-44 bg-uf-dark border-2 rounded-lg shadow-2xl overflow-hidden z-50 ${isPremium ? 'border-uf-red' : 'border-uf-gold'}`}
+                          className={`absolute left-0 top-full mt-2 w-52 bg-uf-dark border-2 rounded-lg shadow-2xl overflow-hidden z-50 ${isPremium ? 'border-uf-red' : 'border-uf-gold'}`}
                         >
                           {link.submenu.map((sublink, subIndex) => (
                             <Link
                               key={subIndex}
                               to={sublink.path}
-                              onClick={() => setEntrenamientosOpen(false)}
+                              onClick={() => {
+                                setEntrenamientosOpen(false);
+                                setAlimentacionOpen(false);
+                              }}
                               className={`block px-4 py-3 text-white transition-all duration-300 font-semibold text-sm ${isPremium ? 'hover:bg-uf-red hover:text-white' : 'hover:bg-uf-gold hover:text-black'}`}
                             >
                               {sublink.label}
@@ -201,9 +228,9 @@ function Navbar() {
         </div>
 
         {/* ========================================== */}
-        {/* VERSIÓN MÓVIL */}
+        {/* VERSIÓN MÓVIL Y TABLET (<1024px) */}
         {/* ========================================== */}
-        <div className="md:hidden flex justify-between items-center h-16">
+        <div className="lg:hidden flex justify-between items-center h-16">
 
           {/* Logo móvil */}
           <Link to="/">
@@ -249,7 +276,7 @@ function Navbar() {
 
         {/* Menú móvil desplegable */}
         {menuOpen && (
-          <div className="md:hidden bg-uf-dark border-t-2 border-uf-gold/30 py-4">
+          <div className="lg:hidden bg-uf-dark border-t-2 border-uf-gold/30 py-4">
             {navLinks.map((link, index) => (
               <div key={index}>
                 {!link.hasSubmenu ? (
@@ -263,12 +290,25 @@ function Navbar() {
                 ) : (
                   <>
                     <button
-                      onClick={() => setEntrenamientosOpen(!entrenamientosOpen)}
+                      onClick={() => {
+                        if (link.label === 'ENTRENAMIENTOS') {
+                          setEntrenamientosOpen(!entrenamientosOpen);
+                          setAlimentacionOpen(false);
+                        } else if (link.label === 'ALIMENTACIÓN') {
+                          setAlimentacionOpen(!alimentacionOpen);
+                          setEntrenamientosOpen(false);
+                        }
+                      }}
                       className="w-full text-left px-4 py-3 text-white font-bold hover:bg-uf-gold hover:text-black transition flex justify-between items-center"
                     >
                       {link.label}
                       <svg
-                        className={`w-4 h-4 transition-transform ${entrenamientosOpen ? 'rotate-180' : ''}`}
+                        className={`w-4 h-4 transition-transform ${
+                          (link.label === 'ENTRENAMIENTOS' && entrenamientosOpen) ||
+                          (link.label === 'ALIMENTACIÓN' && alimentacionOpen)
+                            ? 'rotate-180'
+                            : ''
+                        }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -277,7 +317,8 @@ function Navbar() {
                       </svg>
                     </button>
 
-                    {entrenamientosOpen && (
+                    {((link.label === 'ENTRENAMIENTOS' && entrenamientosOpen) ||
+                      (link.label === 'ALIMENTACIÓN' && alimentacionOpen)) && (
                       <div className="bg-uf-darker">
                         {link.submenu.map((sublink, subIndex) => (
                           <Link
@@ -286,6 +327,7 @@ function Navbar() {
                             onClick={() => {
                               setMenuOpen(false);
                               setEntrenamientosOpen(false);
+                              setAlimentacionOpen(false);
                             }}
                             className="block px-8 py-2 text-gray-300 hover:text-uf-gold transition"
                           >

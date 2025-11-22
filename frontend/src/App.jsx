@@ -8,6 +8,11 @@ import Usuarios from './pages/private/admin/Usuarios';
 import Servicios from './pages/public/Servicios';
 import Contacto from './pages/public/Contacto';
 import Gym from './pages/public/Gym';
+import Alimentacion from './pages/public/Alimentacion';
+import DetalleDieta from './pages/public/DetalleDieta';
+import CrearDieta from './pages/public/CrearDieta';
+import PlanificadorSemanal from './pages/private/PlanificadorSemanal';
+
 
 
 
@@ -27,6 +32,13 @@ function App() {
           <Route path="/servicios" element={<Servicios />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/gym" element={<Gym />} />
+          <Route path="/alimentacion" element={<Alimentacion />} />
+          <Route path="/dieta/:id" element={<DetalleDieta />} />
+          <Route path="/crear-dieta" element={<CrearDieta />} />
+          <Route path="/mi-plan-semanal" element={<PlanificadorSemanal />} />
+
+
+
 
 
           
