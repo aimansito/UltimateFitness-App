@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = "http://localhost:8000/api";
 
 // ============================================
-// CONFIGURACIÓN DE AXIOS CON JWT
+// CONFIGURACIÓN DE AXIOS
 // ============================================
 const api = axios.create({
   baseURL: API_URL,
@@ -12,24 +12,6 @@ const api = axios.create({
   },
 });
 
-// Interceptor: Añadir token JWT automáticamente en cada petición
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-
-    console.log("Interceptor - Token presente:", !!token);
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-      console.log("Añadiendo Authorization header");
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 // ============================================
 // FUNCIONES DE AUTENTICACIÓN
 // ============================================
@@ -71,96 +53,41 @@ const authService = {
   },
 
   // ============================================
-  // LOGIN - Iniciar sesión (devuelve token JWT)
+  // LOGIN - Iniciar sesión (SIN JWT)
   // ============================================
   async login(email, password) {
     try {
-      console.log("Intentando login con:", email);
+      console.log('Intentando login con:', email);
 
       const response = await api.post("/login", {
-        username: email,
+        email: email,      // ✅ Backend espera 'email'
         password: password,
       });
 
-      console.log("Respuesta del servidor:", response.data);
+      console.log('Respuesta del servidor:', response.data);
 
-      // Verificar si recibimos el token JWT
-      if (response.data.token) {
-        const token = response.data.token;
+      // Verificar si el login fue exitoso
+      if (response.data.success && response.data.usuario) {
+        const userData = response.data.usuario;
 
-        // Guardar token INMEDIATAMENTE
-        localStorage.setItem("token", token);
+        // Guardar usuario en localStorage
+        localStorage.setItem("usuario", JSON.stringify(userData));
 
-        console.log("Token guardado:", token.substring(0, 20) + "...");
+        console.log('Login exitoso:', userData);
 
-        // ESPERAR 100ms para asegurar que localStorage se actualizó
-        await new Promise((resolve) => setTimeout(resolve, 100));
-
-        // Ahora intentar obtener datos del usuario
-        try {
-          console.log("Obteniendo datos del usuario...");
-
-          const userResponse = await api.get("/me");
-
-          console.log("Respuesta de /me:", userResponse.data);
-
-          if (userResponse.data.success && userResponse.data.usuario) {
-            const userData = userResponse.data.usuario;
-
-            // Guardar usuario en localStorage
-            localStorage.setItem("usuario", JSON.stringify(userData));
-
-            console.log("Login completado exitosamente:", userData);
-
-            return {
-              success: true,
-              usuario: userData,
-              token: token,
-            };
-          } else {
-            // Si /me no devuelve bien, aún así el login fue exitoso
-            console.warn(
-              "No se pudieron obtener datos del usuario, pero el token es válido"
-            );
-
-            return {
-              success: true,
-              token: token,
-              usuario: {
-                email: email,
-                nombre: email.split("@")[0],
-              },
-            };
-          }
-        } catch (userError) {
-          console.error("Error obteniendo datos del usuario:", userError);
-          console.error("Detalles:", userError.response?.data);
-
-          // El login fue exitoso, solo falló obtener datos adicionales
-          // Usar datos mínimos
-          const minimalUser = {
-            email: email,
-            nombre: email.split("@")[0],
-          };
-
-          localStorage.setItem("usuario", JSON.stringify(minimalUser));
-
-          return {
-            success: true,
-            token: token,
-            usuario: minimalUser,
-            warning: "No se pudieron cargar todos los datos del usuario",
-          };
-        }
+        return {
+          success: true,
+          usuario: userData,
+        };
       } else {
         return {
           success: false,
-          error: "No se recibió token de autenticación",
+          error: response.data.error || "Error al iniciar sesión",
         };
       }
     } catch (error) {
-      console.error("Error en login:", error);
-      console.error("Respuesta del servidor:", error.response?.data);
+      console.error('Error en login:', error);
+      console.error('Respuesta del servidor:', error.response?.data);
 
       // Mensajes de error más específicos
       if (error.response?.status === 401) {
@@ -168,42 +95,17 @@ const authService = {
           success: false,
           error: "Email o contraseña incorrectos",
         };
-      } else if (error.response?.status === 404) {
+      } else if (error.response?.status === 400) {
         return {
           success: false,
-          error: "Servicio de autenticación no disponible",
+          error: error.response?.data?.error || "Datos inválidos",
         };
       } else {
         return {
           success: false,
-          error: error.response?.data?.message || "Error al iniciar sesión",
+          error: error.response?.data?.error || "Error al iniciar sesión",
         };
       }
-    }
-  },
-
-  // ============================================
-  // GET CURRENT USER - Obtener usuario autenticado actual
-  // ============================================
-  async getCurrentUser() {
-    try {
-      const response = await api.get("/me");
-
-      if (response.data.success && response.data.usuario) {
-        return response.data.usuario;
-      }
-
-      throw new Error("No se pudo obtener información del usuario");
-    } catch (error) {
-      console.error("Error obteniendo usuario actual:", error);
-
-      // Si falla, intentar obtener desde localStorage
-      const userStr = localStorage.getItem("usuario");
-      if (userStr) {
-        return JSON.parse(userStr);
-      }
-
-      throw error;
     }
   },
 
@@ -211,24 +113,17 @@ const authService = {
   // LOGOUT - Cerrar sesión
   // ============================================
   logout() {
-    // Eliminar token y datos del usuario
-    localStorage.removeItem("token");
+    // Eliminar datos del usuario
     localStorage.removeItem("usuario");
-
     console.log("Sesión cerrada");
-
-    // Redirigir al home
-    window.location.href = "/";
   },
 
   // ============================================
   // IS AUTHENTICATED - Verificar si está autenticado
   // ============================================
   isAuthenticated() {
-    const token = localStorage.getItem("token");
     const usuario = localStorage.getItem("usuario");
-
-    return !!(token && usuario);
+    return !!usuario;
   },
 
   // ============================================
@@ -240,24 +135,10 @@ const authService = {
   },
 
   // ============================================
-  // GET TOKEN - Obtener token JWT
+  // UPDATE USER IN STORAGE - Actualizar usuario en localStorage
   // ============================================
-  getToken() {
-    return localStorage.getItem("token");
-  },
-
-  // ============================================
-  // REFRESH USER DATA - Refrescar datos del usuario
-  // ============================================
-  async refreshUserData() {
-    try {
-      const userData = await this.getCurrentUser();
-      localStorage.setItem("usuario", JSON.stringify(userData));
-      return userData;
-    } catch (error) {
-      console.error("Error refrescando datos del usuario:", error);
-      return null;
-    }
+  updateUser(userData) {
+    localStorage.setItem("usuario", JSON.stringify(userData));
   },
 };
 

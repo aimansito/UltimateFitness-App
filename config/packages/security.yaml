@@ -1,8 +1,13 @@
 security:
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        App\Entity\Usuario:
+            algorithm: auto
 
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
+        # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\Usuario
@@ -13,82 +18,59 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # IMPORTANTE: Login ANTES del firewall API
+        # Rutas de autenticación (públicas)
         login:
-            pattern: ^/api/login
-            stateless: true
-            json_login:
-                check_path: /api/login
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
-
-        # Registro público
-        register:
-            pattern: ^/api/register
+            pattern: ^/api/(login|register|hash-passwords)
             stateless: true
             security: false
 
-        # Documentación pública
-        api_docs:
-            pattern: ^/api/docs
+        # Rutas públicas (sin autenticación) - TODO: Restringir en producción
+        public:
+            pattern: ^/api/(planes|dietas|ejercicios|entrenamientos|platos|alimentos|entrenadores|custom)
             stateless: true
             security: false
 
-        # API Platform UI pública
-        api_platform:
-            pattern: ^/api$
-            stateless: true
-            security: false
-
-        # Rutas custom públicas (ANTES del firewall API)
-        custom_api:
-            pattern: ^/api/custom
-            stateless: true
-            security: false
-
-        # API protegida con JWT
+        # API principal (requiere JWT)
         api:
             pattern: ^/api
             stateless: true
             jwt: ~
 
+        main:
+            lazy: true
+            provider: app_user_provider
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
     access_control:
+        # Rutas públicas - cualquiera puede acceder
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
-        - { path: ^/api/docs, roles: PUBLIC_ACCESS }
-        - { path: ^/api$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/hash-passwords, roles: PUBLIC_ACCESS }
         
-        # ============================================
-        # ENDPOINTS PÚBLICOS - Custom
-        # ============================================
+        # Contenido público (TODO: Revisar en producción)
+        - { path: ^/api/planes, roles: PUBLIC_ACCESS }
+        - { path: ^/api/dietas, roles: PUBLIC_ACCESS }
+        - { path: ^/api/ejercicios, roles: PUBLIC_ACCESS }
+        - { path: ^/api/entrenamientos, roles: PUBLIC_ACCESS }
+        - { path: ^/api/platos, roles: PUBLIC_ACCESS }
+        - { path: ^/api/alimentos, roles: PUBLIC_ACCESS }
+        - { path: ^/api/entrenadores, roles: PUBLIC_ACCESS }
         - { path: ^/api/custom, roles: PUBLIC_ACCESS }
         
-        # ============================================
-        # ENDPOINTS PÚBLICOS - Ejercicios (por si acaso)
-        # ============================================
-        - { path: ^/api/ejercicios/buscar, roles: PUBLIC_ACCESS }
-        - { path: ^/api/ejercicios/por-musculo, roles: PUBLIC_ACCESS }
-        - { path: ^/api/ejercicios/populares, roles: PUBLIC_ACCESS }
-        - { path: ^/api/ejercicios/por-dificultad, roles: PUBLIC_ACCESS }
-        
-        # ============================================
-        # CRUD de API Platform (público para GET)
-        # ============================================
-        - { path: ^/api/ejercicios, roles: PUBLIC_ACCESS, methods: [GET] }
-        - { path: ^/api/entrenamientos, roles: PUBLIC_ACCESS, methods: [GET] }
-        - { path: ^/api/dietas, roles: PUBLIC_ACCESS, methods: [GET] }
-        - { path: ^/api/alimentos, roles: PUBLIC_ACCESS, methods: [GET] }
-        
-        # ============================================
-        # TODO LO DEMÁS REQUIERE AUTENTICACIÓN
-        # ============================================
-        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
+        # Rutas que requieren autenticación (deshabilitado temporalmente para desarrollo)
+        # TODO: Habilitar en producción
+        # - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
         password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4
-                time_cost: 3
-                memory_cost: 10
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon

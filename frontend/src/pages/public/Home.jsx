@@ -2,6 +2,7 @@
 // HOME PAGE - Página principal
 // ============================================
 import { Link } from 'react-router-dom';
+import { Monitor, Salad, Activity, Dumbbell } from 'lucide-react';
 
 function Home() {
   // ============================================
@@ -9,25 +10,25 @@ function Home() {
   // ============================================
   const servicios = [
     {
-      icon: '💻',
+      icon: Monitor,
       title: '¿QUÉ OFRECEMOS?',
       description: 'Todo lo que tienes que saber y aprender para mantenerte en forma con nuestro método.',
       image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800',
     },
     {
-      icon: '🥗',
+      icon: Salad,
       title: 'DIETA EQUILIBRADA Y VARIADA',
       description: 'Debemos de tener una comida estructurada para llevar a cabo bien nuestro cambio',
       image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800',
     },
     {
-      icon: '🏃',
+      icon: Activity,
       title: 'DEPORTE AL AIRE LIBRE',
       description: 'Hacer deporte en zonas exteriores tiene diversas ventajas...',
       image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800',
     },
     {
-      icon: '🏋️',
+      icon: Dumbbell,
       title: 'GYM TRAINING',
       description: 'Esta semana tenemos nuevos ejercicios para implementar en nuestra rutina',
       image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800',
@@ -99,7 +100,7 @@ function Home() {
 
                 {/* Botón secundario */}
                 <Link
-                  to="/servicios"  // ← Debe estar así
+                  to="/servicios"
                   className="bg-transparent border-2 border-white/30 hover:border-uf-gold text-white hover:text-uf-gold font-bold px-10 py-3.5 rounded-lg uppercase tracking-wider transition-all duration-300 text-sm backdrop-blur-sm hover:bg-white/5"
                 >
                   Ver Servicios
@@ -114,37 +115,41 @@ function Home() {
       {/* ============================================ */}
       <div className="container mx-auto px-4 py-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {servicios.map((servicio, index) => (
-            <div
-              key={index}
-              className="group relative bg-uf-dark border-2 border-uf-gold/50 rounded-lg overflow-hidden hover:border-uf-gold transition-all duration-300 hover:scale-105"
-            >
-              {/* Imagen */}
-              <div className="h-64 overflow-hidden">
-                <img
-                  src={servicio.image}
-                  alt={servicio.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-
-              {/* Contenido */}
-              <div className="p-6">
-                <div className="bg-uf-gold text-black font-bold text-center py-3 mb-4 rounded uppercase tracking-wider">
-                  {servicio.title}
+          {servicios.map((servicio, index) => {
+            const IconComponent = servicio.icon;
+            return (
+              <div
+                key={index}
+                className="group relative bg-uf-dark border-2 border-uf-gold/50 rounded-lg overflow-hidden hover:border-uf-gold transition-all duration-300 hover:scale-105"
+              >
+                {/* Imagen */}
+                <div className="h-64 overflow-hidden">
+                  <img
+                    src={servicio.image}
+                    alt={servicio.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
                 </div>
-                <p className="text-gray-300 text-sm mb-6">
-                  {servicio.description}
-                </p>
-                <Link
-                  to="/servicios"
-                  className="block w-full text-center bg-uf-blue hover:bg-uf-gold text-white hover:text-black font-bold py-3 rounded uppercase tracking-wider transition"
-                >
-                  SABER MÁS »
-                </Link>
+
+                {/* Contenido */}
+                <div className="p-6">
+                  <div className="bg-uf-gold text-black font-bold text-center py-3 mb-4 rounded uppercase tracking-wider flex items-center justify-center gap-2">
+                    <IconComponent className="w-5 h-5" />
+                    {servicio.title}
+                  </div>
+                  <p className="text-gray-300 text-sm mb-6">
+                    {servicio.description}
+                  </p>
+                  <Link
+                    to="/servicios"
+                    className="block w-full text-center bg-uf-blue hover:bg-uf-gold text-white hover:text-black font-bold py-3 rounded uppercase tracking-wider transition"
+                  >
+                    SABER MÁS »
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

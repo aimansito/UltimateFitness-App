@@ -13,33 +13,12 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const loadUser = () => {
       try {
-        // Intentar obtener usuario desde localStorage (síncrono)
         const storedUser = authService.getUser();
-        const token = authService.getToken();
         
         console.log('Cargando usuario desde localStorage:', storedUser);
-        console.log('Token presente:', !!token);
         
-        // Solo establecer usuario si hay token válido
-        if (storedUser && token) {
+        if (storedUser) {
           setUser(storedUser);
-          
-          // Opcionalmente, refrescar datos del usuario en background
-          authService.refreshUserData()
-            .then(freshUser => {
-              if (freshUser) {
-                setUser(freshUser);
-              }
-            })
-            .catch(error => {
-              console.error('Error refrescando usuario:', error);
-              // Si falla el refresh, mantener el usuario del localStorage
-            });
-        } else {
-          // Si no hay token o usuario, limpiar todo
-          setUser(null);
-          localStorage.removeItem('usuario');
-          localStorage.removeItem('token');
         }
       } catch (error) {
         console.error('Error cargando usuario:', error);
@@ -67,7 +46,10 @@ export function AuthProvider({ children }) {
         return { success: true };
       }
       
-      return result;
+      return {
+        success: false,
+        error: result.error || 'Error al iniciar sesión'
+      };
     } catch (error) {
       console.error('Error en login (AuthContext):', error);
       return { 
@@ -93,10 +75,10 @@ export function AuthProvider({ children }) {
   // ============================================
   const refreshUser = async () => {
     try {
-      const freshUser = await authService.refreshUserData();
-      if (freshUser) {
-        setUser(freshUser);
-        return freshUser;
+      const storedUser = authService.getUser();
+      if (storedUser) {
+        setUser(storedUser);
+        return storedUser;
       }
     } catch (error) {
       console.error('Error actualizando usuario:', error);
@@ -112,12 +94,12 @@ export function AuthProvider({ children }) {
     login,
     logout,
     refreshUser,
-    isAuthenticated: !!(user && authService.getToken()),
-    isPremium: user?.esPremium || false,
+    isAuthenticated: !!user,
+    isPremium: user?.es_premium || false,
     loading
   };
 
-  // No renderizar hijos hasta que termine de cargar
+  // Mostrar loading mientras carga
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">

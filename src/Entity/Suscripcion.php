@@ -53,6 +53,21 @@ class Suscripcion
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $fechaCreacion = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $idTransaccionExterna = null;
+
+    #[ORM\Column(type: 'string', length: 4, nullable: true)]
+    private ?string $ultimos4Digitos = null;
+
+    #[ORM\Column(type: 'date', nullable: true)]
+    private ?\DateTimeInterface $fechaProximoPago = null;
+
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private bool $autoRenovacion = true;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $notas = null;
+
     public function __construct()
     {
         $this->fechaCreacion = new \DateTime();
@@ -155,5 +170,60 @@ class Suscripcion
     public function isActiva(): bool
     {
         return $this->estado === 'activo';
+    }
+
+    public function getIdTransaccionExterna(): ?string
+    {
+        return $this->idTransaccionExterna;
+    }
+
+    public function setIdTransaccionExterna(?string $idTransaccionExterna): static
+    {
+        $this->idTransaccionExterna = $idTransaccionExterna;
+        return $this;
+    }
+
+    public function getUltimos4Digitos(): ?string
+    {
+        return $this->ultimos4Digitos;
+    }
+
+    public function setUltimos4Digitos(?string $ultimos4Digitos): static
+    {
+        $this->ultimos4Digitos = $ultimos4Digitos;
+        return $this;
+    }
+
+    public function getFechaProximoPago(): ?\DateTimeInterface
+    {
+        return $this->fechaProximoPago;
+    }
+
+    public function setFechaProximoPago(?\DateTimeInterface $fechaProximoPago): static
+    {
+        $this->fechaProximoPago = $fechaProximoPago;
+        return $this;
+    }
+
+    public function isAutoRenovacion(): bool
+    {
+        return $this->autoRenovacion;
+    }
+
+    public function setAutoRenovacion(bool $autoRenovacion): static
+    {
+        $this->autoRenovacion = $autoRenovacion;
+        return $this;
+    }
+
+    public function getNotas(): ?string
+    {
+        return $this->notas;
+    }
+
+    public function setNotas(?string $notas): static
+    {
+        $this->notas = $notas;
+        return $this;
     }
 }
