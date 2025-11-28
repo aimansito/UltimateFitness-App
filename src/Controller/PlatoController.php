@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * incluyendo la gestión de ingredientes y el cálculo automático
  * de valores nutricionales.
  */
-#[Route('/api/custom/platos')]
+#[Route('/api/platos')]
 class PlatoController extends AbstractController
 {
     // ============================================
@@ -90,65 +90,75 @@ class PlatoController extends AbstractController
     // CREAR NUEVO PLATO
     // ============================================
     #[Route('', name: 'platos_crear', methods: ['POST'])]
-    public function crear(
-        Request $request,
-        EntityManagerInterface $entityManager
-    ): JsonResponse {
-        $data = json_decode($request->getContent(), true);
+public function crear(
+    Request $request,
+    EntityManagerInterface $entityManager
+): JsonResponse {
+    $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['nombre']) || !isset($data['tipo_comida'])) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Faltan campos obligatorios: nombre, tipo_comida'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        $plato = new Plato();
-        $plato->setNombre($data['nombre']);
-        $plato->setDescripcion($data['descripcion'] ?? null);
-        $plato->setInstrucciones($data['instrucciones'] ?? null);
-        $plato->setImagenUrl($data['imagen_url'] ?? null);
-        $plato->setTipoComida($data['tipo_comida']);
-        $plato->setTiempoPreparacion($data['tiempo_preparacion'] ?? null);
-        $plato->setDificultad($data['dificultad'] ?? 'media');
-        $plato->setEsPublico($data['es_publico'] ?? true);
-        $plato->setCreadorId($data['creador_id'] ?? null);
-
-        // Añadir ingredientes si vienen en el request
-        if (isset($data['ingredientes']) && is_array($data['ingredientes'])) {
-            foreach ($data['ingredientes'] as $index => $ingredienteData) {
-                if (!isset($ingredienteData['alimento_id']) || !isset($ingredienteData['cantidad_gramos'])) {
-                    continue;
-                }
-
-                $alimento = $entityManager->getRepository(Alimento::class)
-                    ->find($ingredienteData['alimento_id']);
-
-                if (!$alimento) {
-                    continue;
-                }
-
-                $platoAlimento = new PlatoAlimento();
-                $platoAlimento->setAlimento($alimento);
-                $platoAlimento->setCantidadGramos($ingredienteData['cantidad_gramos']);
-                $platoAlimento->setOrden($index + 1);
-
-                $plato->addIngrediente($platoAlimento);
-            }
-
-            // Calcular valores nutricionales
-            $plato->calcularValoresNutricionales();
-        }
-
-        $entityManager->persist($plato);
-        $entityManager->flush();
-
+    if (!isset($data['nombre'])) {
         return $this->json([
-            'success' => true,
-            'message' => 'Plato creado exitosamente',
-            'plato' => $this->serializePlato($plato, true)
-        ], Response::HTTP_CREATED);
+            'success' => false,
+            'error' => 'El nombre es obligatorio'
+        ], Response::HTTP_BAD_REQUEST);
     }
+
+    if (!isset($data['ingredientes']) || empty($data['ingredientes'])) {
+        return $this->json([
+            'success' => false,
+            'error' => 'Debes añadir al menos un ingrediente'
+        ], Response::HTTP_BAD_REQUEST);
+    }
+
+    $plato = new Plato();
+    $plato->setNombre($data['nombre']);
+    $plato->setDescripcion($data['descripcion'] ?? 'Plato personalizado');
+    $plato->setInstrucciones($data['instrucciones'] ?? null);
+    $plato->setImagenUrl($data['imagen_url'] ?? null);
+    $plato->setTipoComida($data['tipo_comida'] ?? 'almuerzo');
+    $plato->setTiempoPreparacion($data['tiempo_preparacion'] ?? null);
+    $plato->setDificultad($data['dificultad'] ?? 'media');
+    $plato->setEsPublico($data['es_publico'] ?? true);
+    $plato->setCreadorId($data['creador_id'] ?? null);
+
+    // Persistir el plato primero
+    $entityManager->persist($plato);
+    $entityManager->flush();
+
+    // Añadir ingredientes
+    foreach ($data['ingredientes'] as $index => $ingredienteData) {
+        if (!isset($ingredienteData['alimento_id']) || !isset($ingredienteData['cantidad_gramos'])) {
+            continue;
+        }
+
+        $alimento = $entityManager->getRepository(Alimento::class)
+            ->find($ingredienteData['alimento_id']);
+
+        if (!$alimento) {
+            continue;
+        }
+
+        $platoAlimento = new PlatoAlimento();
+        $platoAlimento->setPlato($plato);
+        $platoAlimento->setAlimento($alimento);
+        $platoAlimento->setCantidadGramos($ingredienteData['cantidad_gramos']);
+        $platoAlimento->setOrden($index + 1);
+
+        $entityManager->persist($platoAlimento);
+        $plato->addIngrediente($platoAlimento);
+    }
+
+    // Calcular valores nutricionales
+    $plato->calcularValoresNutricionales();
+    
+    $entityManager->flush();
+
+    return $this->json([
+        'success' => true,
+        'message' => 'Plato creado exitosamente',
+        'plato' => $this->serializePlato($plato, true)
+    ], Response::HTTP_CREATED);
+}
 
     // ============================================
     // ACTUALIZAR PLATO

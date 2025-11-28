@@ -50,7 +50,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     private string $objetivo = 'cuidar_alimentacion';
 
     // ============================================
-    // NUEVOS CAMPOS - DATOS FÍSICOS
+    // CAMPOS - DATOS FÍSICOS
     // ============================================
 
     #[ORM\Column(length: 20, nullable: true)]
@@ -98,20 +98,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 50, options: ['default' => 'cliente'])]
     private string $rol = 'cliente';
-
-    // ============================================
-    // RELACIÓN CON ENTRENADOR
-    // ============================================
-
-    #[ORM\ManyToOne(targetEntity: Entrenador::class)]
-    #[ORM\JoinColumn(name: 'entrenador_id', nullable: true, onDelete: 'SET NULL')]
-    private ?Entrenador $entrenador = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $fechaAsignacionEntrenador = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $notasEntrenador = null;
 
     // ============================================
     // CAMPOS DE AUDITORÍA
@@ -414,48 +400,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     // ============================================
-    // GETTERS Y SETTERS - ENTRENADOR
-    // ============================================
-
-    public function getEntrenador(): ?Entrenador
-    {
-        return $this->entrenador;
-    }
-
-    public function setEntrenador(?Entrenador $entrenador): static
-    {
-        $this->entrenador = $entrenador;
-        return $this;
-    }
-
-    public function getFechaAsignacionEntrenador(): ?\DateTimeInterface
-    {
-        return $this->fechaAsignacionEntrenador;
-    }
-
-    public function setFechaAsignacionEntrenador(?\DateTimeInterface $fechaAsignacionEntrenador): static
-    {
-        $this->fechaAsignacionEntrenador = $fechaAsignacionEntrenador;
-        return $this;
-    }
-
-    public function getNotasEntrenador(): ?string
-    {
-        return $this->notasEntrenador;
-    }
-
-    public function setNotasEntrenador(?string $notasEntrenador): static
-    {
-        $this->notasEntrenador = $notasEntrenador;
-        return $this;
-    }
-
-    public function tieneEntrenador(): bool
-    {
-        return $this->entrenador !== null;
-    }
-
-    // ============================================
     // GETTERS Y SETTERS - AUDITORÍA
     // ============================================
 
@@ -658,10 +602,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
         if ($this->rol === 'admin') {
             $roles[] = 'ROLE_ADMIN';
-        }
-
-        if ($this->entrenador) {
-            $roles[] = 'ROLE_TRAINER';
         }
 
         return array_unique($roles);

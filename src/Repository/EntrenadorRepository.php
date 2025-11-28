@@ -341,18 +341,4 @@ class EntrenadorRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-    /**
-     * Buscar entrenadores sin clientes asignados
-     */
-    public function findSinClientes(): array
-    {
-        return $this->createQueryBuilder('e')
-            ->leftJoin('App\Entity\Usuario', 'u', 'WITH', 'u.entrenador = e.id')
-            ->where('e.activo = :activo')
-            ->andWhere('u.id IS NULL')
-            ->setParameter('activo', true)
-            ->getQuery()
-            ->getResult();
-    }
 }

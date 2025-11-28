@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 
 const AuthContext = createContext();
@@ -6,6 +7,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // ============================================
   // CARGAR USUARIO AL INICIAR LA APP
@@ -14,9 +16,9 @@ export function AuthProvider({ children }) {
     const loadUser = () => {
       try {
         const storedUser = authService.getUser();
-        
+
         console.log('Cargando usuario desde localStorage:', storedUser);
-        
+
         if (storedUser) {
           setUser(storedUser);
         }
@@ -36,28 +38,21 @@ export function AuthProvider({ children }) {
   // ============================================
   const login = async (email, password) => {
     try {
-      setLoading(true);
-      const result = await authService.login(email, password);
+      const data = await authService.login(email, password);
       
-      console.log('Resultado del login:', result);
+      console.log('Resultado del login:', data);
       
-      if (result.success && result.usuario) {
-        setUser(result.usuario);
-        return { success: true };
+      if (data.success) {
+        setUser(data.usuario);
+        
+        // Redirigir a /dashboard (DashboardRouter decidirá el destino final)
+        navigate('/dashboard');
+        
+        return data;
       }
-      
-      return {
-        success: false,
-        error: result.error || 'Error al iniciar sesión'
-      };
     } catch (error) {
-      console.error('Error en login (AuthContext):', error);
-      return { 
-        success: false, 
-        error: 'Error inesperado al iniciar sesión' 
-      };
-    } finally {
-      setLoading(false);
+      console.error('Error en login:', error);
+      throw error;
     }
   };
 
@@ -87,6 +82,26 @@ export function AuthProvider({ children }) {
   };
 
   // ============================================
+  // HELPERS DE VALIDACIÓN DE ROL
+  // ============================================
+  const isAdmin = () => {
+    return user?.rol === 'admin';
+  };
+
+  const isTrainer = () => {
+    return user?.rol === 'entrenador';
+  };
+
+  const isUser = () => {
+    return user?.rol === 'cliente' || (!user?.rol && user);
+  };
+
+  const hasRole = (role) => {
+    if (!user) return false;
+    return user.rol === role;
+  };
+
+  // ============================================
   // VALOR DEL CONTEXTO
   // ============================================
   const value = {
@@ -96,6 +111,10 @@ export function AuthProvider({ children }) {
     refreshUser,
     isAuthenticated: !!user,
     isPremium: user?.es_premium || false,
+    isAdmin,
+    isTrainer,
+    isUser,
+    hasRole,
     loading
   };
 

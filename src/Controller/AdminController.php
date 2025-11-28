@@ -82,7 +82,7 @@ class AdminController extends AbstractController
             // Aplicaciones pendientes
             $aplicacionesPendientes = $this->entrenadorRepository->countAplicacionesPendientes();
 
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => true,
                 'dashboard' => [
                     'usuarios' => $estadisticasUsuarios,
@@ -102,7 +102,7 @@ class AdminController extends AbstractController
                 ],
             ]);
         } catch (\Exception $e) {
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => false,
                 'error' => 'Error al obtener estadísticas: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -151,7 +151,7 @@ class AdminController extends AbstractController
 
             $data = array_map([$this, 'serializeUsuarioCompleto'], $usuarios);
 
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => true,
                 'usuarios' => $data,
                 'pagination' => [
@@ -162,7 +162,7 @@ class AdminController extends AbstractController
                 ],
             ]);
         } catch (\Exception $e) {
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => false,
                 'error' => 'Error al obtener usuarios: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -180,18 +180,18 @@ class AdminController extends AbstractController
             $usuario = $this->usuarioRepository->find($id);
 
             if (!$usuario) {
-                return $this->json([
+                return $this->jsonWithUnicode([
                     'success' => false,
                     'error' => 'Usuario no encontrado',
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => true,
                 'usuario' => $this->serializeUsuarioCompleto($usuario),
             ]);
         } catch (\Exception $e) {
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => false,
                 'error' => 'Error al obtener usuario: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -209,7 +209,7 @@ class AdminController extends AbstractController
             $usuario = $this->usuarioRepository->find($id);
 
             if (!$usuario) {
-                return $this->json([
+                return $this->jsonWithUnicode([
                     'success' => false,
                     'error' => 'Usuario no encontrado',
                 ], Response::HTTP_NOT_FOUND);
@@ -239,18 +239,15 @@ class AdminController extends AbstractController
             if (isset($data['es_premium'])) $usuario->setEsPremium($data['es_premium']);
             if (isset($data['rol'])) $usuario->setRol($data['rol']);
 
-            // Notas del entrenador
-            if (isset($data['notas_entrenador'])) $usuario->setNotasEntrenador($data['notas_entrenador']);
-
             $this->entityManager->flush();
 
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => true,
                 'message' => 'Usuario actualizado exitosamente',
                 'usuario' => $this->serializeUsuarioCompleto($usuario),
             ]);
         } catch (\Exception $e) {
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => false,
                 'error' => 'Error al actualizar usuario: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -268,7 +265,7 @@ class AdminController extends AbstractController
             $usuario = $this->usuarioRepository->find($id);
 
             if (!$usuario) {
-                return $this->json([
+                return $this->jsonWithUnicode([
                     'success' => false,
                     'error' => 'Usuario no encontrado',
                 ], Response::HTTP_NOT_FOUND);
@@ -276,7 +273,7 @@ class AdminController extends AbstractController
 
             // No permitir eliminar admins
             if ($usuario->isAdmin()) {
-                return $this->json([
+                return $this->jsonWithUnicode([
                     'success' => false,
                     'error' => 'No se puede eliminar un administrador',
                 ], Response::HTTP_FORBIDDEN);
@@ -284,12 +281,12 @@ class AdminController extends AbstractController
 
             $this->usuarioRepository->remove($usuario);
 
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => true,
                 'message' => 'Usuario eliminado exitosamente',
             ]);
         } catch (\Exception $e) {
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => false,
                 'error' => 'Error al eliminar usuario: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -307,14 +304,14 @@ class AdminController extends AbstractController
             $usuario = $this->usuarioRepository->find($id);
 
             if (!$usuario) {
-                return $this->json([
+                return $this->jsonWithUnicode([
                     'success' => false,
                     'error' => 'Usuario no encontrado',
                 ], Response::HTTP_NOT_FOUND);
             }
 
             if ($usuario->isEsPremium()) {
-                return $this->json([
+                return $this->jsonWithUnicode([
                     'success' => false,
                     'error' => 'El usuario ya es premium',
                 ], Response::HTTP_BAD_REQUEST);
@@ -324,13 +321,13 @@ class AdminController extends AbstractController
             $usuario->setFechaPremium(new \DateTime());
             $this->entityManager->flush();
 
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => true,
                 'message' => 'Usuario actualizado a premium',
                 'usuario' => $this->serializeUsuarioCompleto($usuario),
             ]);
         } catch (\Exception $e) {
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => false,
                 'error' => 'Error al hacer premium: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -348,7 +345,7 @@ class AdminController extends AbstractController
             $usuario = $this->usuarioRepository->find($id);
 
             if (!$usuario) {
-                return $this->json([
+                return $this->jsonWithUnicode([
                     'success' => false,
                     'error' => 'Usuario no encontrado',
                 ], Response::HTTP_NOT_FOUND);
@@ -358,103 +355,15 @@ class AdminController extends AbstractController
             $usuario->setFechaPremium(null);
             $this->entityManager->flush();
 
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => true,
                 'message' => 'Premium removido del usuario',
                 'usuario' => $this->serializeUsuarioCompleto($usuario),
             ]);
         } catch (\Exception $e) {
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => false,
                 'error' => 'Error al quitar premium: ' . $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Asignar entrenador a usuario
-     * POST /api/admin/usuarios/{id}/asignar-entrenador
-     */
-    #[Route('/usuarios/{id}/asignar-entrenador', name: 'usuarios_assign_trainer', methods: ['POST'])]
-    public function asignarEntrenador(int $id, Request $request): JsonResponse
-    {
-        try {
-            $usuario = $this->usuarioRepository->find($id);
-
-            if (!$usuario) {
-                return $this->json([
-                    'success' => false,
-                    'error' => 'Usuario no encontrado',
-                ], Response::HTTP_NOT_FOUND);
-            }
-
-            $data = json_decode($request->getContent(), true);
-            $entrenadorId = $data['entrenador_id'] ?? null;
-
-            if (!$entrenadorId) {
-                return $this->json([
-                    'success' => false,
-                    'error' => 'ID del entrenador es requerido',
-                ], Response::HTTP_BAD_REQUEST);
-            }
-
-            $entrenador = $this->entrenadorRepository->find($entrenadorId);
-
-            if (!$entrenador) {
-                return $this->json([
-                    'success' => false,
-                    'error' => 'Entrenador no encontrado',
-                ], Response::HTTP_NOT_FOUND);
-            }
-
-            $usuario->setEntrenador($entrenador);
-            $usuario->setFechaAsignacionEntrenador(new \DateTime());
-            $this->entityManager->flush();
-
-            return $this->json([
-                'success' => true,
-                'message' => 'Entrenador asignado exitosamente',
-                'usuario' => $this->serializeUsuarioCompleto($usuario),
-            ]);
-        } catch (\Exception $e) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Error al asignar entrenador: ' . $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Quitar entrenador de usuario
-     * POST /api/admin/usuarios/{id}/quitar-entrenador
-     */
-    #[Route('/usuarios/{id}/quitar-entrenador', name: 'usuarios_remove_trainer', methods: ['POST'])]
-    public function quitarEntrenador(int $id): JsonResponse
-    {
-        try {
-            $usuario = $this->usuarioRepository->find($id);
-
-            if (!$usuario) {
-                return $this->json([
-                    'success' => false,
-                    'error' => 'Usuario no encontrado',
-                ], Response::HTTP_NOT_FOUND);
-            }
-
-            $usuario->setEntrenador(null);
-            $usuario->setFechaAsignacionEntrenador(null);
-            $usuario->setNotasEntrenador(null);
-            $this->entityManager->flush();
-
-            return $this->json([
-                'success' => true,
-                'message' => 'Entrenador removido del usuario',
-                'usuario' => $this->serializeUsuarioCompleto($usuario),
-            ]);
-        } catch (\Exception $e) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Error al quitar entrenador: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -477,16 +386,14 @@ class AdminController extends AbstractController
                 'activos_ultimo_mes' => count($this->usuarioRepository->findUsuariosActivos(30)),
                 'inactivos' => count($this->usuarioRepository->findUsuariosInactivos(30)),
                 'registrados_ultimo_mes' => count($this->usuarioRepository->findRegistradosUltimoMes()),
-                'con_entrenador' => count($this->usuarioRepository->findConEntrenador()),
-                'sin_entrenador' => count($this->usuarioRepository->findSinEntrenador()),
             ];
 
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => true,
                 'estadisticas' => $stats,
             ]);
         } catch (\Exception $e) {
-            return $this->json([
+            return $this->jsonWithUnicode([
                 'success' => false,
                 'error' => 'Error al obtener estadísticas: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -511,8 +418,6 @@ class AdminController extends AbstractController
 
     private function serializeUsuarioCompleto(Usuario $usuario): array
     {
-        $entrenador = $usuario->getEntrenador();
-
         return [
             'id' => $usuario->getId(),
             'nombre' => $usuario->getNombre(),
@@ -542,16 +447,6 @@ class AdminController extends AbstractController
             'rol' => $usuario->getRol(),
             'es_admin' => $usuario->isAdmin(),
             
-            // Entrenador
-            'tiene_entrenador' => $usuario->tieneEntrenador(),
-            'entrenador' => $entrenador ? [
-                'id' => $entrenador->getId(),
-                'nombre_completo' => $entrenador->getNombreCompleto(),
-                'especialidad' => $entrenador->getEspecialidad(),
-            ] : null,
-            'fecha_asignacion_entrenador' => $usuario->getFechaAsignacionEntrenador()?->format('Y-m-d'),
-            'notas_entrenador' => $usuario->getNotasEntrenador(),
-            
             // Auditoría
             'fecha_registro' => $usuario->getFechaRegistro()?->format('Y-m-d H:i:s'),
             'ultima_conexion' => $usuario->getUltimaConexion()?->format('Y-m-d H:i:s'),
@@ -569,5 +464,15 @@ class AdminController extends AbstractController
             'estado_aplicacion' => $entrenador->getEstadoAplicacion(),
             'fecha_registro' => $entrenador->getFechaRegistro()?->format('Y-m-d H:i:s'),
         ];
+    }
+
+    /**
+     * Helper para retornar JSON con caracteres Unicode sin escapar (tildes, ñ, etc.)
+     */
+    private function jsonWithUnicode($data, int $status = 200, array $headers = [], array $context = []): JsonResponse
+    {
+        $response = $this->json($data, $status, $headers, $context);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
     }
 }

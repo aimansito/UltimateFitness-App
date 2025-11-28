@@ -31,7 +31,7 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
       };
 
       const tipoBackend = mapeoTipos[tipoComida] || tipoComida;
-      const response = await fetch(`http://localhost:8000/api/custom/platos?tipo=${tipoBackend}`);
+      const response = await fetch(`http://localhost:8000/api/platos?tipo=${tipoBackend}`);
       const data = await response.json();
 
       if (data.success) {
@@ -46,7 +46,7 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
 
   const seleccionarPlato = async (platoId) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/custom/platos/${platoId}`);
+      const response = await fetch(`http://localhost:8000/api/platos/${platoId}`);
       const data = await response.json();
 
       if (data.success) {
@@ -66,7 +66,7 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-gradient-to-br from-gray-900 to-black max-w-5xl w-full max-h-[95vh] overflow-y-auto rounded-2xl border-2 border-uf-gold shadow-2xl">
-        
+
         {/* HEADER */}
         <div className="sticky top-0 bg-gradient-to-r from-uf-gold to-yellow-600 p-6 z-10">
           <div className="flex items-start justify-between">

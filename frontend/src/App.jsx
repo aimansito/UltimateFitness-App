@@ -1,56 +1,189 @@
-import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/layout/Navbar';
-import Footer from './components/layout/Footer';
-import Login from './pages/public/Login';
-import Home from './pages/public/Home';
-import Dashboard from './pages/private/Dashboard';
-import Usuarios from './pages/private/admin/Usuarios';
-import Servicios from './pages/public/Servicios';
-import Contacto from './pages/public/Contacto';
-import Gym from './pages/public/Gym';
-import Alimentacion from './pages/public/Alimentacion';
-import DetalleDieta from './pages/public/DetalleDieta';
-import CrearDieta from './pages/public/CrearDieta';
-import PlanificadorSemanal from './pages/private/PlanificadorSemanal';
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
+import { ProtectedRoute } from "./components/common";
 
+// Páginas públicas
+import Login from "./pages/public/Login";
+import Home from "./pages/public/Home";
+import Servicios from "./pages/public/Servicios";
+import Contacto from "./pages/public/Contacto";
+import Gym from "./pages/public/Gym";
+import Workout from "./pages/public/Workout";
+import Alimentacion from "./pages/public/Alimentacion";
+import DetalleDieta from "./pages/public/DetalleDieta";
+import CrearDieta from "./pages/public/CrearDieta";
+import Suplementos from "./pages/public/Suplementos";
+import Blog from "./pages/public/Blog";
+import BlogPost from "./pages/public/BlogPost";
+import MisPlatos from './pages/public/MisPlatos';
+import DetallePlato from './pages/public/DetallePlato';
 
+// Dashboard Router
+import DashboardRouter from "./pages/DashboardRouter";
 
+// Dashboards específicos por rol
+import DashboardUsuario from "./pages/user/DashboardUsuario";
+import DashboardAdmin from "./pages/admin/DashboardAdmin";
+import DashboardEntrenador from "./pages/entrenador/DashboardEntrenador";
+
+// Páginas privadas - Admin
+import Usuarios from "./pages/private/admin/Usuarios";
+
+// Páginas privadas - Usuario
+import PlanificadorSemanal from "./pages/private/PlanificadorSemanal";
+import MisDatosPersonales from "./pages/user/MisDatosPersonales";
+import MisEntrenamientos from "./pages/user/MisEntrenamientos";
+import MiDieta from "./pages/user/MiDieta";
+import MiSuscripcion from "./pages/user/MiSuscripcion";
 
 function App() {
   return (
     <div className="min-h-screen bg-uf-darker flex flex-col">
       {/* Navbar siempre visible */}
       <Navbar />
-      
+
       {/* Contenido principal - crece para ocupar espacio disponible */}
       <main className="flex-grow">
         <Routes>
+          {/* ============================================ */}
+          {/* RUTAS PÚBLICAS */}
+          {/* ============================================ */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin/usuarios" element={<Usuarios />} />
           <Route path="/servicios" element={<Servicios />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/gym" element={<Gym />} />
+          <Route path="/workout" element={<Workout />} />
           <Route path="/alimentacion" element={<Alimentacion />} />
           <Route path="/dieta/:id" element={<DetalleDieta />} />
           <Route path="/crear-dieta" element={<CrearDieta />} />
-          <Route path="/mi-plan-semanal" element={<PlanificadorSemanal />} />
+          <Route path="/suplementos" element={<Suplementos />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/mis-platos" element={<MisPlatos />} />
+          <Route path="/plato/:id" element={<DetallePlato />} /> 
 
+          {/* ============================================ */}
+          {/* DASHBOARD ROUTER - Decide según rol */}
+          {/* ============================================ */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <DashboardRouter />
+              </ProtectedRoute>
+            }
+          />
 
+          {/* ============================================ */}
+          {/* DASHBOARDS ESPECÍFICOS POR ROL */}
+          {/* ============================================ */}
 
+          {/* Dashboard Usuario - Premium o Gratuito */}
+          <Route
+            path="/user/dashboard"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <DashboardUsuario />
+              </ProtectedRoute>
+            }
+          />
 
+          {/* Dashboard Admin - Requiere rol admin */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <DashboardAdmin />
+              </ProtectedRoute>
+            }
+          />
 
-          
-          {/* Ruta por defecto */}
-          <Route path="*" element={
-            <div className="text-white p-8 text-center text-2xl min-h-screen flex items-center justify-center">
-              Página no encontrada - 404
-            </div>
-          } />
+          {/* Dashboard Entrenador - Requiere rol entrenador */}
+          <Route
+            path="/entrenador/dashboard"
+            element={
+              <ProtectedRoute requiredRole="entrenador">
+                <DashboardEntrenador />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ============================================ */}
+          {/* RUTAS DE ADMIN - Requieren rol admin */}
+          {/* ============================================ */}
+          <Route
+            path="/admin/usuarios"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <Usuarios />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ============================================ */}
+          {/* RUTAS DE USUARIO - Requieren autenticación */}
+          {/* ============================================ */}
+          <Route
+            path="/mi-plan-semanal"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <PlanificadorSemanal />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/perfil/datos"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <MisDatosPersonales />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/mis-entrenamientos"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <MisEntrenamientos />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/mi-dieta"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <MiDieta />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/mi-suscripcion"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <MiSuscripcion />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ============================================ */}
+          {/* RUTA 404 */}
+          {/* ============================================ */}
+          <Route
+            path="*"
+            element={
+              <div className="text-white p-8 text-center text-2xl min-h-screen flex items-center justify-center">
+                Página no encontrada - 404
+              </div>
+            }
+          />
         </Routes>
       </main>
-      
+
       {/* Footer siempre visible */}
       <Footer />
     </div>

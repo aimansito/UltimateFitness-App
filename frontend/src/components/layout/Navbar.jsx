@@ -12,6 +12,12 @@ import {
   Sparkles,
   Calendar,
   Pill,
+  Settings,
+  User,
+  CreditCard,
+  Star,
+  Shield,
+  LogOut,
 } from "lucide-react";
 
 function Navbar() {
@@ -61,39 +67,90 @@ function Navbar() {
   // Determinar qué opciones mostrar según el rol
   const getUserMenuItems = () => {
     const commonItems = [
-      { label: "Mis Datos Personales", path: "/perfil/datos", icon: "👤" },
+      { label: "Mis Datos Personales", path: "/perfil/datos", icon: User },
     ];
 
+    // ADMIN (verificar primero)
     if (user?.rol === "admin") {
       return [
-        { label: "Panel Admin", path: "/admin/dashboard", icon: "⚙️" },
+        { label: "Panel Admin", path: "/admin/dashboard", icon: Settings },
         ...commonItems,
       ];
     }
 
-    if (isPremium) {
+    // ENTRENADOR (verificar antes que premium)
+    if (user?.rol === "entrenador") {
       return [
+        {
+          label: "Panel de Entrenador",
+          path: "/entrenador/dashboard",
+          icon: Activity,
+        },
+        ...commonItems,
+      ];
+    }
+
+    // PREMIUM
+    if (isPremium && user?.rol !== "admin" && user?.rol !== "entrenador") {
+      return [
+        { label: "Mi Panel", path: "/dashboard", icon: Activity },
         {
           label: "Mis Entrenamientos",
           path: "/mis-entrenamientos",
-          icon: "💪",
+          icon: Dumbbell,
         },
-        { label: "Mi Dieta", path: "/mi-dieta", icon: "🥗" },
-        { label: "Mi Suscripción", path: "/mi-suscripcion", icon: "💳" },
+        { label: "Mi Dieta", path: "/mi-dieta", icon: Utensils },
+        { label: "Mi Suscripción", path: "/mi-suscripcion", icon: CreditCard },
         ...commonItems,
       ];
     }
 
-    // Usuario gratuito
+    // GRATUITO
     return [
-      { label: "Ver Planes", path: "/planes", icon: "⭐" },
+      { label: "Mi Panel", path: "/dashboard", icon: Activity },
+      { label: "Ver Planes", path: "/planes", icon: Star },
       ...commonItems,
     ];
   };
 
+  // Determinar si mostrar el badge premium
+  const shouldShowPremiumBadge = () => {
+    return isPremium && user?.rol !== "entrenador" && user?.rol !== "admin";
+  };
+
+  // Determinar el color del botón de usuario
+  const getUserButtonColor = () => {
+    if (user?.rol === "entrenador") {
+      return "bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:from-blue-700 hover:to-blue-900";
+    }
+    if (isPremium) {
+      return "bg-gradient-to-r from-uf-red to-red-700 text-white hover:from-red-700 hover:to-uf-red";
+    }
+    return "bg-gradient-to-r from-uf-gold to-yellow-600 text-black hover:from-yellow-600 hover:to-uf-gold";
+  };
+
   // ============================================
-  // DATOS - Links del menú
+  // DATOS - Links del menú (dinámicos según autenticación)
   // ============================================
+
+  // Submenú de alimentación según autenticación
+  const getAlimentacionSubmenu = () => {
+    if (!isAuthenticated) {
+      // Solo dietas públicas para usuarios no autenticados
+      return [
+        { path: "/alimentacion", label: "Dietas", icon: Utensils },
+      ];
+    }
+
+    // Todas las opciones para usuarios autenticados
+    return [
+      { path: "/alimentacion", label: "Dietas", icon: Utensils },
+      { path: "/crear-dieta", label: "Crear Mi Dieta", icon: Sparkles },
+      { path: "/mi-plan-semanal", label: "Plan Semanal", icon: Calendar },
+      { path: "/suplementos", label: "Suplementos", icon: Pill },
+    ];
+  };
+
   const navLinks = [
     { path: "/", label: "INICIO", hasSubmenu: false },
     { path: "/servicios", label: "SERVICIOS", hasSubmenu: false },
@@ -108,12 +165,7 @@ function Navbar() {
     {
       label: "ALIMENTACIÓN",
       hasSubmenu: true,
-      submenu: [
-        { path: "/alimentacion", label: "Dietas", icon: Utensils },
-        { path: "/crear-dieta", label: "Crear Mi Dieta", icon: Sparkles },
-        { path: "/mi-plan-semanal", label: "Plan Semanal", icon: Calendar },
-        { path: "/suplementos", label: "Suplementos", icon: Pill },
-      ],
+      submenu: getAlimentacionSubmenu(), // Dinámico según autenticación
     },
     { path: "/blog", label: "BLOG", hasSubmenu: false },
     { path: "/contacto", label: "CONTACTO", hasSubmenu: false },
@@ -121,9 +173,8 @@ function Navbar() {
 
   return (
     <nav
-      className={`border-b sticky top-0 z-50 shadow-xl ${
-        isPremium ? "bg-black border-uf-red/30" : "bg-black border-uf-gold/20"
-      }`}
+      className={`border-b sticky top-0 z-50 shadow-xl ${isPremium ? "bg-black border-uf-red/30" : "bg-black border-uf-gold/20"
+        }`}
     >
       <div className="w-full px-6">
         {/* ========================================== */}
@@ -150,9 +201,8 @@ function Navbar() {
 
             {/* SEPARADOR VERTICAL */}
             <div
-              className={`h-10 w-px ${
-                isPremium ? "bg-uf-red/50" : "bg-uf-gold/30"
-              }`}
+              className={`h-10 w-px ${isPremium ? "bg-uf-red/50" : "bg-uf-gold/30"
+                }`}
             ></div>
 
             {/* MENÚ DE NAVEGACIÓN */}
@@ -164,12 +214,11 @@ function Navbar() {
                       to={link.path}
                       className={`
                         font-audiowide font-bold text-xs uppercase tracking-widest pb-1 border-b-2 transition-all duration-300
-                        ${
-                          isActive(link.path)
-                            ? isPremium
-                              ? "text-uf-red border-uf-red"
-                              : "text-uf-gold border-uf-gold"
-                            : isPremium
+                        ${isActive(link.path)
+                          ? isPremium
+                            ? "text-uf-red border-uf-red"
+                            : "text-uf-gold border-uf-gold"
+                          : isPremium
                             ? "text-white border-transparent hover:text-uf-red hover:border-uf-red"
                             : "text-white border-transparent hover:text-uf-gold hover:border-uf-gold"
                         }
@@ -191,22 +240,20 @@ function Navbar() {
                         }}
                         className={`
                           font-audiowide font-bold text-xs uppercase tracking-widest pb-1 border-b-2 transition-all duration-300
-                          ${
-                            isPremium
-                              ? "text-white border-transparent hover:text-uf-red hover:border-uf-red"
-                              : "text-white border-transparent hover:text-uf-gold hover:border-uf-gold"
+                          ${isPremium
+                            ? "text-white border-transparent hover:text-uf-red hover:border-uf-red"
+                            : "text-white border-transparent hover:text-uf-gold hover:border-uf-gold"
                           }
                         `}
                       >
                         {link.label}
                         <svg
-                          className={`w-3 h-3 ml-1 inline transition-transform duration-300 ${
-                            (link.label === "ENTRENAMIENTOS" &&
+                          className={`w-3 h-3 ml-1 inline transition-transform duration-300 ${(link.label === "ENTRENAMIENTOS" &&
                               entrenamientosOpen) ||
-                            (link.label === "ALIMENTACIÓN" && alimentacionOpen)
+                              (link.label === "ALIMENTACIÓN" && alimentacionOpen)
                               ? "rotate-180"
                               : ""
-                          }`}
+                            }`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -224,33 +271,31 @@ function Navbar() {
                         entrenamientosOpen) ||
                         (link.label === "ALIMENTACIÓN" &&
                           alimentacionOpen)) && (
-                        <div
-                          className={`absolute left-0 top-full mt-2 w-52 bg-uf-dark border-2 rounded-lg shadow-2xl overflow-hidden z-50 ${
-                            isPremium ? "border-uf-red" : "border-uf-gold"
-                          }`}
-                        >
-                          {link.submenu.map((sublink, subIndex) => (
-                            <Link
-                              key={subIndex}
-                              to={sublink.path}
-                              onClick={() => {
-                                setEntrenamientosOpen(false);
-                                setAlimentacionOpen(false);
-                              }}
-                              className={`flex items-center gap-2 px-4 py-3 text-white transition-all duration-300 font-semibold text-sm ${
-                                isPremium
-                                  ? "hover:bg-uf-red hover:text-white"
-                                  : "hover:bg-uf-gold hover:text-black"
+                          <div
+                            className={`absolute left-0 top-full mt-2 w-52 bg-uf-dark border-2 rounded-lg shadow-2xl overflow-hidden z-50 ${isPremium ? "border-uf-red" : "border-uf-gold"
                               }`}
-                            >
-                              {sublink.icon && (
-                                <sublink.icon className="w-4 h-4" />
-                              )}
-                              {sublink.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
+                          >
+                            {link.submenu.map((sublink, subIndex) => (
+                              <Link
+                                key={subIndex}
+                                to={sublink.path}
+                                onClick={() => {
+                                  setEntrenamientosOpen(false);
+                                  setAlimentacionOpen(false);
+                                }}
+                                className={`flex items-center gap-2 px-4 py-3 text-white transition-all duration-300 font-semibold text-sm ${isPremium
+                                    ? "hover:bg-uf-red hover:text-white"
+                                    : "hover:bg-uf-gold hover:text-black"
+                                  }`}
+                              >
+                                {sublink.icon && (
+                                  <sublink.icon className="w-4 h-4" />
+                                )}
+                                {sublink.label}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
                     </>
                   )}
                 </div>
@@ -260,7 +305,9 @@ function Navbar() {
 
           {/* DERECHA: Usuario y Botones */}
           <div className="flex items-center space-x-4">
-            {isPremium && <Badge type="premium" text="PREMIUM" />}
+            {shouldShowPremiumBadge() && (
+              <Badge type="premium" text="PREMIUM" />
+            )}
 
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
@@ -268,28 +315,13 @@ function Navbar() {
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
-                      isPremium
-                        ? "bg-gradient-to-r from-uf-red to-red-700 text-white hover:from-red-700 hover:to-uf-red"
-                        : "bg-gradient-to-r from-uf-gold to-yellow-600 text-black hover:from-yellow-600 hover:to-uf-gold"
-                    }`}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${getUserButtonColor()}`}
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
+                    <User className="w-5 h-5" />
                     <span className="text-sm">{user?.nombre || "Usuario"}</span>
                     <svg
-                      className={`w-4 h-4 transition-transform duration-300 ${
-                        userMenuOpen ? "rotate-180" : ""
-                      }`}
+                      className={`w-4 h-4 transition-transform duration-300 ${userMenuOpen ? "rotate-180" : ""
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -306,9 +338,8 @@ function Navbar() {
                   {/* DROPDOWN MENÚ */}
                   {userMenuOpen && (
                     <div
-                      className={`absolute right-0 mt-2 w-64 bg-uf-dark rounded-lg shadow-2xl border-2 overflow-hidden z-50 ${
-                        isPremium ? "border-uf-red" : "border-uf-gold"
-                      }`}
+                      className={`absolute right-0 mt-2 w-64 bg-uf-dark rounded-lg shadow-2xl border-2 overflow-hidden z-50 ${isPremium ? "border-uf-red" : "border-uf-gold"
+                        }`}
                     >
                       {/* INFO USUARIO */}
                       <div className="px-4 py-3 border-b border-gray-700">
@@ -318,14 +349,22 @@ function Navbar() {
                         <p className="text-white font-semibold truncate mt-1">
                           {user?.email}
                         </p>
-                        {isPremium && (
-                          <span className="inline-block mt-2 px-2 py-1 bg-gradient-to-r from-uf-red to-red-700 text-white text-xs font-bold rounded uppercase">
-                            ⭐ PREMIUM
+                        {shouldShowPremiumBadge() && (
+                          <span className="inline-flex items-center gap-1 mt-2 px-2 py-1 bg-gradient-to-r from-uf-red to-red-700 text-white text-xs font-bold rounded uppercase">
+                            <Star className="w-3 h-3" />
+                            PREMIUM
                           </span>
                         )}
                         {user?.rol === "admin" && (
-                          <span className="inline-block mt-2 ml-2 px-2 py-1 bg-red-600 text-white text-xs font-bold rounded uppercase">
-                            🔧 ADMIN
+                          <span className="inline-flex items-center gap-1 mt-2 ml-2 px-2 py-1 bg-red-600 text-white text-xs font-bold rounded uppercase">
+                            <Shield className="w-3 h-3" />
+                            ADMIN
+                          </span>
+                        )}
+                        {user?.rol === "entrenador" && (
+                          <span className="inline-flex items-center gap-1 mt-2 px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded uppercase">
+                            <Activity className="w-3 h-3" />
+                            ENTRENADOR
                           </span>
                         )}
                       </div>
@@ -336,13 +375,12 @@ function Navbar() {
                           key={index}
                           to={item.path}
                           onClick={() => setUserMenuOpen(false)}
-                          className={`flex items-center space-x-3 px-4 py-3 text-white transition-all duration-200 ${
-                            isPremium
+                          className={`flex items-center space-x-3 px-4 py-3 text-white transition-all duration-200 ${isPremium
                               ? "hover:bg-uf-red/20 hover:text-uf-red"
                               : "hover:bg-uf-gold/20 hover:text-uf-gold"
-                          }`}
+                            }`}
                         >
-                          <span className="text-xl">{item.icon}</span>
+                          <item.icon className="w-5 h-5" />
                           <span className="font-semibold text-sm">
                             {item.label}
                           </span>
@@ -355,7 +393,7 @@ function Navbar() {
                           onClick={handleLogout}
                           className="flex items-center space-x-3 w-full px-4 py-3 text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-all duration-200"
                         >
-                          <span className="text-xl">🚪</span>
+                          <LogOut className="w-5 h-5" />
                           <span className="font-semibold text-sm">
                             Cerrar Sesión
                           </span>
@@ -408,17 +446,7 @@ function Navbar() {
           <div className="flex items-center space-x-3">
             {isAuthenticated && (
               <Link to="/dashboard" className="text-uf-gold">
-                <svg
-                  className="w-7 h-7"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <User className="w-7 h-7" />
               </Link>
             )}
 
@@ -462,9 +490,8 @@ function Navbar() {
                   <Link
                     to={link.path}
                     onClick={() => setMenuOpen(false)}
-                    className={`block px-4 py-3 text-white font-bold hover:bg-uf-gold hover:text-black transition ${
-                      isActive(link.path) ? "bg-uf-gold/20 text-uf-gold" : ""
-                    }`}
+                    className={`block px-4 py-3 text-white font-bold hover:bg-uf-gold hover:text-black transition ${isActive(link.path) ? "bg-uf-gold/20 text-uf-gold" : ""
+                      }`}
                   >
                     {link.label}
                   </Link>
@@ -484,13 +511,12 @@ function Navbar() {
                     >
                       {link.label}
                       <svg
-                        className={`w-4 h-4 transition-transform ${
-                          (link.label === "ENTRENAMIENTOS" &&
+                        className={`w-4 h-4 transition-transform ${(link.label === "ENTRENAMIENTOS" &&
                             entrenamientosOpen) ||
-                          (link.label === "ALIMENTACIÓN" && alimentacionOpen)
+                            (link.label === "ALIMENTACIÓN" && alimentacionOpen)
                             ? "rotate-180"
                             : ""
-                        }`}
+                          }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -506,26 +532,26 @@ function Navbar() {
 
                     {((link.label === "ENTRENAMIENTOS" && entrenamientosOpen) ||
                       (link.label === "ALIMENTACIÓN" && alimentacionOpen)) && (
-                      <div className="bg-uf-darker">
-                        {link.submenu.map((sublink, subIndex) => (
-                          <Link
-                            key={subIndex}
-                            to={sublink.path}
-                            onClick={() => {
-                              setMenuOpen(false);
-                              setEntrenamientosOpen(false);
-                              setAlimentacionOpen(false);
-                            }}
-                            className="flex items-center gap-2 px-8 py-2 text-gray-300 hover:text-uf-gold transition"
-                          >
-                            {sublink.icon && (
-                              <sublink.icon className="w-4 h-4" />
-                            )}
-                            {sublink.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
+                        <div className="bg-uf-darker">
+                          {link.submenu.map((sublink, subIndex) => (
+                            <Link
+                              key={subIndex}
+                              to={sublink.path}
+                              onClick={() => {
+                                setMenuOpen(false);
+                                setEntrenamientosOpen(false);
+                                setAlimentacionOpen(false);
+                              }}
+                              className="flex items-center gap-2 px-8 py-2 text-gray-300 hover:text-uf-gold transition"
+                            >
+                              {sublink.icon && (
+                                <sublink.icon className="w-4 h-4" />
+                              )}
+                              {sublink.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                   </>
                 )}
               </div>
@@ -538,8 +564,17 @@ function Navbar() {
                   <div className="text-white text-sm mb-3 pb-3 border-b border-gray-700">
                     <p className="text-gray-400 text-xs">Conectado como</p>
                     <p className="font-semibold">{user?.nombre}</p>
-                    {isPremium && (
-                      <span className="text-uf-red text-xs">⭐ PREMIUM</span>
+                    {shouldShowPremiumBadge() && (
+                      <span className="inline-flex items-center gap-1 text-uf-red text-xs mt-1">
+                        <Star className="w-3 h-3" />
+                        PREMIUM
+                      </span>
+                    )}
+                    {user?.rol === "entrenador" && (
+                      <span className="inline-flex items-center gap-1 text-blue-400 text-xs mt-1 ml-2">
+                        <Activity className="w-3 h-3" />
+                        ENTRENADOR
+                      </span>
                     )}
                   </div>
 
@@ -549,9 +584,10 @@ function Navbar() {
                       key={index}
                       to={item.path}
                       onClick={() => setMenuOpen(false)}
-                      className="block w-full text-left text-white font-semibold py-2 px-4 rounded hover:bg-uf-gold hover:text-black transition"
+                      className="flex items-center gap-2 w-full text-left text-white font-semibold py-2 px-4 rounded hover:bg-uf-gold hover:text-black transition"
                     >
-                      {item.icon} {item.label}
+                      <item.icon className="w-4 h-4" />
+                      {item.label}
                     </Link>
                   ))}
 
@@ -560,9 +596,10 @@ function Navbar() {
                       handleLogout();
                       setMenuOpen(false);
                     }}
-                    className="w-full bg-uf-red text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition"
+                    className="flex items-center justify-center gap-2 w-full bg-uf-red text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition"
                   >
-                    🚪 Cerrar Sesión
+                    <LogOut className="w-4 h-4" />
+                    Cerrar Sesión
                   </button>
                 </>
               ) : (
