@@ -11,18 +11,18 @@ import Contacto from "./pages/public/Contacto";
 import Gym from "./pages/public/Gym";
 import Workout from "./pages/public/Workout";
 import Alimentacion from "./pages/public/Alimentacion";
-import DetalleDieta from "./pages/public/DetalleDieta";
+import DetalleDietaPublica from "./pages/public/DetalleDieta";
 import CrearDieta from "./pages/public/CrearDieta";
 import Suplementos from "./pages/public/Suplementos";
 import Blog from "./pages/public/Blog";
 import BlogPost from "./pages/public/BlogPost";
-import MisPlatos from './pages/public/MisPlatos';
-import DetallePlato from './pages/public/DetallePlato';
+import MisPlatos from "./pages/public/MisPlatos";
+import DetallePlato from "./pages/public/DetallePlato";
 
 // Dashboard Router
 import DashboardRouter from "./pages/DashboardRouter";
 
-// Dashboards específicos por rol
+// Dashboards por rol
 import DashboardUsuario from "./pages/user/DashboardUsuario";
 import DashboardAdmin from "./pages/admin/DashboardAdmin";
 import DashboardEntrenador from "./pages/entrenador/DashboardEntrenador";
@@ -34,21 +34,24 @@ import Usuarios from "./pages/private/admin/Usuarios";
 import PlanificadorSemanal from "./pages/private/PlanificadorSemanal";
 import MisDatosPersonales from "./pages/user/MisDatosPersonales";
 import MisEntrenamientos from "./pages/user/MisEntrenamientos";
-import MiDieta from "./pages/user/MiDieta";
+import CrearEntrenamiento from "./pages/user/CrearEntrenamiento";
+import MisDietas from "./pages/user/MisDietas";
+import DetalleDieta from "./pages/user/DetalleDieta";
 import MiSuscripcion from "./pages/user/MiSuscripcion";
+
+import CrearDietaCliente from './pages/entrenador/CrearDietaCliente';
+
 
 function App() {
   return (
     <div className="min-h-screen bg-uf-darker flex flex-col">
-      {/* Navbar siempre visible */}
       <Navbar />
 
-      {/* Contenido principal - crece para ocupar espacio disponible */}
       <main className="flex-grow">
         <Routes>
-          {/* ============================================ */}
+          {/* --------------------------- */}
           {/* RUTAS PÚBLICAS */}
-          {/* ============================================ */}
+          {/* --------------------------- */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/servicios" element={<Servicios />} />
@@ -56,17 +59,22 @@ function App() {
           <Route path="/gym" element={<Gym />} />
           <Route path="/workout" element={<Workout />} />
           <Route path="/alimentacion" element={<Alimentacion />} />
-          <Route path="/dieta/:id" element={<DetalleDieta />} />
+
+          {/* Detalle dieta pública */}
+          <Route path="/dieta/:id" element={<DetalleDietaPublica />} />
+
           <Route path="/crear-dieta" element={<CrearDieta />} />
           <Route path="/suplementos" element={<Suplementos />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/mis-platos" element={<MisPlatos />} />
-          <Route path="/plato/:id" element={<DetallePlato />} /> 
+          <Route path="/plato/:id" element={<DetallePlato />} />
+          <Route path="/entrenador/cliente/:clienteId/crear-dieta" element={<CrearDietaCliente />} />
 
-          {/* ============================================ */}
-          {/* DASHBOARD ROUTER - Decide según rol */}
-          {/* ============================================ */}
+
+          {/* --------------------------- */}
+          {/* DASHBOARD ROUTER */}
+          {/* --------------------------- */}
           <Route
             path="/dashboard"
             element={
@@ -76,11 +84,9 @@ function App() {
             }
           />
 
-          {/* ============================================ */}
-          {/* DASHBOARDS ESPECÍFICOS POR ROL */}
-          {/* ============================================ */}
-
-          {/* Dashboard Usuario - Premium o Gratuito */}
+          {/* --------------------------- */}
+          {/* DASHBOARDS POR ROL */}
+          {/* --------------------------- */}
           <Route
             path="/user/dashboard"
             element={
@@ -90,7 +96,6 @@ function App() {
             }
           />
 
-          {/* Dashboard Admin - Requiere rol admin */}
           <Route
             path="/admin/dashboard"
             element={
@@ -100,7 +105,6 @@ function App() {
             }
           />
 
-          {/* Dashboard Entrenador - Requiere rol entrenador */}
           <Route
             path="/entrenador/dashboard"
             element={
@@ -110,9 +114,9 @@ function App() {
             }
           />
 
-          {/* ============================================ */}
-          {/* RUTAS DE ADMIN - Requieren rol admin */}
-          {/* ============================================ */}
+          {/* --------------------------- */}
+          {/* ADMIN */}
+          {/* --------------------------- */}
           <Route
             path="/admin/usuarios"
             element={
@@ -122,9 +126,9 @@ function App() {
             }
           />
 
-          {/* ============================================ */}
-          {/* RUTAS DE USUARIO - Requieren autenticación */}
-          {/* ============================================ */}
+          {/* --------------------------- */}
+          {/* USUARIO */}
+          {/* --------------------------- */}
           <Route
             path="/mi-plan-semanal"
             element={
@@ -153,10 +157,30 @@ function App() {
           />
 
           <Route
-            path="/mi-dieta"
+            path="/crear-entrenamiento"
             element={
               <ProtectedRoute requireAuth={true}>
-                <MiDieta />
+                <CrearEntrenamiento />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* LISTA DE DIETAS DEL USUARIO */}
+          <Route
+            path="/mis-dietas"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <MisDietas />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* DETALLE DE UNA DIETA DEL USUARIO */}
+          <Route
+            path="/mis-dietas/:dietaId"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <DetalleDieta />
               </ProtectedRoute>
             }
           />
@@ -170,9 +194,9 @@ function App() {
             }
           />
 
-          {/* ============================================ */}
-          {/* RUTA 404 */}
-          {/* ============================================ */}
+          {/* --------------------------- */}
+          {/* 404 */}
+          {/* --------------------------- */}
           <Route
             path="*"
             element={
@@ -184,7 +208,6 @@ function App() {
         </Routes>
       </main>
 
-      {/* Footer siempre visible */}
       <Footer />
     </div>
   );

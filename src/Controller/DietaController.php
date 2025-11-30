@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\Dieta;
 use App\Entity\Alimento;
-use App\Entity\DietaAlimento;
+use App\Entity\Dieta;
+use App\Entity\DietaPlato;
+use App\Entity\Entrenador;
+use App\Entity\Plato;
+use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -64,9 +67,91 @@ class DietaController extends AbstractController
     }
 
     // ============================================
+    // CREAR DIETA (CUSTOM)
+    // ============================================
+    #[Route('/dietas', name: 'crear_dieta', methods: ['POST'])]
+    public function crearDieta(
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        
+        if (!isset($data['nombre']) || !isset($data['plan'])) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Faltan datos requeridos (nombre, plan)'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $dieta = new Dieta();
+        $dieta->setNombre($data['nombre']);
+        $dieta->setDescripcion($data['descripcion'] ?? '');
+        $dieta->setEsPublica($data['es_publica'] ?? false);
+        $dieta->setFechaCreacion(new \DateTime());
+        
+        // Asignar creador (Entrenador)
+        // TODO: En el futuro, obtener del usuario autenticado si es entrenador.
+        $entrenador = $entityManager->getRepository(Entrenador::class)->findOneBy([]);
+        
+        if (!$entrenador) {
+            return $this->json([
+                'success' => false,
+                'error' => 'No se puede crear la dieta: Sistema requiere un Entrenador registrado.'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        $dieta->setCreador($entrenador);
+
+        // Asignar a usuario si se proporciona
+        if (isset($data['asignado_a_usuario_id'])) {
+            $usuario = $entityManager->getRepository(Usuario::class)->find($data['asignado_a_usuario_id']);
+            if ($usuario) {
+                $dieta->setAsignadoAUsuario($usuario);
+            }
+        }
+
+        // Procesar el plan de comidas con el nuevo sistema DietaPlato
+        $plan = $data['plan'];
+        $ordenGlobal = 1;
+
+        foreach ($plan as $momento => $items) {
+            foreach ($items as $item) {
+                // Solo procesamos platos, no alimentos individuales
+                if (!isset($item['tipo']) || $item['tipo'] !== 'plato') {
+                    continue;
+                }
+
+                $plato = $entityManager->getRepository(Plato::class)->find($item['id']);
+                if (!$plato) {
+                    continue;
+                }
+
+                // Crear DietaPlato (nuevo sistema)
+                $dietaPlato = new DietaPlato();
+                $dietaPlato->setDieta($dieta);
+                $dietaPlato->setPlato($plato);
+                $dietaPlato->setTipoComida($momento);
+                $dietaPlato->setDiaSemana($item['dia_semana'] ?? 'lunes'); // Default lunes
+                $dietaPlato->setOrden($ordenGlobal++);
+                $dietaPlato->setNotas($item['notas'] ?? null);
+                
+                $entityManager->persist($dietaPlato);
+            }
+        }
+
+        $entityManager->persist($dieta);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Dieta creada exitosamente',
+            'dieta' => $this->serializeDieta($dieta)
+        ]);
+    }
+
+    // ============================================
     // OBTENER DIETA CON COMIDAS ORGANIZADAS
     // ============================================
-     #[Route('/dietas/{id}/plan-diario', name: 'dieta_plan_diario', methods: ['GET'])]
+    #[Route('/dietas/{id}/plan-diario', name: 'dieta_plan_diario', methods: ['GET'])]
     public function planDiario(
         int $id,
         EntityManagerInterface $entityManager
@@ -80,29 +165,34 @@ class DietaController extends AbstractController
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // Obtener platos de la dieta agrupados por momento del día
+        // Obtener platos de la dieta agrupados por momento del día desde la nueva tabla dieta_platos
         $connection = $entityManager->getConnection();
         
-        // SQL modificado para obtener platos en lugar de alimentos individuales
         $sql = 'SELECT 
-                    da.id as dieta_alimento_id,
-                    da.tipo_comida,
-                    da.plato_id,
+                    dp.id as dieta_plato_id,
+                    dp.tipo_comida,
+                    dp.dia_semana,
+                    dp.orden,
+                    dp.notas,
+                    p.id as plato_id,
                     p.nombre as plato_nombre,
                     p.descripcion as plato_descripcion,
                     p.instrucciones as plato_instrucciones,
                     p.imagen_url as plato_imagen,
                     p.tiempo_preparacion,
                     p.dificultad,
+                    p.calorias_totales,
+                    p.proteinas_totales,
+                    p.carbohidratos_totales,
+                    p.grasas_totales,
                     p.valoracion_promedio as plato_valoracion,
                     p.total_valoraciones as plato_total_valoraciones
-                FROM dieta_alimentos da
-                LEFT JOIN platos p ON da.plato_id = p.id
-                WHERE da.dieta_id = :dietaId
-                AND da.plato_id IS NOT NULL
+                FROM dieta_platos dp
+                INNER JOIN platos p ON dp.plato_id = p.id
+                WHERE dp.dieta_id = :dietaId
                 ORDER BY 
-                    FIELD(da.tipo_comida, "desayuno", "media_manana", "almuerzo", "merienda", "cena", "post_entreno"),
-                    da.orden ASC';
+                    FIELD(dp.tipo_comida, "desayuno", "media_manana", "almuerzo", "merienda", "cena", "post_entreno"),
+                    dp.orden ASC';
         
         $stmt = $connection->prepare($sql);
         $result = $stmt->executeQuery(['dietaId' => $id]);
@@ -448,5 +538,64 @@ class DietaController extends AbstractController
             'grasas' => $alimento->getGrasas(),
             'descripcion' => $alimento->getDescripcion()
         ];
+    }
+    
+    // ============================================
+    // ASIGNAR DIETA A USUARIO
+    // ============================================
+    #[Route('/dietas/{id}/asignar', name: 'asignar_dieta', methods: ['POST'])]
+    public function asignarDieta(
+        int $id,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        
+        if (!isset($data['usuario_id'])) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Se requiere usuario_id'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $dieta = $entityManager->getRepository(Dieta::class)->find($id);
+        if (!$dieta) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Dieta no encontrada'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $usuario = $entityManager->getRepository(Usuario::class)->find($data['usuario_id']);
+        if (!$usuario) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Usuario no encontrado'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$usuario->isEsPremium()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Solo los usuarios premium pueden tener dietas asignadas'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $dieta->setAsignadoAUsuario($usuario);
+        $entityManager->flush();
+
+        return $this->json([
+            'success' => true,
+            'message' => 'Dieta asignada exitosamente',
+            'dieta' => [
+                'id' => $dieta->getId(),
+                'nombre' => $dieta->getNombre(),
+                'asignado_a' => [
+                    'id' => $usuario->getId(),
+                    'nombre' => $usuario->getNombreCompleto(),
+                    'email' => $usuario->getEmail()
+                ]
+            ]
+        ]);
     }
 }

@@ -175,7 +175,7 @@ function DashboardUsuario() {
 
           <div className="grid md:grid-cols-3 gap-6">
             <Quick to="/mis-entrenamientos" icon={<Dumbbell />} title="Entrenamientos" />
-            <Quick to="/mi-dieta" icon={<Utensils />} title="Mi Dieta" />
+            <Quick to="/mis-dietas" icon={<Utensils />} title="Mis Dietas" />
             <Quick to="/mi-suscripcion" icon={<CreditCard />} title="Suscripción" />
           </div>
 

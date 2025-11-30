@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'dietas')]
 #[ORM\Index(name: 'idx_creador', columns: ['creador_id'])]
 #[ORM\Index(name: 'idx_publica', columns: ['es_publica'])]
+#[ORM\Index(name: 'idx_dieta_asignado', columns: ['asignado_a_usuario_id'])]
 class Dieta
 {
     #[ORM\Id]
@@ -32,6 +33,10 @@ class Dieta
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Entrenador $creador = null;
 
+    #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'dietasAsignadas')]
+    #[ORM\JoinColumn(name: 'asignado_a_usuario_id', nullable: true, onDelete: 'CASCADE')]
+    private ?Usuario $asignadoAUsuario = null;
+
     #[ORM\Column(nullable: true)]
     private ?int $caloriasTotales = null;
 
@@ -47,15 +52,15 @@ class Dieta
     #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $fechaCreacion = null;
 
-    #[ORM\OneToMany(targetEntity: DietaAlimento::class, mappedBy: 'dieta', orphanRemoval: true)]
-    private Collection $dietaAlimentos;
+    #[ORM\OneToMany(targetEntity: DietaPlato::class, mappedBy: 'dieta', orphanRemoval: true)]
+    private Collection $dietaPlatos;
 
     #[ORM\OneToMany(targetEntity: CalendarioUsuario::class, mappedBy: 'dieta')]
     private Collection $calendarios;
 
     public function __construct()
     {
-        $this->dietaAlimentos = new ArrayCollection();
+        $this->dietaPlatos = new ArrayCollection();
         $this->calendarios = new ArrayCollection();
         $this->fechaCreacion = new \DateTime();
     }
@@ -91,6 +96,18 @@ class Dieta
         $this->creador = $creador;
         return $this;
     }
+
+    public function getAsignadoAUsuario(): ?Usuario
+    {
+        return $this->asignadoAUsuario;
+    }
+
+    public function setAsignadoAUsuario(?Usuario $asignadoAUsuario): static
+    {
+        $this->asignadoAUsuario = $asignadoAUsuario;
+        return $this;
+    }
+
     public function getCaloriasTotales(): ?int
     {
         return $this->caloriasTotales;
@@ -136,31 +153,32 @@ class Dieta
         $this->fechaCreacion = $fechaCreacion;
         return $this;
     }
-    public function getDietaAlimentos(): Collection
+    public function getDietaPlatos(): Collection
     {
-        return $this->dietaAlimentos;
+        return $this->dietaPlatos;
     }
+
     public function getCalendarios(): Collection
     {
         return $this->calendarios;
     }
 
-    public function addDietaAlimento(DietaAlimento $dietaAlimento): static
+    public function addDietaPlato(DietaPlato $dietaPlato): static
     {
-        if (!$this->dietaAlimentos->contains($dietaAlimento)) {
-            $this->dietaAlimentos->add($dietaAlimento);
-            $dietaAlimento->setDieta($this);
+        if (!$this->dietaPlatos->contains($dietaPlato)) {
+            $this->dietaPlatos->add($dietaPlato);
+            $dietaPlato->setDieta($this);
         }
 
         return $this;
     }
 
-    public function removeDietaAlimento(DietaAlimento $dietaAlimento): static
+    public function removeDietaPlato(DietaPlato $dietaPlato): static
     {
-        if ($this->dietaAlimentos->removeElement($dietaAlimento)) {
+        if ($this->dietaPlatos->removeElement($dietaPlato)) {
             // set the owning side to null (unless already changed)
-            if ($dietaAlimento->getDieta() === $this) {
-                $dietaAlimento->setDieta(null);
+            if ($dietaPlato->getDieta() === $this) {
+                $dietaPlato->setDieta(null);
             }
         }
 

@@ -106,13 +106,13 @@ class Plato
      * Relación uno-a-muchos con DietaAlimento
      * Un plato puede aparecer en múltiples dietas
      */
-    #[ORM\OneToMany(mappedBy: 'plato', targetEntity: DietaAlimento::class)]
-    private Collection $dietaAlimentos;
+    #[ORM\OneToMany(targetEntity: DietaPlato::class, mappedBy: 'plato')]
+    private Collection $dietaPlatos;
 
     public function __construct()
     {
         $this->ingredientes = new ArrayCollection();
-        $this->dietaAlimentos = new ArrayCollection();
+        $this->dietaPlatos = new ArrayCollection();
         $this->fechaCreacion = new \DateTime();
     }
 
@@ -333,11 +333,10 @@ class Plato
     /**
      * @return Collection<int, DietaAlimento>
      */
-    public function getDietaAlimentos(): Collection
+    public function getDietaPlatos(): Collection
     {
-        return $this->dietaAlimentos;
+        return $this->dietaPlatos;
     }
-
     /**
      * Método auxiliar para calcular los valores nutricionales totales
      * basándose en los ingredientes del plato

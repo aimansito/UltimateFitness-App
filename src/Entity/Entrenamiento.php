@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-
 use App\Repository\EntrenamientoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -33,8 +32,16 @@ class Entrenamiento
     private ?string $tipo = null;
 
     #[ORM\ManyToOne(targetEntity: Entrenador::class, inversedBy: 'entrenamientos')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Entrenador $creador = null;
+
+    #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'entrenamientosCreados')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Usuario $creadorUsuario = null;
+
+    #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'entrenamientosAsignados')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    private ?Usuario $asignadoAUsuario = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $duracionMinutos = null;
@@ -71,100 +78,144 @@ class Entrenamiento
     {
         return $this->id;
     }
+
     public function getNombre(): ?string
     {
         return $this->nombre;
     }
+
     public function setNombre(string $nombre): static
     {
         $this->nombre = $nombre;
         return $this;
     }
+
     public function getDescripcion(): ?string
     {
         return $this->descripcion;
     }
+
     public function setDescripcion(?string $descripcion): static
     {
         $this->descripcion = $descripcion;
         return $this;
     }
+
     public function getTipo(): ?string
     {
         return $this->tipo;
     }
+
     public function setTipo(string $tipo): static
     {
         $this->tipo = $tipo;
         return $this;
     }
+
     public function getCreador(): ?Entrenador
     {
         return $this->creador;
     }
+
     public function setCreador(?Entrenador $creador): static
     {
         $this->creador = $creador;
         return $this;
     }
+
+    public function getCreadorUsuario(): ?Usuario
+    {
+        return $this->creadorUsuario;
+    }
+
+    public function setCreadorUsuario(?Usuario $creadorUsuario): static
+    {
+        $this->creadorUsuario = $creadorUsuario;
+        return $this;
+    }
+
+    public function getAsignadoAUsuario(): ?Usuario
+    {
+        return $this->asignadoAUsuario;
+    }
+
+    public function setAsignadoAUsuario(?Usuario $asignadoAUsuario): static
+    {
+        $this->asignadoAUsuario = $asignadoAUsuario;
+        return $this;
+    }
+
     public function getDuracionMinutos(): ?int
     {
         return $this->duracionMinutos;
     }
+
     public function setDuracionMinutos(?int $duracionMinutos): static
     {
         $this->duracionMinutos = $duracionMinutos;
         return $this;
     }
+
     public function getNivelDificultad(): string
     {
         return $this->nivelDificultad;
     }
+
     public function setNivelDificultad(string $nivelDificultad): static
     {
         $this->nivelDificultad = $nivelDificultad;
         return $this;
     }
+
     public function isEsPublico(): bool
     {
         return $this->esPublico;
     }
+
     public function setEsPublico(bool $esPublico): static
     {
         $this->esPublico = $esPublico;
         return $this;
     }
+
     public function getValoracionPromedio(): string
     {
         return $this->valoracionPromedio;
     }
+
     public function setValoracionPromedio(string $valoracionPromedio): static
     {
         $this->valoracionPromedio = $valoracionPromedio;
         return $this;
     }
+
     public function getTotalValoraciones(): int
     {
         return $this->totalValoraciones;
     }
+
     public function setTotalValoraciones(int $totalValoraciones): static
     {
         $this->totalValoraciones = $totalValoraciones;
         return $this;
     }
+
     public function getFechaCreacion(): ?\DateTimeInterface
     {
         return $this->fechaCreacion;
     }
+
     public function setFechaCreacion(\DateTimeInterface $fechaCreacion): static
     {
         $this->fechaCreacion = $fechaCreacion;
         return $this;
     }
+
     public function getEntrenamientoEjercicios(): Collection
     {
         return $this->entrenamientoEjercicios;
     }
+
     public function getCalendarios(): Collection
     {
         return $this->calendarios;
@@ -183,7 +234,6 @@ class Entrenamiento
     public function removeEntrenamientoEjercicio(EntrenamientoEjercicio $entrenamientoEjercicio): static
     {
         if ($this->entrenamientoEjercicios->removeElement($entrenamientoEjercicio)) {
-            // set the owning side to null (unless already changed)
             if ($entrenamientoEjercicio->getEntrenamiento() === $this) {
                 $entrenamientoEjercicio->setEntrenamiento(null);
             }
@@ -205,7 +255,6 @@ class Entrenamiento
     public function removeCalendario(CalendarioUsuario $calendario): static
     {
         if ($this->calendarios->removeElement($calendario)) {
-            // set the owning side to null (unless already changed)
             if ($calendario->getEntrenamiento() === $this) {
                 $calendario->setEntrenamiento(null);
             }

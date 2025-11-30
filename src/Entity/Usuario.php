@@ -125,12 +125,24 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: ValoracionPlato::class, mappedBy: 'usuario', orphanRemoval: true)]
     private Collection $valoracionesPlatos;
 
+    #[ORM\OneToMany(targetEntity: Dieta::class, mappedBy: 'asignadoAUsuario')]
+    private Collection $dietasAsignadas;
+
+    #[ORM\OneToMany(targetEntity: Entrenamiento::class, mappedBy: 'creadorUsuario')]
+    private Collection $entrenamientosCreados;
+
+    #[ORM\OneToMany(targetEntity: Entrenamiento::class, mappedBy: 'asignadoAUsuario')]
+    private Collection $entrenamientosAsignados;
+
     public function __construct()
     {
         $this->suscripciones = new ArrayCollection();
         $this->calendarios = new ArrayCollection();
         $this->valoracionesHechas = new ArrayCollection();
         $this->valoracionesPlatos = new ArrayCollection();
+        $this->dietasAsignadas = new ArrayCollection();
+        $this->entrenamientosCreados = new ArrayCollection();
+        $this->entrenamientosAsignados = new ArrayCollection();
         $this->fechaRegistro = new \DateTime();
     }
 
@@ -528,6 +540,82 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     // ============================================
     // MÉTODOS AUXILIARES
     // ============================================
+
+    public function getDietasAsignadas(): Collection
+    {
+        return $this->dietasAsignadas;
+    }
+
+    public function addDietaAsignada(Dieta $dieta): static
+    {
+        if (!$this->dietasAsignadas->contains($dieta)) {
+            $this->dietasAsignadas->add($dieta);
+            $dieta->setAsignadoAUsuario($this);
+        }
+        return $this;
+    }
+
+    public function removeDietaAsignada(Dieta $dieta): static
+    {
+        if ($this->dietasAsignadas->removeElement($dieta)) {
+            if ($dieta->getAsignadoAUsuario() === $this) {
+                $dieta->setAsignadoAUsuario(null);
+            }
+        }
+        return $this;
+    }
+
+    // ============================================
+    // MÉTODOS ENTRENAMIENTOS
+    // ============================================
+
+    public function getEntrenamientosCreados(): Collection
+    {
+        return $this->entrenamientosCreados;
+    }
+
+    public function addEntrenamientosCreado(Entrenamiento $entrenamiento): static
+    {
+        if (!$this->entrenamientosCreados->contains($entrenamiento)) {
+            $this->entrenamientosCreados->add($entrenamiento);
+            $entrenamiento->setCreadorUsuario($this);
+        }
+        return $this;
+    }
+
+    public function removeEntrenamientosCreado(Entrenamiento $entrenamiento): static
+    {
+        if ($this->entrenamientosCreados->removeElement($entrenamiento)) {
+            if ($entrenamiento->getCreadorUsuario() === $this) {
+                $entrenamiento->setCreadorUsuario(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getEntrenamientosAsignados(): Collection
+    {
+        return $this->entrenamientosAsignados;
+    }
+
+    public function addEntrenamientosAsignado(Entrenamiento $entrenamiento): static
+    {
+        if (!$this->entrenamientosAsignados->contains($entrenamiento)) {
+            $this->entrenamientosAsignados->add($entrenamiento);
+            $entrenamiento->setAsignadoAUsuario($this);
+        }
+        return $this;
+    }
+
+    public function removeEntrenamientosAsignado(Entrenamiento $entrenamiento): static
+    {
+        if ($this->entrenamientosAsignados->removeElement($entrenamiento)) {
+            if ($entrenamiento->getAsignadoAUsuario() === $this) {
+                $entrenamiento->setAsignadoAUsuario(null);
+            }
+        }
+        return $this;
+    }
 
     private function calcularIMC(): void
     {

@@ -99,7 +99,7 @@ function Navbar() {
           path: "/mis-entrenamientos",
           icon: Dumbbell,
         },
-        { label: "Mi Dieta", path: "/mi-dieta", icon: Utensils },
+        { label: "Mis Dietas", path: "/mis-dietas", icon: Utensils },
         { label: "Mi Suscripción", path: "/mi-suscripcion", icon: CreditCard },
         ...commonItems,
       ];
@@ -249,10 +249,10 @@ function Navbar() {
                         {link.label}
                         <svg
                           className={`w-3 h-3 ml-1 inline transition-transform duration-300 ${(link.label === "ENTRENAMIENTOS" &&
-                              entrenamientosOpen) ||
-                              (link.label === "ALIMENTACIÓN" && alimentacionOpen)
-                              ? "rotate-180"
-                              : ""
+                            entrenamientosOpen) ||
+                            (link.label === "ALIMENTACIÓN" && alimentacionOpen)
+                            ? "rotate-180"
+                            : ""
                             }`}
                           fill="none"
                           stroke="currentColor"
@@ -284,8 +284,8 @@ function Navbar() {
                                   setAlimentacionOpen(false);
                                 }}
                                 className={`flex items-center gap-2 px-4 py-3 text-white transition-all duration-300 font-semibold text-sm ${isPremium
-                                    ? "hover:bg-uf-red hover:text-white"
-                                    : "hover:bg-uf-gold hover:text-black"
+                                  ? "hover:bg-uf-red hover:text-white"
+                                  : "hover:bg-uf-gold hover:text-black"
                                   }`}
                               >
                                 {sublink.icon && (
@@ -376,8 +376,8 @@ function Navbar() {
                           to={item.path}
                           onClick={() => setUserMenuOpen(false)}
                           className={`flex items-center space-x-3 px-4 py-3 text-white transition-all duration-200 ${isPremium
-                              ? "hover:bg-uf-red/20 hover:text-uf-red"
-                              : "hover:bg-uf-gold/20 hover:text-uf-gold"
+                            ? "hover:bg-uf-red/20 hover:text-uf-red"
+                            : "hover:bg-uf-gold/20 hover:text-uf-gold"
                             }`}
                         >
                           <item.icon className="w-5 h-5" />
@@ -512,10 +512,10 @@ function Navbar() {
                       {link.label}
                       <svg
                         className={`w-4 h-4 transition-transform ${(link.label === "ENTRENAMIENTOS" &&
-                            entrenamientosOpen) ||
-                            (link.label === "ALIMENTACIÓN" && alimentacionOpen)
-                            ? "rotate-180"
-                            : ""
+                          entrenamientosOpen) ||
+                          (link.label === "ALIMENTACIÓN" && alimentacionOpen)
+                          ? "rotate-180"
+                          : ""
                           }`}
                         fill="none"
                         stroke="currentColor"

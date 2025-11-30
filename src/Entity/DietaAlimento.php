@@ -22,7 +22,7 @@ class DietaAlimento
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Dieta::class, inversedBy: 'dietaAlimentos')]
+    #[ORM\ManyToOne(targetEntity: Dieta::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Dieta $dieta = null;
 
@@ -57,7 +57,7 @@ class DietaAlimento
     #[ORM\Column(length: 50, options: ['default' => 'comida'])]
     private string $momentoDia = 'comida';
 
-    #[ORM\ManyToOne(targetEntity: Plato::class, inversedBy: 'dietaAlimentos')]
+    #[ORM\ManyToOne(targetEntity: Plato::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Plato $plato = null;
 
