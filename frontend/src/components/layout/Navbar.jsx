@@ -160,6 +160,7 @@ function Navbar() {
       submenu: [
         { path: "/gym", label: "Gym", icon: Dumbbell },
         { path: "/workout", label: "Workout", icon: Activity },
+        { path: "/crear-entrenamiento", label: "Crear Mi Entrenamiento", icon: Sparkles },
       ],
     },
     {

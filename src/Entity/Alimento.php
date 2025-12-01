@@ -47,12 +47,11 @@ class Alimento
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $imagenUrl = null;
 
-    #[ORM\OneToMany(targetEntity: DietaAlimento::class, mappedBy: 'alimento')]
-    private Collection $dietaAlimentos;
+
 
     public function __construct()
     {
-        $this->dietaAlimentos = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -134,36 +133,5 @@ class Alimento
     public function getImagenUrl(): ?string
     {
         return $this->imagenUrl;
-    }
-    public function setImagenUrl(?string $imagenUrl): static
-    {
-        $this->imagenUrl = $imagenUrl;
-        return $this;
-    }
-    public function getDietaAlimentos(): Collection
-    {
-        return $this->dietaAlimentos;
-    }
-
-    public function addDietaAlimento(DietaAlimento $dietaAlimento): static
-    {
-        if (!$this->dietaAlimentos->contains($dietaAlimento)) {
-            $this->dietaAlimentos->add($dietaAlimento);
-            $dietaAlimento->setAlimento($this);
-        }
-
-        return $this;
-    }
-
-    public function removeDietaAlimento(DietaAlimento $dietaAlimento): static
-    {
-        if ($this->dietaAlimentos->removeElement($dietaAlimento)) {
-            // set the owning side to null (unless already changed)
-            if ($dietaAlimento->getAlimento() === $this) {
-                $dietaAlimento->setAlimento(null);
-            }
-        }
-
-        return $this;
     }
 }

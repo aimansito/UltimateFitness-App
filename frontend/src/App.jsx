@@ -37,6 +37,7 @@ import MisEntrenamientos from "./pages/user/MisEntrenamientos";
 import CrearEntrenamiento from "./pages/user/CrearEntrenamiento";
 import MisDietas from "./pages/user/MisDietas";
 import DetalleDieta from "./pages/user/DetalleDieta";
+import DetalleEntrenamiento from "./pages/user/DetalleEntrenamiento";
 import MiSuscripcion from "./pages/user/MiSuscripcion";
 
 import CrearDietaCliente from './pages/entrenador/CrearDietaCliente';
@@ -161,6 +162,16 @@ function App() {
             element={
               <ProtectedRoute requireAuth={true}>
                 <CrearEntrenamiento />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* DETALLE DE UN ENTRENAMIENTO */}
+          <Route
+            path="/mis-entrenamientos/:entrenamientoId"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <DetalleEntrenamiento />
               </ProtectedRoute>
             }
           />

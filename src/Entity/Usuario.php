@@ -113,38 +113,9 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     // RELACIONES
     // ============================================
 
-    #[ORM\OneToMany(targetEntity: Suscripcion::class, mappedBy: 'usuario', orphanRemoval: true)]
-    private Collection $suscripciones;
-
-    #[ORM\OneToMany(targetEntity: CalendarioUsuario::class, mappedBy: 'usuario', orphanRemoval: true)]
-    private Collection $calendarios;
-
-    #[ORM\OneToMany(targetEntity: ValoracionEntrenador::class, mappedBy: 'cliente', orphanRemoval: true)]
-    private Collection $valoracionesHechas;
-
-    #[ORM\OneToMany(targetEntity: ValoracionPlato::class, mappedBy: 'usuario', orphanRemoval: true)]
-    private Collection $valoracionesPlatos;
-
-    #[ORM\OneToMany(targetEntity: Dieta::class, mappedBy: 'asignadoAUsuario')]
-    private Collection $dietasAsignadas;
-
-    #[ORM\OneToMany(targetEntity: Entrenamiento::class, mappedBy: 'creadorUsuario')]
     private Collection $entrenamientosCreados;
 
     #[ORM\OneToMany(targetEntity: Entrenamiento::class, mappedBy: 'asignadoAUsuario')]
-    private Collection $entrenamientosAsignados;
-
-    public function __construct()
-    {
-        $this->suscripciones = new ArrayCollection();
-        $this->calendarios = new ArrayCollection();
-        $this->valoracionesHechas = new ArrayCollection();
-        $this->valoracionesPlatos = new ArrayCollection();
-        $this->dietasAsignadas = new ArrayCollection();
-        $this->entrenamientosCreados = new ArrayCollection();
-        $this->entrenamientosAsignados = new ArrayCollection();
-        $this->fechaRegistro = new \DateTime();
-    }
 
     // ============================================
     // GETTERS Y SETTERS BÁSICOS
@@ -484,54 +455,6 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->calendarios->removeElement($calendario)) {
             if ($calendario->getUsuario() === $this) {
                 $calendario->setUsuario(null);
-            }
-        }
-        return $this;
-    }
-
-    public function getValoracionesHechas(): Collection
-    {
-        return $this->valoracionesHechas;
-    }
-
-    public function addValoracionesHecha(ValoracionEntrenador $valoracionesHecha): static
-    {
-        if (!$this->valoracionesHechas->contains($valoracionesHecha)) {
-            $this->valoracionesHechas->add($valoracionesHecha);
-            $valoracionesHecha->setCliente($this);
-        }
-        return $this;
-    }
-
-    public function removeValoracionesHecha(ValoracionEntrenador $valoracionesHecha): static
-    {
-        if ($this->valoracionesHechas->removeElement($valoracionesHecha)) {
-            if ($valoracionesHecha->getCliente() === $this) {
-                $valoracionesHecha->setCliente(null);
-            }
-        }
-        return $this;
-    }
-
-    public function getValoracionesPlatos(): Collection
-    {
-        return $this->valoracionesPlatos;
-    }
-
-    public function addValoracionesPlato(ValoracionPlato $valoracionesPlato): static
-    {
-        if (!$this->valoracionesPlatos->contains($valoracionesPlato)) {
-            $this->valoracionesPlatos->add($valoracionesPlato);
-            $valoracionesPlato->setUsuario($this);
-        }
-        return $this;
-    }
-
-    public function removeValoracionesPlato(ValoracionPlato $valoracionesPlato): static
-    {
-        if ($this->valoracionesPlatos->removeElement($valoracionesPlato)) {
-            if ($valoracionesPlato->getUsuario() === $this) {
-                $valoracionesPlato->setUsuario(null);
             }
         }
         return $this;

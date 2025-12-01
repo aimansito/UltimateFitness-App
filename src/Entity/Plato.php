@@ -103,7 +103,7 @@ class Plato
     private Collection $ingredientes;
 
     /**
-     * Relación uno-a-muchos con DietaAlimento
+     * Relación uno-a-muchos con DietaPlato
      * Un plato puede aparecer en múltiples dietas
      */
     #[ORM\OneToMany(targetEntity: DietaPlato::class, mappedBy: 'plato')]
@@ -331,7 +331,7 @@ class Plato
     }
 
     /**
-     * @return Collection<int, DietaAlimento>
+     * @return Collection<int, DietaPlato>
      */
     public function getDietaPlatos(): Collection
     {

@@ -263,18 +263,17 @@ class EntrenamientoController extends AbstractController
         $entrenamiento->setEsPublico($data['esPublico'] ?? false);
 
         // Asignar creador
-        if (in_array('ROLE_ENTRENADOR', $user->getRoles())) {
-            // Buscar entidad Entrenador asociada al usuario (simplificado, asumiendo relación o ID directo)
-            // NOTA: En este sistema parece que Entrenador es una entidad separada de Usuario pero vinculada.
-            // Por simplicidad y consistencia con DietaController, asumiremos que si es entrenador, buscamos su entidad.
-            $entrenador = $entityManager->getRepository(Entrenador::class)->findOneBy(['usuario' => $user]);
-            if ($entrenador) {
-                $entrenamiento->setCreador($entrenador);
+        // Asignar creador
+        if ($user instanceof Entrenador) {
+            $entrenamiento->setCreador($user);
+        } elseif ($user instanceof Usuario) {
+            if (in_array('ROLE_PREMIUM', $user->getRoles()) || in_array('ROLE_ADMIN', $user->getRoles())) {
+                $entrenamiento->setCreadorUsuario($user);
+            } else {
+                return $this->json(['success' => false, 'error' => 'No tienes permisos para crear entrenamientos'], Response::HTTP_FORBIDDEN);
             }
-        } elseif (in_array('ROLE_PREMIUM', $user->getRoles()) || in_array('ROLE_ADMIN', $user->getRoles())) {
-            $entrenamiento->setCreadorUsuario($user);
         } else {
-            return $this->json(['success' => false, 'error' => 'No tienes permisos para crear entrenamientos'], Response::HTTP_FORBIDDEN);
+            return $this->json(['success' => false, 'error' => 'Tipo de usuario no soportado'], Response::HTTP_FORBIDDEN);
         }
 
         $entityManager->persist($entrenamiento);
@@ -384,11 +383,21 @@ class EntrenamientoController extends AbstractController
 
         $repo = $entityManager->getRepository(Entrenamiento::class);
 
-        // 1. Entrenamientos creados por el usuario
-        $creados = $repo->findBy(['creadorUsuario' => $user], ['fechaCreacion' => 'DESC']);
+        $creados = [];
+        $asignados = [];
 
-        // 2. Entrenamientos asignados al usuario
-        $asignados = $repo->findBy(['asignadoAUsuario' => $user], ['fechaCreacion' => 'DESC']);
+        if ($user instanceof Entrenador) {
+            // 1. Entrenamientos creados por el entrenador
+            $creados = $repo->findBy(['creador' => $user], ['fechaCreacion' => 'DESC']);
+            // Entrenadores no suelen tener entrenamientos asignados, pero por si acaso
+            // $asignados = ... (No hay campo asignadoAEntrenador)
+        } elseif ($user instanceof Usuario) {
+            // 1. Entrenamientos creados por el usuario
+            $creados = $repo->findBy(['creadorUsuario' => $user], ['fechaCreacion' => 'DESC']);
+
+            // 2. Entrenamientos asignados al usuario
+            $asignados = $repo->findBy(['asignadoAUsuario' => $user], ['fechaCreacion' => 'DESC']);
+        }
 
         return $this->json([
             'success' => true,

@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: EntrenadorRepository::class)]
@@ -16,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_activo', columns: ['activo'])]
 #[ORM\Index(name: 'idx_estado_aplicacion', columns: ['estado_aplicacion'])]
 #[ORM\Index(name: 'idx_anos_experiencia', columns: ['anos_experiencia'])]
-class Entrenador
+class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -89,35 +91,6 @@ class Entrenador
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $fechaAplicacion = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $revisadoPor = null;
-
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
-    private ?\DateTimeInterface $fechaRegistro = null;
-
-    // ============================================
-    // RELACIONES
-    // ============================================
-
-    #[ORM\OneToMany(targetEntity: Dieta::class, mappedBy: 'creador')]
-    private Collection $dietas;
-
-    #[ORM\OneToMany(targetEntity: Entrenamiento::class, mappedBy: 'creador')]
-    private Collection $entrenamientos;
-
-    #[ORM\OneToMany(targetEntity: ValoracionEntrenador::class, mappedBy: 'entrenador', orphanRemoval: true)]
-    private Collection $valoraciones;
-
-    public function __construct()
-    {
-        $this->dietas = new ArrayCollection();
-        $this->entrenamientos = new ArrayCollection();
-        $this->valoraciones = new ArrayCollection();
-        $this->fechaRegistro = new \DateTime();
-    }
-
-    // ============================================
-    // GETTERS Y SETTERS
     // ============================================
 
     public function getId(): ?int
@@ -402,30 +375,6 @@ class Entrenador
         return $this;
     }
 
-    public function getValoraciones(): Collection
-    {
-        return $this->valoraciones;
-    }
-
-    public function addValoracione(ValoracionEntrenador $valoracione): static
-    {
-        if (!$this->valoraciones->contains($valoracione)) {
-            $this->valoraciones->add($valoracione);
-            $valoracione->setEntrenador($this);
-        }
-        return $this;
-    }
-
-    public function removeValoracione(ValoracionEntrenador $valoracione): static
-    {
-        if ($this->valoraciones->removeElement($valoracione)) {
-            if ($valoracione->getEntrenador() === $this) {
-                $valoracione->setEntrenador(null);
-            }
-        }
-        return $this;
-    }
-
     // ============================================
     // MÉTODOS AUXILIARES
     // ============================================
@@ -470,5 +419,29 @@ class Entrenador
         ];
 
         return $especialidades[$this->especialidad] ?? $this->especialidad;
+    }
+
+    // ============================================
+    // IMPLEMENTACIÓN DE UserInterface
+    // ============================================
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_ENTRENADOR'];
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->passwordHash;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
     }
 }
