@@ -113,9 +113,30 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     // RELACIONES
     // ============================================
 
+    #[ORM\OneToMany(targetEntity: Entrenamiento::class, mappedBy: 'creadorUsuario')]
     private Collection $entrenamientosCreados;
 
     #[ORM\OneToMany(targetEntity: Entrenamiento::class, mappedBy: 'asignadoAUsuario')]
+    private Collection $entrenamientosAsignados;
+
+    #[ORM\OneToMany(targetEntity: Dieta::class, mappedBy: 'asignadoAUsuario')]
+    private Collection $dietasAsignadas;
+
+    #[ORM\OneToMany(targetEntity: Suscripcion::class, mappedBy: 'usuario')]
+    private Collection $suscripciones;
+
+    #[ORM\OneToMany(targetEntity: CalendarioUsuario::class, mappedBy: 'usuario')]
+    private Collection $calendarios;
+
+    public function __construct()
+    {
+        $this->entrenamientosCreados = new ArrayCollection();
+        $this->entrenamientosAsignados = new ArrayCollection();
+        $this->dietasAsignadas = new ArrayCollection();
+        $this->suscripciones = new ArrayCollection();
+        $this->calendarios = new ArrayCollection();
+        $this->fechaRegistro = new \DateTime();
+    }
 
     // ============================================
     // GETTERS Y SETTERS BÁSICOS
@@ -409,7 +430,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     // ============================================
-    // MÉTODOS DE RELACIONES
+    // MÉTODOS DE RELACIONES - SUSCRIPCIONES
     // ============================================
 
     public function getSuscripciones(): Collection
@@ -436,6 +457,10 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // ============================================
+    // MÉTODOS DE RELACIONES - CALENDARIOS
+    // ============================================
+
     public function getCalendarios(): Collection
     {
         return $this->calendarios;
@@ -461,7 +486,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     // ============================================
-    // MÉTODOS AUXILIARES
+    // MÉTODOS DE RELACIONES - DIETAS
     // ============================================
 
     public function getDietasAsignadas(): Collection
@@ -489,7 +514,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     // ============================================
-    // MÉTODOS ENTRENAMIENTOS
+    // MÉTODOS DE RELACIONES - ENTRENAMIENTOS
     // ============================================
 
     public function getEntrenamientosCreados(): Collection
@@ -539,6 +564,10 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $this;
     }
+
+    // ============================================
+    // MÉTODOS AUXILIARES - CÁLCULOS
+    // ============================================
 
     private function calcularIMC(): void
     {
@@ -618,6 +647,9 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
     public function getPassword(): ?string
     {
         return $this->passwordHash;
@@ -629,5 +661,9 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function eraseCredentials(): void {}
+    public function eraseCredentials(): void
+    {
+        // Si almacenas datos temporales sensibles en el usuario, límpialos aquí
+        // $this->plainPassword = null;
+    }
 }

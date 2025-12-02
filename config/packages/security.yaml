@@ -1,13 +1,10 @@
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
         App\Entity\Usuario:
             algorithm: auto
 
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\Usuario
@@ -20,13 +17,13 @@ security:
 
         # Rutas de autenticación (públicas)
         login:
-            pattern: ^/api/(login|register|hash-passwords)
+            pattern: ^/api/(login|register|hash-passwords|debug-login|reset-passwords|reset-entrenadores-passwords)
             stateless: true
             security: false
 
-        # Rutas públicas (sin autenticación) - TODO: Restringir en producción
+        # Rutas públicas (sin autenticación)
         public:
-            pattern: ^/api/(planes|dietas|ejercicios|entrenamientos|platos|alimentos|entrenadores|custom)
+            pattern: ^/api/(planes|dietas|ejercicios|entrenamientos|platos|alimentos|entrenadores|entrenador|custom)
             stateless: true
             security: false
 
@@ -34,43 +31,36 @@ security:
         api:
             pattern: ^/api
             stateless: true
+            provider: app_user_provider   # ✅ añadido aquí
             jwt: ~
 
         main:
             lazy: true
             provider: app_user_provider
 
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
     access_control:
-        # Rutas públicas - cualquiera puede acceder
+        # Rutas públicas
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
-        - { path: ^/api/hash-passwords, roles: PUBLIC_ACCESS }
-        
-        # Contenido público (TODO: Revisar en producción)
+        - { path: ^/api/debug-login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/entrenador, roles: PUBLIC_ACCESS }
+        - { path: ^/api/ejercicios, roles: PUBLIC_ACCESS }
+        - { path: ^/api/custom, roles: PUBLIC_ACCESS }
         - { path: ^/api/planes, roles: PUBLIC_ACCESS }
         - { path: ^/api/dietas, roles: PUBLIC_ACCESS }
-        - { path: ^/api/ejercicios, roles: PUBLIC_ACCESS }
         - { path: ^/api/entrenamientos, roles: PUBLIC_ACCESS }
         - { path: ^/api/platos, roles: PUBLIC_ACCESS }
         - { path: ^/api/alimentos, roles: PUBLIC_ACCESS }
         - { path: ^/api/entrenadores, roles: PUBLIC_ACCESS }
-        - { path: ^/api/custom, roles: PUBLIC_ACCESS }
         
-        # Rutas que requieren autenticación (deshabilitado temporalmente para desarrollo)
-        # TODO: Habilitar en producción
-        # - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+        # Rutas protegidas que requieren autenticación
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
         password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+                cost: 4
+                time_cost: 3
+                memory_cost: 10

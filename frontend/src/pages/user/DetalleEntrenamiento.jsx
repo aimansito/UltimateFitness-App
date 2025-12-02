@@ -2,26 +2,25 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
-import { ArrowLeft, Calendar, Dumbbell, Target } from 'lucide-react';
+import { ArrowLeft, Calendar, Dumbbell, Target, Clock, Zap } from 'lucide-react';
+
+const DIAS_SEMANA_NOMBRES = {
+    1: { nombre: 'Lunes', emoji: '💪' },
+    2: { nombre: 'Martes', emoji: '🔥' },
+    3: { nombre: 'Miércoles', emoji: '⚡' },
+    4: { nombre: 'Jueves', emoji: '🎯' },
+    5: { nombre: 'Viernes', emoji: '🏋️' },
+    6: { nombre: 'Sábado', emoji: '💯' },
+    7: { nombre: 'Domingo', emoji: '🌟' }
+};
 
 function DetalleEntrenamiento() {
     const { entrenamientoId } = useParams();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [entrenamiento, setEntrenamiento] = useState(null);
-    const [ejerciciosPorDia, setEjerciciosPorDia] = useState({});
-    const [diaSeleccionado, setDiaSeleccionado] = useState('lunes');
+    const [diaSeleccionado, setDiaSeleccionado] = useState(1); // por defecto Lunes
     const [loading, setLoading] = useState(true);
-
-    const diasSemana = [
-        { key: 'lunes', label: 'LUNES', emoji: '💪' },
-        { key: 'martes', label: 'MARTES', emoji: '🔥' },
-        { key: 'miercoles', label: 'MIÉRCOLES', emoji: '⚡' },
-        { key: 'jueves', label: 'JUEVES', emoji: '🎯' },
-        { key: 'viernes', label: 'VIERNES', emoji: '🏋️' },
-        { key: 'sabado', label: 'SÁBADO', emoji: '💯' },
-        { key: 'domingo', label: 'DOMINGO', emoji: '🌟' }
-    ];
 
     useEffect(() => {
         if (user && entrenamientoId) {
@@ -31,53 +30,27 @@ function DetalleEntrenamiento() {
 
     const fetchDetalleEntrenamiento = async () => {
         try {
+            // Usar el endpoint custom que devuelve la estructura completa con días
             const response = await axios.get(
                 `http://localhost:8000/api/entrenamientos/${entrenamientoId}`
             );
 
             if (response.data) {
                 setEntrenamiento(response.data);
-                organizarEjerciciosPorDia(response.data.entrenamientoEjercicios || []);
+
+                // Seleccionar el primer día activo por defecto
+                if (response.data.dias && response.data.dias.length > 0) {
+                    const primerDiaActivo = response.data.dias.find(d => !d.esDescanso);
+                    if (primerDiaActivo) {
+                        setDiaSeleccionado(primerDiaActivo.diaSemana);
+                    }
+                }
             }
         } catch (error) {
             console.error('Error al cargar entrenamiento:', error);
         } finally {
             setLoading(false);
         }
-    };
-
-    const organizarEjerciciosPorDia = (ejercicios) => {
-        const porDia = {
-            lunes: [],
-            martes: [],
-            miercoles: [],
-            jueves: [],
-            viernes: [],
-            sabado: [],
-            domingo: []
-        };
-
-        ejercicios.forEach(ej => {
-            // Extraer el día de las notas (formato: "Lunes (Pierna): notas")
-            const notasLower = (ej.notas || '').toLowerCase();
-            const dia = diasSemana.find(d => notasLower.includes(d.label.toLowerCase()));
-
-            if (dia) {
-                porDia[dia.key].push(ej);
-            }
-        });
-
-        setEjerciciosPorDia(porDia);
-    };
-
-    const calcularTotalesDia = () => {
-        const ejerciciosDia = ejerciciosPorDia[diaSeleccionado] || [];
-
-        return ejerciciosDia.reduce((totales, ej) => ({
-            series: totales.series + parseInt(ej.series || 0),
-            repeticiones: totales.repeticiones + parseInt(ej.repeticiones || 0),
-            duracion: totales.duracion + (parseInt(ej.series || 0) * 2.5)
-        }), { series: 0, repeticiones: 0, duracion: 0 });
     };
 
     if (loading) {
@@ -107,7 +80,8 @@ function DetalleEntrenamiento() {
         );
     }
 
-    const totalesDia = calcularTotalesDia();
+    const diaActual = entrenamiento.dias?.find(d => d.diaSemana === diaSeleccionado);
+    const diasActivos = entrenamiento.dias?.filter(d => !d.esDescanso).length || 0;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
@@ -134,21 +108,22 @@ function DetalleEntrenamiento() {
 
                 {/* Información general */}
                 <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-uf-gold rounded-lg p-6 mb-6">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div>
-                            <h3 className="text-xl font-bold text-white mb-2">
-                                Tipo: {entrenamiento.tipo} | Nivel: {entrenamiento.nivelDificultad}
-                            </h3>
-                            <p className="text-gray-400 text-sm flex items-center gap-2 mt-2">
-                                <Calendar className="w-4 h-4" />
-                                Plan semanal
-                            </p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="text-center">
+                            <p className="text-gray-400 text-sm mb-1">Tipo</p>
+                            <p className="text-white font-bold text-lg capitalize">{entrenamiento.tipo}</p>
                         </div>
-
-                        <div className="bg-gradient-to-br from-uf-gold/20 to-yellow-600/20 border-2 border-uf-gold rounded-lg p-4 text-center min-w-[150px]">
-                            <p className="text-uf-gold text-sm font-semibold mb-1">DURACIÓN</p>
-                            <p className="text-4xl font-bold text-white">{entrenamiento.duracionMinutos}</p>
-                            <p className="text-gray-400 text-xs">minutos</p>
+                        <div className="text-center">
+                            <p className="text-gray-400 text-sm mb-1">Nivel</p>
+                            <p className="text-white font-bold text-lg capitalize">{entrenamiento.nivelDificultad}</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-gray-400 text-sm mb-1">Días Activos</p>
+                            <p className="text-uf-gold font-bold text-2xl">{diasActivos}/7</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-gray-400 text-sm mb-1">Duración Aprox.</p>
+                            <p className="text-white font-bold text-lg">{entrenamiento.duracionMinutos} min</p>
                         </div>
                     </div>
                 </div>
@@ -156,66 +131,90 @@ function DetalleEntrenamiento() {
                 {/* Selección día */}
                 <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700 rounded-lg p-6 mb-6">
                     <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        📅 Selecciona un día
+                        <Calendar className="w-6 h-6 text-uf-gold" />
+                        Selecciona un día
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-                        {diasSemana.map((dia) => (
-                            <button
-                                key={dia.key}
-                                onClick={() => setDiaSeleccionado(dia.key)}
-                                className={`py-3 px-4 rounded-lg font-bold transition-all ${diaSeleccionado === dia.key
-                                        ? 'bg-uf-gold text-black'
-                                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                                    }`}
-                            >
-                                <div className="text-2xl mb-1">{dia.emoji}</div>
-                                {dia.label}
-                            </button>
-                        ))}
+                        {entrenamiento.dias?.map((dia) => {
+                            const info = DIAS_SEMANA_NOMBRES[dia.diaSemana];
+                            return (
+                                <button
+                                    key={dia.diaSemana}
+                                    onClick={() => setDiaSeleccionado(dia.diaSemana)}
+                                    className={`py-4 px-3 rounded-lg font-bold transition-all relative ${diaSeleccionado === dia.diaSemana
+                                            ? 'bg-uf-gold text-black scale-105 shadow-lg'
+                                            : dia.esDescanso
+                                                ? 'bg-gray-700 text-gray-500'
+                                                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                        }`}
+                                >
+                                    {dia.esDescanso && (
+                                        <span className="absolute top-1 right-1 text-xs bg-red-500 text-white px-1 rounded">
+                                            💤
+                                        </span>
+                                    )}
+                                    <div className="text-2xl mb-1">{info?.emoji}</div>
+                                    <div className="text-xs">{info?.nombre}</div>
+                                    {!dia.esDescanso && dia.concepto && (
+                                        <div className="text-[10px] mt-1 opacity-70 truncate">
+                                            {dia.concepto}
+                                        </div>
+                                    )}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 
-                {/* Resumen del día */}
-                <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 border-2 border-purple-700 rounded-lg p-6 mb-6">
-                    <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <Target className="w-6 h-6 text-uf-gold" />
-                        Resumen del día
-                    </h3>
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="bg-gray-900 rounded-lg p-4 text-center">
-                            <div className="text-uf-gold mb-2">💪</div>
-                            <p className="text-gray-400 text-sm">Ejercicios</p>
-                            <p className="text-2xl font-bold text-white">{ejerciciosPorDia[diaSeleccionado]?.length || 0}</p>
-                        </div>
-                        <div className="bg-gray-900 rounded-lg p-4 text-center">
-                            <div className="text-blue-400 mb-2">🔢</div>
-                            <p className="text-gray-400 text-sm">Series Totales</p>
-                            <p className="text-2xl font-bold text-white">{totalesDia.series}</p>
-                        </div>
-                        <div className="bg-gray-900 rounded-lg p-4 text-center">
-                            <div className="text-green-400 mb-2">⏱️</div>
-                            <p className="text-gray-400 text-sm">Duración Est.</p>
-                            <p className="text-2xl font-bold text-white">~{Math.round(totalesDia.duracion)} min</p>
+                {/* Concepto del día actual */}
+                {diaActual && !diaActual.esDescanso && (
+                    <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 border-2 border-purple-700 rounded-lg p-6 mb-6">
+                        <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                            <Target className="w-6 h-6 text-uf-gold" />
+                            {DIAS_SEMANA_NOMBRES[diaActual.diaSemana]?.nombre}
+                        </h3>
+                        <p className="text-uf-gold text-xl font-semibold">{diaActual.concepto}</p>
+                        <div className="grid grid-cols-3 gap-4 mt-4">
+                            <div className="bg-gray-900 rounded-lg p-4 text-center">
+                                <Dumbbell className="w-6 h-6 text-uf-gold mx-auto mb-2" />
+                                <p className="text-gray-400 text-sm">Ejercicios</p>
+                                <p className="text-2xl font-bold text-white">{diaActual.ejercicios?.length || 0}</p>
+                            </div>
+                            <div className="bg-gray-900 rounded-lg p-4 text-center">
+                                <Zap className="w-6 h-6 text-blue-400 mx-auto mb-2" />
+                                <p className="text-gray-400 text-sm">Series Totales</p>
+                                <p className="text-2xl font-bold text-white">
+                                    {diaActual.ejercicios?.reduce((sum, ej) => sum + ej.series, 0) || 0}
+                                </p>
+                            </div>
+                            <div className="bg-gray-900 rounded-lg p-4 text-center">
+                                <Clock className="w-6 h-6 text-green-400 mx-auto mb-2" />
+                                <p className="text-gray-400 text-sm">Est. Tiempo</p>
+                                <p className="text-2xl font-bold text-white">
+                                    ~{Math.round((diaActual.ejercicios?.reduce((sum, ej) => sum + ej.series, 0) || 0) * 2.5)} min
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
                 {/* Ejercicios del día */}
                 <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700 rounded-lg p-6">
                     <h3 className="text-2xl font-bold text-white mb-6">
-                        Ejercicios del {diasSemana.find(d => d.key === diaSeleccionado)?.label}
+                        Ejercicios del {DIAS_SEMANA_NOMBRES[diaSeleccionado]?.nombre}
                     </h3>
 
-                    {!ejerciciosPorDia[diaSeleccionado] || ejerciciosPorDia[diaSeleccionado].length === 0 ? (
+                    {!diaActual || diaActual.esDescanso ? (
                         <div className="text-center py-12">
-                            <Dumbbell className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                            <p className="text-gray-400 text-lg">Día de descanso - No hay ejercicios programados</p>
+                            <div className="text-6xl mb-4">😴</div>
+                            <p className="text-gray-400 text-xl font-bold">Día de Descanso</p>
+                            <p className="text-gray-500 mt-2">No hay ejercicios programados para este día</p>
                         </div>
-                    ) : (
+                    ) : diaActual.ejercicios && diaActual.ejercicios.length > 0 ? (
                         <div className="space-y-4">
-                            {ejerciciosPorDia[diaSeleccionado].map((ejercicio, index) => (
+                            {diaActual.ejercicios.map((ejercicio, index) => (
                                 <div
-                                    key={index}
+                                    key={ejercicio.id || index}
                                     className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-lg p-6 hover:border-uf-gold transition-all"
                                 >
                                     <div className="flex items-start gap-4">
@@ -256,6 +255,11 @@ function DetalleEntrenamiento() {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <Dumbbell className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                            <p className="text-gray-400 text-lg">No hay ejercicios programados para este día</p>
                         </div>
                     )}
                 </div>

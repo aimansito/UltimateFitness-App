@@ -21,8 +21,9 @@ class MisDietasController extends AbstractController
     public function getMisDietas(int $usuarioId): JsonResponse
     {
         try {
-            // Query actualizada para buscar por asignado_a_usuario_id
-            $sql = "
+            // Query para dietas ASIGNADAS POR ENTRENADOR
+            // (Tienen creador_id != NULL y están asignadas al usuario)
+            $sqlAsignadas = "
                 SELECT 
                     d.id,
                     d.nombre,
@@ -31,20 +32,49 @@ class MisDietasController extends AbstractController
                     d.proteinas_totales,
                     d.carbohidratos_totales,
                     d.grasas_totales,
+                    d.creador_id,
+                    e.nombre as entrenador_nombre,
+                    e.apellidos as entrenador_apellidos,
                     DATE_FORMAT(d.fecha_creacion, '%d/%m/%Y') as fecha_asignacion
                 FROM dietas d
+                INNER JOIN entrenadores e ON d.creador_id = e.id
                 WHERE d.asignado_a_usuario_id = :usuarioId
+                AND d.creador_id IS NOT NULL
                 ORDER BY d.fecha_creacion DESC
             ";
 
-            $stmt = $this->entityManager->getConnection()->prepare($sql);
-            $result = $stmt->executeQuery(['usuarioId' => $usuarioId]);
-            $dietas = $result->fetchAllAssociative();
+            $stmtAsignadas = $this->entityManager->getConnection()->prepare($sqlAsignadas);
+            $resultAsignadas = $stmtAsignadas->executeQuery(['usuarioId' => $usuarioId]);
+            $dietasAsignadas = $resultAsignadas->fetchAllAssociative();
+
+            // Query para dietas CREADAS POR EL USUARIO
+            // (Dietas sin creador_id entrenador)
+            $sqlCreadas = "
+                SELECT 
+                    d.id,
+                    d.nombre,
+                    d.descripcion,
+                    d.calorias_totales,
+                    d.proteinas_totales,
+                    d.carbohidratos_totales,
+                    d.grasas_totales,
+                    DATE_FORMAT(d.fecha_creacion, '%d/%m/%Y') as fecha_creacion
+                FROM dietas d
+                WHERE (d.asignado_a_usuario_id = :usuarioId OR d.asignado_a_usuario_id IS NULL)
+                AND d.creador_id IS NULL
+                ORDER BY d.fecha_creacion DESC
+            ";
+
+            $stmtCreadas = $this->entityManager->getConnection()->prepare($sqlCreadas);
+            $resultCreadas = $stmtCreadas->executeQuery(['usuarioId' => $usuarioId]);
+            $dietasCreadas = $resultCreadas->fetchAllAssociative();
 
             return $this->json([
                 'success' => true,
-                'total' => count($dietas),
-                'dietas' => $dietas
+                'dietasAsignadas' => $dietasAsignadas,
+                'dietasCreadas' => $dietasCreadas,
+                'totalAsignadas' => count($dietasAsignadas),
+                'totalCreadas' => count($dietasCreadas)
             ]);
 
         } catch (\Exception $e) {

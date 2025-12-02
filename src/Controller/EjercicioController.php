@@ -14,6 +14,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class EjercicioController extends AbstractController
 {
     // ============================================
+    // LISTAR TODOS LOS EJERCICIOS (NUEVO)
+    // ============================================
+    #[Route('/ejercicios', name: 'ejercicios_listar_todos', methods: ['GET'])]
+    public function listarTodos(EntityManagerInterface $entityManager): JsonResponse
+    {
+        $ejercicios = $entityManager->getRepository(Ejercicio::class)
+            ->findBy([], ['nombre' => 'ASC']);
+
+        return $this->json(array_map(function($ejercicio) {
+            return $this->serializeEjercicio($ejercicio);
+        }, $ejercicios));
+    }
+
+    // ============================================
     // BUSCAR EJERCICIOS POR TEXTO
     // ============================================
     #[Route('/ejercicios/buscar', name: 'ejercicios_buscar', methods: ['GET'])]

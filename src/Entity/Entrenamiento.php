@@ -67,10 +67,15 @@ class Entrenamiento
     #[ORM\OneToMany(targetEntity: CalendarioUsuario::class, mappedBy: 'entrenamiento')]
     private Collection $calendarios;
 
+    #[ORM\OneToMany(targetEntity: DiaEntrenamiento::class, mappedBy: 'entrenamiento', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['diaSemana' => 'ASC'])]
+    private Collection $dias;
+
     public function __construct()
     {
         $this->entrenamientoEjercicios = new ArrayCollection();
         $this->calendarios = new ArrayCollection();
+        $this->dias = new ArrayCollection();
         $this->fechaCreacion = new \DateTime();
     }
 
@@ -257,6 +262,35 @@ class Entrenamiento
         if ($this->calendarios->removeElement($calendario)) {
             if ($calendario->getEntrenamiento() === $this) {
                 $calendario->setEntrenamiento(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DiaEntrenamiento>
+     */
+    public function getDias(): Collection
+    {
+        return $this->dias;
+    }
+
+    public function addDia(DiaEntrenamiento $dia): static
+    {
+        if (!$this->dias->contains($dia)) {
+            $this->dias->add($dia);
+            $dia->setEntrenamiento($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDia(DiaEntrenamiento $dia): static
+    {
+        if ($this->dias->removeElement($dia)) {
+            if ($dia->getEntrenamiento() === $this) {
+                $dia->setEntrenamiento(null);
             }
         }
 

@@ -43,10 +43,6 @@ class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, options: ['default' => 'ambos'])]
     private string $especialidad = 'ambos';
 
-    // ============================================
-    // NUEVOS CAMPOS - APLICACIÓN
-    // ============================================
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $certificacion = null;
 
@@ -62,10 +58,6 @@ class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $fotoUrl = null;
 
-    // ============================================
-    // VALORACIONES Y PRECIO
-    // ============================================
-
     #[ORM\Column(type: Types::DECIMAL, precision: 3, scale: 2, options: ['default' => '0.00'])]
     private string $valoracionPromedio = '0.00';
 
@@ -74,10 +66,6 @@ class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2, options: ['default' => '35.00'])]
     private string $precioSesionPresencial = '35.00';
-
-    // ============================================
-    // ESTADO Y APLICACIÓN
-    // ============================================
 
     #[ORM\Column(options: ['default' => true])]
     private bool $activo = true;
@@ -91,6 +79,24 @@ class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $fechaAplicacion = null;
 
+    // ============================================
+    // RELACIONES
+    // ============================================
+
+    #[ORM\OneToMany(targetEntity: Dieta::class, mappedBy: 'creador')]
+    private Collection $dietas;
+
+    #[ORM\OneToMany(targetEntity: Entrenamiento::class, mappedBy: 'creador')]
+    private Collection $entrenamientos;
+
+    public function __construct()
+    {
+        $this->dietas = new ArrayCollection();
+        $this->entrenamientos = new ArrayCollection();
+    }
+
+    // ============================================
+    // GETTERS & SETTERS
     // ============================================
 
     public function getId(): ?int
@@ -301,30 +307,8 @@ class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRevisadoPor(): ?int
-    {
-        return $this->revisadoPor;
-    }
-
-    public function setRevisadoPor(?int $revisadoPor): static
-    {
-        $this->revisadoPor = $revisadoPor;
-        return $this;
-    }
-
-    public function getFechaRegistro(): ?\DateTimeInterface
-    {
-        return $this->fechaRegistro;
-    }
-
-    public function setFechaRegistro(\DateTimeInterface $fechaRegistro): static
-    {
-        $this->fechaRegistro = $fechaRegistro;
-        return $this;
-    }
-
     // ============================================
-    // MÉTODOS DE RELACIONES
+    // RELACIONES
     // ============================================
 
     public function getDietas(): Collection
@@ -376,7 +360,7 @@ class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     // ============================================
-    // MÉTODOS AUXILIARES
+    // LÓGICA DE APLICACIÓN
     // ============================================
 
     public function estaPendiente(): bool
@@ -394,19 +378,17 @@ class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->estadoAplicacion === 'rechazado';
     }
 
-    public function aprobar(int $adminId): void
+    public function aprobar(): void
     {
         $this->estadoAplicacion = 'aprobado';
         $this->activo = true;
-        $this->revisadoPor = $adminId;
         $this->motivoRechazo = null;
     }
 
-    public function rechazar(int $adminId, string $motivo): void
+    public function rechazar(string $motivo): void
     {
         $this->estadoAplicacion = 'rechazado';
         $this->activo = false;
-        $this->revisadoPor = $adminId;
         $this->motivoRechazo = $motivo;
     }
 
@@ -422,7 +404,7 @@ class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     // ============================================
-    // IMPLEMENTACIÓN DE UserInterface
+    // UserInterface
     // ============================================
 
     public function getUserIdentifier(): string
@@ -442,6 +424,5 @@ class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
     }
 }

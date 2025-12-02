@@ -41,6 +41,7 @@ import DetalleEntrenamiento from "./pages/user/DetalleEntrenamiento";
 import MiSuscripcion from "./pages/user/MiSuscripcion";
 
 import CrearDietaCliente from './pages/entrenador/CrearDietaCliente';
+import CrearEntrenamientoCliente from './pages/entrenador/CrearEntrenamientoCliente';
 
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
           <Route path="/mis-platos" element={<MisPlatos />} />
           <Route path="/plato/:id" element={<DetallePlato />} />
           <Route path="/entrenador/cliente/:clienteId/crear-dieta" element={<CrearDietaCliente />} />
+          <Route path="/entrenador/cliente/:clienteId/crear-entrenamiento" element={<CrearEntrenamientoCliente />} />
 
 
           {/* --------------------------- */}

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { api } from "../../services/authService";
 import {
   Users,
   Dumbbell,
@@ -93,15 +94,15 @@ function DashboardEntrenador() {
 
   const fetchMisClientes = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/entrenador/mis-clientes/${user.id}`
-      );
+      // Usar la instancia de axios configurada con el token
+      const response = await api.get(`/entrenador/mis-clientes/${user.id}`);
 
       if (response.data.success) {
         setMisClientes(response.data.clientes);
       }
     } catch (error) {
       console.error("Error al cargar clientes:", error);
+      console.error("Detalles del error:", error.response?.data);
     }
   };
 

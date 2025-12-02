@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Firebase\JWT\JWT;
 
 class AuthController extends AbstractController
 {
@@ -19,11 +20,14 @@ class AuthController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
+    // ============================================
+    // LOGIN - Devuelve JWT Token
+    // ============================================
     #[Route('/api/login', name: 'api_login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        
+
         if (!isset($data['email']) || !isset($data['password'])) {
             return new JsonResponse([
                 'success' => false,
@@ -34,13 +38,19 @@ class AuthController extends AbstractController
         $email = $data['email'];
         $password = $data['password'];
 
-        // Buscar primero en usuarios
+        // ============================================
+        // 1️⃣ BUSCAR EN USUARIOS
+        // ============================================
         $usuario = $this->entityManager->getRepository(Usuario::class)->findOneBy(['email' => $email]);
-        
-        if ($usuario && password_verify($password, $usuario->getPassword())) {
+
+        if ($usuario && password_verify($password, $usuario->getPasswordHash())) {
+            // ✅ USUARIO ENCONTRADO - GENERAR TOKEN
+            $token = $this->generarJWT($usuario->getId(), $usuario->getEmail(), 'usuario');
+
             return new JsonResponse([
                 'success' => true,
                 'message' => 'Login exitoso',
+                'token' => $token,  // ✅ TOKEN AGREGADO
                 'usuario' => [
                     'id' => $usuario->getId(),
                     'email' => $usuario->getEmail(),
@@ -58,13 +68,19 @@ class AuthController extends AbstractController
             ]);
         }
 
-        // Buscar en entrenadores
+        // ============================================
+        // 2️⃣ BUSCAR EN ENTRENADORES
+        // ============================================
         $entrenador = $this->entityManager->getRepository(Entrenador::class)->findOneBy(['email' => $email]);
-        
+
         if ($entrenador && password_verify($password, $entrenador->getPasswordHash())) {
+            // ✅ ENTRENADOR ENCONTRADO - GENERAR TOKEN
+            $token = $this->generarJWT($entrenador->getId(), $entrenador->getEmail(), 'entrenador');
+
             return new JsonResponse([
                 'success' => true,
                 'message' => 'Login exitoso',
+                'token' => $token,  // ✅ TOKEN AGREGADO
                 'usuario' => [
                     'id' => $entrenador->getId(),
                     'email' => $entrenador->getEmail(),
@@ -76,16 +92,90 @@ class AuthController extends AbstractController
                     'es_premium' => false,
                     'rol' => 'entrenador',
                     'es_admin' => false,
-                    'fecha_registro' => $entrenador->getFechaRegistro()?->format('Y-m-d H:i:s'),
+                    'fecha_registro' => $entrenador->getFechaAplicacion()?->format('Y-m-d H:i:s'),
                     'tipo_entidad' => 'entrenador'
                 ]
             ]);
         }
 
+        // ❌ CREDENCIALES INVÁLIDAS
         return new JsonResponse([
             'success' => false,
             'message' => 'Credenciales inválidas'
         ], 401);
+    }
+
+    // ============================================
+    // HELPER: Generar JWT Token
+    // ============================================
+    private function generarJWT(int $userId, string $email, string $tipo): string
+    {
+        $issuedAt = time();
+        $expire = $issuedAt + (60 * 60 * 24 * 30); // 30 días
+
+        $payload = [
+            'iat' => $issuedAt,
+            'exp' => $expire,
+            'userId' => $userId,
+            'email' => $email,
+            'tipo' => $tipo
+        ];
+
+        // ⚠️ IMPORTANTE: Usa tu clave secreta real (mejor en .env)
+        $secret = $_ENV['JWT_SECRET'] ?? 'tu-clave-secreta-super-segura-aqui-2024';
+
+        return JWT::encode($payload, $secret, 'HS256');
+    }
+
+    // ============================================
+    // VERIFY TOKEN (para testing/debugging)
+    // ============================================
+    #[Route('/api/verify-token', name: 'verify_token', methods: ['POST'])]
+    public function verifyToken(Request $request): JsonResponse
+    {
+        $authHeader = $request->headers->get('Authorization');
+
+        if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Token no encontrado'
+            ], 401);
+        }
+
+        $token = substr($authHeader, 7);
+        $secret = $_ENV['JWT_SECRET'] ?? 'tu-clave-secreta-super-segura-aqui-2024';
+
+        try {
+            $decoded = JWT::decode($token, new \Firebase\JWT\Key($secret, 'HS256'));
+            
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Token válido',
+                'data' => [
+                    'userId' => $decoded->userId,
+                    'email' => $decoded->email,
+                    'tipo' => $decoded->tipo,
+                    'exp' => date('Y-m-d H:i:s', $decoded->exp)
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => 'Token inválido o expirado'
+            ], 401);
+        }
+    }
+
+    // ============================================
+    // LOGOUT (opcional)
+    // ============================================
+    #[Route('/api/logout', name: 'api_logout', methods: ['POST'])]
+    public function logout(): JsonResponse
+    {
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Logout exitoso'
+        ]);
     }
 
     #[Route('/api/test-hash', name: 'test_hash', methods: ['GET'])]
@@ -112,10 +202,10 @@ class AuthController extends AbstractController
         foreach ($usuarios as $usuario) {
             $password = $usuario->getEmail() === 'admin@ultimatefitness.com' ? 'admin123' : 'password123';
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT, ['cost' => 13]);
-            
-            $usuario->setPassword($hashedPassword);
+
+            $usuario->setPasswordHash($hashedPassword);
             $this->entityManager->persist($usuario);
-            
+
             $results[] = [
                 'id' => $usuario->getId(),
                 'email' => $usuario->getEmail(),
@@ -141,10 +231,10 @@ class AuthController extends AbstractController
 
         foreach ($entrenadores as $entrenador) {
             $hashedPassword = password_hash('password123', PASSWORD_BCRYPT, ['cost' => 13]);
-            
+
             $entrenador->setPasswordHash($hashedPassword);
             $this->entityManager->persist($entrenador);
-            
+
             $results[] = [
                 'id' => $entrenador->getId(),
                 'email' => $entrenador->getEmail(),

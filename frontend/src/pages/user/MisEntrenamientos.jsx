@@ -27,12 +27,36 @@ function MisEntrenamientos() {
   const [selectedEntrenamiento, setSelectedEntrenamiento] = useState(null);
   const [activeTab, setActiveTab] = useState('asignados'); // 'asignados' | 'creados'
 
-  // Cargar entrenamientos del usuario
+  // ============================================
+  // CARGAR ENTRENAMIENTOS DEL USUARIO
+  // ============================================
   useEffect(() => {
     const fetchEntrenamientos = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/custom/mis-entrenamientos');
+        // ✅ OBTENER TOKEN DEL LOCALSTORAGE
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+          console.error('❌ No hay token disponible');
+          setLoading(false);
+          return;
+        }
+
+        console.log('✅ Token encontrado, cargando entrenamientos...');
+
+        // ✅ HACER LA PETICIÓN CON EL TOKEN EN EL HEADER
+        const response = await axios.get(
+          'http://localhost:8000/api/custom/mis-entrenamientos',
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
         if (response.data.success) {
+          console.log('✅ Entrenamientos cargados:', response.data);
           setEntrenamientosCreados(response.data.creados);
           setEntrenamientosAsignados(response.data.asignados);
 
@@ -42,7 +66,10 @@ function MisEntrenamientos() {
           }
         }
       } catch (error) {
-        console.error('Error al cargar entrenamientos:', error);
+        console.error('❌ Error al cargar entrenamientos:', error);
+        if (error.response?.status === 401) {
+          console.error('Token inválido o expirado');
+        }
       } finally {
         setLoading(false);
       }

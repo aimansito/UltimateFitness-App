@@ -7,6 +7,8 @@ use App\Entity\Usuario;
 use App\Entity\Entrenador;
 use App\Entity\EntrenamientoEjercicio;
 use App\Entity\Ejercicio;
+use App\Entity\DiaEntrenamiento;
+use App\Entity\DiaEjercicio;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -194,6 +196,7 @@ class EntrenamientoController extends AbstractController
             'entrenamiento' => $this->serializeEntrenamiento($entrenamientoClon)
         ], Response::HTTP_CREATED);
     }
+
     // ============================================
     // VALORAR ENTRENAMIENTO
     // ============================================
@@ -240,6 +243,7 @@ class EntrenamientoController extends AbstractController
             'entrenamiento' => $this->serializeEntrenamiento($entrenamiento)
         ]);
     }
+
     // ============================================
     // CREAR ENTRENAMIENTO (Usuario Premium o Entrenador)
     // ============================================
@@ -254,6 +258,38 @@ class EntrenamientoController extends AbstractController
         }
 
         $data = json_decode($request->getContent(), true);
+
+        // Validar estructura de días
+        if (!isset($data['dias']) || !is_array($data['dias'])) {
+            return $this->json(['success' => false, 'error' => 'Se requiere estructura de días (array)'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Validar que haya 7 días
+        if (count($data['dias']) !== 7) {
+            return $this->json(['success' => false, 'error' => 'Debe incluir exactamente 7 días de la semana'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Contar días activos (no descanso)
+        $diasActivos = array_filter($data['dias'], function($dia) {
+            return !($dia['esDescanso'] ?? false);
+        });
+
+        // Validar mínimo 5 días activos
+        if (count($diasActivos) < 5) {
+            return $this->json(['success' => false, 'error' => 'Debe tener al menos 5 días de entrenamiento (máximo 2 días de descanso)'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Validar que días activos tengan concepto
+        foreach ($diasActivos as $dia) {
+            if (empty($dia['concepto'])) {
+                return $this->json(['success' => false, 'error' => 'Los días activos deben tener un concepto/título'], Response::HTTP_BAD_REQUEST);
+            }
+            if (!isset($dia['ejercicios']) || count($dia['ejercicios']) === 0) {
+                return $this->json(['success' => false, 'error' => 'Los días activos deben tener al menos un ejercicio'], Response::HTTP_BAD_REQUEST);
+            }
+        }
+
+        // Crear entrenamiento base
         $entrenamiento = new Entrenamiento();
         $entrenamiento->setNombre($data['nombre'] ?? 'Nuevo Entrenamiento');
         $entrenamiento->setDescripcion($data['descripcion'] ?? null);
@@ -262,36 +298,64 @@ class EntrenamientoController extends AbstractController
         $entrenamiento->setDuracionMinutos($data['duracionMinutos'] ?? 60);
         $entrenamiento->setEsPublico($data['esPublico'] ?? false);
 
-        // Asignar creador
-        // Asignar creador
+        // Verificar permisos y asignar creador
+        $clienteId = $data['cliente_id'] ?? null;
+        
         if ($user instanceof Entrenador) {
             $entrenamiento->setCreador($user);
-        } elseif ($user instanceof Usuario) {
-            if (in_array('ROLE_PREMIUM', $user->getRoles()) || in_array('ROLE_ADMIN', $user->getRoles())) {
-                $entrenamiento->setCreadorUsuario($user);
-            } else {
-                return $this->json(['success' => false, 'error' => 'No tienes permisos para crear entrenamientos'], Response::HTTP_FORBIDDEN);
+            
+            // Si el entrenador especifica un cliente, asignar directamente
+            if ($clienteId) {
+                $cliente = $entityManager->getRepository(Usuario::class)->find($clienteId);
+                if (!$cliente) {
+                    return $this->json(['success' => false, 'error' => 'Cliente no encontrado'], Response::HTTP_NOT_FOUND);
+                }
+                $entrenamiento->setAsignadoAUsuario($cliente);
             }
+        } elseif ($user instanceof Usuario) {
+            if (!in_array('ROLE_PREMIUM', $user->getRoles()) && !in_array('ROLE_ADMIN', $user->getRoles())) {
+                return $this->json(['success' => false, 'error' => 'Solo usuarios Premium pueden crear entrenamientos'], Response::HTTP_FORBIDDEN);
+            }
+            
+            // Usuarios no pueden asignar a otros
+            if ($clienteId) {
+                return $this->json(['success' => false, 'error' => 'Solo los entrenadores pueden asignar entrenamientos a clientes'], Response::HTTP_FORBIDDEN);
+            }
+            
+            $entrenamiento->setCreadorUsuario($user);
         } else {
             return $this->json(['success' => false, 'error' => 'Tipo de usuario no soportado'], Response::HTTP_FORBIDDEN);
         }
 
         $entityManager->persist($entrenamiento);
-        
-        // Procesar ejercicios si vienen en el payload
-        if (isset($data['ejercicios']) && is_array($data['ejercicios'])) {
-            foreach ($data['ejercicios'] as $ejercicioData) {
-                $ejercicio = $entityManager->getRepository(Ejercicio::class)->find($ejercicioData['ejercicio_id']);
-                if ($ejercicio) {
-                    $entrenamientoEjercicio = new EntrenamientoEjercicio();
-                    $entrenamientoEjercicio->setEntrenamiento($entrenamiento);
-                    $entrenamientoEjercicio->setEjercicio($ejercicio);
-                    $entrenamientoEjercicio->setSeries($ejercicioData['series'] ?? 3);
-                    $entrenamientoEjercicio->setRepeticiones($ejercicioData['repeticiones'] ?? 12);
-                    $entrenamientoEjercicio->setDescansoSegundos($ejercicioData['descanso'] ?? 60);
-                    $entrenamientoEjercicio->setNotas($ejercicioData['notas'] ?? null);
-                    
-                    $entityManager->persist($entrenamientoEjercicio);
+
+        // Procesar cada día de la semana
+        foreach ($data['dias'] as $index => $diaData) {
+            $diaEntrenamiento = new DiaEntrenamiento();
+            $diaEntrenamiento->setEntrenamiento($entrenamiento);
+            $diaEntrenamiento->setDiaSemana($diaData['diaSemana'] ?? ($index + 1));
+            $diaEntrenamiento->setEsDescanso($diaData['esDescanso'] ?? false);
+            $diaEntrenamiento->setConcepto($diaData['concepto'] ?? null);
+            $diaEntrenamiento->setOrden($index);
+
+            $entityManager->persist($diaEntrenamiento);
+
+            // Si no es descanso, procesar ejercicios
+            if (!$diaEntrenamiento->isEsDescanso() && isset($diaData['ejercicios'])) {
+                foreach ($diaData['ejercicios'] as $ejercicioIndex => $ejercicioData) {
+                    $ejercicio = $entityManager->getRepository(Ejercicio::class)->find($ejercicioData['ejercicio_id']);
+                    if ($ejercicio) {
+                        $diaEjercicio = new DiaEjercicio();
+                        $diaEjercicio->setDiaEntrenamiento($diaEntrenamiento);
+                        $diaEjercicio->setEjercicio($ejercicio);
+                        $diaEjercicio->setSeries($ejercicioData['series'] ?? 3);
+                        $diaEjercicio->setRepeticiones($ejercicioData['repeticiones'] ?? 12);
+                        $diaEjercicio->setDescansoSegundos($ejercicioData['descanso_segundos'] ?? 60);
+                        $diaEjercicio->setNotas($ejercicioData['notas'] ?? null);
+                        $diaEjercicio->setOrden($ejercicioIndex);
+
+                        $entityManager->persist($diaEjercicio);
+                    }
                 }
             }
         }
@@ -300,7 +364,7 @@ class EntrenamientoController extends AbstractController
 
         return $this->json([
             'success' => true,
-            'message' => 'Entrenamiento creado exitosamente',
+            'message' => 'Plan de entrenamiento semanal creado exitosamente',
             'entrenamiento' => $this->serializeEntrenamiento($entrenamiento)
         ], Response::HTTP_CREATED);
     }
@@ -372,44 +436,219 @@ class EntrenamientoController extends AbstractController
 
     // ============================================
     // MIS ENTRENAMIENTOS (Creados + Asignados)
+    // ✅ ACTUALIZADO: Incluye ejercicios e info del entrenador
     // ============================================
     #[Route('/mis-entrenamientos', name: 'mis_entrenamientos', methods: ['GET'])]
     public function misEntrenamientos(EntityManagerInterface $entityManager): JsonResponse
     {
         $user = $this->getUser();
         if (!$user) {
-            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+            return $this->json(
+                ['success' => false, 'error' => 'No autenticado'], 
+                Response::HTTP_UNAUTHORIZED
+            );
         }
 
         $repo = $entityManager->getRepository(Entrenamiento::class);
-
         $creados = [];
         $asignados = [];
 
         if ($user instanceof Entrenador) {
-            // 1. Entrenamientos creados por el entrenador
-            $creados = $repo->findBy(['creador' => $user], ['fechaCreacion' => 'DESC']);
-            // Entrenadores no suelen tener entrenamientos asignados, pero por si acaso
-            // $asignados = ... (No hay campo asignadoAEntrenador)
+            // ✅ Entrenamientos creados por el entrenador (profesional)
+            $creados = $repo->findBy(
+                ['creador' => $user], 
+                ['fechaCreacion' => 'DESC']
+            );
+            
         } elseif ($user instanceof Usuario) {
-            // 1. Entrenamientos creados por el usuario
-            $creados = $repo->findBy(['creadorUsuario' => $user], ['fechaCreacion' => 'DESC']);
+            // ✅ Entrenamientos creados por el usuario (usuario Premium)
+            $creados = $repo->findBy(
+                ['creadorUsuario' => $user], 
+                ['fechaCreacion' => 'DESC']
+            );
 
-            // 2. Entrenamientos asignados al usuario
-            $asignados = $repo->findBy(['asignadoAUsuario' => $user], ['fechaCreacion' => 'DESC']);
+            // ✅ Entrenamientos asignados por su entrenador
+            // CRÍTICO: Buscar por asignadoAUsuario
+            $asignados = $repo->createQueryBuilder('e')
+                ->where('e.asignadoAUsuario = :usuario')
+                ->setParameter('usuario', $user)
+                ->orderBy('e.fechaCreacion', 'DESC')
+                ->getQuery()
+                ->getResult();
         }
+
+        // ✅ Serializar ambas listas
+        $datosCreados = array_map([$this, 'serializeEntrenamientoCompleto'], $creados);
+        $datosAsignados = array_map([$this, 'serializeEntrenamientoCompleto'], $asignados);
 
         return $this->json([
             'success' => true,
-            'creados' => array_map([$this, 'serializeEntrenamiento'], $creados),
-            'asignados' => array_map([$this, 'serializeEntrenamiento'], $asignados)
+            'creados' => $datosCreados,
+            'asignados' => $datosAsignados,
+            'total_creados' => count($datosCreados),
+            'total_asignados' => count($datosAsignados)
         ]);
     }
+
     // ============================================
-    // HELPER: Serializar entrenamiento
+    // HELPER: Serializar entrenamiento COMPLETO
+    // ✅ Incluye todo lo que el frontend necesita
+    // ============================================
+    private function serializeEntrenamientoCompleto(Entrenamiento $entrenamiento): array
+    {
+        // 1️⃣ Serializar días con sus ejercicios
+        $diasSerializados = [];
+        foreach ($entrenamiento->getDias() as $dia) {
+            $ejerciciosDia = [];
+            
+            // Obtener ejercicios del día desde DiaEjercicio
+            foreach ($dia->getEjercicios() as $diaEjercicio) {
+                $ejerciciosDia[] = [
+                    'id' => $diaEjercicio->getId(),
+                    'ejercicio' => [
+                        'id' => $diaEjercicio->getEjercicio()->getId(),
+                        'nombre' => $diaEjercicio->getEjercicio()->getNombre(),
+                        'grupoMuscular' => $diaEjercicio->getEjercicio()->getGrupoMuscular(),
+                        'tipo' => $diaEjercicio->getEjercicio()->getTipo(),
+                        'nivelDificultad' => $diaEjercicio->getEjercicio()->getNivelDificultad(),
+                    ],
+                    'series' => $diaEjercicio->getSeries(),
+                    'repeticiones' => $diaEjercicio->getRepeticiones(),
+                    'descansoSegundos' => $diaEjercicio->getDescansoSegundos(),
+                    'notas' => $diaEjercicio->getNotas(),
+                    'orden' => $diaEjercicio->getOrden(),
+                ];
+            }
+
+            $diasSerializados[] = [
+                'id' => $dia->getId(),
+                'diaSemana' => $dia->getDiaSemana(),
+                'concepto' => $dia->getConcepto(),
+                'esDescanso' => $dia->isEsDescanso(),
+                'orden' => $dia->getOrden(),
+                'ejercicios' => $ejerciciosDia,
+                'totalEjercicios' => count($ejerciciosDia)
+            ];
+        }
+
+        // 2️⃣ Información del creador
+        $creadorInfo = null;
+        if ($entrenamiento->getCreador()) {
+            $creador = $entrenamiento->getCreador();
+            $creadorInfo = [
+                'id' => $creador->getId(),
+                'nombre' => $creador->getNombre(),
+                'apellidos' => $creador->getApellidos(),
+                'email' => $creador->getEmail(),
+                'especialidad' => $creador->getEspecialidad(),
+                'tipo' => 'entrenador'
+            ];
+        } elseif ($entrenamiento->getCreadorUsuario()) {
+            $creador = $entrenamiento->getCreadorUsuario();
+            $creadorInfo = [
+                'id' => $creador->getId(),
+                'nombre' => $creador->getNombre(),
+                'apellidos' => $creador->getApellidos(),
+                'email' => $creador->getEmail(),
+                'tipo' => 'usuario'
+            ];
+        }
+
+        // 3️⃣ Información del usuario asignado
+        $asignadoA = null;
+        if ($entrenamiento->getAsignadoAUsuario()) {
+            $usuario = $entrenamiento->getAsignadoAUsuario();
+            $asignadoA = [
+                'id' => $usuario->getId(),
+                'nombre' => $usuario->getNombre(),
+                'apellidos' => $usuario->getApellidos(),
+                'email' => $usuario->getEmail()
+            ];
+        }
+
+        // 4️⃣ Devolver estructura completa
+        return [
+            'id' => $entrenamiento->getId(),
+            'nombre' => $entrenamiento->getNombre(),
+            'descripcion' => $entrenamiento->getDescripcion(),
+            'tipo' => $entrenamiento->getTipo(),
+            'nivelDificultad' => $entrenamiento->getNivelDificultad(),
+            'duracionMinutos' => $entrenamiento->getDuracionMinutos(),
+            'valoracionPromedio' => $entrenamiento->getValoracionPromedio(),
+            'totalValoraciones' => $entrenamiento->getTotalValoraciones(),
+            'esPublico' => $entrenamiento->isEsPublico(),
+            'fechaCreacion' => $entrenamiento->getFechaCreacion()?->format('Y-m-d H:i:s'),
+            'creador' => $creadorInfo,
+            'asignadoA' => $asignadoA,
+            'dias' => $diasSerializados,
+            'totalDias' => count($diasSerializados),
+            'completado' => false,
+            'entrenamientoEjercicios' => $this->serializeEntrenamientoEjercicios($entrenamiento)
+        ];
+    }
+
+    // ============================================
+    // HELPER: Serializar ejercicios del entrenamiento
+    // ============================================
+    private function serializeEntrenamientoEjercicios(Entrenamiento $entrenamiento): array
+    {
+        $ejercicios = [];
+        
+        foreach ($entrenamiento->getEntrenamientoEjercicios() as $entEjercicio) {
+            $ejercicios[] = [
+                'id' => $entEjercicio->getId(),
+                'ejercicio' => [
+                    'id' => $entEjercicio->getEjercicio()->getId(),
+                    'nombre' => $entEjercicio->getEjercicio()->getNombre(),
+                    'grupoMuscular' => $entEjercicio->getEjercicio()->getGrupoMuscular(),
+                    'tipo' => $entEjercicio->getEjercicio()->getTipo(),
+                ],
+                'series' => $entEjercicio->getSeries(),
+                'repeticiones' => $entEjercicio->getRepeticiones(),
+                'descansoSegundos' => $entEjercicio->getDescansoSegundos(),
+                'notas' => $entEjercicio->getNotas(),
+                'orden' => $entEjercicio->getOrden(),
+            ];
+        }
+        
+        return $ejercicios;
+    }
+
+    // ============================================
+    // HELPER: Serializar entrenamiento (básico)
     // ============================================
     private function serializeEntrenamiento(Entrenamiento $entrenamiento): array
     {
+        // Serializar días de la semana
+        $diasSerializados = [];
+        foreach ($entrenamiento->getDias() as $dia) {
+            $ejerciciosDia = [];
+            foreach ($dia->getEjercicios() as $diaEjercicio) {
+                $ejerciciosDia[] = [
+                    'id' => $diaEjercicio->getId(),
+                    'ejercicio' => [
+                        'id' => $diaEjercicio->getEjercicio()->getId(),
+                        'nombre' => $diaEjercicio->getEjercicio()->getNombre(),
+                        'grupoMuscular' => $diaEjercicio->getEjercicio()->getGrupoMuscular(),
+                    ],
+                    'series' => $diaEjercicio->getSeries(),
+                    'repeticiones' => $diaEjercicio->getRepeticiones(),
+                    'descansoSegundos' => $diaEjercicio->getDescansoSegundos(),
+                    'notas' => $diaEjercicio->getNotas(),
+                    'orden' => $diaEjercicio->getOrden(),
+                ];
+            }
+
+            $diasSerializados[] = [
+                'id' => $dia->getId(),
+                'diaSemana' => $dia->getDiaSemana(),
+                'concepto' => $dia->getConcepto(),
+                'esDescanso' => $dia->isEsDescanso(),
+                'orden' => $dia->getOrden(),
+                'ejercicios' => $ejerciciosDia
+            ];
+        }
+
         return [
             'id' => $entrenamiento->getId(),
             'nombre' => $entrenamiento->getNombre(),
@@ -427,12 +666,13 @@ class EntrenamientoController extends AbstractController
             ] : null,
             'creadorUsuario' => $entrenamiento->getCreadorUsuario() ? [
                 'id' => $entrenamiento->getCreadorUsuario()->getId(),
-                'nombre' => $entrenamiento->getCreadorUsuario()->getNombreCompleto()
+                'nombre' => $entrenamiento->getCreadorUsuario()->getNombre() . ' ' . $entrenamiento->getCreadorUsuario()->getApellidos()
             ] : null,
             'asignadoA' => $entrenamiento->getAsignadoAUsuario() ? [
                 'id' => $entrenamiento->getAsignadoAUsuario()->getId(),
-                'nombre' => $entrenamiento->getAsignadoAUsuario()->getNombreCompleto()
-            ] : null
+                'nombre' => $entrenamiento->getAsignadoAUsuario()->getNombre() . ' ' . $entrenamiento->getAsignadoAUsuario()->getApellidos()
+            ] : null,
+            'dias' => $diasSerializados
         ];
     }
 }
