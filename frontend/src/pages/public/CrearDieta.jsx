@@ -145,24 +145,58 @@ function CrearDieta() {
     try {
       setGuardando(true);
 
-      const data = {
-        nombre: nombreDieta,
-        descripcion: descripcionDieta,
-        plan: planComidas,
-        totales: totalesActuales,
-        objetivo: necesidades?.objetivo || "personalizado",
+      // Preparar el plan en el formato que espera el backend
+      const planBackend = {};
+
+      // Mapear nombres de momentos del frontend al backend
+      const mapeoMomentos = {
+        'media_mañana': 'media_manana'
       };
 
-      console.log("Dieta guardada:", data);
+      Object.entries(planComidas).forEach(([momento, items]) => {
+        const momentoBackend = mapeoMomentos[momento] || momento;
 
-      await new Promise(r => setTimeout(r, 1000));
+        // Filtrar solo platos (no alimentos sueltos) y convertir al formato backend
+        planBackend[momentoBackend] = items
+          .filter(item => item.tipo === 'plato' || item.tipo === 'plato_personalizado')
+          .map(item => ({
+            tipo: 'plato',
+            id: item.id || item.plato_id,
+            dia_semana: 'lunes', // Por ahora solo un día
+            notas: item.nombre || null
+          }));
+      });
 
-      alert("¡Dieta guardada!");
-      navigate("/alimentacion");
+      const dietaData = {
+        nombre: nombreDieta,
+        descripcion: descripcionDieta,
+        es_publica: false,
+        asignado_a_usuario_id: user.id,
+        calorias_totales: Math.round(totalesActuales.calorias),
+        proteinas_totales: Math.round(totalesActuales.proteinas),
+        carbohidratos_totales: Math.round(totalesActuales.carbohidratos),
+        grasas_totales: Math.round(totalesActuales.grasas),
+        plan: planBackend
+      };
+
+      console.log("Enviando dieta al backend:", dietaData);
+
+      // Enviar al backend
+      const response = await axios.post(
+        'http://localhost:8000/api/custom/dietas',
+        dietaData
+      );
+
+      if (response.data.success) {
+        alert(`✅ ¡Dieta guardada exitosamente!\n\nID: ${response.data.dieta.id}\nNombre: ${response.data.dieta.nombre}`);
+        navigate("/mis-dietas");
+      } else {
+        alert("❌ Error: " + (response.data.error || "Error desconocido"));
+      }
 
     } catch (e) {
-      console.error(e);
-      alert("Error al guardar.");
+      console.error("Error al guardar dieta:", e);
+      alert("❌ Error al guardar la dieta. " + (e.response?.data?.error || e.message));
     } finally {
       setGuardando(false);
     }

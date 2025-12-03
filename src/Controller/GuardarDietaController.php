@@ -71,9 +71,6 @@ class GuardarDietaController extends AbstractController
                         creador_id,
                         asignado_a_usuario_id,
                         calorias_totales,
-                        proteinas_totales,
-                        carbohidratos_totales,
-                        grasas_totales,
                         es_publica,
                         fecha_creacion
                     ) VALUES (
@@ -82,9 +79,6 @@ class GuardarDietaController extends AbstractController
                         :creador_id,
                         :cliente_id,
                         :calorias,
-                        :proteinas,
-                        :carbohidratos,
-                        :grasas,
                         0,
                         NOW()
                     )
@@ -96,10 +90,7 @@ class GuardarDietaController extends AbstractController
                     'descripcion' => $data['descripcion'] ?? null,
                     'creador_id' => $data['creador_id'],
                     'cliente_id' => $data['cliente_id'],
-                    'calorias' => $data['calorias_totales'] ?? 0,
-                    'proteinas' => $data['proteinas_totales'] ?? 0,
-                    'carbohidratos' => $data['carbohidratos_totales'] ?? 0,
-                    'grasas' => $data['grasas_totales'] ?? 0
+                    'calorias' => $data['calorias_totales'] ?? 0
                 ]);
 
                 $dietaId = $conn->lastInsertId();

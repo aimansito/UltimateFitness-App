@@ -7,7 +7,6 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import BuscadorAlimentos from "./BuscadorAlimentos";
 import SelectorPlatos from "./SelectorPlatos.jsx";
-import ConstructorPlatos from "./ConstructorPlatos";
 
 function SeccionComida({
   momento,
@@ -21,7 +20,6 @@ function SeccionComida({
 
   const [mostrarBuscador, setMostrarBuscador] = useState(false);
   const [mostrarSelectorPlatos, setMostrarSelectorPlatos] = useState(false);
-  const [mostrarConstructor, setMostrarConstructor] = useState(false);
 
   // Tailwind no permite strings dinámicas en colores así que usamos clases predefinidas
   const bgColor = {
@@ -106,30 +104,18 @@ function SeccionComida({
           </div>
         </div>
 
-        {/* BOTONES */}
-        <div className="grid grid-cols-2 gap-2">
+        {/* BOTÓN */}
+        <div>
           {/* PLATO PREDEFINIDO */}
           <button
             onClick={() => requirePremium(() => setMostrarSelectorPlatos(true))}
-            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-3 rounded-lg transition flex items-center justify-center gap-2 text-sm"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
-            Plato Predefinido
-          </button>
-
-          {/* CREAR PLATO */}
-          <button
-            onClick={() => requirePremium(() => setMostrarConstructor(true))}
-            className="bg-gradient-to-r from-uf-gold to-yellow-600 hover:from-yellow-600 hover:to-uf-gold text-black font-bold py-2 px-3 rounded-lg transition flex items-center justify-center gap-2 text-sm"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            Crear Plato
+            Agregar Plato
           </button>
         </div>
       </div>
@@ -261,16 +247,6 @@ function SeccionComida({
             setMostrarSelectorPlatos(false);
           }}
           onCerrar={() => setMostrarSelectorPlatos(false)}
-        />
-      )}
-
-      {mostrarConstructor && (
-        <ConstructorPlatos
-          onGuardarPlato={(plato) => {
-            onAgregarPlato(plato);
-            setMostrarConstructor(false);
-          }}
-          onCerrar={() => setMostrarConstructor(false)}
         />
       )}
     </div>

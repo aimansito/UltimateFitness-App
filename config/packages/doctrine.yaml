@@ -8,7 +8,13 @@ doctrine:
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
-        
+
+        # Configuración UTF-8 para caracteres especiales del español
+        charset: utf8mb4
+        default_table_options:
+            charset: utf8mb4
+            collate: utf8mb4_unicode_ci
+
         mapping_types:
             enum: string
             

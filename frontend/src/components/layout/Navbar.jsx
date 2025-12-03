@@ -86,6 +86,16 @@ function Navbar() {
           path: "/entrenador/dashboard",
           icon: Activity,
         },
+        {
+          label: "Mis Platos",
+          path: "/entrenador/mis-platos",
+          icon: Utensils,
+        },
+        {
+          label: "Mis Dietas",
+          path: "/entrenador/mis-dietas",
+          icon: Calendar,
+        },
         ...commonItems,
       ];
     }
@@ -108,6 +118,7 @@ function Navbar() {
     // GRATUITO
     return [
       { label: "Mi Panel", path: "/dashboard", icon: Activity },
+      { label: "Mis Dietas", path: "/mis-dietas", icon: Utensils },
       { label: "Ver Planes", path: "/planes", icon: Star },
       ...commonItems,
     ];
@@ -138,17 +149,24 @@ function Navbar() {
     if (!isAuthenticated) {
       // Solo dietas públicas para usuarios no autenticados
       return [
-        { path: "/alimentacion", label: "Dietas", icon: Utensils },
+        { path: "/mis-dietas?tab=publicas", label: "Dietas Públicas", icon: Utensils },
       ];
     }
 
-    // Todas las opciones para usuarios autenticados
-    return [
-      { path: "/alimentacion", label: "Dietas", icon: Utensils },
-      { path: "/crear-dieta", label: "Crear Mi Dieta", icon: Sparkles },
-      { path: "/mi-plan-semanal", label: "Plan Semanal", icon: Calendar },
-      { path: "/suplementos", label: "Suplementos", icon: Pill },
+    // Opciones para usuarios autenticados
+    const menuItems = [
+      { path: "/mis-dietas?tab=publicas", label: "Dietas Públicas", icon: Utensils },
     ];
+
+    // Opciones adicionales solo para usuarios premium
+    if (isPremium) {
+      menuItems.unshift(
+        { path: "/mis-dietas?tab=asignadas", label: "Dietas Asignadas", icon: User },
+        { path: "/mis-dietas?tab=creadas", label: "Historial de Dietas", icon: Calendar }
+      );
+    }
+
+    return menuItems;
   };
 
   const navLinks = [

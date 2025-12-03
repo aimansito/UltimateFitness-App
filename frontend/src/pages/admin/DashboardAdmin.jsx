@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import api from '../../services/api';
 import {
     Users,
     Activity,
@@ -26,6 +27,7 @@ function DashboardAdmin() {
     const [dietas, setDietas] = useState([]);
     const [alimentos, setAlimentos] = useState([]);
     const [ejercicios, setEjercicios] = useState([]);
+    const [suscripciones, setSuscripciones] = useState([]);
     const [searchUsuarios, setSearchUsuarios] = useState('');
     const [searchAlimentos, setSearchAlimentos] = useState('');
     const [loading, setLoading] = useState(false);
@@ -49,17 +51,24 @@ function DashboardAdmin() {
         else if (activeTab === 'dietas') fetchDietas();
         else if (activeTab === 'alimentos') fetchAlimentos();
         else if (activeTab === 'ejercicios') fetchEjercicios();
+        else if (activeTab === 'suscripciones') fetchSuscripciones();
     }, [activeTab]);
 
     const fetchEstadisticas = async () => {
         try {
             setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 500));
+            const response = await api.get('/admin/dashboard');
+            if (response.data.success) {
+                setEstadisticas(response.data.estadisticas);
+            }
+        } catch (error) {
+            console.error('Error al cargar estadísticas:', error);
+            // Si falla, usar valores por defecto
             setEstadisticas({
-                total_usuarios: 1247,
-                usuarios_premium: 342,
-                total_entrenadores: 28,
-                usuarios_activos: 856
+                total_usuarios: 0,
+                usuarios_normales: 0,
+                usuarios_premium: 0,
+                total_entrenadores: 0
             });
         } finally {
             setLoading(false);
@@ -69,11 +78,20 @@ function DashboardAdmin() {
     const fetchUsuarios = async () => {
         try {
             setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            setUsuarios([
-                { id: 1, nombre: 'Aiman Harrar daoud', email: 'aimaninstituto2020@gmail.com', es_premium: true, fecha_premium: '2025-10-24', rol: 'admin' },
-                { id: 2, nombre: 'María Sánchez', email: 'maria.sanchez@email.com', es_premium: false, rol: 'cliente' }
-            ]);
+            const response = await api.get('/admin/usuarios');
+            if (response.data.success) {
+                setUsuarios(response.data.usuarios.map(u => ({
+                    id: u.id,
+                    nombre: u.nombre_completo || `${u.nombre} ${u.apellidos}`,
+                    email: u.email,
+                    es_premium: u.es_premium,
+                    fecha_premium: u.fecha_premium,
+                    rol: u.rol
+                })));
+            }
+        } catch (error) {
+            console.error('Error al cargar usuarios:', error);
+            setUsuarios([]);
         } finally {
             setLoading(false);
         }
@@ -82,12 +100,13 @@ function DashboardAdmin() {
     const fetchEntrenadores = async () => {
         try {
             setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            setEntrenadores([
-                { id: 1, nombre: 'carlos.mendez', especialidad: 'Hipertrofia', anos_experiencia: 8 },
-                { id: 2, nombre: 'miguel.rodriguez', especialidad: 'Rendimiento', anos_experiencia: 10 },
-                { id: 3, nombre: 'laura.garcia', especialidad: 'Pérdida de peso', anos_experiencia: 6 }
-            ]);
+            const response = await api.get('/admin/entrenadores');
+            if (response.data.success) {
+                setEntrenadores(response.data.entrenadores);
+            }
+        } catch (error) {
+            console.error('Error al cargar entrenadores:', error);
+            setEntrenadores([]);
         } finally {
             setLoading(false);
         }
@@ -96,12 +115,20 @@ function DashboardAdmin() {
     const fetchDietas = async () => {
         try {
             setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            setDietas([
-                { id: 1, nombre: 'Plan Hipertrofia Avanzado', calorias: 3200, valoracion: 4.9, num_valoraciones: 248, destacada: true },
-                { id: 2, nombre: 'Atleta de Élite', calorias: 3500, valoracion: 4.9, num_valoraciones: 156, destacada: false },
-                { id: 3, nombre: 'Definición Extrema', calorias: 1800, valoracion: 4.8, num_valoraciones: 189, destacada: true }
-            ]);
+            const response = await api.get('/admin/dietas');
+            if (response.data.success) {
+                setDietas(response.data.dietas.map(d => ({
+                    id: d.id,
+                    nombre: d.nombre,
+                    calorias: d.calorias_totales,
+                    valoracion: d.valoracion_promedio,
+                    num_valoraciones: d.total_valoraciones,
+                    destacada: d.destacada
+                })));
+            }
+        } catch (error) {
+            console.error('Error al cargar dietas:', error);
+            setDietas([]);
         } finally {
             setLoading(false);
         }
@@ -110,12 +137,13 @@ function DashboardAdmin() {
     const fetchAlimentos = async () => {
         try {
             setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            setAlimentos([
-                { id: 1, nombre: 'Pechuga de pollo', categoria: 'Proteínas', calorias: 165, proteinas: 31, carbohidratos: 0, grasas: 3.6 },
-                { id: 2, nombre: 'Huevos', categoria: 'Proteínas', calorias: 155, proteinas: 13, carbohidratos: 1.1, grasas: 11 },
-                { id: 3, nombre: 'Arroz integral', categoria: 'Carbohidratos', calorias: 111, proteinas: 2.6, carbohidratos: 23, grasas: 0.9 }
-            ]);
+            const response = await api.get('/admin/alimentos');
+            if (response.data.success) {
+                setAlimentos(response.data.alimentos);
+            }
+        } catch (error) {
+            console.error('Error al cargar alimentos:', error);
+            setAlimentos([]);
         } finally {
             setLoading(false);
         }
@@ -124,12 +152,28 @@ function DashboardAdmin() {
     const fetchEjercicios = async () => {
         try {
             setLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            setEjercicios([
-                { id: 1, nombre: 'Curl de Bíceps', premium: false },
-                { id: 2, nombre: 'Press de Banca', premium: true },
-                { id: 3, nombre: 'Sentadilla', premium: true }
-            ]);
+            const response = await api.get('/admin/ejercicios');
+            if (response.data.success) {
+                setEjercicios(response.data.ejercicios);
+            }
+        } catch (error) {
+            console.error('Error al cargar ejercicios:', error);
+            setEjercicios([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchSuscripciones = async () => {
+        try {
+            setLoading(true);
+            const response = await api.get('/admin/suscripciones');
+            if (response.data.success) {
+                setSuscripciones(response.data.suscripciones);
+            }
+        } catch (error) {
+            console.error('Error al cargar suscripciones:', error);
+            setSuscripciones([]);
         } finally {
             setLoading(false);
         }
@@ -368,7 +412,45 @@ function DashboardAdmin() {
                     </div>
                 )}
 
-                {!['overview', 'usuarios', 'entrenadores', 'dietas', 'alimentos', 'ejercicios'].includes(activeTab) && (
+                {activeTab === 'suscripciones' && (
+                    <div>
+                        <h2 className="text-2xl font-bold text-uf-gold mb-6">GESTIÓN DE SUSCRIPCIONES</h2>
+                        {loading ? (
+                            <div className="text-center py-12"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-uf-gold mx-auto"></div></div>
+                        ) : suscripciones.length === 0 ? (
+                            <div className="text-center py-12">
+                                <CreditCard className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                                <p className="text-gray-400 text-lg">No hay suscripciones registradas</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-3">
+                                {suscripciones.map((sus) => (
+                                    <div key={sus.id} className="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-uf-gold transition-all">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <CreditCard className="w-5 h-5 text-uf-gold" />
+                                                    <h3 className="text-white font-bold">{sus.usuario_nombre_completo}</h3>
+                                                    <span className={`px-2 py-1 text-xs font-bold rounded uppercase ${sus.estado === 'activa' ? 'bg-green-600' : sus.estado === 'cancelada' ? 'bg-red-600' : 'bg-gray-600'} text-white`}>
+                                                        {sus.estado}
+                                                    </span>
+                                                </div>
+                                                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                                                    <p className="text-gray-400">📧 {sus.usuario_email}</p>
+                                                    <p className="text-gray-400">💳 Plan: {sus.plan_nombre || 'N/A'}</p>
+                                                    <p className="text-gray-400">💰 {sus.precio_pagado}€</p>
+                                                    <p className="text-gray-400">📅 {new Date(sus.fecha_inicio).toLocaleDateString('es-ES')}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {!['overview', 'usuarios', 'entrenadores', 'dietas', 'alimentos', 'ejercicios', 'suscripciones'].includes(activeTab) && (
                     <div className="text-center py-20">
                         <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-900 border-2 border-gray-800 rounded-full mb-4">
                             {tabs.find(t => t.id === activeTab)?.icon && (() => {

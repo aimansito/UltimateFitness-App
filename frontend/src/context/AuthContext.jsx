@@ -1,6 +1,6 @@
-import { createContext, useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
+import { createContext, useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import authService from "../services/authService";
 
 const AuthContext = createContext();
 
@@ -16,14 +16,17 @@ export function AuthProvider({ children }) {
     const loadUser = () => {
       try {
         const storedUser = authService.getUser();
+        const token = authService.getToken();
 
-        console.log('Cargando usuario desde localStorage:', storedUser);
+        console.log("Cargando usuario desde localStorage:", storedUser);
+        console.log("Token disponible:", !!token);
 
-        if (storedUser) {
+        if (storedUser && token) {
+          // ✅ Si hay usuario Y token, cargar el usuario
           setUser(storedUser);
         }
       } catch (error) {
-        console.error('Error cargando usuario:', error);
+        console.error("Error cargando usuario:", error);
         setUser(null);
       } finally {
         setLoading(false);
@@ -39,19 +42,21 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     try {
       const data = await authService.login(email, password);
-      
-      console.log('Resultado del login:', data);
-      
+
+      console.log("Resultado del login:", data);
+
       if (data.success) {
+        // ✅ authService.login() ya guardó usuario y token en localStorage
+        // Solo necesitamos actualizar el estado
         setUser(data.usuario);
-        
-        // Redirigir a /dashboard (DashboardRouter decidirá el destino final)
-        navigate('/dashboard');
-        
+
+        // Redirigir a /dashboard
+        navigate("/dashboard");
+
         return data;
       }
     } catch (error) {
-      console.error('Error en login:', error);
+      console.error("Error en login:", error);
       throw error;
     }
   };
@@ -60,9 +65,10 @@ export function AuthProvider({ children }) {
   // LOGOUT
   // ============================================
   const logout = () => {
-    console.log('Cerrando sesión...');
+    console.log("Cerrando sesión...");
     authService.logout();
     setUser(null);
+    navigate("/login");
   };
 
   // ============================================
@@ -76,7 +82,7 @@ export function AuthProvider({ children }) {
         return storedUser;
       }
     } catch (error) {
-      console.error('Error actualizando usuario:', error);
+      console.error("Error actualizando usuario:", error);
     }
     return null;
   };
@@ -85,15 +91,15 @@ export function AuthProvider({ children }) {
   // HELPERS DE VALIDACIÓN DE ROL
   // ============================================
   const isAdmin = () => {
-    return user?.rol === 'admin';
+    return user?.rol === "admin";
   };
 
   const isTrainer = () => {
-    return user?.rol === 'entrenador';
+    return user?.rol === "entrenador";
   };
 
   const isUser = () => {
-    return user?.rol === 'cliente' || (!user?.rol && user);
+    return user?.rol === "cliente" || (!user?.rol && user);
   };
 
   const hasRole = (role) => {
@@ -115,7 +121,7 @@ export function AuthProvider({ children }) {
     isTrainer,
     isUser,
     hasRole,
-    loading
+    loading,
   };
 
   // Mostrar loading mientras carga
@@ -130,11 +136,7 @@ export function AuthProvider({ children }) {
     );
   }
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 // ============================================
@@ -143,7 +145,7 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth debe usarse dentro de AuthProvider');
+    throw new Error("useAuth debe usarse dentro de AuthProvider");
   }
   return context;
 }

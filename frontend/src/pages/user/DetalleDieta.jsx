@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import api from '../../services/api';
 import { ArrowLeft, Calendar } from 'lucide-react';
 
 function DetalleDieta() {
@@ -24,39 +24,45 @@ function DetalleDieta() {
   ];
 
   useEffect(() => {
-    if (user && dietaId) {
+    if (dietaId) {
       fetchDetalleDieta();
     }
-  }, [user, dietaId]);
+  }, [dietaId]);
 
   const fetchDetalleDieta = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/usuario/dieta/${dietaId}/usuario/${user.id}`
-      );
+      const response = await api.get(`/usuario/dieta/${dietaId}`);
+      console.log('✅ Detalle dieta:', response.data);
 
       if (response.data.success) {
         setDieta(response.data.dieta);
         setPlanSemanal(response.data.plan_semanal);
       }
     } catch (error) {
-      console.error('Error al cargar dieta:', error);
+      console.error('❌ Error al cargar dieta:', error);
+      console.error('Detalle del error:', error.response?.data);
     } finally {
       setLoading(false);
     }
   };
 
   const calcularTotalesDia = () => {
-    const comidasDia = planSemanal[diaSeleccionado] || [];
+    const dia = planSemanal[diaSeleccionado];
+    if (!dia) return { calorias: 0, proteinas: 0, carbohidratos: 0, grasas: 0 };
 
-    return comidasDia.reduce((totales, comida) => {
-      return {
-        calorias: totales.calorias + (comida.calorias_totales || 0),
-        proteinas: totales.proteinas + (comida.proteinas_totales || 0),
-        carbohidratos: totales.carbohidratos + (comida.carbohidratos_totales || 0),
-        grasas: totales.grasas + (comida.grasas_totales || 0)
-      };
-    }, { calorias: 0, proteinas: 0, carbohidratos: 0, grasas: 0 });
+    let totales = { calorias: 0, proteinas: 0, carbohidratos: 0, grasas: 0 };
+
+    // Sumar todos los momentos del día
+    Object.values(dia).forEach(momentoPlatos => {
+      momentoPlatos.forEach(plato => {
+        totales.calorias += plato.calorias || 0;
+        totales.proteinas += plato.proteinas || 0;
+        totales.carbohidratos += plato.carbohidratos || 0;
+        totales.grasas += plato.grasas || 0;
+      });
+    });
+
+    return totales;
   };
 
   const getMomentoHora = (momento) => {
@@ -220,15 +226,16 @@ function DetalleDieta() {
             Comidas del {diasSemana.find(d => d.key === diaSeleccionado)?.label}
           </h3>
 
-          {!planSemanal[diaSeleccionado] || planSemanal[diaSeleccionado].length === 0 ? (
+          {!planSemanal[diaSeleccionado] ? (
             <div className="text-center py-12">
               <p className="text-gray-400 text-lg">No hay comidas programadas para este día</p>
             </div>
           ) : (
             <div className="space-y-6">
-              {planSemanal[diaSeleccionado].map((comida, index) => (
+              {Object.entries(planSemanal[diaSeleccionado]).map(([momento, platos]) =>
+                platos.length > 0 && platos.map((plato, index) => (
                 <div
-                  key={index}
+                  key={`${momento}-${index}`}
                   className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-lg p-6 hover:border-uf-gold transition-all"
                 >
                   {/* Header comida */}
@@ -238,9 +245,9 @@ function DetalleDieta() {
                         <div className="text-3xl">🍽️</div>
                         <div>
                           <h4 className="text-xl font-bold text-white capitalize">
-                            {comida.momento_dia.replace('_', ' ')}
+                            {momento.replace('_', ' ')}
                           </h4>
-                          <p className="text-gray-400 text-sm">⏰ {getMomentoHora(comida.momento_dia)}</p>
+                          <p className="text-gray-400 text-sm">⏰ {getMomentoHora(momento)}</p>
                         </div>
                       </div>
                     </div>
@@ -248,30 +255,32 @@ function DetalleDieta() {
 
                   {/* Nombre del Plato */}
                   <div className="mb-4">
-                    <h5 className="text-lg font-bold text-uf-gold mb-1">{comida.plato_nombre}</h5>
-                    {comida.plato_descripcion && (
-                      <p className="text-gray-400 text-sm italic">{comida.plato_descripcion}</p>
+                    <h5 className="text-lg font-bold text-uf-gold mb-1">{plato.nombre}</h5>
+                    {plato.descripcion && (
+                      <p className="text-gray-400 text-sm italic">{plato.descripcion}</p>
                     )}
                   </div>
 
                   {/* Ingredientes */}
-                  <div className="space-y-3 mb-4">
-                    <p className="text-sm text-gray-400 font-semibold mb-2">Ingredientes:</p>
-                    {comida.ingredientes && comida.ingredientes.map((ingrediente, idx) => (
-                      <div key={idx} className="bg-gray-800 rounded-lg p-3 border border-gray-700">
-                        <div className="flex items-center justify-between mb-2">
-                          <h5 className="text-white font-semibold">{ingrediente.alimento_nombre}</h5>
-                          <span className="text-uf-gold font-bold">{ingrediente.cantidad_gramos}g</span>
+                  {plato.ingredientes && plato.ingredientes.length > 0 && (
+                    <div className="space-y-3 mb-4">
+                      <p className="text-sm text-gray-400 font-semibold mb-2">Ingredientes:</p>
+                      {plato.ingredientes.map((ingrediente, idx) => (
+                        <div key={idx} className="bg-gray-800 rounded-lg p-3 border border-gray-700">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="text-white font-semibold">{ingrediente.alimento_nombre}</h5>
+                            <span className="text-uf-gold font-bold">{ingrediente.cantidad_gramos}g</span>
+                          </div>
+                          <div className="flex gap-3 text-xs">
+                            <span className="text-orange-400">🔥 {Math.round((ingrediente.calorias * ingrediente.cantidad_gramos) / 100)} kcal</span>
+                            <span className="text-blue-400">P: {Math.round((ingrediente.proteinas * ingrediente.cantidad_gramos) / 100)}g</span>
+                            <span className="text-green-400">C: {Math.round((ingrediente.carbohidratos * ingrediente.cantidad_gramos) / 100)}g</span>
+                            <span className="text-yellow-400">G: {Math.round((ingrediente.grasas * ingrediente.cantidad_gramos) / 100)}g</span>
+                          </div>
                         </div>
-                        <div className="flex gap-3 text-xs">
-                          <span className="text-orange-400">🔥 {Math.round(ingrediente.calorias)} kcal</span>
-                          <span className="text-blue-400">P: {Math.round(ingrediente.proteinas)}g</span>
-                          <span className="text-green-400">C: {Math.round(ingrediente.carbohidratos)}g</span>
-                          <span className="text-yellow-400">G: {Math.round(ingrediente.grasas)}g</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Totales de la comida */}
                   <div className="border-t border-gray-700 pt-4">
@@ -279,16 +288,17 @@ function DetalleDieta() {
                       <span className="text-gray-400 font-semibold">TOTALES:</span>
                       <div className="flex gap-4 text-sm">
                         <span className="text-orange-400 font-bold">
-                          {Math.round(comida.calorias_totales)} kcal
+                          {Math.round(plato.calorias)} kcal
                         </span>
-                        <span className="text-blue-400">P: {Math.round(comida.proteinas_totales)}g</span>
-                        <span className="text-green-400">C: {Math.round(comida.carbohidratos_totales)}g</span>
-                        <span className="text-yellow-400">G: {Math.round(comida.grasas_totales)}g</span>
+                        <span className="text-blue-400">P: {Math.round(plato.proteinas)}g</span>
+                        <span className="text-green-400">C: {Math.round(plato.carbohidratos)}g</span>
+                        <span className="text-yellow-400">G: {Math.round(plato.grasas)}g</span>
                       </div>
                     </div>
                   </div>
                 </div>
-              ))}
+              ))
+              )}
             </div>
           )}
         </div>

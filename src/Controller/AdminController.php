@@ -63,43 +63,24 @@ class AdminController extends AbstractController
             //     return $this->roleChecker->denyAccess();
             // }
 
+            $conn = $this->entityManager->getConnection();
+
             // Estadísticas de usuarios
-            $estadisticasUsuarios = $this->usuarioRepository->getEstadisticasUsuarios();
-            
-            // Estadísticas de entrenadores
-            $estadisticasEntrenadores = $this->entrenadorRepository->getEstadisticas();
-            
-            // Estadísticas de suscripciones
-            $estadisticasSuscripciones = $this->suscripcionRepository->getEstadisticas();
-            
-            // Ingresos mensuales recurrentes
-            $mrr = $this->suscripcionRepository->getMRR();
+            $totalUsuarios = (int)$conn->executeQuery('SELECT COUNT(*) FROM usuarios')->fetchOne();
+            $usuariosNormales = (int)$conn->executeQuery('SELECT COUNT(*) FROM usuarios WHERE es_premium = 0')->fetchOne();
+            $usuariosPremium = (int)$conn->executeQuery('SELECT COUNT(*) FROM usuarios WHERE es_premium = 1')->fetchOne();
 
-            // Últimos registros
-            $ultimosUsuarios = $this->usuarioRepository->findUltimosRegistros(5);
-            $ultimosEntrenadores = $this->entrenadorRepository->findUltimosRegistros(5);
-
-            // Aplicaciones pendientes
-            $aplicacionesPendientes = $this->entrenadorRepository->countAplicacionesPendientes();
+            // Total de entrenadores
+            $totalEntrenadores = (int)$conn->executeQuery('SELECT COUNT(*) FROM entrenadores')->fetchOne();
 
             return $this->jsonWithUnicode([
                 'success' => true,
-                'dashboard' => [
-                    'usuarios' => $estadisticasUsuarios,
-                    'entrenadores' => $estadisticasEntrenadores,
-                    'suscripciones' => $estadisticasSuscripciones,
-                    'ingresos' => [
-                        'mrr' => $mrr,
-                        'moneda' => 'EUR',
-                    ],
-                    'pendientes' => [
-                        'aplicaciones_entrenador' => $aplicacionesPendientes,
-                    ],
-                    'ultimos_registros' => [
-                        'usuarios' => array_map([$this, 'serializeUsuarioBasico'], $ultimosUsuarios),
-                        'entrenadores' => array_map([$this, 'serializeEntrenadorBasico'], $ultimosEntrenadores),
-                    ],
-                ],
+                'estadisticas' => [
+                    'total_usuarios' => $totalUsuarios,
+                    'usuarios_normales' => $usuariosNormales,
+                    'usuarios_premium' => $usuariosPremium,
+                    'total_entrenadores' => $totalEntrenadores,
+                ]
             ]);
         } catch (\Exception $e) {
             return $this->jsonWithUnicode([
@@ -464,6 +445,266 @@ class AdminController extends AbstractController
             'estado_aplicacion' => $entrenador->getEstadoAplicacion(),
             'fecha_registro' => $entrenador->getFechaRegistro()?->format('Y-m-d H:i:s'),
         ];
+    }
+
+    // ============================================
+    // GESTIÓN DE ENTRENADORES
+    // ============================================
+
+    /**
+     * Listar todos los entrenadores
+     * GET /api/admin/entrenadores
+     */
+    #[Route('/entrenadores', name: 'entrenadores_list', methods: ['GET'])]
+    public function listarEntrenadores(): JsonResponse
+    {
+        try {
+            $conn = $this->entityManager->getConnection();
+
+            $sql = "
+                SELECT
+                    id,
+                    nombre,
+                    apellidos,
+                    email,
+                    especialidad,
+                    anos_experiencia,
+                    fecha_registro
+                FROM entrenadores
+                ORDER BY fecha_registro DESC
+            ";
+
+            $result = $conn->executeQuery($sql);
+            $entrenadores = $result->fetchAllAssociative();
+
+            foreach ($entrenadores as &$entrenador) {
+                $entrenador['nombre_completo'] = trim($entrenador['nombre'] . ' ' . $entrenador['apellidos']);
+            }
+
+            return $this->jsonWithUnicode([
+                'success' => true,
+                'entrenadores' => $entrenadores,
+                'total' => count($entrenadores)
+            ]);
+        } catch (\Exception $e) {
+            return $this->jsonWithUnicode([
+                'success' => false,
+                'error' => 'Error al obtener entrenadores: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ============================================
+    // GESTIÓN DE DIETAS
+    // ============================================
+
+    /**
+     * Listar todas las dietas
+     * GET /api/admin/dietas
+     */
+    #[Route('/dietas', name: 'dietas_list', methods: ['GET'])]
+    public function listarDietas(): JsonResponse
+    {
+        try {
+            $conn = $this->entityManager->getConnection();
+
+            $sql = "
+                SELECT
+                    d.id,
+                    d.nombre,
+                    d.descripcion,
+                    d.calorias_totales,
+                    d.es_publica,
+                    d.valoracion_promedio,
+                    d.total_valoraciones,
+                    d.fecha_creacion,
+                    e.nombre as creador_nombre,
+                    e.apellidos as creador_apellidos
+                FROM dietas d
+                LEFT JOIN entrenadores e ON d.creador_id = e.id
+                ORDER BY d.fecha_creacion DESC
+            ";
+
+            $result = $conn->executeQuery($sql);
+            $dietas = $result->fetchAllAssociative();
+
+            foreach ($dietas as &$dieta) {
+                $dieta['es_publica'] = (bool)$dieta['es_publica'];
+                $dieta['valoracion_promedio'] = (float)$dieta['valoracion_promedio'];
+                $dieta['calorias_totales'] = (int)$dieta['calorias_totales'];
+                $dieta['destacada'] = ($dieta['valoracion_promedio'] > 4.5 && $dieta['total_valoraciones'] > 100);
+            }
+
+            return $this->jsonWithUnicode([
+                'success' => true,
+                'dietas' => $dietas,
+                'total' => count($dietas)
+            ]);
+        } catch (\Exception $e) {
+            return $this->jsonWithUnicode([
+                'success' => false,
+                'error' => 'Error al obtener dietas: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ============================================
+    // GESTIÓN DE ALIMENTOS
+    // ============================================
+
+    /**
+     * Listar todos los alimentos
+     * GET /api/admin/alimentos
+     */
+    #[Route('/alimentos', name: 'alimentos_list', methods: ['GET'])]
+    public function listarAlimentos(): JsonResponse
+    {
+        try {
+            $conn = $this->entityManager->getConnection();
+
+            $sql = "
+                SELECT
+                    id,
+                    nombre,
+                    tipo_alimento as categoria,
+                    descripcion,
+                    calorias,
+                    proteinas,
+                    carbohidratos,
+                    grasas,
+                    precio_kg
+                FROM alimentos
+                ORDER BY nombre ASC
+            ";
+
+            $result = $conn->executeQuery($sql);
+            $alimentos = $result->fetchAllAssociative();
+
+            foreach ($alimentos as &$alimento) {
+                $alimento['calorias'] = (float)$alimento['calorias'];
+                $alimento['proteinas'] = (float)$alimento['proteinas'];
+                $alimento['carbohidratos'] = (float)$alimento['carbohidratos'];
+                $alimento['grasas'] = (float)$alimento['grasas'];
+                $alimento['precio_kg'] = $alimento['precio_kg'] ? (float)$alimento['precio_kg'] : null;
+            }
+
+            return $this->jsonWithUnicode([
+                'success' => true,
+                'alimentos' => $alimentos,
+                'total' => count($alimentos)
+            ]);
+        } catch (\Exception $e) {
+            return $this->jsonWithUnicode([
+                'success' => false,
+                'error' => 'Error al obtener alimentos: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ============================================
+    // GESTIÓN DE EJERCICIOS
+    // ============================================
+
+    /**
+     * Listar todos los ejercicios
+     * GET /api/admin/ejercicios
+     */
+    #[Route('/ejercicios', name: 'ejercicios_list', methods: ['GET'])]
+    public function listarEjercicios(): JsonResponse
+    {
+        try {
+            $conn = $this->entityManager->getConnection();
+
+            $sql = "
+                SELECT
+                    id,
+                    nombre,
+                    tipo,
+                    grupo_muscular,
+                    descripcion,
+                    nivel_dificultad,
+                    valoracion_promedio,
+                    total_valoraciones
+                FROM ejercicios
+                ORDER BY nombre ASC
+            ";
+
+            $result = $conn->executeQuery($sql);
+            $ejercicios = $result->fetchAllAssociative();
+
+            foreach ($ejercicios as &$ejercicio) {
+                $ejercicio['valoracion_promedio'] = (float)$ejercicio['valoracion_promedio'];
+                $ejercicio['premium'] = ($ejercicio['valoracion_promedio'] > 4.5); // Ejemplo de lógica
+            }
+
+            return $this->jsonWithUnicode([
+                'success' => true,
+                'ejercicios' => $ejercicios,
+                'total' => count($ejercicios)
+            ]);
+        } catch (\Exception $e) {
+            return $this->jsonWithUnicode([
+                'success' => false,
+                'error' => 'Error al obtener ejercicios: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ============================================
+    // GESTIÓN DE SUSCRIPCIONES
+    // ============================================
+
+    /**
+     * Listar todas las suscripciones
+     * GET /api/admin/suscripciones
+     */
+    #[Route('/suscripciones', name: 'suscripciones_list', methods: ['GET'])]
+    public function listarSuscripciones(): JsonResponse
+    {
+        try {
+            $conn = $this->entityManager->getConnection();
+
+            $sql = "
+                SELECT
+                    s.id,
+                    s.usuario_id,
+                    s.plan_id,
+                    s.fecha_inicio,
+                    s.fecha_fin,
+                    s.estado,
+                    s.precio_pagado,
+                    s.metodo_pago,
+                    u.nombre as usuario_nombre,
+                    u.apellidos as usuario_apellidos,
+                    u.email as usuario_email,
+                    p.nombre as plan_nombre,
+                    p.precio as plan_precio
+                FROM suscripciones s
+                INNER JOIN usuarios u ON s.usuario_id = u.id
+                LEFT JOIN planes p ON s.plan_id = p.id
+                ORDER BY s.fecha_inicio DESC
+            ";
+
+            $result = $conn->executeQuery($sql);
+            $suscripciones = $result->fetchAllAssociative();
+
+            foreach ($suscripciones as &$suscripcion) {
+                $suscripcion['precio_pagado'] = (float)$suscripcion['precio_pagado'];
+                $suscripcion['plan_precio'] = $suscripcion['plan_precio'] ? (float)$suscripcion['plan_precio'] : null;
+                $suscripcion['usuario_nombre_completo'] = trim($suscripcion['usuario_nombre'] . ' ' . $suscripcion['usuario_apellidos']);
+            }
+
+            return $this->jsonWithUnicode([
+                'success' => true,
+                'suscripciones' => $suscripciones,
+                'total' => count($suscripciones)
+            ]);
+        } catch (\Exception $e) {
+            return $this->jsonWithUnicode([
+                'success' => false,
+                'error' => 'Error al obtener suscripciones: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

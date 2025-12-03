@@ -5,6 +5,7 @@ namespace App\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/usuario')]
@@ -18,11 +19,51 @@ class MisDietasController extends AbstractController
     }
 
     #[Route('/mis-dietas/{usuarioId}', name: 'api_usuario_mis_dietas', methods: ['GET'])]
-    public function getMisDietas(int $usuarioId): JsonResponse
+    public function getMisDietas(int $usuarioId, Request $request): JsonResponse
     {
         try {
-            // Query para dietas ASIGNADAS POR ENTRENADOR
-            // (Tienen creador_id != NULL y están asignadas al usuario)
+            // ✅ Obtener token del header
+            $authHeader = $request->headers->get('Authorization');
+
+            if (!$authHeader || !preg_match('/^Bearer\s+(.+)$/', $authHeader, $matches)) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Token no proporcionado'
+                ], 401);
+            }
+
+            $token = $matches[1];
+
+            // ✅ Validar token (verificar que no está expirado)
+            $payload = $this->decodeJwt($token);
+            if (!$payload) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Token inválido o expirado'
+                ], 401);
+            }
+
+            // ✅ Verificar que el usuario del token es el solicitado
+            // Buscar email en múltiples claims posibles (username, email, sub)
+            $emailFromToken = $payload['username'] ?? $payload['email'] ?? $payload['sub'] ?? null;
+
+            // Obtener ID del usuario por email
+            $usuarioFromDb = $this->entityManager
+                ->getConnection()
+                ->executeQuery(
+                    "SELECT id FROM usuarios WHERE email = ?",
+                    [$emailFromToken]
+                )
+                ->fetchOne();
+
+            if (!$usuarioFromDb || (int)$usuarioFromDb !== (int)$usuarioId) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'No tienes permiso para ver estas dietas'
+                ], 403);
+            }
+
+            // ✅ Query para dietas ASIGNADAS
             $sqlAsignadas = "
                 SELECT 
                     d.id,
@@ -47,8 +88,7 @@ class MisDietasController extends AbstractController
             $resultAsignadas = $stmtAsignadas->executeQuery(['usuarioId' => $usuarioId]);
             $dietasAsignadas = $resultAsignadas->fetchAllAssociative();
 
-            // Query para dietas CREADAS POR EL USUARIO
-            // (Dietas sin creador_id entrenador)
+            // ✅ Query para dietas CREADAS
             $sqlCreadas = "
                 SELECT 
                     d.id,
@@ -76,19 +116,55 @@ class MisDietasController extends AbstractController
                 'totalAsignadas' => count($dietasAsignadas),
                 'totalCreadas' => count($dietasCreadas)
             ]);
-
         } catch (\Exception $e) {
             return $this->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
     }
 
     #[Route('/dieta/{dietaId}/usuario/{usuarioId}', name: 'api_usuario_detalle_dieta', methods: ['GET'])]
-    public function getDetalleDieta(int $dietaId, int $usuarioId): JsonResponse
+    public function getDetalleDieta(int $dietaId, int $usuarioId, Request $request): JsonResponse
     {
         try {
+            // ✅ Validar token
+            $authHeader = $request->headers->get('Authorization');
+
+            if (!$authHeader || !preg_match('/^Bearer\s+(.+)$/', $authHeader, $matches)) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Token no proporcionado'
+                ], 401);
+            }
+
+            $token = $matches[1];
+            $payload = $this->decodeJwt($token);
+
+            if (!$payload) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Token inválido o expirado'
+                ], 401);
+            }
+
+            // Buscar email en múltiples claims posibles (username, email, sub)
+            $emailFromToken = $payload['username'] ?? $payload['email'] ?? $payload['sub'] ?? null;
+            $usuarioFromDb = $this->entityManager
+                ->getConnection()
+                ->executeQuery(
+                    "SELECT id FROM usuarios WHERE email = ?",
+                    [$emailFromToken]
+                )
+                ->fetchOne();
+
+            if (!$usuarioFromDb || (int)$usuarioFromDb !== (int)$usuarioId) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'No autorizado'
+                ], 403);
+            }
+
             // Info básica de la dieta
             $sql = "
                 SELECT 
@@ -112,7 +188,7 @@ class MisDietasController extends AbstractController
                 return $this->json(['success' => false, 'error' => 'Dieta no encontrada'], 404);
             }
 
-            // Obtener platos por día usando la nueva tabla dieta_platos
+            // Obtener platos por día
             $sqlPlatos = "
                 SELECT 
                     dp.dia_semana,
@@ -137,7 +213,7 @@ class MisDietasController extends AbstractController
             $result = $stmt->executeQuery(['dietaId' => $dietaId]);
             $platos = $result->fetchAllAssociative();
 
-            // Agrupar por día y momento
+            // Agrupar por día
             $planSemanal = [
                 'lunes' => [],
                 'martes' => [],
@@ -151,8 +227,7 @@ class MisDietasController extends AbstractController
             foreach ($platos as $plato) {
                 $dia = $plato['dia_semana'];
                 $momento = $plato['tipo_comida'];
-                
-                // Obtener ingredientes del plato
+
                 $sqlIngredientes = "
                     SELECT 
                         pa.cantidad_gramos,
@@ -167,11 +242,11 @@ class MisDietasController extends AbstractController
                     WHERE pa.plato_id = :platoId
                     ORDER BY pa.orden
                 ";
-                
+
                 $stmtIng = $this->entityManager->getConnection()->prepare($sqlIngredientes);
                 $resultIng = $stmtIng->executeQuery(['platoId' => $plato['plato_id']]);
                 $ingredientes = $resultIng->fetchAllAssociative();
-                
+
                 $planSemanal[$dia][] = [
                     'momento_dia' => $momento,
                     'plato_nombre' => $plato['plato_nombre'],
@@ -189,12 +264,118 @@ class MisDietasController extends AbstractController
                 'dieta' => $dieta,
                 'plan_semanal' => $planSemanal
             ]);
-
         } catch (\Exception $e) {
             return $this->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => 'Error: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Decodificar JWT usando clave pública
+     */
+    private function decodeJwt(string $token): ?array
+    {
+        try {
+            $parts = explode('.', $token);
+            if (count($parts) !== 3) {
+                return null;
+            }
+
+            [$headerB64, $payloadB64, $signatureB64] = $parts;
+
+            // Decodificar payload
+            $payload = json_decode($this->base64UrlDecode($payloadB64), true);
+
+            if (!$payload) {
+                return null;
+            }
+
+            // Verificar expiración
+            if (isset($payload['exp']) && $payload['exp'] < time()) {
+                return null;
+            }
+
+            // Verificar firma
+            $message = "$headerB64.$payloadB64";
+            $signature = $this->base64UrlDecode($signatureB64);
+
+            $publicKeyPath = __DIR__ . '/../../config/jwt/public.pem';
+            if (!file_exists($publicKeyPath)) {
+                return null;
+            }
+
+            $publicKey = openssl_pkey_get_public(file_get_contents($publicKeyPath));
+            if ($publicKey === false) {
+                return null;
+            }
+
+            $verified = openssl_verify($message, $signature, $publicKey, OPENSSL_ALGO_SHA256);
+
+            if ($verified !== 1) {
+                return null;
+            }
+
+            return $payload;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    private function base64UrlDecode(string $data): string
+    {
+        $padding = strlen($data) % 4;
+        if ($padding) {
+            $data .= str_repeat('=', 4 - $padding);
+        }
+        return base64_decode(strtr($data, '-_', '+/'));
+    }
+    #[Route('/test-token', name: 'test_token', methods: ['GET'])]
+    public function testToken(Request $request): JsonResponse
+    {
+        $authHeader = $request->headers->get('Authorization');
+
+        return $this->json([
+            'auth_header' => $authHeader,
+            'has_auth' => $authHeader ? true : false
+        ]);
+    }
+
+    #[Route('/debug-jwt', name: 'debug_jwt', methods: ['GET'])]
+    public function debugJwt(Request $request): JsonResponse
+    {
+        $authHeader = $request->headers->get('Authorization');
+
+        if (!$authHeader || !preg_match('/^Bearer\s+(.+)$/', $authHeader, $matches)) {
+            return $this->json([
+                'error' => 'No token found',
+                'auth_header' => $authHeader
+            ]);
+        }
+
+        $token = $matches[1];
+        $parts = explode('.', $token);
+
+        if (count($parts) !== 3) {
+            return $this->json(['error' => 'Invalid token format']);
+        }
+
+        [$headerB64, $payloadB64, $signatureB64] = $parts;
+
+        // Decodificar payload
+        $payload = json_decode($this->base64UrlDecode($payloadB64), true);
+
+        return $this->json([
+            'success' => true,
+            'payload' => $payload,
+            'payload_keys' => array_keys($payload ?? []),
+            'has_username' => isset($payload['username']),
+            'has_email' => isset($payload['email']),
+            'has_sub' => isset($payload['sub']),
+            'username_value' => $payload['username'] ?? 'NO EXISTE',
+            'email_value' => $payload['email'] ?? 'NO EXISTE',
+            'sub_value' => $payload['sub'] ?? 'NO EXISTE'
+        ]);
     }
 }

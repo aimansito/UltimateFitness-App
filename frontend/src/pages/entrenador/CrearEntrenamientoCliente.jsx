@@ -193,7 +193,7 @@ function CrearEntrenamientoCliente() {
       
       if (response.data.success) {
         alert(`✅ ¡Entrenamiento creado!\n\n💪 ${nombre}\n👤 ${cliente.nombre} ${cliente.apellidos}`);
-        navigate('/dashboard-entrenador');
+        navigate('/entrenador/dashboard');
       } else {
         alert('❌ Error: ' + response.data.error);
       }
@@ -219,7 +219,7 @@ function CrearEntrenamientoCliente() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-white mb-4">Cliente no encontrado</h2>
           <button
-            onClick={() => navigate('/dashboard-entrenador')}
+            onClick={() => navigate('/entrenador/dashboard')}
             className="bg-uf-gold text-black px-6 py-2 rounded-lg font-bold"
           >
             Volver
@@ -238,7 +238,7 @@ function CrearEntrenamientoCliente() {
         {/* Header */}
         <div className="mb-6">
           <button
-            onClick={() => navigate('/dashboard-entrenador')}
+            onClick={() => navigate('/entrenador/dashboard')}
             className="text-uf-gold hover:text-yellow-600 font-semibold flex items-center gap-2 mb-4"
           >
             <ArrowLeft className="w-5 h-5" />

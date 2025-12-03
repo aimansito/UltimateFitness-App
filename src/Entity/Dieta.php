@@ -30,7 +30,7 @@ class Dieta
     private ?string $descripcion = null;
 
     #[ORM\ManyToOne(targetEntity: Entrenador::class, inversedBy: 'dietas')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Entrenador $creador = null;
 
     #[ORM\ManyToOne(targetEntity: Usuario::class, inversedBy: 'dietasAsignadas')]
@@ -39,6 +39,15 @@ class Dieta
 
     #[ORM\Column(nullable: true)]
     private ?int $caloriasTotales = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2, nullable: true)]
+    private ?string $proteinasTotales = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2, nullable: true)]
+    private ?string $carbohidratosTotales = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2, nullable: true)]
+    private ?string $grasasTotales = null;
 
     #[ORM\Column(options: ['default' => true])]
     private bool $esPublica = true;
@@ -115,6 +124,36 @@ class Dieta
     public function setCaloriasTotales(?int $caloriasTotales): static
     {
         $this->caloriasTotales = $caloriasTotales;
+        return $this;
+    }
+
+    public function getProteinasTotales(): ?string
+    {
+        return $this->proteinasTotales;
+    }
+    public function setProteinasTotales(?string $proteinasTotales): static
+    {
+        $this->proteinasTotales = $proteinasTotales;
+        return $this;
+    }
+
+    public function getCarbohidratosTotales(): ?string
+    {
+        return $this->carbohidratosTotales;
+    }
+    public function setCarbohidratosTotales(?string $carbohidratosTotales): static
+    {
+        $this->carbohidratosTotales = $carbohidratosTotales;
+        return $this;
+    }
+
+    public function getGrasasTotales(): ?string
+    {
+        return $this->grasasTotales;
+    }
+    public function setGrasasTotales(?string $grasasTotales): static
+    {
+        $this->grasasTotales = $grasasTotales;
         return $this;
     }
     public function isEsPublica(): bool

@@ -385,4 +385,98 @@ public function crear(
 
         return $data;
     }
+
+    // ============================================
+    // OBTENER PLATOS CREADOS POR UN ENTRENADOR
+    // ============================================
+    #[Route('/entrenador/{entrenadorId}', name: 'platos_entrenador', methods: ['GET'])]
+    public function platosEntrenador(
+        int $entrenadorId,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        try {
+            $platos = $entityManager->getRepository(Plato::class)
+                ->findBy(['creadorId' => $entrenadorId], ['fechaCreacion' => 'DESC']);
+
+            $platosData = array_map(function($plato) {
+                return $this->serializePlato($plato, false);
+            }, $platos);
+
+            return $this->json([
+                'success' => true,
+                'platos' => $platosData,
+                'total' => count($platosData)
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Error al obtener platos: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ============================================
+    // OBTENER PLATOS ASIGNADOS A UN USUARIO
+    // ============================================
+    #[Route('/usuario/{usuarioId}', name: 'platos_usuario', methods: ['GET'])]
+    public function platosUsuario(
+        int $usuarioId,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        try {
+            $conn = $entityManager->getConnection();
+
+            // Obtener platos que el entrenador ha asignado al usuario a través de dietas
+            $sql = "
+                SELECT DISTINCT
+                    p.id,
+                    p.nombre,
+                    p.descripcion,
+                    p.instrucciones,
+                    p.tipo_comida,
+                    p.tiempo_preparacion,
+                    p.dificultad,
+                    p.calorias_totales,
+                    p.proteinas_totales,
+                    p.carbohidratos_totales,
+                    p.grasas_totales,
+                    p.imagen_url,
+                    p.es_publico,
+                    p.valoracion_promedio,
+                    p.total_valoraciones,
+                    p.fecha_creacion,
+                    p.creador_id
+                FROM platos p
+                INNER JOIN dieta_platos dp ON p.id = dp.plato_id
+                INNER JOIN dietas d ON dp.dieta_id = d.id
+                WHERE d.asignado_a_usuario_id = :usuarioId
+                AND d.creador_id IS NOT NULL
+                ORDER BY p.fecha_creacion DESC
+            ";
+
+            $stmt = $conn->prepare($sql);
+            $result = $stmt->executeQuery(['usuarioId' => $usuarioId]);
+            $platos = $result->fetchAllAssociative();
+
+            foreach ($platos as &$plato) {
+                $plato['es_publico'] = (bool)$plato['es_publico'];
+                $plato['calorias_totales'] = (float)$plato['calorias_totales'];
+                $plato['proteinas_totales'] = (float)$plato['proteinas_totales'];
+                $plato['carbohidratos_totales'] = (float)$plato['carbohidratos_totales'];
+                $plato['grasas_totales'] = (float)$plato['grasas_totales'];
+                $plato['valoracion_promedio'] = (float)$plato['valoracion_promedio'];
+            }
+
+            return $this->json([
+                'success' => true,
+                'platos' => $platos,
+                'total' => count($platos)
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Error al obtener platos: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

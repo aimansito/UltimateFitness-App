@@ -16,7 +16,6 @@ import CrearDieta from "./pages/public/CrearDieta";
 import Suplementos from "./pages/public/Suplementos";
 import Blog from "./pages/public/Blog";
 import BlogPost from "./pages/public/BlogPost";
-import MisPlatos from "./pages/public/MisPlatos";
 import DetallePlato from "./pages/public/DetallePlato";
 
 // Dashboard Router
@@ -36,12 +35,16 @@ import MisDatosPersonales from "./pages/user/MisDatosPersonales";
 import MisEntrenamientos from "./pages/user/MisEntrenamientos";
 import CrearEntrenamiento from "./pages/user/CrearEntrenamiento";
 import MisDietas from "./pages/user/MisDietas";
+import MisPlatos from "./pages/user/MisPlatos";
 import DetalleDieta from "./pages/user/DetalleDieta";
 import DetalleEntrenamiento from "./pages/user/DetalleEntrenamiento";
 import MiSuscripcion from "./pages/user/MiSuscripcion";
 
 import CrearDietaCliente from './pages/entrenador/CrearDietaCliente';
 import CrearEntrenamientoCliente from './pages/entrenador/CrearEntrenamientoCliente';
+import MisPlatosEntrenador from './pages/entrenador/MisPlatosEntrenador';
+import MisDietasEntrenador from './pages/entrenador/MisDietasEntrenador';
+import CrearPlato from './pages/entrenador/CrearPlato';
 
 
 function App() {
@@ -69,11 +72,35 @@ function App() {
           <Route path="/suplementos" element={<Suplementos />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/mis-platos" element={<MisPlatos />} />
           <Route path="/plato/:id" element={<DetallePlato />} />
           <Route path="/entrenador/cliente/:clienteId/crear-dieta" element={<CrearDietaCliente />} />
           <Route path="/entrenador/cliente/:clienteId/crear-entrenamiento" element={<CrearEntrenamientoCliente />} />
 
+          {/* Rutas del entrenador */}
+          <Route
+            path="/entrenador/mis-platos"
+            element={
+              <ProtectedRoute requiredRole="entrenador">
+                <MisPlatosEntrenador />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/entrenador/mis-dietas"
+            element={
+              <ProtectedRoute requiredRole="entrenador">
+                <MisDietasEntrenador />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/crear-plato"
+            element={
+              <ProtectedRoute requiredRole="entrenador">
+                <CrearPlato />
+              </ProtectedRoute>
+            }
+          />
 
           {/* --------------------------- */}
           {/* DASHBOARD ROUTER */}
@@ -194,6 +221,16 @@ function App() {
             element={
               <ProtectedRoute requireAuth={true}>
                 <DetalleDieta />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* LISTA DE PLATOS DEL USUARIO */}
+          <Route
+            path="/mis-platos"
+            element={
+              <ProtectedRoute requireAuth={true}>
+                <MisPlatos />
               </ProtectedRoute>
             }
           />

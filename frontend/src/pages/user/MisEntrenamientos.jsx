@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../services/api';
 import {
   Dumbbell,
   Calendar,
@@ -33,27 +33,10 @@ function MisEntrenamientos() {
   useEffect(() => {
     const fetchEntrenamientos = async () => {
       try {
-        // ✅ OBTENER TOKEN DEL LOCALSTORAGE
-        const token = localStorage.getItem('token');
+        console.log('✅ Cargando entrenamientos...');
 
-        if (!token) {
-          console.error('❌ No hay token disponible');
-          setLoading(false);
-          return;
-        }
-
-        console.log('✅ Token encontrado, cargando entrenamientos...');
-
-        // ✅ HACER LA PETICIÓN CON EL TOKEN EN EL HEADER
-        const response = await axios.get(
-          'http://localhost:8000/api/custom/mis-entrenamientos',
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          }
-        );
+        // ✅ USAR api SERVICE QUE YA INCLUYE EL TOKEN AUTOMÁTICAMENTE
+        const response = await api.get('/custom/mis-entrenamientos');
 
         if (response.data.success) {
           console.log('✅ Entrenamientos cargados:', response.data);

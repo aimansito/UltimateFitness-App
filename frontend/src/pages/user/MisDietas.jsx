@@ -1,55 +1,108 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { Link, useSearchParams } from 'react-router-dom';
+import api from '../../services/api';
 import {
   Utensils,
   ChevronRight,
   Calendar,
   Apple,
-  User
+  User,
+  Globe
 } from 'lucide-react';
 
 function MisDietas() {
-  const { user } = useAuth();
+  const { user, isPremium } = useAuth();
+  const [searchParams] = useSearchParams();
   const [dietasAsignadas, setDietasAsignadas] = useState([]);
   const [dietasCreadas, setDietasCreadas] = useState([]);
+  const [dietasPublicas, setDietasPublicas] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [tabActivo, setTabActivo] = useState('asignadas'); // 'asignadas' o 'creadas'
+
+  // Leer pestaña de URL o usar default
+  const tabFromUrl = searchParams.get('tab');
+  const getInitialTab = () => {
+    if (tabFromUrl && ['asignadas', 'creadas', 'publicas'].includes(tabFromUrl)) {
+      return tabFromUrl;
+    }
+    return isPremium ? 'asignadas' : 'publicas';
+  };
+
+  const [tabActivo, setTabActivo] = useState(getInitialTab());
 
   useEffect(() => {
     if (user) {
       fetchMisDietas();
+      fetchDietasPublicas();
     }
   }, [user]);
 
+  // Actualizar pestaña cuando cambia el parámetro de URL
+  useEffect(() => {
+    if (tabFromUrl && ['asignadas', 'creadas', 'publicas'].includes(tabFromUrl)) {
+      setTabActivo(tabFromUrl);
+    }
+  }, [tabFromUrl]);
+
   const fetchMisDietas = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/usuario/mis-dietas/${user.id}`);
+      // Solo cargar dietas personales si es premium
+      if (isPremium) {
+        const response = await api.get(`/usuario/mis-dietas/${user.id}`);
+        console.log('✅ Respuesta dietas usuario:', response.data);
 
-      if (response.data.success) {
-        setDietasAsignadas(response.data.dietasAsignadas || []);
-        setDietasCreadas(response.data.dietasCreadas || []);
+        if (response.data.success) {
+          setDietasAsignadas(response.data.dietasAsignadas || []);
+          setDietasCreadas(response.data.dietasCreadas || []);
+        }
       }
     } catch (error) {
-      console.error('Error al cargar dietas:', error);
+      console.error('❌ Error al cargar dietas:', error);
+      console.error('Detalle del error:', error.response?.data);
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchDietasPublicas = async () => {
+    try {
+      const response = await api.get('/custom/dietas/publicas');
+      console.log('✅ Respuesta dietas públicas:', response.data);
+
+      if (response.data.success) {
+        setDietasPublicas(response.data.dietas || []);
+      }
+    } catch (error) {
+      console.error('❌ Error al cargar dietas públicas:', error);
+      console.error('Detalle del error:', error.response?.data);
+    }
+  };
+
   const renderDietas = (dietas, tipo) => {
     if (dietas.length === 0) {
+      const mensajes = {
+        asignadas: {
+          titulo: 'No tienes dietas asignadas',
+          descripcion: 'Tu entrenador aún no te ha asignado ningún plan nutricional'
+        },
+        creadas: {
+          titulo: 'No has creado dietas',
+          descripcion: 'Aún no has creado ninguna dieta personalizada'
+        },
+        publicas: {
+          titulo: 'No hay dietas públicas disponibles',
+          descripcion: 'Próximamente habrá más dietas disponibles'
+        }
+      };
+
       return (
         <div className="text-center py-16">
           <Apple className="w-24 h-24 text-gray-600 mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-white mb-2">
-            {tipo === 'asignadas' ? 'No tienes dietas asignadas' : 'No has creado dietas'}
+            {mensajes[tipo].titulo}
           </h3>
           <p className="text-gray-400">
-            {tipo === 'asignadas'
-              ? 'Tu entrenador aún no te ha asignado ningún plan nutricional'
-              : 'Aún no has creado ninguna dieta personalizada'}
+            {mensajes[tipo].descripcion}
           </p>
         </div>
       );
@@ -131,7 +184,9 @@ function MisDietas() {
     );
   }
 
-  const totalDietas = dietasAsignadas.length + dietasCreadas.length;
+  const totalDietas = isPremium
+    ? dietasAsignadas.length + dietasCreadas.length
+    : dietasPublicas.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
@@ -157,35 +212,55 @@ function MisDietas() {
         {/* Tabs */}
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-b-2 border-gray-700">
           <div className="flex gap-1 p-2">
+            {isPremium && (
+              <>
+                <button
+                  onClick={() => setTabActivo('asignadas')}
+                  className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${tabActivo === 'asignadas'
+                      ? 'bg-orange-500 text-white shadow-lg'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    }`}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <User className="w-5 h-5" />
+                    <span>Dietas de mi Entrenador</span>
+                    <span className={`ml-2 px-2 py-1 rounded-full text-xs ${tabActivo === 'asignadas' ? 'bg-white/20' : 'bg-gray-900'
+                      }`}>
+                      {dietasAsignadas.length}
+                    </span>
+                  </div>
+                </button>
+                <button
+                  onClick={() => setTabActivo('creadas')}
+                  className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${tabActivo === 'creadas'
+                      ? 'bg-orange-500 text-white shadow-lg'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                    }`}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    <Utensils className="w-5 h-5" />
+                    <span>Mis Dietas Creadas</span>
+                    <span className={`ml-2 px-2 py-1 rounded-full text-xs ${tabActivo === 'creadas' ? 'bg-white/20' : 'bg-gray-900'
+                      }`}>
+                      {dietasCreadas.length}
+                    </span>
+                  </div>
+                </button>
+              </>
+            )}
             <button
-              onClick={() => setTabActivo('asignadas')}
-              className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${tabActivo === 'asignadas'
+              onClick={() => setTabActivo('publicas')}
+              className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${tabActivo === 'publicas'
                   ? 'bg-orange-500 text-white shadow-lg'
                   : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                 }`}
             >
               <div className="flex items-center justify-center gap-2">
-                <User className="w-5 h-5" />
-                <span>Dietas de mi Entrenador</span>
-                <span className={`ml-2 px-2 py-1 rounded-full text-xs ${tabActivo === 'asignadas' ? 'bg-white/20' : 'bg-gray-900'
+                <Globe className="w-5 h-5" />
+                <span>Dietas Públicas</span>
+                <span className={`ml-2 px-2 py-1 rounded-full text-xs ${tabActivo === 'publicas' ? 'bg-white/20' : 'bg-gray-900'
                   }`}>
-                  {dietasAsignadas.length}
-                </span>
-              </div>
-            </button>
-            <button
-              onClick={() => setTabActivo('creadas')}
-              className={`flex-1 py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${tabActivo === 'creadas'
-                  ? 'bg-orange-500 text-white shadow-lg'
-                  : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                }`}
-            >
-              <div className="flex items-center justify-center gap-2">
-                <Utensils className="w-5 h-5" />
-                <span>Mis Dietas Creadas</span>
-                <span className={`ml-2 px-2 py-1 rounded-full text-xs ${tabActivo === 'creadas' ? 'bg-white/20' : 'bg-gray-900'
-                  }`}>
-                  {dietasCreadas.length}
+                  {dietasPublicas.length}
                 </span>
               </div>
             </button>
@@ -196,6 +271,7 @@ function MisDietas() {
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-b-lg shadow-2xl border border-gray-700">
           {tabActivo === 'asignadas' && renderDietas(dietasAsignadas, 'asignadas')}
           {tabActivo === 'creadas' && renderDietas(dietasCreadas, 'creadas')}
+          {tabActivo === 'publicas' && renderDietas(dietasPublicas, 'publicas')}
         </div>
       </div>
     </div>

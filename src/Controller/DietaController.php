@@ -89,24 +89,39 @@ class DietaController extends AbstractController
         $dieta->setEsPublica($data['es_publica'] ?? false);
         $dieta->setFechaCreacion(new \DateTime());
         
-        // Asignar creador (Entrenador)
-        // TODO: En el futuro, obtener del usuario autenticado si es entrenador.
-        $entrenador = $entityManager->getRepository(Entrenador::class)->findOneBy([]);
-        
-        if (!$entrenador) {
-            return $this->json([
-                'success' => false,
-                'error' => 'No se puede crear la dieta: Sistema requiere un Entrenador registrado.'
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        // Guardar totales nutricionales
+        if (isset($data['calorias_totales'])) {
+            $dieta->setCaloriasTotales($data['calorias_totales']);
         }
-        $dieta->setCreador($entrenador);
-
-        // Asignar a usuario si se proporciona
+        if (isset($data['proteinas_totales'])) {
+            $dieta->setProteinasTotales($data['proteinas_totales']);
+        }
+        if (isset($data['carbohidratos_totales'])) {
+            $dieta->setCarbohidratosTotales($data['carbohidratos_totales']);
+        }
+        if (isset($data['grasas_totales'])) {
+            $dieta->setGrasasTotales($data['grasas_totales']);
+        }
+        
+        // Asignar a usuario si se proporciona (Usuario Premium creando su propia dieta)
         if (isset($data['asignado_a_usuario_id'])) {
             $usuario = $entityManager->getRepository(Usuario::class)->find($data['asignado_a_usuario_id']);
             if ($usuario) {
                 $dieta->setAsignadoAUsuario($usuario);
+                // NO asignar creador (dejar NULL) para que aparezca en "Mis Dietas Creadas"
+                // El creador_id NULL indica que la dieta fue creada por el propio usuario
             }
+        } else {
+            // Si no hay usuario asignado, es una dieta general creada por entrenador
+            $entrenador = $entityManager->getRepository(Entrenador::class)->findOneBy([]);
+
+            if (!$entrenador) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'No se puede crear la dieta: Sistema requiere un Entrenador registrado.'
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+            $dieta->setCreador($entrenador);
         }
 
         // Procesar el plan de comidas con el nuevo sistema DietaPlato

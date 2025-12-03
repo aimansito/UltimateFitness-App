@@ -75,7 +75,7 @@ class CrearEntrenamientoController extends AbstractController
                         descripcion,
                         tipo,
                         creador_id,
-                        asignado_ausuario_id,
+                        asignado_a_usuario_id,
                         duracion_minutos,
                         nivel_dificultad,
                         es_publico,

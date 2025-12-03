@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { api } from "../../services/authService";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import api  from "../../services/api";
 import {
   Users,
   Dumbbell,
@@ -21,12 +21,21 @@ import {
 function DashboardEntrenador() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [vistaActual, setVistaActual] = useState("dashboard"); // 'dashboard' o 'clientes'
   const [estadisticas, setEstadisticas] = useState(null);
   const [clientesRecientes, setClientesRecientes] = useState([]);
   const [misClientes, setMisClientes] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Leer parámetro de URL para activar pestaña
+  useEffect(() => {
+    const vista = searchParams.get('vista');
+    if (vista === 'clientes') {
+      setVistaActual('clientes');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (user) {
@@ -264,6 +273,51 @@ function DashboardEntrenador() {
                   <p className="text-gray-400 text-xs mt-2">
                     Planes nutricionales activos
                   </p>
+                </div>
+              </div>
+
+              {/* Accesos Rápidos */}
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Activity className="w-6 h-6 text-uf-gold" />
+                  Accesos Rápidos - Alimentación
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button
+                    onClick={() => navigate('/entrenador/mis-platos')}
+                    className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 border-2 border-blue-700 hover:border-blue-500 rounded-lg p-6 transition-all duration-300 hover:shadow-xl group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition">
+                          <Utensils className="w-8 h-8 text-blue-400" />
+                        </div>
+                        <div className="text-left">
+                          <h3 className="text-xl font-bold text-white mb-1">Mis Platos</h3>
+                          <p className="text-blue-400 text-sm">Gestionar recetas personalizadas</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-6 h-6 text-blue-400 group-hover:translate-x-1 transition" />
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/entrenador/mis-dietas')}
+                    className="bg-gradient-to-br from-orange-900/40 to-orange-800/20 border-2 border-orange-700 hover:border-orange-500 rounded-lg p-6 transition-all duration-300 hover:shadow-xl group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-orange-500/20 rounded-lg group-hover:bg-orange-500/30 transition">
+                          <Calendar className="w-8 h-8 text-orange-400" />
+                        </div>
+                        <div className="text-left">
+                          <h3 className="text-xl font-bold text-white mb-1">Mis Dietas</h3>
+                          <p className="text-orange-400 text-sm">Gestionar planes nutricionales</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-6 h-6 text-orange-400 group-hover:translate-x-1 transition" />
+                    </div>
+                  </button>
                 </div>
               </div>
 

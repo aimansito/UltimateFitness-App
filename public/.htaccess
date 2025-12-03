@@ -1,5 +1,16 @@
 DirectoryIndex index.php
 
+# Configuración UTF-8 para caracteres especiales del español
+AddDefaultCharset UTF-8
+AddCharset UTF-8 .php .html .css .js .json
+
+# Configuración PHP para UTF-8
+<IfModule mod_php.c>
+    php_value default_charset "UTF-8"
+    php_value internal_encoding "UTF-8"
+    php_value output_encoding "UTF-8"
+</IfModule>
+
 <IfModule mod_negotiation.c>
     Options -MultiViews
 </IfModule>
