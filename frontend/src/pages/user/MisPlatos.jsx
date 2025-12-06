@@ -79,7 +79,7 @@ function MisPlatos() {
             </p>
 
             <a
-              href="/planes"
+              href="/upgrade-premium"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold px-8 py-4 rounded-lg uppercase tracking-wider hover:from-yellow-600 hover:to-uf-gold transition-all duration-300 transform hover:scale-105"
             >
               <Award className="w-5 h-5" />

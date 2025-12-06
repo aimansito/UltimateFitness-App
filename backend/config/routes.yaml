@@ -1,0 +1,8 @@
+controllers:
+    resource: ../src/Controller/
+    type: attribute
+
+api_health:
+  path: /api/health
+  controller: App\Controller\HealthController::health
+  methods: [GET]

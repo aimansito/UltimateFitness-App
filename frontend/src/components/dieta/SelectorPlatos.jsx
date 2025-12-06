@@ -57,6 +57,12 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
 
   const confirmarSeleccion = () => {
     if (platoSeleccionado) {
+      // Transformar ingredientes al formato esperado
+      const ingredientesTransformados = (platoSeleccionado.ingredientes || []).map(ing => ({
+        nombre: ing.alimento?.nombre || ing.nombre || 'Ingrediente',
+        cantidad: ing.cantidad_gramos || ing.cantidad || 0
+      }));
+
       // Preparar plato para añadir a la dieta
       const platoParaDieta = {
         id: platoSeleccionado.id,
@@ -64,7 +70,7 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
         nombre: platoSeleccionado.nombre,
         descripcion: platoSeleccionado.descripcion,
         tipoComida: platoSeleccionado.tipo_comida,
-        ingredientes: platoSeleccionado.ingredientes || [],
+        ingredientes: ingredientesTransformados,
         totales: {
           calorias: parseFloat(platoSeleccionado.calorias_totales) || 0,
           proteinas: parseFloat(platoSeleccionado.proteinas_totales) || 0,
@@ -75,6 +81,7 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
         esPersonalizado: false,
       };
 
+      console.log('✅ Plato preparado para dieta:', platoParaDieta);
       onSeleccionar(platoParaDieta);
     }
   };

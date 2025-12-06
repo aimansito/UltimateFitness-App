@@ -2,7 +2,7 @@ import { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -22,7 +22,6 @@ export function AuthProvider({ children }) {
         console.log("Token disponible:", !!token);
 
         if (storedUser && token) {
-          // ✅ Si hay usuario Y token, cargar el usuario
           setUser(storedUser);
         }
       } catch (error) {
@@ -45,19 +44,17 @@ export function AuthProvider({ children }) {
 
       console.log("Resultado del login:", data);
 
-      if (data.success) {
-        // ✅ authService.login() ya guardó usuario y token en localStorage
-        // Solo necesitamos actualizar el estado
+      if (data && data.success) {
+        // authService.login guarda usuario + token
         setUser(data.usuario);
-
-        // Redirigir a /dashboard
         navigate("/dashboard");
-
         return data;
       }
+
+      return data || { success: false, error: "Credenciales inválidas" };
     } catch (error) {
       console.error("Error en login:", error);
-      throw error;
+      return { success: false, error: "Error de conexión o servidor" };
     }
   };
 
@@ -72,7 +69,7 @@ export function AuthProvider({ children }) {
   };
 
   // ============================================
-  // REFRESH USER - Actualizar datos del usuario
+  // REFRESH USER (recargar desde localStorage)
   // ============================================
   const refreshUser = async () => {
     try {
@@ -88,35 +85,36 @@ export function AuthProvider({ children }) {
   };
 
   // ============================================
-  // HELPERS DE VALIDACIÓN DE ROL
+  // UPDATE USER (para MisDatosPersonales)
   // ============================================
-  const isAdmin = () => {
-    return user?.rol === "admin";
-  };
-
-  const isTrainer = () => {
-    return user?.rol === "entrenador";
-  };
-
-  const isUser = () => {
-    return user?.rol === "cliente" || (!user?.rol && user);
-  };
-
-  const hasRole = (role) => {
-    if (!user) return false;
-    return user.rol === role;
+  const updateUser = (newUser) => {
+    setUser(newUser);
+    authService.saveUser(newUser); // sincroniza localStorage
   };
 
   // ============================================
-  // VALOR DEL CONTEXTO
+  // ROLES
+  // ============================================
+  const isAdmin = () => user?.rol === "admin";
+  const isTrainer = () => user?.rol === "entrenador";
+  const isUser = () => user?.rol === "cliente" || (!user?.rol && user);
+
+  const hasRole = (role) => user?.rol === role;
+
+  // ============================================
+  // CONTEXTO
   // ============================================
   const value = {
     user,
     login,
     logout,
     refreshUser,
+    updateUser, // <-- añadido correctamente
     isAuthenticated: !!user,
-    isPremium: user?.es_premium || false,
+    isPremium:
+      user?.es_premium === true ||
+      user?.es_premium === 1 ||
+      user?.es_premium === "1",
     isAdmin,
     isTrainer,
     isUser,
@@ -124,7 +122,7 @@ export function AuthProvider({ children }) {
     loading,
   };
 
-  // Mostrar loading mientras carga
+  // Loading inicial
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -149,5 +147,3 @@ export function useAuth() {
   }
   return context;
 }
-
-export default AuthContext;

@@ -36,7 +36,8 @@ function Workout() {
             setCargando(true);
             setError(null);
 
-            const response = await fetch('http://localhost:8000/api/ejercicios');
+            // Endpoint correcto según backend: /api/custom/ejercicios
+            const response = await fetch('http://localhost:8000/api/custom/ejercicios');
 
             if (!response.ok) {
                 throw new Error(`Error ${response.status}`);

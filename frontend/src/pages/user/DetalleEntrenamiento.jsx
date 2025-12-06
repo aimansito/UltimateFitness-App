@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import api from '../../services/api';
 import { ArrowLeft, Calendar, Dumbbell, Target, Clock, Zap } from 'lucide-react';
 
 const DIAS_SEMANA_NOMBRES = {
@@ -30,19 +30,20 @@ function DetalleEntrenamiento() {
 
     const fetchDetalleEntrenamiento = async () => {
         try {
-            // Usar el endpoint custom que devuelve la estructura completa con días
-            const response = await axios.get(
-                `http://localhost:8000/api/entrenamientos/${entrenamientoId}`
+            // Usar el endpoint que devuelve la estructura completa con días
+            const response = await api.get(
+                `/usuario/entrenamiento/${entrenamientoId}`
             );
 
-            if (response.data) {
-                setEntrenamiento(response.data);
+            if (response.data.success && response.data.entrenamiento) {
+                const entrenamientoData = response.data.entrenamiento;
+                setEntrenamiento(entrenamientoData);
 
                 // Seleccionar el primer día activo por defecto
-                if (response.data.dias && response.data.dias.length > 0) {
-                    const primerDiaActivo = response.data.dias.find(d => !d.esDescanso);
+                if (entrenamientoData.dias && entrenamientoData.dias.length > 0) {
+                    const primerDiaActivo = entrenamientoData.dias.find(d => !d.es_descanso);
                     if (primerDiaActivo) {
-                        setDiaSeleccionado(primerDiaActivo.diaSemana);
+                        setDiaSeleccionado(primerDiaActivo.dia_semana);
                     }
                 }
             }
@@ -80,8 +81,8 @@ function DetalleEntrenamiento() {
         );
     }
 
-    const diaActual = entrenamiento.dias?.find(d => d.diaSemana === diaSeleccionado);
-    const diasActivos = entrenamiento.dias?.filter(d => !d.esDescanso).length || 0;
+    const diaActual = entrenamiento.dias?.find(d => d.dia_semana === diaSeleccionado);
+    const diasActivos = entrenamiento.dias?.filter(d => !d.es_descanso).length || 0;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
@@ -115,7 +116,7 @@ function DetalleEntrenamiento() {
                         </div>
                         <div className="text-center">
                             <p className="text-gray-400 text-sm mb-1">Nivel</p>
-                            <p className="text-white font-bold text-lg capitalize">{entrenamiento.nivelDificultad}</p>
+                            <p className="text-white font-bold text-lg capitalize">{entrenamiento.nivel_dificultad}</p>
                         </div>
                         <div className="text-center">
                             <p className="text-gray-400 text-sm mb-1">Días Activos</p>
@@ -123,7 +124,7 @@ function DetalleEntrenamiento() {
                         </div>
                         <div className="text-center">
                             <p className="text-gray-400 text-sm mb-1">Duración Aprox.</p>
-                            <p className="text-white font-bold text-lg">{entrenamiento.duracionMinutos} min</p>
+                            <p className="text-white font-bold text-lg">{entrenamiento.duracion_minutos} min</p>
                         </div>
                     </div>
                 </div>
@@ -136,26 +137,26 @@ function DetalleEntrenamiento() {
                     </h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
                         {entrenamiento.dias?.map((dia) => {
-                            const info = DIAS_SEMANA_NOMBRES[dia.diaSemana];
+                            const info = DIAS_SEMANA_NOMBRES[dia.dia_semana];
                             return (
                                 <button
-                                    key={dia.diaSemana}
-                                    onClick={() => setDiaSeleccionado(dia.diaSemana)}
-                                    className={`py-4 px-3 rounded-lg font-bold transition-all relative ${diaSeleccionado === dia.diaSemana
+                                    key={dia.dia_semana}
+                                    onClick={() => setDiaSeleccionado(dia.dia_semana)}
+                                    className={`py-4 px-3 rounded-lg font-bold transition-all relative ${diaSeleccionado === dia.dia_semana
                                             ? 'bg-uf-gold text-black scale-105 shadow-lg'
-                                            : dia.esDescanso
+                                            : dia.es_descanso
                                                 ? 'bg-gray-700 text-gray-500'
                                                 : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                                         }`}
                                 >
-                                    {dia.esDescanso && (
+                                    {dia.es_descanso && (
                                         <span className="absolute top-1 right-1 text-xs bg-red-500 text-white px-1 rounded">
                                             💤
                                         </span>
                                     )}
                                     <div className="text-2xl mb-1">{info?.emoji}</div>
                                     <div className="text-xs">{info?.nombre}</div>
-                                    {!dia.esDescanso && dia.concepto && (
+                                    {!dia.es_descanso && dia.concepto && (
                                         <div className="text-[10px] mt-1 opacity-70 truncate">
                                             {dia.concepto}
                                         </div>
@@ -167,11 +168,11 @@ function DetalleEntrenamiento() {
                 </div>
 
                 {/* Concepto del día actual */}
-                {diaActual && !diaActual.esDescanso && (
+                {diaActual && !diaActual.es_descanso && (
                     <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 border-2 border-purple-700 rounded-lg p-6 mb-6">
                         <h3 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                             <Target className="w-6 h-6 text-uf-gold" />
-                            {DIAS_SEMANA_NOMBRES[diaActual.diaSemana]?.nombre}
+                            {DIAS_SEMANA_NOMBRES[diaActual.dia_semana]?.nombre}
                         </h3>
                         <p className="text-uf-gold text-xl font-semibold">{diaActual.concepto}</p>
                         <div className="grid grid-cols-3 gap-4 mt-4">
@@ -204,7 +205,7 @@ function DetalleEntrenamiento() {
                         Ejercicios del {DIAS_SEMANA_NOMBRES[diaSeleccionado]?.nombre}
                     </h3>
 
-                    {!diaActual || diaActual.esDescanso ? (
+                    {!diaActual || diaActual.es_descanso ? (
                         <div className="text-center py-12">
                             <div className="text-6xl mb-4">😴</div>
                             <p className="text-gray-400 text-xl font-bold">Día de Descanso</p>
@@ -224,10 +225,10 @@ function DetalleEntrenamiento() {
 
                                         <div className="flex-1">
                                             <h4 className="text-xl font-bold text-white mb-2">
-                                                {ejercicio.ejercicio?.nombre || 'Ejercicio'}
+                                                {ejercicio.ejercicio_nombre || 'Ejercicio'}
                                             </h4>
                                             <p className="text-gray-400 text-sm mb-4">
-                                                {ejercicio.ejercicio?.grupoMuscular || 'General'}
+                                                {ejercicio.grupo_muscular || 'General'}
                                             </p>
 
                                             <div className="grid grid-cols-3 gap-4 mb-4">
@@ -241,7 +242,7 @@ function DetalleEntrenamiento() {
                                                 </div>
                                                 <div className="bg-gray-800 rounded-lg p-3 text-center">
                                                     <p className="text-gray-400 text-xs mb-1">Descanso</p>
-                                                    <p className="text-2xl font-bold text-green-400">{ejercicio.descansoSegundos}s</p>
+                                                    <p className="text-2xl font-bold text-green-400">{ejercicio.descanso_segundos}s</p>
                                                 </div>
                                             </div>
 

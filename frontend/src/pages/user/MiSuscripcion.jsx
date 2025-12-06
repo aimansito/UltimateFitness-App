@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  CreditCard, 
+import {
+  CreditCard,
   Calendar,
   CheckCircle,
   XCircle,
@@ -80,7 +80,7 @@ function MiSuscripcion() {
               <p className="text-3xl text-uf-gold mb-4">29.99€/mes</p>
 
               <a
-                href="/planes"
+                href="/upgrade-premium"
                 className="block w-full text-center bg-uf-gold text-black font-bold py-3 rounded-lg"
               >
                 Suscribirse
@@ -97,7 +97,7 @@ function MiSuscripcion() {
               <p className="text-3xl text-uf-gold mb-4">287.99€/año</p>
 
               <a
-                href="/planes"
+                href="/upgrade-premium"
                 className="block w-full text-center bg-red-600 text-white font-bold py-3 rounded-lg"
               >
                 Suscribirse

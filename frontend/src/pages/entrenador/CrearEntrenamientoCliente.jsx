@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import api from '../../services/api';
 import { 
   ArrowLeft, 
   Save, 
@@ -55,7 +55,7 @@ function CrearEntrenamientoCliente() {
 
   const fetchCliente = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/entrenador/mis-clientes/${user.id}`);
+      const response = await api.get(`/entrenador/mis-clientes/${user.id}`);
       if (response.data.success) {
         const clienteEncontrado = response.data.clientes.find(c => c.id === parseInt(clienteId));
         setCliente(clienteEncontrado);
@@ -69,8 +69,8 @@ function CrearEntrenamientoCliente() {
 
   const fetchEjercicios = async () => {
     try {
-      // ✅ URL CORREGIDA: /api/custom/ejercicios
-      const response = await axios.get('http://localhost:8000/api/custom/ejercicios');
+      // Endpoint correcto según backend: /api/custom/ejercicios
+      const response = await api.get('/custom/ejercicios');
       
       console.log('Respuesta ejercicios:', response.data);
       
@@ -189,7 +189,7 @@ function CrearEntrenamientoCliente() {
 
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:8000/api/entrenador/crear-entrenamiento', payload);
+      const response = await api.post('/entrenador/crear-entrenamiento', payload);
       
       if (response.data.success) {
         alert(`✅ ¡Entrenamiento creado!\n\n💪 ${nombre}\n👤 ${cliente.nombre} ${cliente.apellidos}`);

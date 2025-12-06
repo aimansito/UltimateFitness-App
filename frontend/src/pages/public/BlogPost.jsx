@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import api from '../../services/api';
 import BlogCard from '../../components/blog/BlogCard';
-import { 
-  Calendar, 
-  Eye, 
-  Heart, 
-  Tag, 
-  User, 
-  ArrowLeft, 
+import {
+  Calendar,
+  ArrowLeft,
   Loader,
   Share2,
   Lock,
@@ -24,7 +20,6 @@ function BlogPost() {
   const [post, setPost] = useState(null);
   const [relacionados, setRelacionados] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [liked, setLiked] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
@@ -36,50 +31,30 @@ function BlogPost() {
       setLoading(true);
       setAccessDenied(false);
 
-      const response = await axios.get(`http://localhost:8000/api/blog/posts/${slug}`);
+      const response = await api.get(`/blog/posts/${slug}`);
 
       if (response.data.success) {
         const postData = response.data.post;
-        
-        // Verificar restricciones
-        // Si es premium y el usuario no es premium
-        if (postData.categoria === 'premium' && !isPremium) {
+
+        // Verificar acceso
+        if (!postData.puede_acceder) {
           setAccessDenied(true);
           setPost(postData); // Guardamos datos básicos para mostrar el preview
           setLoading(false);
           return;
         }
 
-        // Si no está autenticado
-        if (!isAuthenticated) {
-          setAccessDenied(true);
-          setPost(postData);
-          setLoading(false);
-          return;
-        }
-
         setPost(postData);
-        setRelacionados(response.data.relacionados);
+        // setRelacionados(response.data.relacionados); // Si el backend lo devuelve
       }
     } catch (error) {
       console.error('Error al cargar post:', error);
+      if (error.response?.status === 403) {
+        setAccessDenied(true);
+        setPost(error.response.data.post_preview);
+      }
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleLike = async () => {
-    if (liked || !isAuthenticated) return;
-
-    try {
-      const response = await axios.post(`http://localhost:8000/api/blog/posts/${post.id}/me-gusta`);
-      
-      if (response.data.success) {
-        setPost({ ...post, me_gusta: response.data.me_gusta });
-        setLiked(true);
-      }
-    } catch (error) {
-      console.error('Error al dar me gusta:', error);
     }
   };
 
@@ -155,7 +130,7 @@ function BlogPost() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
         <div className="max-w-4xl mx-auto">
-          
+
           {/* Botón volver */}
           <Link
             to="/blog"
@@ -173,7 +148,7 @@ function BlogPost() {
               className="w-full h-full object-cover blur-sm"
             />
             <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              {post.categoria === 'premium' ? (
+              {post.es_premium ? (
                 <Lock className="w-24 h-24 text-uf-red" />
               ) : (
                 <UserPlus className="w-24 h-24 text-uf-gold" />
@@ -194,7 +169,7 @@ function BlogPost() {
           )}
 
           {/* Banner de restricción */}
-          {post.categoria === 'premium' && !isPremium ? (
+          {post.es_premium && !isPremium ? (
             // Usuario gratuito intentando ver premium
             <div className="bg-gradient-to-r from-uf-red/20 to-red-700/20 border-2 border-uf-red rounded-lg p-8 text-center">
               <Star className="w-16 h-16 text-uf-red mx-auto mb-4" />
@@ -206,7 +181,7 @@ function BlogPost() {
               </p>
               <div className="flex gap-4 justify-center">
                 <Link
-                  to="/planes"
+                  to="/upgrade-premium"
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-uf-red to-red-700 text-white font-bold px-8 py-4 rounded-lg uppercase tracking-wider hover:from-red-700 hover:to-uf-red transition-all duration-300"
                 >
                   <Star className="w-5 h-5" />
@@ -221,7 +196,7 @@ function BlogPost() {
               </div>
             </div>
           ) : (
-            // Usuario no autenticado
+            // Usuario no autenticado (aunque el controller ya filtra esto, por si acaso)
             <div className="bg-gradient-to-r from-uf-gold/20 to-yellow-600/20 border-2 border-uf-gold rounded-lg p-8 text-center">
               <UserPlus className="w-16 h-16 text-uf-gold mx-auto mb-4" />
               <h2 className="text-3xl font-bold text-white mb-3">
@@ -256,7 +231,7 @@ function BlogPost() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        
+
         {/* Botón volver */}
         <Link
           to="/blog"
@@ -274,12 +249,12 @@ function BlogPost() {
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-          
+
           {/* Categoría */}
           <div className="absolute bottom-6 left-6">
             <span className={`${getCategoriaColor(post.categoria)} text-white px-4 py-2 rounded-full text-sm font-bold uppercase flex items-center gap-2`}>
-              {post.categoria === 'premium' && <Star className="w-4 h-4" />}
-              {post.categoria_formateada}
+              {post.es_premium && <Star className="w-4 h-4" />}
+              {post.categoria_formateada || post.categoria}
             </span>
           </div>
         </div>
@@ -300,60 +275,14 @@ function BlogPost() {
           {/* Meta información */}
           <div className="flex flex-wrap items-center gap-6 text-gray-400 text-sm">
             <div className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              {post.autor_nombre}
-            </div>
-            <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               {formatearFecha(post.fecha_publicacion)}
             </div>
-            <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4" />
-              {post.vistas} vistas
-            </div>
-            <button
-              onClick={handleLike}
-              disabled={liked}
-              className={`flex items-center gap-2 ${
-                liked ? 'text-red-500' : 'hover:text-red-500'
-              } transition-colors disabled:cursor-not-allowed`}
-            >
-              <Heart className={`w-4 h-4 ${liked ? 'fill-current' : ''}`} />
-              {post.me_gusta}
-            </button>
           </div>
-
-          {/* Etiquetas */}
-          {post.etiquetas && post.etiquetas.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-4">
-              {post.etiquetas.map((etiqueta, index) => (
-                <span
-                  key={index}
-                  className="flex items-center gap-1 text-sm text-gray-400 bg-gray-800 px-3 py-1 rounded-full"
-                >
-                  <Tag className="w-3 h-3" />
-                  {etiqueta}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Botones de acción */}
         <div className="flex gap-4 mb-8 pb-8 border-b border-gray-700">
-          <button
-            onClick={handleLike}
-            disabled={liked}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
-              liked
-                ? 'bg-red-500 text-white cursor-not-allowed'
-                : 'bg-gray-800 text-white hover:bg-red-500'
-            }`}
-          >
-            <Heart className={`w-5 h-5 ${liked ? 'fill-current' : ''}`} />
-            {liked ? 'Te gusta' : 'Me gusta'}
-          </button>
-
           <button
             onClick={handleShare}
             className="flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-lg font-semibold hover:bg-uf-gold hover:text-black transition-all duration-300"
@@ -364,7 +293,7 @@ function BlogPost() {
         </div>
 
         {/* Contenido del post */}
-        <div 
+        <div
           className="prose prose-invert prose-lg max-w-none mb-12"
           dangerouslySetInnerHTML={{ __html: post.contenido }}
           style={{

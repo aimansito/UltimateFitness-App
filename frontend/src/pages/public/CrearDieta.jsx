@@ -43,7 +43,7 @@ function CrearDieta() {
 
     if (!user.es_premium) {
       alert("Esta función es exclusiva para usuarios Premium.");
-      navigate("/planes");
+      navigate("/upgrade-premium");
     }
   }, [user, navigate]);
 
@@ -101,9 +101,19 @@ function CrearDieta() {
   };
 
   const agregarPlato = (momento, plato) => {
+    // Verificar si el plato ya existe en este momento
+    const platoYaExiste = planComidas[momento].some(
+      item => item.id === plato.id && (item.tipo === 'plato' || item.tipo === 'plato_personalizado')
+    );
+
+    if (platoYaExiste) {
+      alert(`El plato "${plato.nombre}" ya está añadido en ${momento.replace('_', ' ')}`);
+      return;
+    }
+
     const item = {
       ...plato,
-      id: Date.now(),
+      id: plato.id || Date.now(), // Usar el ID del plato si existe
       tipo: plato.esPersonalizado ? "plato_personalizado" : "plato"
     };
     setPlanComidas(prev => ({

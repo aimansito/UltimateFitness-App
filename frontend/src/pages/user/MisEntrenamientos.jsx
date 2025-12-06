@@ -114,7 +114,7 @@ function MisEntrenamientos() {
             </p>
 
             <a
-              href="/planes"
+              href="/upgrade-premium"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold px-8 py-4 rounded-lg uppercase tracking-wider hover:from-yellow-600 hover:to-uf-gold transition-all duration-300 transform hover:scale-105"
             >
               <Award className="w-5 h-5" />
@@ -166,8 +166,8 @@ function MisEntrenamientos() {
           <button
             onClick={() => setActiveTab('asignados')}
             className={`pb-3 px-4 font-bold flex items-center gap-2 transition-all ${activeTab === 'asignados'
-                ? 'text-uf-gold border-b-2 border-uf-gold'
-                : 'text-gray-400 hover:text-white'
+              ? 'text-uf-gold border-b-2 border-uf-gold'
+              : 'text-gray-400 hover:text-white'
               }`}
           >
             <UserCheck className="w-5 h-5" />
@@ -179,8 +179,8 @@ function MisEntrenamientos() {
           <button
             onClick={() => setActiveTab('creados')}
             className={`pb-3 px-4 font-bold flex items-center gap-2 transition-all ${activeTab === 'creados'
-                ? 'text-uf-gold border-b-2 border-uf-gold'
-                : 'text-gray-400 hover:text-white'
+              ? 'text-uf-gold border-b-2 border-uf-gold'
+              : 'text-gray-400 hover:text-white'
               }`}
           >
             <User className="w-5 h-5" />
@@ -218,8 +218,8 @@ function MisEntrenamientos() {
                 <div
                   key={entrenamiento.id}
                   className={`bg-gradient-to-r from-gray-900 to-gray-800 border-2 rounded-lg p-6 transition-all duration-300 hover:shadow-xl ${entrenamiento.completado
-                      ? 'border-green-700 bg-green-900/10'
-                      : 'border-gray-700 hover:border-uf-gold'
+                    ? 'border-green-700 bg-green-900/10'
+                    : 'border-gray-700 hover:border-uf-gold'
                     }`}
                 >
                   <div className="flex items-start justify-between">
@@ -296,8 +296,8 @@ function MisEntrenamientos() {
                       <button
                         onClick={() => marcarCompletado(entrenamiento.id)}
                         className={`p-2 rounded-lg transition-all ${entrenamiento.completado
-                            ? 'bg-green-700 hover:bg-green-600'
-                            : 'bg-gray-700 hover:bg-gray-600'
+                          ? 'bg-green-700 hover:bg-green-600'
+                          : 'bg-gray-700 hover:bg-gray-600'
                           }`}
                       >
                         {entrenamiento.completado ? (

@@ -162,8 +162,8 @@ function Login() {
             
             <div className="text-gray-600 text-sm">
               ¿No tienes cuenta?{' '}
-              <Link 
-                to="/registro" 
+              <Link
+                to="/register"
                 className="text-uf-gold hover:text-uf-blue font-semibold transition"
               >
                 Crear Cuenta

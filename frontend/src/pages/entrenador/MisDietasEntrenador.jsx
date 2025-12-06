@@ -216,7 +216,7 @@ function MisDietasEntrenador() {
                     {/* Botones de acción */}
                     <div className="flex gap-2">
                       <button
-                        onClick={() => navigate(`/dieta/${dieta.id}`)}
+                        onClick={() => navigate(`/entrenador/dieta/${dieta.id}`)}
                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition flex items-center justify-center gap-2"
                       >
                         <Eye className="w-4 h-4" />

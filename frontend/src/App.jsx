@@ -5,6 +5,8 @@ import { ProtectedRoute } from "./components/common";
 
 // Páginas públicas
 import Login from "./pages/public/Login";
+import Register from "./pages/public/Register";
+import UpgradePremium from "./pages/public/UpgradePremium";
 import Home from "./pages/public/Home";
 import Servicios from "./pages/public/Servicios";
 import Contacto from "./pages/public/Contacto";
@@ -59,6 +61,8 @@ function App() {
           {/* --------------------------- */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/upgrade-premium" element={<UpgradePremium />} />
           <Route path="/servicios" element={<Servicios />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/gym" element={<Gym />} />

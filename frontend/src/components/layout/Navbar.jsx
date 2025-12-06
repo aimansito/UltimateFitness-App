@@ -119,7 +119,7 @@ function Navbar() {
     return [
       { label: "Mi Panel", path: "/dashboard", icon: Activity },
       { label: "Mis Dietas", path: "/mis-dietas", icon: Utensils },
-      { label: "Ver Planes", path: "/planes", icon: Star },
+      { label: "Hazte Premium", path: "/upgrade-premium", icon: Star },
       ...commonItems,
     ];
   };
@@ -149,7 +149,7 @@ function Navbar() {
     if (!isAuthenticated) {
       // Solo dietas públicas para usuarios no autenticados
       return [
-        { path: "/mis-dietas?tab=publicas", label: "Dietas Públicas", icon: Utensils },
+        { path: "/alimentacion", label: "Dietas Profesionales", icon: Utensils },
       ];
     }
 
@@ -169,17 +169,30 @@ function Navbar() {
     return menuItems;
   };
 
+  // Submenú de entrenamientos según autenticación
+  const getEntrenamientosSubmenu = () => {
+    const menuItems = [
+      { path: "/gym", label: "Gym", icon: Dumbbell },
+      { path: "/workout", label: "Workout", icon: Activity },
+    ];
+
+    // Solo usuarios Premium pueden crear sus propios entrenamientos
+    if (isPremium && user?.rol !== "admin" && user?.rol !== "entrenador") {
+      menuItems.push(
+        { path: "/crear-entrenamiento", label: "Crear Mi Entrenamiento", icon: Sparkles }
+      );
+    }
+
+    return menuItems;
+  };
+
   const navLinks = [
     { path: "/", label: "INICIO", hasSubmenu: false },
     { path: "/servicios", label: "SERVICIOS", hasSubmenu: false },
     {
       label: "ENTRENAMIENTOS",
       hasSubmenu: true,
-      submenu: [
-        { path: "/gym", label: "Gym", icon: Dumbbell },
-        { path: "/workout", label: "Workout", icon: Activity },
-        { path: "/crear-entrenamiento", label: "Crear Mi Entrenamiento", icon: Sparkles },
-      ],
+      submenu: getEntrenamientosSubmenu(), // Dinámico según autenticación
     },
     {
       label: "ALIMENTACIÓN",
@@ -431,7 +444,7 @@ function Navbar() {
                   Iniciar Sesión
                 </Link>
                 <Link
-                  to="/registro"
+                  to="/register"
                   className="bg-uf-gold text-black font-bold px-5 py-2 rounded uppercase text-xs hover:bg-uf-blue hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   Crear Cuenta
@@ -631,7 +644,7 @@ function Navbar() {
                     Iniciar Sesión
                   </Link>
                   <Link
-                    to="/registro"
+                    to="/register"
                     onClick={() => setMenuOpen(false)}
                     className="block w-full text-center bg-uf-gold text-black font-bold py-2 px-4 rounded hover:bg-yellow-600 transition"
                   >

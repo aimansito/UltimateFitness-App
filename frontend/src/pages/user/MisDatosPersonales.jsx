@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  Target, 
-  Calendar, 
-  Activity, 
-  Weight, 
+import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+import {
+  User,
+  Mail,
+  Phone,
+  Target,
+  Calendar,
+  Activity,
+  Weight,
   Ruler,
   Edit3,
   Save,
@@ -15,26 +15,26 @@ import {
   CheckCircle,
   AlertCircle,
   Star,
-  Shield
-} from 'lucide-react';
+  Shield,
+} from "lucide-react";
 
 function MisDatosPersonales() {
   const { user } = useAuth();
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   const [formData, setFormData] = useState({
-    nombre: '',
-    apellidos: '',
-    email: '',
-    telefono: '',
-    objetivo: '',
-    peso_actual: '',
-    altura: '',
-    edad: '',
-    sexo: '',
-    nivel_actividad: '',
+    nombre: "",
+    apellidos: "",
+    email: "",
+    telefono: "",
+    objetivo: "",
+    peso_actual: "",
+    altura: "",
+    edad: "",
+    sexo: "",
+    nivel_actividad: "",
   });
 
   const [originalData, setOriginalData] = useState({}); // Para comparar cambios
@@ -43,16 +43,16 @@ function MisDatosPersonales() {
   useEffect(() => {
     if (user) {
       const userData = {
-        nombre: user.nombre || '',
-        apellidos: user.apellidos || '',
-        email: user.email || '',
-        telefono: user.telefono || '',
-        objetivo: user.objetivo || 'cuidar_alimentacion',
-        peso_actual: user.peso_actual || '',
-        altura: user.altura || '',
-        edad: user.edad || '',
-        sexo: user.sexo || '',
-        nivel_actividad: user.nivel_actividad || 'ligero',
+        nombre: user.nombre || "",
+        apellidos: user.apellidos || "",
+        email: user.email || "",
+        telefono: user.telefono || "",
+        objetivo: user.objetivo || "cuidar_alimentacion",
+        peso_actual: user.peso_actual || "",
+        altura: user.altura || "",
+        edad: user.edad || "",
+        sexo: user.sexo || "",
+        nivel_actividad: user.nivel_actividad || "ligero",
       };
       setFormData(userData);
       setOriginalData(userData); // Guardar datos originales
@@ -61,56 +61,69 @@ function MisDatosPersonales() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleEdit = () => {
     setEditing(true);
-    setMessage({ type: '', text: '' }); // Limpiar mensajes
+    setMessage({ type: "", text: "" }); // Limpiar mensajes
   };
 
   const handleCancel = () => {
     setEditing(false);
     setFormData(originalData); // Restaurar datos originales
-    setMessage({ type: '', text: '' });
+    setMessage({ type: "", text: "" });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Verificar si hay cambios
-    const hasChanges = JSON.stringify(formData) !== JSON.stringify(originalData);
-    
+
+    const hasChanges =
+      JSON.stringify(formData) !== JSON.stringify(originalData);
+
     if (!hasChanges) {
       setMessage({
-        type: 'error',
-        text: 'No se han realizado cambios'
+        type: "error",
+        text: "No se han realizado cambios",
       });
       return;
     }
 
     setLoading(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: "", text: "" });
 
     try {
-      // TODO: Llamar al endpoint de actualización del backend
-      // const response = await axios.put(`/api/usuarios/${user.id}`, formData);
-      
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulación
+      const response = await api.put(
+        `/custom/usuarios/${user.id}/actualizar`,
+        formData
+      );
 
-      setOriginalData(formData); // Actualizar datos originales
-      setMessage({
-        type: 'success',
-        text: 'Datos actualizados correctamente'
-      });
-      setEditing(false);
+      if (response.data.success) {
+        // Actualizar datos globales del usuario
+        const updatedUser = response.data.usuario;
+        localStorage.setItem("usuario", JSON.stringify(updatedUser));
+
+        // Si tu AuthContext tiene un método updateUser()
+        if (typeof updateUser === "function") {
+          updateUser(updatedUser);
+        }
+
+        setOriginalData(formData);
+
+        setMessage({
+          type: "success",
+          text: "Datos actualizados correctamente",
+        });
+
+        setEditing(false);
+      }
     } catch (error) {
       setMessage({
-        type: 'error',
-        text: 'Error al actualizar los datos'
+        type: "error",
+        text: "Error al actualizar los datos",
       });
     } finally {
       setLoading(false);
@@ -133,7 +146,6 @@ function MisDatosPersonales() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        
         {/* Header */}
         <div className="bg-gradient-to-r from-uf-gold to-yellow-600 py-6 text-center rounded-t-lg shadow-lg">
           <h1 className="text-3xl font-bold text-black uppercase tracking-wider flex items-center justify-center gap-3">
@@ -144,15 +156,16 @@ function MisDatosPersonales() {
 
         {/* Contenido */}
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-b-lg shadow-2xl border border-gray-700">
-          
           {/* Mensaje de éxito/error */}
           {message.text && (
-            <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
-              message.type === 'success' 
-                ? 'bg-green-900/50 text-green-300 border border-green-700' 
-                : 'bg-red-900/50 text-red-300 border border-red-700'
-            }`}>
-              {message.type === 'success' ? (
+            <div
+              className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${
+                message.type === "success"
+                  ? "bg-green-900/50 text-green-300 border border-green-700"
+                  : "bg-red-900/50 text-red-300 border border-red-700"
+              }`}
+            >
+              {message.type === "success" ? (
                 <CheckCircle className="w-5 h-5 flex-shrink-0" />
               ) : (
                 <AlertCircle className="w-5 h-5 flex-shrink-0" />
@@ -169,7 +182,7 @@ function MisDatosPersonales() {
                 Usuario Premium
               </span>
             )}
-            {user?.rol === 'admin' && (
+            {user?.rol === "admin" && (
               <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-sm font-bold rounded-full uppercase shadow-lg">
                 <Shield className="w-4 h-4" />
                 Administrador
@@ -179,14 +192,13 @@ function MisDatosPersonales() {
 
           {/* Formulario */}
           <form onSubmit={handleSubmit} className="space-y-8">
-            
             {/* Información Básica */}
             <div className="border-b border-gray-700 pb-6">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                 <User className="w-6 h-6 text-uf-gold" />
                 Información Básica
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Nombre */}
                 <div>
@@ -233,7 +245,9 @@ function MisDatosPersonales() {
                     disabled
                     className="w-full px-4 py-3 bg-gray-800 border-b-2 border-gray-600 text-gray-400 cursor-not-allowed"
                   />
-                  <p className="text-xs text-gray-500 mt-1">El email no se puede cambiar</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    El email no se puede cambiar
+                  </p>
                 </div>
 
                 {/* Teléfono */}
@@ -261,7 +275,7 @@ function MisDatosPersonales() {
                 <Activity className="w-6 h-6 text-uf-gold" />
                 Información Física
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Peso */}
                 <div>
@@ -363,10 +377,14 @@ function MisDatosPersonales() {
                       {imc}
                     </div>
                     <p className="text-xs text-gray-400 mt-1 text-center font-semibold">
-                      {parseFloat(imc) < 18.5 && 'Bajo peso'}
-                      {parseFloat(imc) >= 18.5 && parseFloat(imc) < 25 && 'Peso normal'}
-                      {parseFloat(imc) >= 25 && parseFloat(imc) < 30 && 'Sobrepeso'}
-                      {parseFloat(imc) >= 30 && 'Obesidad'}
+                      {parseFloat(imc) < 18.5 && "Bajo peso"}
+                      {parseFloat(imc) >= 18.5 &&
+                        parseFloat(imc) < 25 &&
+                        "Peso normal"}
+                      {parseFloat(imc) >= 25 &&
+                        parseFloat(imc) < 30 &&
+                        "Sobrepeso"}
+                      {parseFloat(imc) >= 30 && "Obesidad"}
                     </p>
                   </div>
                 )}
@@ -379,7 +397,7 @@ function MisDatosPersonales() {
                 <Target className="w-6 h-6 text-uf-gold" />
                 Objetivo
               </h2>
-              
+
               <select
                 name="objetivo"
                 value={formData.objetivo}
@@ -414,7 +432,7 @@ function MisDatosPersonales() {
                     className="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white font-bold py-4 rounded-lg uppercase tracking-wider hover:from-green-700 hover:to-green-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-xl"
                   >
                     <Save className="w-5 h-5" />
-                    {loading ? 'Guardando...' : 'Guardar Cambios'}
+                    {loading ? "Guardando..." : "Guardar Cambios"}
                   </button>
                   <button
                     type="button"

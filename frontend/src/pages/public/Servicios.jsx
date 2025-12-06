@@ -297,7 +297,7 @@ function Servicios() {
 
                                     {/* Botón CTA con icono */}
                                     <Link
-                                        to={plan.id === 'free' ? '/registro' : '/registro?plan=premium'}
+                                        to={plan.id === 'free' ? '/register' : '/upgrade-premium'}
                                         className={`
                       flex items-center justify-center gap-2 w-full text-center font-bold py-4 rounded-xl uppercase tracking-wider
                       transition-all duration-300 transform hover:scale-105 border-2

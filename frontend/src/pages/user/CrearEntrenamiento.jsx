@@ -42,7 +42,8 @@ function CrearEntrenamiento() {
     useEffect(() => {
         const fetchEjercicios = async () => {
             try {
-                const response = await api.get("/ejercicios");
+                // Endpoint correcto según backend: /api/custom/ejercicios
+                const response = await api.get("/custom/ejercicios");
                 if (response.data && Array.isArray(response.data['hydra:member'])) {
                     setEjerciciosDisponibles(response.data['hydra:member']);
                 } else {
@@ -170,6 +171,7 @@ function CrearEntrenamiento() {
             nivelDificultad,
             duracionMinutos: parseInt(duracionMinutos),
             esPublico: false,
+            creador_usuario_id: user?.id, // ID del usuario que crea el entrenamiento
             dias: dias.map(dia => ({
                 diaSemana: dia.diaSemana,
                 concepto: dia.concepto,
@@ -186,7 +188,7 @@ function CrearEntrenamiento() {
 
         try {
             setLoading(true);
-            const response = await api.post("/custom/entrenamientos/crear", payload);
+            const response = await api.post("/usuario/crear-entrenamiento", payload);
             if (response.data.success) {
                 alert("Plan de entrenamiento semanal creado exitosamente");
                 navigate("/mis-entrenamientos");

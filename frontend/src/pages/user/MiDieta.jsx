@@ -259,7 +259,7 @@ function MiDieta() {
             </p>
 
             <a
-              href="/planes"
+              href="/upgrade-premium"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold px-8 py-4 rounded-lg uppercase tracking-wider hover:from-yellow-600 hover:to-uf-gold transition-all duration-300 transform hover:scale-105"
             >
               <Award className="w-5 h-5" />
@@ -384,11 +384,10 @@ function MiDieta() {
                 <button
                   key={dia.id}
                   onClick={() => setDiaSeleccionado(dia.id)}
-                  className={`px-4 py-3 rounded-lg font-bold uppercase text-sm transition-all duration-300 ${
-                    diaSeleccionado === dia.id
+                  className={`px-4 py-3 rounded-lg font-bold uppercase text-sm transition-all duration-300 ${diaSeleccionado === dia.id
                       ? "bg-gradient-to-r from-uf-gold to-yellow-600 text-black scale-105 shadow-lg"
                       : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
+                    }`}
                 >
                   {dia.nombre}
                 </button>

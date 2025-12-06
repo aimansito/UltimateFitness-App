@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
+import api from '../../services/api';
 import BlogCard from '../../components/blog/BlogCard';
 import { Search, Filter, Loader, ChevronLeft, ChevronRight, Lock, Star, UserPlus } from 'lucide-react';
 
@@ -42,11 +43,11 @@ function Blog() {
 
       let url;
 
-      // Usuario NO autenticado - Solo 2 posts aleatorios
+      // Usuario NO autenticado - Usar endpoint público
       if (!isAuthenticated) {
-        url = `http://localhost:8000/api/blog/posts/public-preview`;
+        url = `http://localhost:8000/api/public/blog/preview`;
         const response = await axios.get(url);
-        
+
         if (response.data.success) {
           setPosts(response.data.posts);
           setShowRegistrationBanner(true);
@@ -67,16 +68,16 @@ function Blog() {
           setLoading(false);
           return;
         }
-        url = `http://localhost:8000/api/blog/posts/premium?page=${page}&limit=12`;
+        url = `/blog/posts/premium?page=${page}&limit=12`;
       } else if (search) {
-        url = `http://localhost:8000/api/blog/search?q=${search}&page=${page}&limit=12`;
+        url = `/blog/search?q=${search}&page=${page}&limit=12`;
       } else if (categoria !== 'todas') {
-        url = `http://localhost:8000/api/blog/posts/categoria/${categoria}?page=${page}&limit=12`;
+        url = `/blog/posts/categoria/${categoria}?page=${page}&limit=12`;
       } else {
-        url = `http://localhost:8000/api/blog/posts?page=${page}&limit=12`;
+        url = `/blog/posts?page=${page}&limit=12`;
       }
 
-      const response = await axios.get(url);
+      const response = await api.get(url);
 
       if (response.data.success) {
         setPosts(response.data.posts);
@@ -131,7 +132,7 @@ function Blog() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        
+
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-white mb-4 uppercase tracking-wider">
@@ -193,19 +194,18 @@ function Blog() {
             <div className="flex flex-wrap gap-3">
               {categorias.map((cat) => {
                 const isLocked = cat.requiresPremium && !isPremium;
-                
+
                 return (
                   <button
                     key={cat.value}
                     onClick={() => handleCategoriaChange(cat.value)}
                     disabled={isLocked}
-                    className={`relative px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
-                      isLocked
-                        ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                        : categoriaActual === cat.value
+                    className={`relative px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${isLocked
+                      ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                      : categoriaActual === cat.value
                         ? `bg-${cat.color} text-white`
                         : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                    }`}
+                      }`}
                   >
                     <span className="flex items-center gap-2">
                       {cat.label}
@@ -234,7 +234,7 @@ function Blog() {
               Accede a artículos avanzados, planes personalizados y contenido exclusivo
             </p>
             <Link
-              to="/planes"
+              to="/upgrade-premium"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-uf-red to-red-700 text-white font-bold px-8 py-4 rounded-lg uppercase tracking-wider hover:from-red-700 hover:to-uf-red transition-all duration-300 transform hover:scale-105"
             >
               <Star className="w-5 h-5" />
@@ -253,11 +253,11 @@ function Blog() {
             </div>
 
             {/* Paginación (solo para autenticados) */}
-            {pagination && pagination.pages > 1 && (
+            {pagination && pagination.total_pages > 1 && (
               <div className="flex justify-center items-center gap-4">
                 <button
-                  onClick={() => handlePageChange(pagination.page - 1)}
-                  disabled={pagination.page === 1}
+                  onClick={() => handlePageChange(pagination.current_page - 1)}
+                  disabled={pagination.current_page === 1}
                   className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   <ChevronLeft className="w-5 h-5" />
@@ -265,15 +265,14 @@ function Blog() {
                 </button>
 
                 <div className="flex gap-2">
-                  {[...Array(pagination.pages)].map((_, index) => (
+                  {[...Array(pagination.total_pages)].map((_, index) => (
                     <button
                       key={index + 1}
                       onClick={() => handlePageChange(index + 1)}
-                      className={`w-10 h-10 rounded-lg font-bold transition-colors ${
-                        pagination.page === index + 1
-                          ? 'bg-uf-gold text-black'
-                          : 'bg-gray-800 text-white hover:bg-gray-700'
-                      }`}
+                      className={`w-10 h-10 rounded-lg font-bold transition-colors ${pagination.current_page === index + 1
+                        ? 'bg-uf-gold text-black'
+                        : 'bg-gray-800 text-white hover:bg-gray-700'
+                        }`}
                     >
                       {index + 1}
                     </button>
@@ -281,8 +280,8 @@ function Blog() {
                 </div>
 
                 <button
-                  onClick={() => handlePageChange(pagination.page + 1)}
-                  disabled={pagination.page === pagination.pages}
+                  onClick={() => handlePageChange(pagination.current_page + 1)}
+                  disabled={pagination.current_page === pagination.total_pages}
                   className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Siguiente

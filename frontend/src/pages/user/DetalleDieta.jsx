@@ -31,12 +31,12 @@ function DetalleDieta() {
 
   const fetchDetalleDieta = async () => {
     try {
-      const response = await api.get(`/usuario/dieta/${dietaId}`);
+      const response = await api.get(`/usuario/dieta/${dietaId}/detalle`);
       console.log('✅ Detalle dieta:', response.data);
 
       if (response.data.success) {
         setDieta(response.data.dieta);
-        setPlanSemanal(response.data.plan_semanal);
+        setPlanSemanal(response.data.planSemanal);
       }
     } catch (error) {
       console.error('❌ Error al cargar dieta:', error);
@@ -128,12 +128,12 @@ function DetalleDieta() {
           </div>
         </div>
 
-        {/* Objetivo y calorías */}
+        {/* Calorías y macros (SIN "Objetivo:") */}
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-uf-gold rounded-lg p-6 mb-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h3 className="text-xl font-bold text-white mb-2">
-                Objetivo: {Math.round(dieta.calorias_totales || 0)} kcal diarias
+                {Math.round(dieta.calorias_totales || 0)} kcal diarias
               </h3>
               <p className="text-gray-400 text-sm flex items-center gap-2 mt-2">
                 <Calendar className="w-4 h-4" />
@@ -181,8 +181,8 @@ function DetalleDieta() {
                 key={dia.key}
                 onClick={() => setDiaSeleccionado(dia.key)}
                 className={`py-3 px-4 rounded-lg font-bold transition-all ${diaSeleccionado === dia.key
-                    ? 'bg-uf-gold text-black'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  ? 'bg-uf-gold text-black'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                   }`}
               >
                 {dia.label}
@@ -234,70 +234,70 @@ function DetalleDieta() {
             <div className="space-y-6">
               {Object.entries(planSemanal[diaSeleccionado]).map(([momento, platos]) =>
                 platos.length > 0 && platos.map((plato, index) => (
-                <div
-                  key={`${momento}-${index}`}
-                  className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-lg p-6 hover:border-uf-gold transition-all"
-                >
-                  {/* Header comida */}
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="text-3xl">🍽️</div>
-                        <div>
-                          <h4 className="text-xl font-bold text-white capitalize">
-                            {momento.replace('_', ' ')}
-                          </h4>
-                          <p className="text-gray-400 text-sm">⏰ {getMomentoHora(momento)}</p>
+                  <div
+                    key={`${momento}-${index}`}
+                    className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-gray-700 rounded-lg p-6 hover:border-uf-gold transition-all"
+                  >
+                    {/* Header comida */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="text-3xl">🍽️</div>
+                          <div>
+                            <h4 className="text-xl font-bold text-white capitalize">
+                              {momento.replace('_', ' ')}
+                            </h4>
+                            <p className="text-gray-400 text-sm">⏰ {getMomentoHora(momento)}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Nombre del Plato */}
-                  <div className="mb-4">
-                    <h5 className="text-lg font-bold text-uf-gold mb-1">{plato.nombre}</h5>
-                    {plato.descripcion && (
-                      <p className="text-gray-400 text-sm italic">{plato.descripcion}</p>
+                    {/* Nombre del Plato */}
+                    <div className="mb-4">
+                      <h5 className="text-lg font-bold text-uf-gold mb-1">{plato.nombre}</h5>
+                      {plato.descripcion && (
+                        <p className="text-gray-400 text-sm italic">{plato.descripcion}</p>
+                      )}
+                    </div>
+
+                    {/* Ingredientes */}
+                    {plato.ingredientes && plato.ingredientes.length > 0 && (
+                      <div className="space-y-3 mb-4">
+                        <p className="text-sm text-gray-400 font-semibold mb-2">Ingredientes:</p>
+                        {plato.ingredientes.map((ingrediente, idx) => (
+                          <div key={idx} className="bg-gray-800 rounded-lg p-3 border border-gray-700">
+                            <div className="flex items-center justify-between mb-2">
+                              <h5 className="text-white font-semibold">{ingrediente.nombre}</h5>
+                              <span className="text-uf-gold font-bold">{ingrediente.cantidad_gramos}g</span>
+                            </div>
+                            <div className="flex gap-3 text-xs">
+                              <span className="text-orange-400">🔥 {Math.round(ingrediente.calorias)} kcal</span>
+                              <span className="text-blue-400">P: {Math.round(ingrediente.proteinas)}g</span>
+                              <span className="text-green-400">C: {Math.round(ingrediente.carbohidratos)}g</span>
+                              <span className="text-yellow-400">G: {Math.round(ingrediente.grasas)}g</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     )}
-                  </div>
 
-                  {/* Ingredientes */}
-                  {plato.ingredientes && plato.ingredientes.length > 0 && (
-                    <div className="space-y-3 mb-4">
-                      <p className="text-sm text-gray-400 font-semibold mb-2">Ingredientes:</p>
-                      {plato.ingredientes.map((ingrediente, idx) => (
-                        <div key={idx} className="bg-gray-800 rounded-lg p-3 border border-gray-700">
-                          <div className="flex items-center justify-between mb-2">
-                            <h5 className="text-white font-semibold">{ingrediente.alimento_nombre}</h5>
-                            <span className="text-uf-gold font-bold">{ingrediente.cantidad_gramos}g</span>
-                          </div>
-                          <div className="flex gap-3 text-xs">
-                            <span className="text-orange-400">🔥 {Math.round((ingrediente.calorias * ingrediente.cantidad_gramos) / 100)} kcal</span>
-                            <span className="text-blue-400">P: {Math.round((ingrediente.proteinas * ingrediente.cantidad_gramos) / 100)}g</span>
-                            <span className="text-green-400">C: {Math.round((ingrediente.carbohidratos * ingrediente.cantidad_gramos) / 100)}g</span>
-                            <span className="text-yellow-400">G: {Math.round((ingrediente.grasas * ingrediente.cantidad_gramos) / 100)}g</span>
-                          </div>
+                    {/* Totales de la comida */}
+                    <div className="border-t border-gray-700 pt-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-400 font-semibold">TOTALES:</span>
+                        <div className="flex gap-4 text-sm">
+                          <span className="text-orange-400 font-bold">
+                            {Math.round(plato.calorias)} kcal
+                          </span>
+                          <span className="text-blue-400">P: {Math.round(plato.proteinas)}g</span>
+                          <span className="text-green-400">C: {Math.round(plato.carbohidratos)}g</span>
+                          <span className="text-yellow-400">G: {Math.round(plato.grasas)}g</span>
                         </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Totales de la comida */}
-                  <div className="border-t border-gray-700 pt-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400 font-semibold">TOTALES:</span>
-                      <div className="flex gap-4 text-sm">
-                        <span className="text-orange-400 font-bold">
-                          {Math.round(plato.calorias)} kcal
-                        </span>
-                        <span className="text-blue-400">P: {Math.round(plato.proteinas)}g</span>
-                        <span className="text-green-400">C: {Math.round(plato.carbohidratos)}g</span>
-                        <span className="text-yellow-400">G: {Math.round(plato.grasas)}g</span>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))
+                ))
               )}
             </div>
           )}

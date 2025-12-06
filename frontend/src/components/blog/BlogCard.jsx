@@ -37,9 +37,19 @@ function BlogCard({ post }) {
               Destacado
             </div>
           )}
+
+          {/* Badge Premium */}
+          {post.es_premium && (
+            <div className="absolute top-4 left-4 bg-gradient-to-r from-uf-gold to-yellow-600 px-3 py-1 rounded-full shadow-lg">
+              <span className="text-black font-bold text-xs flex items-center gap-1">
+                ⭐ PREMIUM
+              </span>
+            </div>
+          )}
+
           <div className="absolute bottom-4 left-4">
             <span className={`${getCategoriaColor(post.categoria)} text-white px-3 py-1 rounded-full text-xs font-bold uppercase`}>
-              {post.categoria_formateada}
+              {post.categoria_formateada || post.categoria}
             </span>
           </div>
         </div>
@@ -59,33 +69,8 @@ function BlogCard({ post }) {
           {post.extracto}
         </p>
 
-        {/* Etiquetas */}
-        {post.etiquetas && post.etiquetas.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {post.etiquetas.slice(0, 3).map((etiqueta, index) => (
-              <span
-                key={index}
-                className="flex items-center gap-1 text-xs text-gray-400 bg-gray-700/50 px-2 py-1 rounded"
-              >
-                <Tag className="w-3 h-3" />
-                {etiqueta}
-              </span>
-            ))}
-          </div>
-        )}
-
         {/* Footer */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-700">
-          <div className="flex items-center gap-4 text-xs text-gray-400">
-            <span className="flex items-center gap-1">
-              <Eye className="w-4 h-4" />
-              {post.vistas}
-            </span>
-            <span className="flex items-center gap-1">
-              <Heart className="w-4 h-4" />
-              {post.me_gusta}
-            </span>
-          </div>
           <div className="flex items-center gap-2 text-xs text-gray-400">
             <Calendar className="w-4 h-4" />
             {formatearFecha(post.fecha_publicacion)}
@@ -93,12 +78,21 @@ function BlogCard({ post }) {
         </div>
 
         {/* Botón leer más */}
-        <Link
-          to={`/blog/${post.slug}`}
-          className="mt-4 block w-full bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold py-2 px-4 rounded-lg text-center hover:from-yellow-600 hover:to-uf-gold transition-all duration-300"
-        >
-          Leer más
-        </Link>
+        {post.puede_acceder ? (
+          <Link
+            to={`/blog/${post.slug}`}
+            className="mt-4 block w-full bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold py-2 px-4 rounded-lg text-center hover:from-yellow-600 hover:to-uf-gold transition-all duration-300"
+          >
+            Leer más
+          </Link>
+        ) : (
+          <Link
+            to="/upgrade-premium"
+            className="mt-4 block w-full bg-gray-700 text-gray-300 font-bold py-2 px-4 rounded-lg text-center hover:bg-gray-600 transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            🔒 Hazte Premium
+          </Link>
+        )}
       </div>
     </div>
   );
