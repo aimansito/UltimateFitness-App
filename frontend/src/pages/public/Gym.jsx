@@ -1,6 +1,7 @@
 // ============================================
 // GYM - Biblioteca de ejercicios
 // ============================================
+import api from "../../services/api";
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import TarjetaEjercicio from '../../components/gym/TarjetaEjercicio';
@@ -45,32 +46,27 @@ function Gym() {
   }, []);
 
   const cargarEjercicios = async () => {
-    try {
-      setCargando(true);
-      setError(null);
-      // Endpoint correcto según backend: /api/custom/ejercicios
-      const response = await fetch('http://localhost:8000/api/custom/ejercicios');
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      // API Platform puede usar "member" o "hydra:member"
-      let ejerciciosData = data.member || data['hydra:member'] || [];
-      
-      console.log('✅ Ejercicios cargados:', ejerciciosData.length);
-      
-      setEjercicios(ejerciciosData);
-      setEjerciciosFiltrados(ejerciciosData);
-    } catch (err) {
-      console.error('❌ Error:', err);
-      setError(err.message);
-    } finally {
-      setCargando(false);
-    }
-  };
+  try {
+    setCargando(true);
+    setError(null);
+
+    // Usa API con token
+    const response = await api.get("/custom/ejercicios");
+
+    const ejerciciosData = response.data; // Ya es array
+
+    console.log("✅ Ejercicios cargados:", ejerciciosData.length);
+
+    setEjercicios(ejerciciosData);
+    setEjerciciosFiltrados(ejerciciosData);
+
+  } catch (err) {
+    console.error("❌ Error:", err);
+    setError(err.message);
+  } finally {
+    setCargando(false);
+  }
+};
 
   // ============================================
   // FILTRAR EJERCICIOS

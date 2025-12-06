@@ -9,58 +9,53 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ============================================
+  // ================================
   // CARGAR USUARIO AL INICIAR LA APP
-  // ============================================
+  // ================================
   useEffect(() => {
-    const loadUser = () => {
-      try {
-        const storedUser = authService.getUser();
-        const token = authService.getToken();
+    try {
+      const storedUser = authService.getUser();
+      const token = authService.getToken();
 
-        console.log("Cargando usuario desde localStorage:", storedUser);
-        console.log("Token disponible:", !!token);
+      console.log("Cargando usuario desde localStorage:", storedUser);
+      console.log("Token disponible:", !!token);
 
-        if (storedUser && token) {
-          setUser(storedUser);
-        }
-      } catch (error) {
-        console.error("Error cargando usuario:", error);
-        setUser(null);
-      } finally {
-        setLoading(false);
+      if (storedUser && token) {
+        setUser(storedUser);
       }
-    };
-
-    loadUser();
+    } catch (error) {
+      console.error("Error cargando usuario:", error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // ============================================
+  // ================================
   // LOGIN
-  // ============================================
+  // ================================
   const login = async (email, password) => {
     try {
       const data = await authService.login(email, password);
 
       console.log("Resultado del login:", data);
 
-      if (data && data.success) {
-        // authService.login guarda usuario + token
+      if (data?.success) {
         setUser(data.usuario);
         navigate("/dashboard");
         return data;
       }
 
-      return data || { success: false, error: "Credenciales inválidas" };
+      return { success: false, error: data?.error || "Credenciales inválidas" };
     } catch (error) {
       console.error("Error en login:", error);
-      return { success: false, error: "Error de conexión o servidor" };
+      return { success: false, error: "Error de servidor" };
     }
   };
 
-  // ============================================
+  // ================================
   // LOGOUT
-  // ============================================
+  // ================================
   const logout = () => {
     console.log("Cerrando sesión...");
     authService.logout();
@@ -68,48 +63,48 @@ export function AuthProvider({ children }) {
     navigate("/login");
   };
 
-  // ============================================
+  // ================================
   // REFRESH USER (recargar desde localStorage)
-  // ============================================
+  // ================================
   const refreshUser = async () => {
     try {
-      const storedUser = authService.getUser();
-      if (storedUser) {
-        setUser(storedUser);
-        return storedUser;
+      const stored = authService.getUser();
+      if (stored) {
+        setUser(stored);
+        return stored;
       }
-    } catch (error) {
-      console.error("Error actualizando usuario:", error);
+    } catch (e) {
+      console.error("Error refrescando usuario:", e);
     }
     return null;
   };
 
-  // ============================================
-  // UPDATE USER (para MisDatosPersonales)
-  // ============================================
+  // ================================
+  // UPDATE USER (para MisDatosPersonales.jsx)
+  // ================================
   const updateUser = (newUser) => {
     setUser(newUser);
-    authService.saveUser(newUser); // sincroniza localStorage
+    localStorage.setItem("usuario", JSON.stringify(newUser));
   };
 
-  // ============================================
-  // ROLES
-  // ============================================
+  // ================================
+  // Roles
+  // ================================
   const isAdmin = () => user?.rol === "admin";
   const isTrainer = () => user?.rol === "entrenador";
   const isUser = () => user?.rol === "cliente" || (!user?.rol && user);
 
   const hasRole = (role) => user?.rol === role;
 
-  // ============================================
+  // ================================
   // CONTEXTO
-  // ============================================
+  // ================================
   const value = {
     user,
     login,
     logout,
     refreshUser,
-    updateUser, // <-- añadido correctamente
+    updateUser,
     isAuthenticated: !!user,
     isPremium:
       user?.es_premium === true ||
@@ -122,7 +117,6 @@ export function AuthProvider({ children }) {
     loading,
   };
 
-  // Loading inicial
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -137,9 +131,7 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// ============================================
-// HOOK PERSONALIZADO
-// ============================================
+// Hook personalizado
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
