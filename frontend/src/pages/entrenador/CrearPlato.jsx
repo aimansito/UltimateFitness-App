@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import useAuthEntrenador from "../../context/AuthContextEntrenador";
 import api from "../../services/api";
 import { ArrowLeft, Save, Trash2, Plus } from "lucide-react";
 
 function CrearPlato() {
-  const { user } = useAuth();
+  const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
 
   const [paso, setPaso] = useState(1); // 1: Ingredientes, 2: Detalles, 3: Confirmar
@@ -169,7 +169,7 @@ function CrearPlato() {
         tipo_comida: tipoComida,
         dificultad: dificultad,
         tiempo_preparacion: tiempoPreparacion ? parseInt(tiempoPreparacion) : null,
-        creador_id: user.id, // ID del entrenador
+        creador_id: entrenador.id, // ID del entrenador
         ingredientes: ingredientesSeleccionados.map((ing) => ({
           alimento_id: ing.alimentoId,
           cantidad_gramos: ing.cantidad,
@@ -408,11 +408,10 @@ function CrearPlato() {
                             className="hidden"
                           />
                           <div
-                            className={`cursor-pointer text-center py-3 rounded-lg border-2 transition ${
-                              tipoComida === key
+                            className={`cursor-pointer text-center py-3 rounded-lg border-2 transition ${tipoComida === key
                                 ? "bg-blue-600 text-white border-blue-500"
                                 : "bg-gray-700 text-white border-gray-600 hover:border-gray-500"
-                            }`}
+                              }`}
                           >
                             <div className="text-xl mb-1">{tipo.icon}</div>
                             <div className="font-bold text-sm">{tipo.nombre}</div>

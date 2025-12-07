@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import {
   CreditCard,
   Calendar,
@@ -14,6 +15,7 @@ import {
 
 function MiSuscripcion() {
   const { user, isPremium } = useAuth();
+  const toast = useToast();
   const [suscripcion, setSuscripcion] = useState(null);
   const [historialPagos, setHistorialPagos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,11 +51,11 @@ function MiSuscripcion() {
 
   const handleCancelarSuscripcion = () => {
     if (!confirm('¿Cancelar suscripción Premium?')) return;
-    alert('Suscripción cancelada (simulado)');
+    toast.info('ℹ️ Suscripción cancelada');
   };
 
   const handleReactivarSuscripcion = () => {
-    alert('Suscripción reactivada (simulado)');
+    toast.success('✅ Suscripción reactivada');
   };
 
   if (loading) {

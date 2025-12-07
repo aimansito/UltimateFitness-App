@@ -4,6 +4,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
+import useAuthEntrenador from "../../context/AuthContextEntrenador";
 import Badge from "../common/Badge";
 import {
   Dumbbell,
@@ -26,12 +27,20 @@ function Navbar() {
   // ============================================
   const location = useLocation();
   const navigate = useNavigate();
+
   const { user, logout, isPremium, isAuthenticated } = useAuth();
+
+  // FIX 1 → Nombres correctos del contexto entrenador
+  const {
+    entrenador,
+    login,
+    logout: logoutEntrenador,
+    isAuthenticated: isAuthenticatedEntrenador,
+  } = useAuthEntrenador();
 
   // ============================================
   // ESTADOS
   // ============================================
-
   const [menuOpen, setMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [entrenamientosOpen, setEntrenamientosOpen] = useState(false);
@@ -58,19 +67,35 @@ function Navbar() {
   // ============================================
   const isActive = (path) => location.pathname === path;
 
+  // FIX 2 → logout correcto según tipo de usuario
   const handleLogout = () => {
+    if (isAuthenticatedEntrenador) {
+      logoutEntrenador();
+      navigate("/entrenador/login");
+      return;
+    }
+
     logout();
-    setUserMenuOpen(false);
     navigate("/");
   };
 
-  // Determinar qué opciones mostrar según el rol
+  // FIX 3 → menú correcto para entrenador
   const getUserMenuItems = () => {
     const commonItems = [
       { label: "Mis Datos Personales", path: "/perfil/datos", icon: User },
     ];
 
-    // ADMIN (verificar primero)
+    // ENTRENADOR
+    if (entrenador) {
+      return [
+        { label: "Panel de Entrenador", path: "/entrenador/dashboard", icon: Activity },
+        { label: "Mis Platos", path: "/entrenador/mis-platos", icon: Utensils },
+        { label: "Mis Dietas", path: "/entrenador/mis-dietas", icon: Calendar },
+        ...commonItems,
+      ];
+    }
+
+    // ADMIN
     if (user?.rol === "admin") {
       return [
         { label: "Panel Admin", path: "/admin/dashboard", icon: Settings },
@@ -78,37 +103,11 @@ function Navbar() {
       ];
     }
 
-    // ENTRENADOR (verificar antes que premium)
-    if (user?.rol === "entrenador") {
-      return [
-        {
-          label: "Panel de Entrenador",
-          path: "/entrenador/dashboard",
-          icon: Activity,
-        },
-        {
-          label: "Mis Platos",
-          path: "/entrenador/mis-platos",
-          icon: Utensils,
-        },
-        {
-          label: "Mis Dietas",
-          path: "/entrenador/mis-dietas",
-          icon: Calendar,
-        },
-        ...commonItems,
-      ];
-    }
-
     // PREMIUM
-    if (isPremium && user?.rol !== "admin" && user?.rol !== "entrenador") {
+    if (isPremium && user?.rol !== "admin") {
       return [
         { label: "Mi Panel", path: "/dashboard", icon: Activity },
-        {
-          label: "Mis Entrenamientos",
-          path: "/mis-entrenamientos",
-          icon: Dumbbell,
-        },
+        { label: "Mis Entrenamientos", path: "/mis-entrenamientos", icon: Dumbbell },
         { label: "Mis Dietas", path: "/mis-dietas", icon: Utensils },
         { label: "Mi Suscripción", path: "/mi-suscripcion", icon: CreditCard },
         ...commonItems,
@@ -124,41 +123,31 @@ function Navbar() {
     ];
   };
 
-  // Determinar si mostrar el badge premium
   const shouldShowPremiumBadge = () => {
-    return isPremium && user?.rol !== "entrenador" && user?.rol !== "admin";
+    if (entrenador) return false;
+    return isPremium;
   };
 
-  // Determinar el color del botón de usuario
   const getUserButtonColor = () => {
-    if (user?.rol === "entrenador") {
+    if (entrenador)
       return "bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:from-blue-700 hover:to-blue-900";
-    }
-    if (isPremium) {
+    if (isPremium)
       return "bg-gradient-to-r from-uf-red to-red-700 text-white hover:from-red-700 hover:to-uf-red";
-    }
     return "bg-gradient-to-r from-uf-gold to-yellow-600 text-black hover:from-yellow-600 hover:to-uf-gold";
   };
 
   // ============================================
-  // DATOS - Links del menú (dinámicos según autenticación)
+  // SUBMENÚS
   // ============================================
-
-  // Submenú de alimentación según autenticación
   const getAlimentacionSubmenu = () => {
-    if (!isAuthenticated) {
-      // Solo dietas públicas para usuarios no autenticados
-      return [
-        { path: "/alimentacion", label: "Dietas Profesionales", icon: Utensils },
-      ];
+    if (!isAuthenticated && !isAuthenticatedEntrenador) {
+      return [{ path: "/alimentacion", label: "Dietas Profesionales", icon: Utensils }];
     }
 
-    // Opciones para usuarios autenticados
     const menuItems = [
       { path: "/mis-dietas?tab=publicas", label: "Dietas Públicas", icon: Utensils },
     ];
 
-    // Opciones adicionales solo para usuarios premium
     if (isPremium) {
       menuItems.unshift(
         { path: "/mis-dietas?tab=asignadas", label: "Dietas Asignadas", icon: User },
@@ -169,18 +158,18 @@ function Navbar() {
     return menuItems;
   };
 
-  // Submenú de entrenamientos según autenticación
   const getEntrenamientosSubmenu = () => {
     const menuItems = [
       { path: "/gym", label: "Gym", icon: Dumbbell },
       { path: "/workout", label: "Workout", icon: Activity },
     ];
 
-    // Solo usuarios Premium pueden crear sus propios entrenamientos
-    if (isPremium && user?.rol !== "admin" && user?.rol !== "entrenador") {
-      menuItems.push(
-        { path: "/crear-entrenamiento", label: "Crear Mi Entrenamiento", icon: Sparkles }
-      );
+    if (isPremium && !entrenador) {
+      menuItems.push({
+        path: "/crear-entrenamiento",
+        label: "Crear Mi Entrenamiento",
+        icon: Sparkles,
+      });
     }
 
     return menuItems;
@@ -192,17 +181,102 @@ function Navbar() {
     {
       label: "ENTRENAMIENTOS",
       hasSubmenu: true,
-      submenu: getEntrenamientosSubmenu(), // Dinámico según autenticación
+      submenu: getEntrenamientosSubmenu(),
     },
     {
       label: "ALIMENTACIÓN",
       hasSubmenu: true,
-      submenu: getAlimentacionSubmenu(), // Dinámico según autenticación
+      submenu: getAlimentacionSubmenu(),
     },
     { path: "/blog", label: "BLOG", hasSubmenu: false },
     { path: "/contacto", label: "CONTACTO", hasSubmenu: false },
   ];
 
+  // ============================================
+  // RENDER HELPERS
+  // ============================================
+  // ============================================
+  // RENDER HELPERS
+  // ============================================
+  const renderUserDropdown = () => (
+    <div
+      className={`absolute right-0 mt-2 w-64 bg-uf-dark rounded-lg shadow-2xl border-2 overflow-hidden z-50 ${isPremium ? "border-uf-red" : "border-uf-gold"
+        }`}
+    >
+      {(isAuthenticated || isAuthenticatedEntrenador) ? (
+        // CONTENIDO PARA USUARIOS LOGUEADOS
+        <>
+          <div className="px-4 py-3 border-b border-gray-700">
+            <p className="text-xs text-gray-400 uppercase tracking-wide">Conectado como</p>
+
+            <p className="text-white font-semibold truncate mt-1">
+              {entrenador?.email || user?.email}
+            </p>
+
+            {entrenador && (
+              <span className="inline-flex items-center gap-1 mt-2 px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded uppercase">
+                <Activity className="w-3 h-3" />
+                ENTRENADOR
+              </span>
+            )}
+          </div>
+
+          {getUserMenuItems().map((item, index) => (
+            <Link
+              key={index}
+              to={item.path}
+              onClick={() => setUserMenuOpen(false)}
+              className={`
+                flex items-center space-x-3 px-4 py-3 text-white transition-all duration-200
+                ${isPremium
+                  ? "hover:bg-uf-red/20 hover:text-uf-red"
+                  : "hover:bg-uf-gold/20 hover:text-uf-gold"
+                }
+              `}
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="font-semibold text-sm">{item.label}</span>
+            </Link>
+          ))}
+
+          <div className="border-t border-gray-700">
+            <button
+              onClick={() => {
+                setUserMenuOpen(false);
+                handleLogout();
+              }}
+              className="flex items-center space-x-3 w-full px-4 py-3 text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-all duration-200 cursor-pointer"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="font-semibold text-sm">Cerrar Sesión</span>
+            </button>
+          </div>
+        </>
+      ) : (
+        // CONTENIDO PARA VISITANTES (NO LOGUEADOS)
+        <div className="p-2 space-y-2">
+          <Link
+            to="/login"
+            onClick={() => setUserMenuOpen(false)}
+            className="flex items-center justify-center space-x-3 px-4 py-3 font-bold text-white hover:bg-gray-700 rounded transition-colors"
+          >
+            <span>Iniciar Sesión</span>
+          </Link>
+          <Link
+            to="/register"
+            onClick={() => setUserMenuOpen(false)}
+            className="flex items-center justify-center space-x-3 px-4 py-3 font-bold bg-uf-gold text-black rounded hover:bg-yellow-600 transition-colors"
+          >
+            <span>Crear Cuenta</span>
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+
+  // ============================================
+  // RETORNO JSX (DISEÑO INTACTO)
+  // ============================================
   return (
     <nav
       className={`border-b sticky top-0 z-50 shadow-xl ${isPremium ? "bg-black border-uf-red/30" : "bg-black border-uf-gold/20"
@@ -213,31 +287,22 @@ function Navbar() {
         {/* VERSIÓN DESKTOP (>1024px) */}
         {/* ========================================== */}
         <div className="hidden lg:flex justify-between items-center h-20">
-          {/* IZQUIERDA: Logo + Separador + Menú */}
+          {/* IZQUIERDA */}
           <div className="flex items-center space-x-6">
-            {/* Logo */}
             <Link to="/" className="flex-shrink-0">
               <img
                 src={isPremium ? "/logos/logo-premium.png" : "/logos/logo.png"}
                 alt="Ultimate Fitness"
                 className="h-14 hover:opacity-80 transition duration-300"
-                onError={(e) => {
-                  e.target.style.display = "none";
-                  e.target.nextSibling.style.display = "flex";
-                }}
               />
-              <span className="hidden font-audiowide text-uf-gold font-bold text-xl uppercase tracking-wider items-center gap-2">
-                <Dumbbell className="w-5 h-5" /> UF
-              </span>
             </Link>
 
-            {/* SEPARADOR VERTICAL */}
             <div
               className={`h-10 w-px ${isPremium ? "bg-uf-red/50" : "bg-uf-gold/30"
                 }`}
             ></div>
 
-            {/* MENÚ DE NAVEGACIÓN */}
+            {/* MENÚ */}
             <div className="flex items-center space-x-8">
               {navLinks.map((link, index) => (
                 <div key={index} className="relative">
@@ -265,7 +330,7 @@ function Navbar() {
                           if (link.label === "ENTRENAMIENTOS") {
                             setEntrenamientosOpen(!entrenamientosOpen);
                             setAlimentacionOpen(false);
-                          } else if (link.label === "ALIMENTACIÓN") {
+                          } else {
                             setAlimentacionOpen(!alimentacionOpen);
                             setEntrenamientosOpen(false);
                           }
@@ -315,14 +380,15 @@ function Navbar() {
                                   setEntrenamientosOpen(false);
                                   setAlimentacionOpen(false);
                                 }}
-                                className={`flex items-center gap-2 px-4 py-3 text-white transition-all duration-300 font-semibold text-sm ${isPremium
-                                  ? "hover:bg-uf-red hover:text-white"
-                                  : "hover:bg-uf-gold hover:text-black"
-                                  }`}
+                                className={`
+                                flex items-center gap-2 px-4 py-3 text-white transition-all duration-300 font-semibold text-sm
+                                ${isPremium
+                                    ? "hover:bg-uf-red hover:text-white"
+                                    : "hover:bg-uf-gold hover:text-black"
+                                  }
+                              `}
                               >
-                                {sublink.icon && (
-                                  <sublink.icon className="w-4 h-4" />
-                                )}
+                                <sublink.icon className="w-4 h-4" />
                                 {sublink.label}
                               </Link>
                             ))}
@@ -335,22 +401,21 @@ function Navbar() {
             </div>
           </div>
 
-          {/* DERECHA: Usuario y Botones */}
+          {/* DERECHA */}
           <div className="flex items-center space-x-4">
-            {shouldShowPremiumBadge() && (
-              <Badge type="premium" text="PREMIUM" />
-            )}
+            {shouldShowPremiumBadge() && <Badge type="premium" text="PREMIUM" />}
 
-            {isAuthenticated ? (
+            {(isAuthenticated || isAuthenticatedEntrenador) ? (
               <div className="flex items-center space-x-4">
-                {/* MENÚ DESPLEGABLE DE USUARIO */}
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${getUserButtonColor()}`}
                   >
                     <User className="w-5 h-5" />
-                    <span className="text-sm">{user?.nombre || "Usuario"}</span>
+                    <span className="text-sm">
+                      {entrenador?.nombre || user?.nombre || "Usuario"}
+                    </span>
                     <svg
                       className={`w-4 h-4 transition-transform duration-300 ${userMenuOpen ? "rotate-180" : ""
                         }`}
@@ -358,81 +423,11 @@ function Navbar() {
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
-                  {/* DROPDOWN MENÚ */}
-                  {userMenuOpen && (
-                    <div
-                      className={`absolute right-0 mt-2 w-64 bg-uf-dark rounded-lg shadow-2xl border-2 overflow-hidden z-50 ${isPremium ? "border-uf-red" : "border-uf-gold"
-                        }`}
-                    >
-                      {/* INFO USUARIO */}
-                      <div className="px-4 py-3 border-b border-gray-700">
-                        <p className="text-xs text-gray-400 uppercase tracking-wide">
-                          Conectado como
-                        </p>
-                        <p className="text-white font-semibold truncate mt-1">
-                          {user?.email}
-                        </p>
-                        {shouldShowPremiumBadge() && (
-                          <span className="inline-flex items-center gap-1 mt-2 px-2 py-1 bg-gradient-to-r from-uf-red to-red-700 text-white text-xs font-bold rounded uppercase">
-                            <Star className="w-3 h-3" />
-                            PREMIUM
-                          </span>
-                        )}
-                        {user?.rol === "admin" && (
-                          <span className="inline-flex items-center gap-1 mt-2 ml-2 px-2 py-1 bg-red-600 text-white text-xs font-bold rounded uppercase">
-                            <Shield className="w-3 h-3" />
-                            ADMIN
-                          </span>
-                        )}
-                        {user?.rol === "entrenador" && (
-                          <span className="inline-flex items-center gap-1 mt-2 px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded uppercase">
-                            <Activity className="w-3 h-3" />
-                            ENTRENADOR
-                          </span>
-                        )}
-                      </div>
-
-                      {/* OPCIONES DEL MENÚ */}
-                      {getUserMenuItems().map((item, index) => (
-                        <Link
-                          key={index}
-                          to={item.path}
-                          onClick={() => setUserMenuOpen(false)}
-                          className={`flex items-center space-x-3 px-4 py-3 text-white transition-all duration-200 ${isPremium
-                            ? "hover:bg-uf-red/20 hover:text-uf-red"
-                            : "hover:bg-uf-gold/20 hover:text-uf-gold"
-                            }`}
-                        >
-                          <item.icon className="w-5 h-5" />
-                          <span className="font-semibold text-sm">
-                            {item.label}
-                          </span>
-                        </Link>
-                      ))}
-
-                      {/* CERRAR SESIÓN */}
-                      <div className="border-t border-gray-700">
-                        <button
-                          onClick={handleLogout}
-                          className="flex items-center space-x-3 w-full px-4 py-3 text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-all duration-200"
-                        >
-                          <LogOut className="w-5 h-5" />
-                          <span className="font-semibold text-sm">
-                            Cerrar Sesión
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                  {userMenuOpen && renderUserDropdown()}
                 </div>
               </div>
             ) : (
@@ -455,65 +450,53 @@ function Navbar() {
         </div>
 
         {/* ========================================== */}
-        {/* VERSIÓN MÓVIL Y TABLET (<1024px) */}
+        {/* VERSIÓN MOBILE */}
         {/* ========================================== */}
-        <div className="lg:hidden flex justify-between items-center h-16">
-          {/* Logo móvil */}
-          <Link to="/">
-            <img
-              src={isPremium ? "/logos/logo-premium.png" : "/logos/logo.png"}
-              alt="Ultimate Fitness"
-              className="h-12"
-              onError={(e) => {
-                e.target.style.display = "none";
-                e.target.nextSibling.style.display = "flex";
-              }}
-            />
-            <span className="hidden font-audiowide text-uf-gold font-bold text-lg uppercase items-center gap-2">
-              <Dumbbell className="w-5 h-5" /> UF
-            </span>
-          </Link>
+        <div className="lg:hidden flex justify-between items-center h-16 relative">
+          {/* 1. HAMBURGUESA (IZQUIERDA) */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-white focus:outline-none z-10"
+          >
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {menuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
 
-          {/* Usuario móvil */}
-          <div className="flex items-center space-x-3">
-            {isAuthenticated && (
-              <Link to="/dashboard" className="text-uf-gold">
-                <User className="w-7 h-7" />
-              </Link>
-            )}
+          {/* 2. LOGO (CENTRO ABSOLUTO) */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 z-0">
+            <Link to="/">
+              <img
+                src={isPremium ? "/logos/logo-premium.png" : "/logos/logo.png"}
+                alt="Ultimate Fitness"
+                className="h-12"
+              />
+            </Link>
+          </div>
 
-            {/* Hamburguesa */}
+          {/* 3. ICONO USUARIO (DERECHA) - SIEMPRE VISIBLE */}
+          <div className="flex items-center space-x-3 z-10">
             <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="text-white focus:outline-none"
+              onClick={() => setUserMenuOpen(!userMenuOpen)}
+              className={`${(isAuthenticated || isAuthenticatedEntrenador)
+                ? "text-uf-gold"
+                : "text-white"
+                } focus:outline-none flex items-center p-2`}
             >
-              <svg
-                className="w-8 h-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                {menuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
+              <User className="w-7 h-7" />
             </button>
+            {userMenuOpen && (
+              <div className="absolute top-full right-0 mt-2 z-50">
+                {renderUserDropdown()}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Menú móvil desplegable */}
         {menuOpen && (
           <div className="lg:hidden bg-uf-dark border-t-2 border-uf-gold/30 py-4">
             {navLinks.map((link, index) => (
@@ -534,7 +517,7 @@ function Navbar() {
                         if (link.label === "ENTRENAMIENTOS") {
                           setEntrenamientosOpen(!entrenamientosOpen);
                           setAlimentacionOpen(false);
-                        } else if (link.label === "ALIMENTACIÓN") {
+                        } else {
                           setAlimentacionOpen(!alimentacionOpen);
                           setEntrenamientosOpen(false);
                         }
@@ -542,23 +525,12 @@ function Navbar() {
                       className="w-full text-left px-4 py-3 text-white font-bold hover:bg-uf-gold hover:text-black transition flex justify-between items-center"
                     >
                       {link.label}
-                      <svg
-                        className={`w-4 h-4 transition-transform ${(link.label === "ENTRENAMIENTOS" &&
-                          entrenamientosOpen) ||
-                          (link.label === "ALIMENTACIÓN" && alimentacionOpen)
-                          ? "rotate-180"
-                          : ""
-                          }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
+                      <svg className={`w-4 h-4 transition-transform ${(link.label === "ENTRENAMIENTOS" && entrenamientosOpen) ||
+                        (link.label === "ALIMENTACIÓN" && alimentacionOpen)
+                        ? "rotate-180"
+                        : ""
+                        }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
 
@@ -576,9 +548,7 @@ function Navbar() {
                               }}
                               className="flex items-center gap-2 px-8 py-2 text-gray-300 hover:text-uf-gold transition"
                             >
-                              {sublink.icon && (
-                                <sublink.icon className="w-4 h-4" />
-                              )}
+                              <sublink.icon className="w-4 h-4" />
                               {sublink.label}
                             </Link>
                           ))}
@@ -589,70 +559,7 @@ function Navbar() {
               </div>
             ))}
 
-            {/* Botones móvil */}
-            <div className="px-4 mt-4 space-y-2">
-              {isAuthenticated ? (
-                <>
-                  <div className="text-white text-sm mb-3 pb-3 border-b border-gray-700">
-                    <p className="text-gray-400 text-xs">Conectado como</p>
-                    <p className="font-semibold">{user?.nombre}</p>
-                    {shouldShowPremiumBadge() && (
-                      <span className="inline-flex items-center gap-1 text-uf-red text-xs mt-1">
-                        <Star className="w-3 h-3" />
-                        PREMIUM
-                      </span>
-                    )}
-                    {user?.rol === "entrenador" && (
-                      <span className="inline-flex items-center gap-1 text-blue-400 text-xs mt-1 ml-2">
-                        <Activity className="w-3 h-3" />
-                        ENTRENADOR
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Opciones móvil */}
-                  {getUserMenuItems().map((item, index) => (
-                    <Link
-                      key={index}
-                      to={item.path}
-                      onClick={() => setMenuOpen(false)}
-                      className="flex items-center gap-2 w-full text-left text-white font-semibold py-2 px-4 rounded hover:bg-uf-gold hover:text-black transition"
-                    >
-                      <item.icon className="w-4 h-4" />
-                      {item.label}
-                    </Link>
-                  ))}
-
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setMenuOpen(false);
-                    }}
-                    className="flex items-center justify-center gap-2 w-full bg-uf-red text-white font-bold py-2 px-4 rounded hover:bg-red-700 transition"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Cerrar Sesión
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    onClick={() => setMenuOpen(false)}
-                    className="block w-full text-center bg-gray-700 text-white font-bold py-2 px-4 rounded hover:bg-gray-600 transition"
-                  >
-                    Iniciar Sesión
-                  </Link>
-                  <Link
-                    to="/register"
-                    onClick={() => setMenuOpen(false)}
-                    className="block w-full text-center bg-uf-gold text-black font-bold py-2 px-4 rounded hover:bg-yellow-600 transition"
-                  >
-                    Crear Cuenta
-                  </Link>
-                </>
-              )}
-            </div>
+            {/* SECCIÓN AUTH ELIMINADA DEL CONTENIDO HAMBURGUESA - MOVIDA AL ICONO DE USUARIO */}
           </div>
         )}
       </div>

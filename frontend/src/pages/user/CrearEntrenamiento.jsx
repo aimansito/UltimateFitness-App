@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
-import { ArrowLeft, Save, Plus, Trash2, Dumbbell, Calendar, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, Save, Plus, Trash2, Dumbbell, Calendar, ChevronDown, ChevronUp, CheckCircle } from "lucide-react";
 
 const DIAS_SEMANA = [
     { numero: 1, nombre: "Lunes" },
@@ -24,6 +24,10 @@ function CrearEntrenamiento() {
     const [nivelDificultad, setNivelDificultad] = useState("intermedio");
     const [duracionMinutos, setDuracionMinutos] = useState(60);
 
+    // SUCCESS MODAL STATE
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [createdId, setCreatedId] = useState(null);
+
     // Estado para los 7 días de la semana
     const [dias, setDias] = useState(DIAS_SEMANA.map(dia => ({
         diaSemana: dia.numero,
@@ -44,8 +48,20 @@ function CrearEntrenamiento() {
             try {
                 // Endpoint correcto según backend: /api/custom/ejercicios
                 const response = await api.get("/custom/ejercicios");
-                if (response.data && Array.isArray(response.data['hydra:member'])) {
-                    setEjerciciosDisponibles(response.data['hydra:member']);
+
+                // DATA HANDLING FIX:
+                // El custom controller devuelve un array directo, NO un objeto con hydra:member
+                let ejerciciosData = [];
+                if (Array.isArray(response.data)) {
+                    ejerciciosData = response.data;
+                } else if (response.data && response.data.member) {
+                    ejerciciosData = response.data.member;
+                } else if (response.data && response.data['hydra:member']) {
+                    ejerciciosData = response.data['hydra:member'];
+                }
+
+                if (ejerciciosData.length > 0) {
+                    setEjerciciosDisponibles(ejerciciosData);
                 } else {
                     // Fallback mock
                     setEjerciciosDisponibles([
@@ -190,8 +206,9 @@ function CrearEntrenamiento() {
             setLoading(true);
             const response = await api.post("/usuario/crear-entrenamiento", payload);
             if (response.data.success) {
-                alert("Plan de entrenamiento semanal creado exitosamente");
-                navigate("/mis-entrenamientos");
+                // MODAL SUCCESS
+                setCreatedId(response.data.entrenamiento_id);
+                setShowSuccessModal(true);
             } else {
                 setError(response.data.error || "Error al crear entrenamiento");
             }
@@ -206,8 +223,45 @@ function CrearEntrenamiento() {
     const diasActivosCount = dias.filter(d => !d.esDescanso).length;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4 relative">
+
+            {/* SUCCESS MODAL */}
+            {showSuccessModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                    <div className="bg-gradient-to-br from-gray-900 to-black border-2 border-uf-gold rounded-2xl p-8 max-w-md w-full text-center shadow-2xl transform transition-all scale-100">
+                        <div className="flex justify-center mb-6">
+                            <div className="bg-uf-gold/20 p-4 rounded-full">
+                                <CheckCircle className="w-16 h-16 text-uf-gold" />
+                            </div>
+                        </div>
+                        <h2 className="text-3xl font-bold text-white mb-4">¡Plan Creado!</h2>
+                        <p className="text-gray-300 mb-8">
+                            Tu rutina semanal <strong>"{nombre}"</strong> se ha guardado correctamente. ¡Es hora de entrenar!
+                        </p>
+
+                        <div className="space-y-3">
+                            {createdId && (
+                                <button
+                                    onClick={() => navigate(`/mis-entrenamientos/${createdId}`)}
+                                    className="w-full bg-uf-gold text-black font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <Calendar className="w-5 h-5" />
+                                    Ver Rutina Completa
+                                </button>
+                            )}
+
+                            <button
+                                onClick={() => navigate("/mis-entrenamientos")}
+                                className="w-full bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors border border-gray-600"
+                            >
+                                Ir a Mis Entrenamientos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <div className={`max-w-6xl mx-auto transition-all ${showSuccessModal ? 'blur-sm grayscale' : ''}`}>
                 {/* Header */}
                 <div className="mb-6">
                     <button
@@ -331,8 +385,8 @@ function CrearEntrenamiento() {
                                     <button
                                         onClick={(e) => { e.stopPropagation(); toggleDescanso(dia.diaSemana); }}
                                         className={`px-4 py-2 rounded font-bold transition-all ${dia.esDescanso
-                                                ? 'bg-gray-700 text-gray-400 hover:bg-gray-600'
-                                                : 'bg-green-600 text-white hover:bg-green-500'
+                                            ? 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                                            : 'bg-green-600 text-white hover:bg-green-500'
                                             }`}
                                     >
                                         {dia.esDescanso ? 'Descanso' : 'Activo'}

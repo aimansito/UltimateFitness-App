@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import useAuthEntrenador from '../../context/AuthContextEntrenador';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../context/ToastContext';
 import api from '../../services/api';
 import {
   Utensils,
@@ -14,22 +15,23 @@ import {
 } from 'lucide-react';
 
 function MisPlatosEntrenador() {
-  const { user } = useAuth();
+  const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
+  const toast = useToast();
   const [platos, setPlatos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    if (user && user.id) {
+    if (entrenador && entrenador.id) {
       fetchPlatos();
     }
-  }, [user]);
+  }, [entrenador]);
 
   const fetchPlatos = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/platos/entrenador/${user.id}`);
+      const response = await api.get(`/platos/entrenador/${entrenador.id}`);
 
       if (response.data.success) {
         setPlatos(response.data.platos);
@@ -48,7 +50,7 @@ function MisPlatosEntrenador() {
       const response = await api.delete(`/platos/${platoId}`);
 
       if (response.data.success) {
-        alert('✅ Plato eliminado exitosamente');
+        toast.success('✅ Plato eliminado exitosamente');
         fetchPlatos();
       }
     } catch (error) {

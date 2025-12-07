@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
+import useAuthEntrenador from "../../context/AuthContextEntrenador";
+import api from "../../services/api";
 import { ArrowLeft, Save, Plus, Trash2, Calendar, Search } from "lucide-react";
 import ConstructorPlatos from "../../components/dieta/ConstructorPlatos";
 import SelectorPlatos from "../../components/dieta/SelectorPlatos";
 
 function CrearDietaCliente() {
   const { clienteId } = useParams();
-  const { user } = useAuth();
+  const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
 
   const [cliente, setCliente] = useState(null);
@@ -107,8 +107,8 @@ function CrearDietaCliente() {
 
   const fetchCliente = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/entrenador/mis-clientes/${user.id}`
+      const response = await api.get(
+        `/entrenador/mis-clientes/${entrenador.id}`
       );
       if (response.data.success) {
         const clienteEncontrado = response.data.clientes.find(
@@ -125,7 +125,7 @@ function CrearDietaCliente() {
 
   const fetchAlimentos = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/alimentos");
+      const response = await api.get("/alimentos");
       setAlimentos(response.data);
     } catch (error) {
       console.error("Error al cargar alimentos:", error);
@@ -134,7 +134,7 @@ function CrearDietaCliente() {
 
   const fetchPlatos = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/platos");
+      const response = await api.get("/platos");
       if (response.data.success) {
         setPlatos(response.data.platos);
       }
@@ -307,7 +307,7 @@ function CrearDietaCliente() {
     const dietaData = {
       nombre: nombreDieta,
       descripcion: descripcionDieta,
-      creador_id: user.id,
+      creador_id: entrenador.id,
       cliente_id: parseInt(clienteId),
       calorias_totales: totalesDiarios.calorias,
       proteinas_totales: totalesDiarios.proteinas,
@@ -319,8 +319,8 @@ function CrearDietaCliente() {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/entrenador/crear-dieta",
+      const response = await api.post(
+        "/entrenador/crear-dieta",
         dietaData
       );
 
@@ -437,8 +437,8 @@ function CrearDietaCliente() {
                 key={dia.key}
                 onClick={() => setDiaSeleccionado(dia.key)}
                 className={`py-3 px-4 rounded-lg font-bold transition-all ${diaSeleccionado === dia.key
-                    ? "bg-uf-gold text-black"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  ? "bg-uf-gold text-black"
+                  : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                   }`}
               >
                 {dia.label}
@@ -642,7 +642,7 @@ function CrearDietaCliente() {
       {mostrarConstructor && (
         <ConstructorPlatos
           onGuardarPlato={handleGuardarPlato}
-          onCancelar={() => {
+          onCerrar={() => {
             setMostrarConstructor(false);
             setMomentoActual(null);
           }}

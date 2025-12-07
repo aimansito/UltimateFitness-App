@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import api from '../../services/api';
 import BlogCard from '../../components/blog/BlogCard';
 import {
@@ -17,6 +18,7 @@ function BlogPost() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { isAuthenticated, isPremium } = useAuth();
+  const toast = useToast();
   const [post, setPost] = useState(null);
   const [relacionados, setRelacionados] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -71,7 +73,7 @@ function BlogPost() {
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('¡Enlace copiado al portapapeles!');
+      toast.success('✅ Enlace copiado al portapapeles');
     }
   };
 

@@ -1,12 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
-import { Loader, ArrowLeft, Clock, TrendingUp } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import api from '../../services/api';
+import { Loader, ArrowLeft } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import useAuthEntrenador from '../../context/AuthContextEntrenador';
 
 function DetallePlato() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [plato, setPlato] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Detectar si es entrenador para volver a la ruta correcta
+  const { entrenador } = useAuthEntrenador();
+  // eslint-disable-next-line
+  const { user } = useAuth(); // Mantener hook aunque no se use user directamente por coherencia
 
   useEffect(() => {
     fetchPlato();
@@ -15,8 +23,8 @@ function DetallePlato() {
   const fetchPlato = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:8000/api/platos/${id}`);
-      
+      const response = await api.get(`/platos/${id}`);
+
       if (response.data.success) {
         setPlato(response.data.plato);
       }
@@ -43,20 +51,29 @@ function DetallePlato() {
     );
   }
 
+  const handleBack = (e) => {
+    e.preventDefault();
+    if (entrenador) {
+      navigate('/entrenador/mis-platos');
+    } else {
+      navigate('/mis-platos');
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        
-        <Link
-          to="/mis-platos"
-          className="inline-flex items-center gap-2 text-uf-gold hover:text-yellow-600 mb-8 transition-colors"
+
+        <button
+          onClick={handleBack}
+          className="inline-flex items-center gap-2 text-uf-gold hover:text-yellow-600 mb-8 transition-colors bg-transparent border-none cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5" />
-          Volver a Mis Platos
-        </Link>
+          {entrenador ? "Volver a Mis Platos (Entrenador)" : "Volver a Mis Platos"}
+        </button>
 
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg border-2 border-gray-700 p-8">
-          
+
           <h1 className="text-4xl font-bold text-white mb-4">
             {plato.nombre}
           </h1>
@@ -96,9 +113,9 @@ function DetallePlato() {
           </div>
 
           {/* Ingredientes */}
-          {plato.ingredientes && plato.ingredientes.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">Ingredientes:</h2>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-white mb-4">Ingredientes:</h2>
+            {plato.ingredientes && plato.ingredientes.length > 0 ? (
               <div className="space-y-3">
                 {plato.ingredientes.map((ing, index) => (
                   <div
@@ -118,8 +135,10 @@ function DetallePlato() {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <p className="text-gray-400 italic">No hay ingredientes registrados para este plato.</p>
+            )}
+          </div>
 
           {/* Instrucciones */}
           {plato.instrucciones && (

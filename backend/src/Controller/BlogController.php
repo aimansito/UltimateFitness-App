@@ -8,7 +8,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 #[Route('/api/blog', name: 'api_blog_')]
 class BlogController extends AbstractController
@@ -343,6 +347,254 @@ class BlogController extends AbstractController
             ]
         ]);
     }
+
+    /**
+     * POST /api/blog/upload-image
+     * Subir imagen de portada para el blog
+     * Requiere rol ADMIN
+     */
+    #[Route('/upload-image', name: 'upload_image', methods: ['POST'])]
+    public function uploadImage(Request $request, SluggerInterface $slugger): JsonResponse
+    {
+        // Verificar autenticación y rol ADMIN
+        $user = $this->getUser();
+        if (!$user || !in_array('ROLE_ADMIN', $user->getRoles())) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Acceso denegado. Se requiere rol de administrador.'
+            ], 403);
+        }
+
+        /** @var UploadedFile $imageFile */
+        $imageFile = $request->files->get('image');
+        
+        if (!$imageFile) {
+            return $this->json([
+                'success' => false,
+                'error' => 'No se recibió ninguna imagen'
+            ], 400);
+        }
+
+        // Validar tipo de archivo
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!in_array($imageFile->getMimeType(), $allowedMimeTypes)) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Tipo de archivo no permitido. Solo se aceptan imágenes (JPEG, PNG, GIF, WEBP)'
+            ], 400);
+        }
+
+        // Validar tamaño (máximo 5MB)
+        $maxSize = 5 * 1024 * 1024; // 5MB en bytes
+        if ($imageFile->getSize() > $maxSize) {
+            return $this->json([
+                'success' => false,
+                'error' => 'La imagen es demasiado grande. Tamaño máximo: 5MB'
+            ], 400);
+        }
+
+        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = $slugger->slug($originalFilename);
+        $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+        // Directorio de destino
+        $uploadDir = $this->getParameter('kernel.project_dir').'/public/uploads/blog';
+        
+        // Crear directorio si no existe
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        try {
+            $imageFile->move($uploadDir, $newFilename);
+            
+            return $this->json([
+                'success' => true,
+                'imagen_url' => '/uploads/blog/' . $newFilename,
+                'filename' => $newFilename
+            ]);
+        } catch (FileException $e) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Error al subir la imagen: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * POST /api/blog/posts
+     * Crear un nuevo post del blog
+     * Requiere rol ADMIN
+     */
+    #[Route('/posts', name: 'create', methods: ['POST'])]
+    public function crearPost(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        // Verificar autenticación y rol ADMIN
+        $user = $this->getUser();
+        if (!$user || !in_array('ROLE_ADMIN', $user->getRoles())) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Acceso denegado. Se requiere rol de administrador.'
+            ], 403);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        // Validaciones
+        if (empty($data['titulo'])) {
+            return $this->json(['success' => false, 'error' => 'El título es obligatorio'], 400);
+        }
+        if (empty($data['contenido'])) {
+            return $this->json(['success' => false, 'error' => 'El contenido es obligatorio'], 400);
+        }
+
+        try {
+            $post = new BlogPost();
+            $post->setTitulo($data['titulo']);
+            $post->setContenido($data['contenido']);
+            $post->setExtracto($data['extracto'] ?? null);
+            $post->setImagenPortada($data['imagen_portada'] ?? null);
+            $post->setCategoria($data['categoria'] ?? 'noticias');
+            $post->setEsPremium($data['es_premium'] ?? false);
+            $post->setDestacado($data['destacado'] ?? false);
+
+            // Generar slug automáticamente
+            $post->generarSlug();
+
+            // Si se marca para publicar ahora
+            if (isset($data['publicar_ahora']) && $data['publicar_ahora']) {
+                $post->setFechaPublicacion(new \DateTime());
+            }
+
+            $em->persist($post);
+            $em->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Post creado exitosamente',
+                'post' => $this->serializePost($post, true, true)
+            ], 201);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Error al crear el post: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * PUT /api/blog/posts/{id}
+     * Actualizar un post existente
+     * Requiere rol ADMIN
+     */
+    #[Route('/posts/{id}', name: 'update', methods: ['PUT'])]
+    public function actualizarPost(int $id, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        // Verificar autenticación y rol ADMIN
+        $user = $this->getUser();
+        if (!$user || !in_array('ROLE_ADMIN', $user->getRoles())) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Acceso denegado. Se requiere rol de administrador.'
+            ], 403);
+        }
+
+        $post = $em->getRepository(BlogPost::class)->find($id);
+
+        if (!$post) {
+            return $this->json(['success' => false, 'error' => 'Post no encontrado'], 404);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        try {
+            if (isset($data['titulo'])) {
+                $post->setTitulo($data['titulo']);
+                $post->generarSlug();
+            }
+            if (isset($data['contenido'])) {
+                $post->setContenido($data['contenido']);
+            }
+            if (isset($data['extracto'])) {
+                $post->setExtracto($data['extracto']);
+            }
+            if (isset($data['imagen_portada'])) {
+                $post->setImagenPortada($data['imagen_portada']);
+            }
+            if (isset($data['categoria'])) {
+                $post->setCategoria($data['categoria']);
+            }
+            if (isset($data['es_premium'])) {
+                $post->setEsPremium($data['es_premium']);
+            }
+            if (isset($data['destacado'])) {
+                $post->setDestacado($data['destacado']);
+            }
+
+            $post->setFechaActualizacion(new \DateTime());
+
+            $em->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Post actualizado exitosamente',
+                'post' => $this->serializePost($post, true, true)
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Error al actualizar el post: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * DELETE /api/blog/posts/{id}
+     * Eliminar un post
+     * Requiere rol ADMIN
+     */
+    #[Route('/posts/{id}', name: 'delete', methods: ['DELETE'])]
+    public function eliminarPost(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        // Verificar autenticación y rol ADMIN
+        $user = $this->getUser();
+        if (!$user || !in_array('ROLE_ADMIN', $user->getRoles())) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Acceso denegado. Se requiere rol de administrador.'
+            ], 403);
+        }
+
+        $post = $em->getRepository(BlogPost::class)->find($id);
+
+        if (!$post) {
+            return $this->json(['success' => false, 'error' => 'Post no encontrado'], 404);
+        }
+
+        try {
+            // Opcionalmente, eliminar la imagen del servidor
+            if ($post->getImagenPortada()) {
+                $imagePath = $this->getParameter('kernel.project_dir').'/public'.$post->getImagenPortada();
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
+            $em->remove($post);
+            $em->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Post eliminado exitosamente'
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Error al eliminar el post: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
     
     private function serializePost(BlogPost $post, bool $usuarioPremium, bool $incluirContenido = false): array
     {

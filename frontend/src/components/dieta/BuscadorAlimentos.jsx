@@ -3,6 +3,7 @@
 // Búsqueda con autocompletado y selección de cantidad
 // ============================================
 import { useState, useEffect } from 'react';
+import api from '../../services/api';
 
 function BuscadorAlimentos({ onSeleccionar, onCerrar }) {
   const [busqueda, setBusqueda] = useState('');
@@ -29,8 +30,8 @@ function BuscadorAlimentos({ onSeleccionar, onCerrar }) {
 
   const cargarAlimentos = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/alimentos');
-      const data = await response.json();
+      const response = await api.get('/alimentos');
+      const data = response.data;
       if (data['hydra:member']) {
         setAlimentos(data['hydra:member']);
       }
@@ -56,7 +57,7 @@ function BuscadorAlimentos({ onSeleccionar, onCerrar }) {
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-gradient-to-br from-gray-900 to-black max-w-2xl w-full rounded-2xl border-2 border-uf-gold shadow-2xl">
-        
+
         {/* HEADER */}
         <div className="bg-gradient-to-r from-uf-gold to-yellow-600 p-6">
           <div className="flex items-start justify-between">
@@ -112,9 +113,9 @@ function BuscadorAlimentos({ onSeleccionar, onCerrar }) {
                           <div className="flex-1">
                             <div className="font-bold text-white mb-1">{alimento.nombre}</div>
                             <div className="text-gray-400 text-sm">
-                              Por 100g: {alimento.calorias} kcal · 
-                              P: {alimento.proteinas}g · 
-                              C: {alimento.carbohidratos}g · 
+                              Por 100g: {alimento.calorias} kcal ·
+                              P: {alimento.proteinas}g ·
+                              C: {alimento.carbohidratos}g ·
                               G: {alimento.grasas}g
                             </div>
                           </div>

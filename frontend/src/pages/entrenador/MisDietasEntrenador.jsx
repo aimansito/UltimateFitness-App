@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import useAuthEntrenador from '../../context/AuthContextEntrenador';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../context/ToastContext';
 import api from '../../services/api';
 import {
   Utensils,
@@ -15,8 +16,9 @@ import {
 } from 'lucide-react';
 
 function MisDietasEntrenador() {
-  const { user } = useAuth();
+  const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
+  const toast = useToast();
   const [dietas, setDietas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,15 +26,15 @@ function MisDietasEntrenador() {
   const [usuariosAsignados, setUsuariosAsignados] = useState([]);
 
   useEffect(() => {
-    if (user && user.id) {
+    if (entrenador && entrenador.id) {
       fetchDietas();
     }
-  }, [user]);
+  }, [entrenador]);
 
   const fetchDietas = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/entrenador/dietas/${user.id}`);
+      const response = await api.get(`/entrenador/dietas/${entrenador.id}`);
 
       if (response.data.success) {
         setDietas(response.data.dietas);
@@ -51,12 +53,12 @@ function MisDietasEntrenador() {
       const response = await api.delete(`/entrenador/dieta/${dietaId}`);
 
       if (response.data.success) {
-        alert('✅ Dieta eliminada exitosamente');
+        toast.success('✅ Dieta eliminada exitosamente');
         fetchDietas();
       }
     } catch (error) {
       console.error('Error al eliminar dieta:', error);
-      alert('❌ Error al eliminar dieta');
+      toast.error('❌ Error al eliminar dieta');
     }
   };
 
@@ -70,7 +72,7 @@ function MisDietasEntrenador() {
       }
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
-      alert('❌ Error al cargar usuarios asignados');
+      toast.error('❌ Error al cargar usuarios asignados');
     }
   };
 

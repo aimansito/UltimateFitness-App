@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import api from '../../services/api';
 import Modal from '../../components/admin/Modal';
 import {
@@ -9,6 +10,7 @@ import {
 
 function DashboardAdmin() {
     const { user } = useAuth();
+    const toast = useToast();
     const [activeTab, setActiveTab] = useState('overview');
     const [loading, setLoading] = useState(false);
     const [searchUsuarios, setSearchUsuarios] = useState('');
@@ -127,11 +129,11 @@ function DashboardAdmin() {
             const endpoint = `/${type}/${id}`;
             const response = await api.delete(`/admin${endpoint}`);
             if (response.data.success) {
-                alert('Eliminado exitosamente');
+                toast.success('✅ Eliminado exitosamente');
                 loadData();
             }
         } catch (error) {
-            alert('Error al eliminar: ' + (error.response?.data?.error || error.message));
+            toast.error('❌ No se pudo eliminar');
         }
     };
 
@@ -143,12 +145,12 @@ function DashboardAdmin() {
             const response = await api[method](endpoint, formData);
 
             if (response.data.success) {
-                alert(modalMode === 'edit' ? 'Actualizado exitosamente' : 'Creado exitosamente');
+                toast.success(modalMode === 'edit' ? '✅ Actualizado exitosamente' : '✅ Creado exitosamente');
                 setModalOpen(false);
                 loadData();
             }
         } catch (error) {
-            alert('Error al guardar: ' + (error.response?.data?.error || error.message));
+            toast.error('❌ No se pudo guardar. Intenta de nuevo');
         }
     };
 
@@ -156,11 +158,11 @@ function DashboardAdmin() {
         try {
             const response = await api.put(`/admin/usuarios/${usuarioId}`, updates);
             if (response.data.success) {
-                alert('Usuario actualizado exitosamente');
+                toast.success('✅ Usuario actualizado exitosamente');
                 loadData();
             }
         } catch (error) {
-            alert('Error al actualizar: ' + error.message);
+            toast.error('❌ Error al actualizar usuario');
         }
     };
 
@@ -174,7 +176,7 @@ function DashboardAdmin() {
                 setDietaDetalleOpen(true);
             }
         } catch (error) {
-            alert('Error al cargar dieta: ' + error.message);
+            toast.error('❌ Error al cargar dieta');
         }
     };
 
@@ -212,11 +214,32 @@ function DashboardAdmin() {
         if (currentEntity === 'usuarios') {
             return (
                 <div className="space-y-4">
-                    <input type="text" placeholder="Nombre" value={formData.nombre || ''} onChange={(e) => setFormData({...formData, nombre: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <input type="text" placeholder="Apellidos" value={formData.apellidos || ''} onChange={(e) => setFormData({...formData, apellidos: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <input type="email" placeholder="Email" value={formData.email || ''} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <input type="tel" placeholder="Teléfono" value={formData.telefono || ''} onChange={(e) => setFormData({...formData, telefono: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <select value={formData.objetivo || ''} onChange={(e) => setFormData({...formData, objetivo: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                    <input type="text" placeholder="Nombre" value={formData.nombre || ''} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <input type="text" placeholder="Apellidos" value={formData.apellidos || ''} onChange={(e) => setFormData({ ...formData, apellidos: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <input type="email" placeholder="Email" value={formData.email || ''} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <input type="tel" placeholder="Teléfono" value={formData.telefono || ''} onChange={(e) => setFormData({ ...formData, telefono: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+
+                    {/* Campos de contraseña solo para crear nuevo usuario */}
+                    {modalMode === 'create' && (
+                        <>
+                            <input
+                                type="password"
+                                placeholder="Contraseña (dejar vacío para usar 'cambiar123')"
+                                value={formData.password || ''}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"
+                            />
+                            <input
+                                type="password"
+                                placeholder="Confirmar contraseña"
+                                value={formData.passwordConfirm || ''}
+                                onChange={(e) => setFormData({ ...formData, passwordConfirm: e.target.value })}
+                                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"
+                            />
+                        </>
+                    )}
+
+                    <select value={formData.objetivo || ''} onChange={(e) => setFormData({ ...formData, objetivo: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
                         <option value="">Objetivo</option>
                         <option value="perdida_peso">Pérdida de peso</option>
                         <option value="ganancia_muscular">Ganancia muscular</option>
@@ -224,18 +247,22 @@ function DashboardAdmin() {
                         <option value="rendimiento">Rendimiento</option>
                     </select>
                     <div className="grid grid-cols-2 gap-4">
-                        <input type="number" placeholder="Edad" value={formData.edad || ''} onChange={(e) => setFormData({...formData, edad: parseInt(e.target.value)})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                        <input type="number" step="0.1" placeholder="Peso (kg)" value={formData.peso_actual || ''} onChange={(e) => setFormData({...formData, peso_actual: parseFloat(e.target.value)})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                        <input type="number" step="0.1" placeholder="Altura (cm)" value={formData.altura || ''} onChange={(e) => setFormData({...formData, altura: parseFloat(e.target.value)})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                        <select value={formData.sexo || ''} onChange={(e) => setFormData({...formData, sexo: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                        <input type="number" placeholder="Edad" value={formData.edad || ''} onChange={(e) => setFormData({ ...formData, edad: parseInt(e.target.value) })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                        <input type="number" step="0.1" placeholder="Peso (kg)" value={formData.peso_actual || ''} onChange={(e) => setFormData({ ...formData, peso_actual: parseFloat(e.target.value) })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                        <input type="number" step="0.1" placeholder="Altura (cm)" value={formData.altura || ''} onChange={(e) => setFormData({ ...formData, altura: parseFloat(e.target.value) })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                        <select value={formData.sexo || ''} onChange={(e) => setFormData({ ...formData, sexo: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
                             <option value="">Sexo</option>
                             <option value="masculino">Masculino</option>
                             <option value="femenino">Femenino</option>
                         </select>
                     </div>
                     <label className="flex items-center gap-2 text-white">
-                        <input type="checkbox" checked={formData.es_premium || false} onChange={(e) => setFormData({...formData, es_premium: e.target.checked})} className="w-5 h-5" />
+                        <input type="checkbox" checked={formData.es_premium || false} onChange={(e) => setFormData({ ...formData, es_premium: e.target.checked })} className="w-5 h-5" />
                         <span>Usuario Premium</span>
+                    </label>
+                    <label className="flex items-center gap-2 text-white">
+                        <input type="checkbox" checked={formData.es_admin || false} onChange={(e) => setFormData({ ...formData, es_admin: e.target.checked })} className="w-5 h-5" />
+                        <span>🔐 Es Administrador</span>
                     </label>
                 </div>
             );
@@ -244,18 +271,18 @@ function DashboardAdmin() {
         if (currentEntity === 'entrenadores') {
             return (
                 <div className="space-y-4">
-                    <input type="text" placeholder="Nombre" value={formData.nombre || ''} onChange={(e) => setFormData({...formData, nombre: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <input type="text" placeholder="Apellidos" value={formData.apellidos || ''} onChange={(e) => setFormData({...formData, apellidos: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <input type="email" placeholder="Email" value={formData.email || ''} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <input type="tel" placeholder="Teléfono" value={formData.telefono || ''} onChange={(e) => setFormData({...formData, telefono: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <select value={formData.especialidad || 'ambos'} onChange={(e) => setFormData({...formData, especialidad: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                    <input type="text" placeholder="Nombre" value={formData.nombre || ''} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <input type="text" placeholder="Apellidos" value={formData.apellidos || ''} onChange={(e) => setFormData({ ...formData, apellidos: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <input type="email" placeholder="Email" value={formData.email || ''} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <input type="tel" placeholder="Teléfono" value={formData.telefono || ''} onChange={(e) => setFormData({ ...formData, telefono: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <select value={formData.especialidad || 'ambos'} onChange={(e) => setFormData({ ...formData, especialidad: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
                         <option value="nutricion">Nutrición</option>
                         <option value="entrenamiento">Entrenamiento</option>
                         <option value="ambos">Nutrición y Entrenamiento</option>
                     </select>
-                    <input type="number" placeholder="Años de experiencia" value={formData.anos_experiencia || ''} onChange={(e) => setFormData({...formData, anos_experiencia: parseInt(e.target.value)})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <textarea placeholder="Certificación" value={formData.certificacion || ''} onChange={(e) => setFormData({...formData, certificacion: e.target.value})} rows="3" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
-                    <textarea placeholder="Biografía" value={formData.biografia || ''} onChange={(e) => setFormData({...formData, biografia: e.target.value})} rows="3" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
+                    <input type="number" placeholder="Años de experiencia" value={formData.anos_experiencia || ''} onChange={(e) => setFormData({ ...formData, anos_experiencia: parseInt(e.target.value) })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <textarea placeholder="Certificación" value={formData.certificacion || ''} onChange={(e) => setFormData({ ...formData, certificacion: e.target.value })} rows="3" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
+                    <textarea placeholder="Biografía" value={formData.biografia || ''} onChange={(e) => setFormData({ ...formData, biografia: e.target.value })} rows="3" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
                 </div>
             );
         }
@@ -263,16 +290,16 @@ function DashboardAdmin() {
         if (currentEntity === 'alimentos') {
             return (
                 <div className="space-y-4">
-                    <input type="text" placeholder="Nombre" value={formData.nombre || ''} onChange={(e) => setFormData({...formData, nombre: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <input type="text" placeholder="Categoría" value={formData.categoria || ''} onChange={(e) => setFormData({...formData, categoria: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <textarea placeholder="Descripción" value={formData.descripcion || ''} onChange={(e) => setFormData({...formData, descripcion: e.target.value})} rows="2" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
+                    <input type="text" placeholder="Nombre" value={formData.nombre || ''} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <input type="text" placeholder="Categoría" value={formData.categoria || ''} onChange={(e) => setFormData({ ...formData, categoria: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <textarea placeholder="Descripción" value={formData.descripcion || ''} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })} rows="2" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
                     <div className="grid grid-cols-2 gap-4">
-                        <input type="number" step="0.1" placeholder="Calorías" value={formData.calorias || ''} onChange={(e) => setFormData({...formData, calorias: parseFloat(e.target.value)})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                        <input type="number" step="0.1" placeholder="Proteínas (g)" value={formData.proteinas || ''} onChange={(e) => setFormData({...formData, proteinas: parseFloat(e.target.value)})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                        <input type="number" step="0.1" placeholder="Carbohidratos (g)" value={formData.carbohidratos || ''} onChange={(e) => setFormData({...formData, carbohidratos: parseFloat(e.target.value)})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                        <input type="number" step="0.1" placeholder="Grasas (g)" value={formData.grasas || ''} onChange={(e) => setFormData({...formData, grasas: parseFloat(e.target.value)})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                        <input type="number" step="0.1" placeholder="Calorías" value={formData.calorias || ''} onChange={(e) => setFormData({ ...formData, calorias: parseFloat(e.target.value) })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                        <input type="number" step="0.1" placeholder="Proteínas (g)" value={formData.proteinas || ''} onChange={(e) => setFormData({ ...formData, proteinas: parseFloat(e.target.value) })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                        <input type="number" step="0.1" placeholder="Carbohidratos (g)" value={formData.carbohidratos || ''} onChange={(e) => setFormData({ ...formData, carbohidratos: parseFloat(e.target.value) })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                        <input type="number" step="0.1" placeholder="Grasas (g)" value={formData.grasas || ''} onChange={(e) => setFormData({ ...formData, grasas: parseFloat(e.target.value) })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
                     </div>
-                    <input type="number" step="0.01" placeholder="Precio por kg" value={formData.precio_kg || ''} onChange={(e) => setFormData({...formData, precio_kg: parseFloat(e.target.value)})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <input type="number" step="0.01" placeholder="Precio por kg" value={formData.precio_kg || ''} onChange={(e) => setFormData({ ...formData, precio_kg: parseFloat(e.target.value) })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
                 </div>
             );
         }
@@ -280,17 +307,17 @@ function DashboardAdmin() {
         if (currentEntity === 'ejercicios') {
             return (
                 <div className="space-y-4">
-                    <input type="text" placeholder="Nombre del ejercicio" value={formData.nombre || ''} onChange={(e) => setFormData({...formData, nombre: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <select value={formData.tipo || ''} onChange={(e) => setFormData({...formData, tipo: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                    <input type="text" placeholder="Nombre del ejercicio" value={formData.nombre || ''} onChange={(e) => setFormData({ ...formData, nombre: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <select value={formData.tipo || ''} onChange={(e) => setFormData({ ...formData, tipo: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
                         <option value="">Seleccionar tipo</option>
                         <option value="Fuerza">Fuerza</option>
                         <option value="Cardio">Cardio</option>
                         <option value="Flexibilidad">Flexibilidad</option>
                         <option value="Funcional">Funcional</option>
                     </select>
-                    <input type="text" placeholder="Grupo muscular" value={formData.grupo_muscular || ''} onChange={(e) => setFormData({...formData, grupo_muscular: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <textarea placeholder="Descripción" value={formData.descripcion || ''} onChange={(e) => setFormData({...formData, descripcion: e.target.value})} rows="3" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
-                    <select value={formData.nivel_dificultad || ''} onChange={(e) => setFormData({...formData, nivel_dificultad: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                    <input type="text" placeholder="Grupo muscular" value={formData.grupo_muscular || ''} onChange={(e) => setFormData({ ...formData, grupo_muscular: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <textarea placeholder="Descripción" value={formData.descripcion || ''} onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })} rows="3" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
+                    <select value={formData.nivel_dificultad || ''} onChange={(e) => setFormData({ ...formData, nivel_dificultad: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
                         <option value="">Nivel de dificultad</option>
                         <option value="principiante">Principiante</option>
                         <option value="intermedio">Intermedio</option>
@@ -303,11 +330,20 @@ function DashboardAdmin() {
         if (currentEntity === 'blog') {
             return (
                 <div className="space-y-4">
-                    <input type="text" placeholder="Título" value={formData.titulo || ''} onChange={(e) => setFormData({...formData, titulo: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <textarea placeholder="Extracto" value={formData.extracto || ''} onChange={(e) => setFormData({...formData, extracto: e.target.value})} rows="2" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
-                    <textarea placeholder="Contenido" value={formData.contenido || ''} onChange={(e) => setFormData({...formData, contenido: e.target.value})} rows="6" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
-                    <input type="url" placeholder="URL Imagen de portada" value={formData.imagen_portada || ''} onChange={(e) => setFormData({...formData, imagen_portada: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
-                    <select value={formData.categoria || 'noticias'} onChange={(e) => setFormData({...formData, categoria: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
+                    <input type="text" placeholder="Título" value={formData.titulo || ''} onChange={(e) => setFormData({ ...formData, titulo: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <textarea placeholder="Extracto" value={formData.extracto || ''} onChange={(e) => setFormData({ ...formData, extracto: e.target.value })} rows="2" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
+                    <textarea placeholder="Contenido" value={formData.contenido || ''} onChange={(e) => setFormData({ ...formData, contenido: e.target.value })} rows="6" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"></textarea>
+
+                    {/* Campo de URL para imagen */}
+                    <input
+                        type="url"
+                        placeholder="URL Imagen de portada (ej: https://images.unsplash.com/...)"
+                        value={formData.imagen_portada || ''}
+                        onChange={(e) => setFormData({ ...formData, imagen_portada: e.target.value })}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white"
+                    />
+
+                    <select value={formData.categoria || 'noticias'} onChange={(e) => setFormData({ ...formData, categoria: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white">
                         <option value="noticias">Noticias</option>
                         <option value="nutricion">Nutrición</option>
                         <option value="entrenamiento">Entrenamiento</option>
@@ -317,15 +353,15 @@ function DashboardAdmin() {
                     </select>
                     <div className="flex gap-4">
                         <label className="flex items-center gap-2 text-white">
-                            <input type="checkbox" checked={formData.es_premium || false} onChange={(e) => setFormData({...formData, es_premium: e.target.checked})} className="w-5 h-5" />
+                            <input type="checkbox" checked={formData.es_premium || false} onChange={(e) => setFormData({ ...formData, es_premium: e.target.checked })} className="w-5 h-5" />
                             <span>Premium</span>
                         </label>
                         <label className="flex items-center gap-2 text-white">
-                            <input type="checkbox" checked={formData.destacado || false} onChange={(e) => setFormData({...formData, destacado: e.target.checked})} className="w-5 h-5" />
+                            <input type="checkbox" checked={formData.destacado || false} onChange={(e) => setFormData({ ...formData, destacado: e.target.checked })} className="w-5 h-5" />
                             <span>Destacado</span>
                         </label>
                     </div>
-                    <input type="datetime-local" value={formData.fecha_publicacion || ''} onChange={(e) => setFormData({...formData, fecha_publicacion: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
+                    <input type="datetime-local" value={formData.fecha_publicacion || ''} onChange={(e) => setFormData({ ...formData, fecha_publicacion: e.target.value })} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white" />
                 </div>
             );
         }
@@ -413,7 +449,12 @@ function DashboardAdmin() {
 
                         {activeTab === 'usuarios' && (
                             <div>
-                                <h2 className="text-2xl font-bold text-uf-gold mb-6">GESTIÓN DE USUARIOS</h2>
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-2xl font-bold text-uf-gold">GESTIÓN DE USUARIOS</h2>
+                                    <button onClick={() => handleCreate('usuarios')} className="flex items-center gap-2 bg-uf-gold text-black px-4 py-2 rounded-lg font-bold hover:bg-yellow-600 transition-all">
+                                        <Plus className="w-5 h-5" />Nuevo Usuario
+                                    </button>
+                                </div>
                                 <div className="mb-6">
                                     <div className="relative">
                                         <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -671,11 +712,10 @@ function DashboardAdmin() {
                                     <button
                                         key={dia}
                                         onClick={() => setDiaSeleccionado(dia)}
-                                        className={`px-3 py-2 rounded-lg font-bold text-xs uppercase transition-all ${
-                                            diaSeleccionado === dia
-                                                ? 'bg-uf-gold text-black'
-                                                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                                        }`}
+                                        className={`px-3 py-2 rounded-lg font-bold text-xs uppercase transition-all ${diaSeleccionado === dia
+                                            ? 'bg-uf-gold text-black'
+                                            : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                                            }`}
                                     >
                                         {dia.substring(0, 3)}
                                     </button>

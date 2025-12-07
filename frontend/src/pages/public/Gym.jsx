@@ -18,7 +18,7 @@ function Gym() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [ejercicioSeleccionado, setEjercicioSeleccionado] = useState(null);
-  
+
   // Filtros
   const [musculoSeleccionado, setMusculoSeleccionado] = useState('TODOS');
   const [nivelSeleccionado, setNivelSeleccionado] = useState('');
@@ -46,27 +46,27 @@ function Gym() {
   }, []);
 
   const cargarEjercicios = async () => {
-  try {
-    setCargando(true);
-    setError(null);
+    try {
+      setCargando(true);
+      setError(null);
 
-    // Usa API con token
-    const response = await api.get("/custom/ejercicios");
+      // Usa API con token
+      const response = await api.get("/custom/ejercicios");
 
-    const ejerciciosData = response.data; // Ya es array
+      const ejerciciosData = response.data;
 
-    console.log("✅ Ejercicios cargados:", ejerciciosData.length);
+      console.log("✅ Ejercicios cargados:", ejerciciosData.length);
 
-    setEjercicios(ejerciciosData);
-    setEjerciciosFiltrados(ejerciciosData);
+      setEjercicios(ejerciciosData);
+      setEjerciciosFiltrados(ejerciciosData);
 
-  } catch (err) {
-    console.error("❌ Error:", err);
-    setError(err.message);
-  } finally {
-    setCargando(false);
-  }
-};
+    } catch (err) {
+      console.error("❌ Error:", err);
+      setError(err.message);
+    } finally {
+      setCargando(false);
+    }
+  };
 
   // ============================================
   // FILTRAR EJERCICIOS
@@ -75,13 +75,13 @@ function Gym() {
     let filtrados = [...ejercicios];
 
     if (musculoSeleccionado !== 'TODOS') {
-      filtrados = filtrados.filter(ej => 
+      filtrados = filtrados.filter(ej =>
         ej.grupoMuscular?.toLowerCase() === musculoSeleccionado.toLowerCase()
       );
     }
 
     if (nivelSeleccionado) {
-      filtrados = filtrados.filter(ej => 
+      filtrados = filtrados.filter(ej =>
         ej.nivelDificultad?.toLowerCase() === nivelSeleccionado.toLowerCase()
       );
     }
@@ -102,7 +102,7 @@ function Gym() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black py-12">
       <div className="container mx-auto px-4">
-        
+
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-anton font-bold text-white mb-4 uppercase tracking-wider">
             Biblioteca de <span className="text-uf-gold">Ejercicios</span>

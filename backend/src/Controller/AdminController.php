@@ -147,6 +147,71 @@ class AdminController extends AbstractController
     }
 
     /**
+     * Crear nuevo usuario (normal o admin)
+     * POST /api/admin/usuarios
+     */
+    #[Route('/usuarios', name: 'usuarios_create', methods: ['POST'])]
+    public function crearUsuario(Request $request): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            // Validar contraseñas si se proporcionan
+            if (!empty($data['password'])) {
+                if ($data['password'] !== $data['passwordConfirm']) {
+                    return $this->jsonWithUnicode([
+                        'success' => false,
+                        'error' => 'Las contraseñas no coinciden'
+                    ], Response::HTTP_BAD_REQUEST);
+                }
+                $passwordHash = password_hash($data['password'], PASSWORD_BCRYPT);
+            } else {
+                // Usar contraseña temporal por defecto
+                $passwordHash = password_hash('cambiar123', PASSWORD_BCRYPT);
+            }
+            
+            // Determinar rol
+            $rol = isset($data['es_admin']) && $data['es_admin'] ? 'admin' : 'usuario';
+            
+            $conn = $this->entityManager->getConnection();
+            
+            $sql = "INSERT INTO usuarios (nombre, apellidos, email, password_hash, telefono, objetivo, sexo, edad, peso_actual, altura, es_premium, rol)
+                    VALUES (:nombre, :apellidos, :email, :password_hash, :telefono, :objetivo, :sexo, :edad, :peso_actual, :altura, :es_premium, :rol)";
+            
+            $conn->executeStatement($sql, [
+                'nombre' => $data['nombre'] ?? '',
+                'apellidos' => $data['apellidos'] ?? '',
+                'email' => $data['email'] ?? '',
+                'password_hash' => $passwordHash,
+                'telefono' => $data['telefono'] ?? null,
+                'objetivo' => $data['objetivo'] ?? 'mantenimiento',
+                'sexo' => $data['sexo'] ?? null,
+                'edad' => $data['edad'] ?? null,
+                'peso_actual' => $data['peso_actual'] ?? null,
+                'altura' => $data['altura'] ?? null,
+                'es_premium' => isset($data['es_premium']) && $data['es_premium'] ? 1 : 0,
+                'rol' => $rol
+            ]);
+            
+            $message = 'Usuario creado exitosamente.';
+            if (empty($data['password'])) {
+                $message .= ' Contraseña temporal: cambiar123';
+            }
+            
+            return $this->jsonWithUnicode([
+                'success' => true,
+                'message' => $message,
+                'id' => $conn->lastInsertId()
+            ]);
+        } catch (\Exception $e) {
+            return $this->jsonWithUnicode([
+                'success' => false,
+                'error' => 'Error al crear usuario: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
      * Obtener detalle completo de un usuario
      * GET /api/admin/usuarios/{id}
      */
@@ -404,7 +469,7 @@ class AdminController extends AbstractController
             'telefono' => $usuario->getTelefono(),
             'objetivo' => $usuario->getObjetivo(),
             'observaciones' => $usuario->getObservaciones(),
-            
+
             // Datos físicos
             'sexo' => $usuario->getSexo(),
             'edad' => $usuario->getEdad(),
@@ -417,13 +482,13 @@ class AdminController extends AbstractController
             'nivel_actividad' => $usuario->getNivelActividad(),
             'calorias_diarias' => $usuario->getCaloriasDiarias(),
             'notas_salud' => $usuario->getNotasSalud(),
-            
+
             // Premium y rol
             'es_premium' => $usuario->isEsPremium(),
             'fecha_premium' => $usuario->getFechaPremium()?->format('Y-m-d'),
             'rol' => $usuario->getRol(),
             'es_admin' => $usuario->isAdmin(),
-            
+
             // Auditoría
             'fecha_registro' => $usuario->getFechaRegistro()?->format('Y-m-d H:i:s'),
             'ultima_conexion' => $usuario->getUltimaConexion()?->format('Y-m-d H:i:s'),
@@ -1056,6 +1121,10 @@ class AdminController extends AbstractController
      * Crear nuevo post del blog
      * POST /api/admin/blog
      */
+    /**
+     * Crear nuevo post del blog
+     * POST /api/admin/blog
+     */
     #[Route('/blog', name: 'blog_create', methods: ['POST'])]
     public function crearBlogPost(Request $request): JsonResponse
     {
@@ -1063,11 +1132,35 @@ class AdminController extends AbstractController
             $data = json_decode($request->getContent(), true);
             $conn = $this->entityManager->getConnection();
 
-            // Generar slug a partir del título
+            // Slug
             $slug = $this->generateSlug($data['titulo'] ?? '');
 
-            $sql = "INSERT INTO blog_posts (titulo, slug, extracto, contenido, imagen_portada, categoria, es_premium, destacado, fecha_publicacion, fecha_creacion, fecha_actualizacion)
-                    VALUES (:titulo, :slug, :extracto, :contenido, :imagen_portada, :categoria, :es_premium, :destacado, :fecha_publicacion, NOW(), NOW())";
+            // Booleanos seguros
+            $esPremium = isset($data['es_premium'])
+                ? (filter_var($data['es_premium'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0)
+                : 0;
+
+            $destacado = isset($data['destacado'])
+                ? (filter_var($data['destacado'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0)
+                : 0;
+
+            // Fecha segura
+            $fechaPublicacion = null;
+            if (!empty($data['fecha_publicacion'])) {
+                try {
+                    $fechaObj = new \DateTime($data['fecha_publicacion']);
+                    $fechaPublicacion = $fechaObj->format('Y-m-d H:i:s');
+                } catch (\Exception $e) {
+                    $fechaPublicacion = null;
+                }
+            }
+
+            $sql = "INSERT INTO blog_posts 
+                (titulo, slug, extracto, contenido, imagen_portada, categoria, 
+                 es_premium, destacado, fecha_publicacion, fecha_creacion, fecha_actualizacion)
+                VALUES 
+                (:titulo, :slug, :extracto, :contenido, :imagen_portada, :categoria,
+                 :es_premium, :destacado, :fecha_publicacion, NOW(), NOW())";
 
             $conn->executeStatement($sql, [
                 'titulo' => $data['titulo'] ?? '',
@@ -1076,9 +1169,9 @@ class AdminController extends AbstractController
                 'contenido' => $data['contenido'] ?? '',
                 'imagen_portada' => $data['imagen_portada'] ?? null,
                 'categoria' => $data['categoria'] ?? 'noticias',
-                'es_premium' => $data['es_premium'] ?? false,
-                'destacado' => $data['destacado'] ?? false,
-                'fecha_publicacion' => $data['fecha_publicacion'] ?? null
+                'es_premium' => $esPremium,
+                'destacado' => $destacado,
+                'fecha_publicacion' => $fechaPublicacion
             ]);
 
             return $this->jsonWithUnicode([
@@ -1099,6 +1192,10 @@ class AdminController extends AbstractController
      * Actualizar post del blog
      * PUT /api/admin/blog/{id}
      */
+    /**
+     * Actualizar post del blog
+     * PUT /api/admin/blog/{id}
+     */
     #[Route('/blog/{id}', name: 'blog_update', methods: ['PUT'])]
     public function actualizarBlogPost(int $id, Request $request): JsonResponse
     {
@@ -1106,7 +1203,6 @@ class AdminController extends AbstractController
             $data = json_decode($request->getContent(), true);
             $conn = $this->entityManager->getConnection();
 
-            // Regenerar slug si el título cambió
             $slug = isset($data['titulo']) ? $this->generateSlug($data['titulo']) : null;
 
             $updates = [];
@@ -1134,17 +1230,26 @@ class AdminController extends AbstractController
                 $updates[] = 'categoria = :categoria';
                 $params['categoria'] = $data['categoria'];
             }
+
+            // Booleanos seguros
             if (isset($data['es_premium'])) {
                 $updates[] = 'es_premium = :es_premium';
-                $params['es_premium'] = $data['es_premium'];
+                $params['es_premium'] = filter_var($data['es_premium'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
             }
+
             if (isset($data['destacado'])) {
                 $updates[] = 'destacado = :destacado';
-                $params['destacado'] = $data['destacado'];
+                $params['destacado'] = filter_var($data['destacado'], FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
             }
-            if (isset($data['fecha_publicacion'])) {
-                $updates[] = 'fecha_publicacion = :fecha_publicacion';
-                $params['fecha_publicacion'] = $data['fecha_publicacion'];
+
+            // Fecha segura
+            if (!empty($data['fecha_publicacion'])) {
+                try {
+                    $fecha = new \DateTime($data['fecha_publicacion']);
+                    $updates[] = 'fecha_publicacion = :fecha_publicacion';
+                    $params['fecha_publicacion'] = $fecha->format('Y-m-d H:i:s');
+                } catch (\Exception $e) {
+                }
             }
 
             $updates[] = 'fecha_actualizacion = NOW()';
@@ -1170,6 +1275,7 @@ class AdminController extends AbstractController
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     /**
      * Eliminar post del blog

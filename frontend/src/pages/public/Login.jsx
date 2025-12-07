@@ -1,10 +1,10 @@
 // ============================================
 // LOGIN PAGE - Página de inicio de sesión
 // ============================================
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { Input, Button } from '../../components/common';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { Input, Button } from "../../components/common";
 
 function Login() {
   // ============================================
@@ -12,53 +12,53 @@ function Login() {
   // ============================================
   const navigate = useNavigate();
   const { login } = useAuth();
-  
+
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false
+    email: "",
+    password: "",
+    rememberMe: false,
   });
-  
-  const [error, setError] = useState('');
+
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   // ============================================
   // FUNCIONES
   // ============================================
-  
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     });
-    
-    if (error) setError('');
+
+    if (error) setError("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    setError('');
+
+    setError("");
     setLoading(true);
-    
+
     try {
       if (!formData.email || !formData.password) {
-        setError('Por favor completa todos los campos');
+        setError("Por favor completa todos los campos");
         setLoading(false);
         return;
       }
-      
+
       const result = await login(formData.email, formData.password);
-      
+
       if (result.success) {
-        navigate('/dashboard');
+        navigate("/dashboard");
       } else {
-        setError(result.error || 'Error al iniciar sesión');
+        setError(result.error || "Error al iniciar sesión");
       }
     } catch (err) {
-      console.error('Error en login:', err);
-      setError('Error de conexión. Intenta de nuevo.');
+      console.error("Error en login:", err);
+      setError("Error de conexión. Intenta de nuevo.");
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,6 @@ function Login() {
   // ============================================
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-uf-darker to-black px-4 py-12">
-      
       {/* ============================================ */}
       {/* HEADER DORADO */}
       {/* ============================================ */}
@@ -84,7 +83,6 @@ function Login() {
         {/* FORMULARIO */}
         {/* ============================================ */}
         <div className="bg-white p-8 rounded-b-lg shadow-2xl">
-          
           {/* Mostrar errores */}
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-sm">
@@ -93,7 +91,6 @@ function Login() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            
             {/* Email */}
             <div>
               <label className="block text-gray-700 font-semibold mb-2 text-sm">
@@ -136,7 +133,10 @@ function Login() {
                 onChange={handleChange}
                 className="w-4 h-4 text-uf-gold border-gray-300 rounded focus:ring-uf-gold"
               />
-              <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-600">
+              <label
+                htmlFor="rememberMe"
+                className="ml-2 text-sm text-gray-600"
+              >
                 Guardar credenciales de sesión
               </label>
             </div>
@@ -145,23 +145,34 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-uf-gold text-black font-bold py-3 rounded uppercase tracking-wider hover:bg-uf-blue hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-uf-gold text-black font-bold py-3 rounded uppercase tracking-wider 
+             hover:bg-uf-blue hover:text-white transition-all duration-300 transform hover:scale-105 
+             shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mb-4" // ← separación
             >
-              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
             </button>
           </form>
 
+          {/* BOTÓN PARA ENTRENADOR */}
+          {/* BOTÓN PARA ENTRENADOR */}
+          <button
+            onClick={() => navigate("/entrenador/login")}
+            className="w-full bg-uf-blue text-white font-bold py-3 rounded uppercase tracking-wider 
+             hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg mb-6"
+          >
+            SOY ENTRENADOR
+          </button>
           {/* Links adicionales */}
           <div className="mt-6 text-center space-y-3">
-            <Link 
-              to="/recuperar-password" 
+            <Link
+              to="/recuperar-password"
               className="block text-sm text-uf-blue hover:text-uf-gold transition"
             >
               ¿Has olvidado tu contraseña?
             </Link>
-            
+
             <div className="text-gray-600 text-sm">
-              ¿No tienes cuenta?{' '}
+              ¿No tienes cuenta?{" "}
               <Link
                 to="/register"
                 className="text-uf-gold hover:text-uf-blue font-semibold transition"
@@ -169,13 +180,6 @@ function Login() {
                 Crear Cuenta
               </Link>
             </div>
-          </div>
-
-          {/* Usuario de prueba */}
-          <div className="mt-6 bg-gray-100 rounded p-4 text-xs text-gray-600">
-            <strong className="block mb-1">Usuario de prueba:</strong>
-            Email: juan.perez@email.com<br/>
-            Contraseña: (cualquiera)
           </div>
         </div>
       </div>

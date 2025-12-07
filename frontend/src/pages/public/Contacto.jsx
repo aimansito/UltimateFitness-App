@@ -61,8 +61,8 @@ function Contacto() {
         </svg>
       ),
       titulo: 'EMAIL',
-      valor: 'info@ultimatefitness.com',
-      link: 'mailto:info@ultimatefitness.com'
+      valor: 'utfitness2025@gmail.com',
+      link: 'mailto:utfitness2025@gmail.com'
     },
     {
       icono: (
@@ -71,7 +71,7 @@ function Contacto() {
         </svg>
       ),
       titulo: 'TELÉFONO',
-      valor: '+34 900 123 456',
+      valor: '+34 633 71 43 72',
       link: 'tel:+34900123456'
     },
     {
@@ -82,7 +82,7 @@ function Contacto() {
         </svg>
       ),
       titulo: 'UBICACIÓN',
-      valor: 'Madrid, España',
+      valor: 'Granada, España',
       link: null
     }
   ];

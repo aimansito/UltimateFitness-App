@@ -22,14 +22,14 @@ class PublicBlogController extends AbstractController
     #[Route('/preview', name: 'preview', methods: ['GET'])]
     public function preview(EntityManagerInterface $em): JsonResponse
     {
-        // Obtener posts gratuitos aleatorios
+        // Obtener posts gratuitos más recientes
         $qb = $em->getRepository(BlogPost::class)
             ->createQueryBuilder('bp')
             ->where('bp.fechaPublicacion IS NOT NULL')
             ->andWhere('bp.fechaPublicacion <= :now')
             ->andWhere('bp.esPremium = 0')
             ->setParameter('now', new \DateTime())
-            ->orderBy('RAND()')
+            ->orderBy('bp.fechaPublicacion', 'DESC')
             ->setMaxResults(6);
 
         $posts = $qb->getQuery()->getResult();

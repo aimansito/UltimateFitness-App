@@ -1,39 +1,48 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import useAuthEntrenador from '../../context/AuthContextEntrenador';
 import api from '../../services/api';
-import { ArrowLeft, Calendar, Dumbbell, Target, Clock, Zap } from 'lucide-react';
+import { ArrowLeft, Calendar, Dumbbell, Target, Clock, Zap, Flame, Trophy, Star, Moon, Palmtree } from 'lucide-react';
 
 const DIAS_SEMANA_NOMBRES = {
-    1: { nombre: 'Lunes', emoji: '💪' },
-    2: { nombre: 'Martes', emoji: '🔥' },
-    3: { nombre: 'Miércoles', emoji: '⚡' },
-    4: { nombre: 'Jueves', emoji: '🎯' },
-    5: { nombre: 'Viernes', emoji: '🏋️' },
-    6: { nombre: 'Sábado', emoji: '💯' },
-    7: { nombre: 'Domingo', emoji: '🌟' }
+    1: { nombre: 'Lunes', icon: Dumbbell },
+    2: { nombre: 'Martes', icon: Flame },
+    3: { nombre: 'Miércoles', icon: Zap },
+    4: { nombre: 'Jueves', icon: Target },
+    5: { nombre: 'Viernes', icon: Dumbbell },
+    6: { nombre: 'Sábado', icon: Trophy },
+    7: { nombre: 'Domingo', icon: Palmtree }
 };
 
 function DetalleEntrenamiento() {
     const { entrenamientoId } = useParams();
     const { user } = useAuth();
+    const { entrenador } = useAuthEntrenador();
     const navigate = useNavigate();
     const [entrenamiento, setEntrenamiento] = useState(null);
     const [diaSeleccionado, setDiaSeleccionado] = useState(1); // por defecto Lunes
     const [loading, setLoading] = useState(true);
 
+    const isEntrenador = !!entrenador;
+
     useEffect(() => {
-        if (user && entrenamientoId) {
+        if ((user || entrenador) && entrenamientoId) {
             fetchDetalleEntrenamiento();
         }
-    }, [user, entrenamientoId]);
+    }, [user, entrenador, entrenamientoId]);
 
     const fetchDetalleEntrenamiento = async () => {
         try {
+            let endpoint;
+            if (isEntrenador) {
+                endpoint = `/entrenador/entrenamiento/${entrenamientoId}`;
+            } else {
+                endpoint = `/usuario/entrenamiento/${entrenamientoId}`;
+            }
+
             // Usar el endpoint que devuelve la estructura completa con días
-            const response = await api.get(
-                `/usuario/entrenamiento/${entrenamientoId}`
-            );
+            const response = await api.get(endpoint);
 
             if (response.data.success && response.data.entrenamiento) {
                 const entrenamientoData = response.data.entrenamiento;
@@ -54,6 +63,14 @@ function DetalleEntrenamiento() {
         }
     };
 
+    const handleBack = () => {
+        if (isEntrenador) {
+            navigate('/entrenador/mis-entrenamientos');
+        } else {
+            navigate('/mis-entrenamientos');
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4 flex items-center justify-center">
@@ -71,7 +88,7 @@ function DetalleEntrenamiento() {
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-2xl font-bold text-white mb-4">Entrenamiento no encontrado</h2>
                     <button
-                        onClick={() => navigate('/mis-entrenamientos')}
+                        onClick={handleBack}
                         className="bg-uf-gold text-black px-6 py-2 rounded-lg font-bold hover:bg-yellow-600"
                     >
                         Volver a Mis Entrenamientos
@@ -91,7 +108,7 @@ function DetalleEntrenamiento() {
                 {/* Header */}
                 <div className="mb-6">
                     <button
-                        onClick={() => navigate('/mis-entrenamientos')}
+                        onClick={handleBack}
                         className="text-uf-gold hover:text-yellow-600 font-semibold flex items-center gap-2 mb-4"
                     >
                         <ArrowLeft className="w-5 h-5" />
@@ -143,18 +160,18 @@ function DetalleEntrenamiento() {
                                     key={dia.dia_semana}
                                     onClick={() => setDiaSeleccionado(dia.dia_semana)}
                                     className={`py-4 px-3 rounded-lg font-bold transition-all relative ${diaSeleccionado === dia.dia_semana
-                                            ? 'bg-uf-gold text-black scale-105 shadow-lg'
-                                            : dia.es_descanso
-                                                ? 'bg-gray-700 text-gray-500'
-                                                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                                        ? 'bg-uf-gold text-black scale-105 shadow-lg'
+                                        : dia.es_descanso
+                                            ? 'bg-gray-700 text-gray-500'
+                                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
                                         }`}
                                 >
-                                    {dia.es_descanso && (
-                                        <span className="absolute top-1 right-1 text-xs bg-red-500 text-white px-1 rounded">
-                                            💤
+                                    {!!dia.es_descanso && (
+                                        <span className="absolute top-1 right-1 text-xs bg-red-500 text-white p-1 rounded-full">
+                                            <Moon className="w-3 h-3" />
                                         </span>
                                     )}
-                                    <div className="text-2xl mb-1">{info?.emoji}</div>
+                                    <div className="mb-1"><info.icon className="w-8 h-8" /></div>
                                     <div className="text-xs">{info?.nombre}</div>
                                     {!dia.es_descanso && dia.concepto && (
                                         <div className="text-[10px] mt-1 opacity-70 truncate">
@@ -207,7 +224,7 @@ function DetalleEntrenamiento() {
 
                     {!diaActual || diaActual.es_descanso ? (
                         <div className="text-center py-12">
-                            <div className="text-6xl mb-4">😴</div>
+                            <div className="mb-4"><Moon className="w-16 h-16 text-blue-300 mx-auto" /></div>
                             <p className="text-gray-400 text-xl font-bold">Día de Descanso</p>
                             <p className="text-gray-500 mt-2">No hay ejercicios programados para este día</p>
                         </div>

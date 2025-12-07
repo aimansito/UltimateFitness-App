@@ -3,6 +3,7 @@
 // Muestra platos del catálogo filtrados por tipo de comida
 // ============================================
 import { useState, useEffect } from "react";
+import api from "../../services/api";
 
 function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
   const [platos, setPlatos] = useState([]);
@@ -21,8 +22,8 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
 
   const cargarPlatos = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/platos");
-      const data = await response.json();
+      const response = await api.get("/platos");
+      const data = response.data;
 
       console.log("📥 Platos cargados:", data);
 
@@ -40,10 +41,8 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
 
   const seleccionarPlato = async (platoId) => {
     try {
-      const response = await fetch(
-        `http://localhost:8000/api/platos/${platoId}`
-      );
-      const data = await response.json();
+      const response = await api.get(`/platos/${platoId}`);
+      const data = response.data;
 
       console.log("📥 Detalle del plato:", data);
 

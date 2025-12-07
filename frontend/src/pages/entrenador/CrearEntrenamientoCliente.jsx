@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import useAuthEntrenador from '../../context/AuthContextEntrenador';
 import api from '../../services/api';
-import { 
-  ArrowLeft, 
-  Save, 
-  Plus, 
-  Trash2, 
-  Calendar, 
+import {
+  ArrowLeft,
+  Save,
+  Plus,
+  Trash2,
+  Calendar,
   Dumbbell,
   ChevronDown,
-  ChevronUp 
+  ChevronUp
 } from 'lucide-react';
 
 const DIAS_SEMANA = [
@@ -25,9 +25,9 @@ const DIAS_SEMANA = [
 
 function CrearEntrenamientoCliente() {
   const { clienteId } = useParams();
-  const { user } = useAuth();
+  const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
-  
+
   const [cliente, setCliente] = useState(null);
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
@@ -55,7 +55,7 @@ function CrearEntrenamientoCliente() {
 
   const fetchCliente = async () => {
     try {
-      const response = await api.get(`/entrenador/mis-clientes/${user.id}`);
+      const response = await api.get(`/entrenador/mis-clientes/${entrenador.id}`);
       if (response.data.success) {
         const clienteEncontrado = response.data.clientes.find(c => c.id === parseInt(clienteId));
         setCliente(clienteEncontrado);
@@ -71,9 +71,9 @@ function CrearEntrenamientoCliente() {
     try {
       // Endpoint correcto según backend: /api/custom/ejercicios
       const response = await api.get('/custom/ejercicios');
-      
+
       console.log('Respuesta ejercicios:', response.data);
-      
+
       // ✅ La respuesta es directamente un array
       if (Array.isArray(response.data)) {
         setEjerciciosDisponibles(response.data);
@@ -109,19 +109,19 @@ function CrearEntrenamientoCliente() {
     setDias(prev => prev.map(dia =>
       dia.dia_semana === diaSemana
         ? {
-            ...dia,
-            ejercicios: [
-              ...dia.ejercicios,
-              {
-                id: Date.now(),
-                ejercicio_id: '',
-                series: 3,
-                repeticiones: 12,
-                descanso_segundos: 60,
-                notas: ''
-              }
-            ]
-          }
+          ...dia,
+          ejercicios: [
+            ...dia.ejercicios,
+            {
+              id: Date.now(),
+              ejercicio_id: '',
+              series: 3,
+              repeticiones: 12,
+              descanso_segundos: 60,
+              notas: ''
+            }
+          ]
+        }
         : dia
     ));
   };
@@ -130,11 +130,11 @@ function CrearEntrenamientoCliente() {
     setDias(prev => prev.map(dia =>
       dia.dia_semana === diaSemana
         ? {
-            ...dia,
-            ejercicios: dia.ejercicios.map(ej =>
-              ej.id === ejercicioId ? { ...ej, [campo]: valor } : ej
-            )
-          }
+          ...dia,
+          ejercicios: dia.ejercicios.map(ej =>
+            ej.id === ejercicioId ? { ...ej, [campo]: valor } : ej
+          )
+        }
         : dia
     ));
   };
@@ -154,7 +154,7 @@ function CrearEntrenamientoCliente() {
     }
 
     const diasActivos = dias.filter(d => !d.es_descanso);
-    
+
     if (diasActivos.length < 5) {
       alert(`❌ ERROR: Necesitas al menos 5 días activos.\n\nActualmente: ${diasActivos.length} días`);
       return;
@@ -182,7 +182,7 @@ function CrearEntrenamientoCliente() {
       tipo,
       duracion_minutos: parseInt(duracionMinutos),
       nivel_dificultad: nivelDificultad,
-      creador_id: user.id,
+      creador_id: entrenador.id,
       cliente_id: parseInt(clienteId),
       plan_semanal: dias
     };
@@ -190,7 +190,7 @@ function CrearEntrenamientoCliente() {
     try {
       setLoading(true);
       const response = await api.post('/entrenador/crear-entrenamiento', payload);
-      
+
       if (response.data.success) {
         alert(`✅ ¡Entrenamiento creado!\n\n💪 ${nombre}\n👤 ${cliente.nombre} ${cliente.apellidos}`);
         navigate('/entrenador/dashboard');
@@ -234,7 +234,7 @@ function CrearEntrenamientoCliente() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
       <div className="max-w-6xl mx-auto">
-        
+
         {/* Header */}
         <div className="mb-6">
           <button
@@ -333,19 +333,17 @@ function CrearEntrenamientoCliente() {
         <div className="space-y-4 mb-6">
           {dias.map((dia) => {
             const diaInfo = DIAS_SEMANA.find(d => d.numero === dia.dia_semana);
-            
+
             return (
               <div
                 key={dia.dia_semana}
-                className={`bg-gray-900 border-2 rounded-lg overflow-hidden transition-all ${
-                  dia.es_descanso ? 'border-gray-700' : 'border-uf-gold/50'
-                }`}
+                className={`bg-gray-900 border-2 rounded-lg overflow-hidden transition-all ${dia.es_descanso ? 'border-gray-700' : 'border-uf-gold/50'
+                  }`}
               >
                 {/* Header del día */}
                 <div
-                  className={`p-4 cursor-pointer flex items-center justify-between ${
-                    dia.es_descanso ? 'bg-gray-800' : 'bg-gradient-to-r from-uf-gold/20 to-transparent'
-                  }`}
+                  className={`p-4 cursor-pointer flex items-center justify-between ${dia.es_descanso ? 'bg-gray-800' : 'bg-gradient-to-r from-uf-gold/20 to-transparent'
+                    }`}
                   onClick={() => setDiaExpandido(diaExpandido === dia.dia_semana ? null : dia.dia_semana)}
                 >
                   <div className="flex items-center gap-4 flex-1">
@@ -364,11 +362,10 @@ function CrearEntrenamientoCliente() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleDescanso(dia.dia_semana); }}
-                      className={`px-4 py-2 rounded font-bold transition-all ${
-                        dia.es_descanso
+                      className={`px-4 py-2 rounded font-bold transition-all ${dia.es_descanso
                           ? 'bg-gray-700 text-gray-400 hover:bg-gray-600'
                           : 'bg-green-600 text-white hover:bg-green-500'
-                      }`}
+                        }`}
                     >
                       {dia.es_descanso ? 'Descanso' : 'Activo'}
                     </button>

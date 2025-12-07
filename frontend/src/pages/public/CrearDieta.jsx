@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import CalculadoraNutricional from '../../components/dieta/CalculadoraNutricional';
 import SeccionComida from '../../components/dieta/SeccionComida';
 
 function CrearDieta() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const toast = useToast();
 
   const [guardando, setGuardando] = useState(false);
   const [nombreDieta, setNombreDieta] = useState('');
@@ -36,13 +38,13 @@ function CrearDieta() {
   // ===============================
   useEffect(() => {
     if (!user) {
-      alert("Debes iniciar sesión para crear dietas.");
+      toast.warning("⚠️ Debes iniciar sesión para crear dietas");
       navigate("/login");
       return;
     }
 
     if (!user.es_premium) {
-      alert("Esta función es exclusiva para usuarios Premium.");
+      toast.warning("⚠️ Esta función es exclusiva para usuarios Premium");
       navigate("/upgrade-premium");
     }
   }, [user, navigate]);
@@ -107,7 +109,7 @@ function CrearDieta() {
     );
 
     if (platoYaExiste) {
-      alert(`El plato "${plato.nombre}" ya está añadido en ${momento.replace('_', ' ')}`);
+      toast.warning(`⚠️ El plato "${plato.nombre}" ya está añadido`);
       return;
     }
 
@@ -143,12 +145,12 @@ function CrearDieta() {
   // ===============================
   const handleGuardarDieta = async () => {
     if (!nombreDieta.trim()) {
-      alert("Pon un nombre a la dieta");
+      toast.warning("⚠️ Pon un nombre a la dieta");
       return;
     }
 
     if (Object.values(planComidas).flat().length === 0) {
-      alert("La dieta está vacía.");
+      toast.warning("⚠️ La dieta está vacía");
       return;
     }
 
@@ -201,12 +203,12 @@ function CrearDieta() {
         alert(`✅ ¡Dieta guardada exitosamente!\n\nID: ${response.data.dieta.id}\nNombre: ${response.data.dieta.nombre}`);
         navigate("/mis-dietas");
       } else {
-        alert("❌ Error: " + (response.data.error || "Error desconocido"));
+        toast.error("❌ No se pudo guardar la dieta");
       }
 
     } catch (e) {
       console.error("Error al guardar dieta:", e);
-      alert("❌ Error al guardar la dieta. " + (e.response?.data?.error || e.message));
+      toast.error("❌ Error al guardar la dieta");
     } finally {
       setGuardando(false);
     }

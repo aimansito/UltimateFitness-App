@@ -31,7 +31,10 @@ function Register() {
         // Paso 3: Objetivo y actividad
         objetivo: 'cuidar_alimentacion',
         nivel_actividad: 'ligero',
-        notas_salud: ''
+        notas_salud: '',
+
+        // Aceptación de políticas
+        aceptaPoliticas: false
     });
 
     const handleChange = (e) => {
@@ -87,6 +90,10 @@ function Register() {
     const validateStep3 = () => {
         if (!formData.objetivo || !formData.nivel_actividad) {
             setError('Por favor selecciona tu objetivo y nivel de actividad');
+            return false;
+        }
+        if (!formData.aceptaPoliticas) {
+            setError('Debes aceptar la Política de Privacidad y Cookies para continuar');
             return false;
         }
         return true;
@@ -278,6 +285,30 @@ function Register() {
                                 <div>
                                     <label className="text-white font-bold mb-2 block">Notas de Salud (opcional)</label>
                                     <textarea name="notas_salud" value={formData.notas_salud} onChange={handleChange} rows="3" placeholder="Alergias, condiciones médicas, restricciones alimentarias..." className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-uf-gold focus:outline-none"></textarea>
+                                </div>
+
+                                {/* Aceptación de Políticas */}
+                                <div className="bg-gray-900 border-2 border-uf-gold/30 rounded-lg p-4 mt-4">
+                                    <label className="flex items-start gap-3 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            name="aceptaPoliticas"
+                                            checked={formData.aceptaPoliticas}
+                                            onChange={handleChange}
+                                            className="mt-1 w-5 h-5 accent-uf-gold cursor-pointer"
+                                        />
+                                        <span className="text-gray-300 text-sm leading-relaxed">
+                                            Acepto la{' '}
+                                            <Link
+                                                to="/politica-privacidad"
+                                                target="_blank"
+                                                className="text-uf-gold hover:text-uf-blue font-bold underline"
+                                            >
+                                                Política de Privacidad y Cookies
+                                            </Link>
+                                            {' '}de Ultimate Fitness *
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
                         )}

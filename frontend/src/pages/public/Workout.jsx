@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import TarjetaEjercicio from '../../components/gym/TarjetaEjercicio';
 import ModalEjercicio from '../../components/gym/ModalEjercicio';
 import BarraFiltros from '../../components/gym/BarraFiltros';
+import api from '../../services/api';
 
 function Workout() {
     const { isPremium } = useAuth();
@@ -37,14 +38,11 @@ function Workout() {
             setError(null);
 
             // Endpoint correcto según backend: /api/custom/ejercicios
-            const response = await fetch('http://localhost:8000/api/custom/ejercicios');
+            const response = await api.get('/custom/ejercicios');
 
-            if (!response.ok) {
-                throw new Error(`Error ${response.status}`);
-            }
-
-            const data = await response.json();
-            let ejerciciosData = data.member || data['hydra:member'] || [];
+            const ejerciciosData = Array.isArray(response.data)
+                ? response.data
+                : [];
 
             setEjercicios(ejerciciosData);
             setEjerciciosFiltrados(ejerciciosData);

@@ -13,25 +13,25 @@ function Home() {
       icon: Monitor,
       title: '¿QUÉ OFRECEMOS?',
       description: 'Todo lo que tienes que saber y aprender para mantenerte en forma con nuestro método.',
-      image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800',
+      image: '/images/ofrecemos.jpg',
     },
     {
       icon: Salad,
       title: 'DIETA EQUILIBRADA Y VARIADA',
       description: 'Debemos de tener una comida estructurada para llevar a cabo bien nuestro cambio',
-      image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800',
+      image: '/images/dieta.jpg',
     },
     {
       icon: Activity,
       title: 'DEPORTE AL AIRE LIBRE',
       description: 'Hacer deporte en zonas exteriores tiene diversas ventajas...',
-      image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800',
+      image: '/images/running.jpg',
     },
     {
       icon: Dumbbell,
       title: 'GYM TRAINING',
       description: 'Esta semana tenemos nuevos ejercicios para implementar en nuestra rutina',
-      image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800',
+      image: '/images/fondoGym.jpg',
     },
   ];
 
@@ -45,7 +45,7 @@ function Home() {
         <div
           className="min-h-[700px] bg-cover bg-center relative flex items-start justify-center pt-8 pb-20"
           style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920)',
+            backgroundImage: 'url(/images/fondoGym.jpg)',
           }}
         >
           {/* Overlay oscuro */}

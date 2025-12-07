@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Loader, Plus, Clock, TrendingUp, Eye } from 'lucide-react';
+import { Loader, Plus, Clock, TrendingUp, Eye, Utensils, Sunrise, Coffee, Apple, Moon, Dumbbell } from 'lucide-react';
 
 function MisPlatos() {
   const [platos, setPlatos] = useState([]);
@@ -9,13 +9,13 @@ function MisPlatos() {
   const [filtroTipo, setFiltroTipo] = useState('todos');
 
   const tiposComida = [
-    { value: 'todos', label: 'Todos', icon: '🍽️' },
-    { value: 'desayuno', label: 'Desayuno', icon: '🌅' },
-    { value: 'media_manana', label: 'Media Mañana', icon: '☕' },
-    { value: 'almuerzo', label: 'Almuerzo', icon: '🍽️' },
-    { value: 'merienda', label: 'Merienda', icon: '🍎' },
-    { value: 'cena', label: 'Cena', icon: '🌙' },
-    { value: 'post_entreno', label: 'Post-Entreno', icon: '💪' }
+    { value: 'todos', label: 'Todos', icon: Utensils },
+    { value: 'desayuno', label: 'Desayuno', icon: Sunrise },
+    { value: 'media_manana', label: 'Media Mañana', icon: Coffee },
+    { value: 'almuerzo', label: 'Almuerzo', icon: Utensils },
+    { value: 'merienda', label: 'Merienda', icon: Apple },
+    { value: 'cena', label: 'Cena', icon: Moon },
+    { value: 'post_entreno', label: 'Post-Entreno', icon: Dumbbell }
   ];
 
   useEffect(() => {
@@ -26,7 +26,7 @@ function MisPlatos() {
     try {
       setLoading(true);
       const response = await axios.get('http://localhost:8000/api/platos');
-      
+
       if (response.data.success) {
         setPlatos(response.data.platos);
       }
@@ -52,7 +52,7 @@ function MisPlatos() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        
+
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -79,13 +79,12 @@ function MisPlatos() {
               <button
                 key={tipo.value}
                 onClick={() => setFiltroTipo(tipo.value)}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
-                  filtroTipo === tipo.value
+                className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${filtroTipo === tipo.value
                     ? 'bg-uf-gold text-black'
                     : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                }`}
+                  }`}
               >
-                <span className="mr-2">{tipo.icon}</span>
+                <span className="mr-2"><tipo.icon className="w-5 h-5 inline-block" /></span>
                 {tipo.label}
               </button>
             ))}
@@ -101,10 +100,10 @@ function MisPlatos() {
                 className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg border-2 border-gray-700 hover:border-uf-gold transition-all duration-300 overflow-hidden"
               >
                 {/* Imagen placeholder */}
-                <div className="h-48 bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center">
-                  <span className="text-6xl">
-                    {tiposComida.find(t => t.value === plato.tipo_comida)?.icon || '🍽️'}
-                  </span>
+                  {(() => {
+                    const Icon = tiposComida.find(t => t.value === plato.tipo_comida)?.icon || Utensils;
+                    return <Icon className="w-16 h-16 text-gray-400" />;
+                  })()}
                 </div>
 
                 <div className="p-6">
@@ -163,24 +162,24 @@ function MisPlatos() {
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-gray-400 text-xl mb-6">
-              No tienes platos creados aún
-            </p>
-            <Link
-              to="/crear-dieta"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold px-8 py-4 rounded-lg hover:from-yellow-600 hover:to-uf-gold transition-all duration-300"
-            >
-              <Plus className="w-5 h-5" />
-              Crear Mi Primer Plato
-            </Link>
-          </div>
-        )}
+        ))}
       </div>
+      ) : (
+      <div className="text-center py-20">
+        <p className="text-gray-400 text-xl mb-6">
+          No tienes platos creados aún
+        </p>
+        <Link
+          to="/crear-dieta"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold px-8 py-4 rounded-lg hover:from-yellow-600 hover:to-uf-gold transition-all duration-300"
+        >
+          <Plus className="w-5 h-5" />
+          Crear Mi Primer Plato
+        </Link>
+      </div>
+        )}
     </div>
+    </div >
   );
 }
 

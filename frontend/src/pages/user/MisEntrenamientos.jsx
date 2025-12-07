@@ -15,7 +15,8 @@ import {
   Award,
   Plus,
   User,
-  UserCheck
+  UserCheck,
+  Eye
 } from 'lucide-react';
 
 function MisEntrenamientos() {
@@ -257,48 +258,25 @@ function MisEntrenamientos() {
                           </span>
                         )}
                       </div>
-
-                      {selectedEntrenamiento === entrenamiento.id && (
-                        <div className="mt-6 bg-gray-900/50 rounded-lg p-4 border border-gray-700">
-                          <h4 className="text-white font-bold mb-3 flex items-center gap-2">
-                            <Activity className="w-5 h-5 text-uf-gold" />
-                            Ejercicios
-                          </h4>
-                          {entrenamiento.entrenamientoEjercicios && entrenamiento.entrenamientoEjercicios.length > 0 ? (
-                            <div className="space-y-2">
-                              {entrenamiento.entrenamientoEjercicios.map((ejercicio, idx) => (
-                                <div key={idx} className="flex items-center justify-between text-gray-300 bg-gray-800/50 p-3 rounded">
-                                  <span className="font-semibold">{ejercicio.ejercicio?.nombre || 'Ejercicio'}</span>
-                                  <span className="text-uf-gold">
-                                    {ejercicio.series} series × {ejercicio.repeticiones}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            <p className="text-gray-500 text-sm">No hay ejercicios detallados.</p>
-                          )}
-                        </div>
-                      )}
                     </div>
 
                     <div className="flex flex-col gap-2 ml-4">
                       <button
-                        onClick={() => setSelectedEntrenamiento(
-                          selectedEntrenamiento === entrenamiento.id ? null : entrenamiento.id
-                        )}
-                        className="p-2 bg-uf-gold/20 hover:bg-uf-gold/30 rounded-lg transition-all"
+                        onClick={() => navigate(`/mis-entrenamientos/${entrenamiento.id}`)}
+                        className="p-2 bg-uf-gold text-black rounded-lg hover:bg-yellow-500 transition-all flex items-center justify-center gap-2 font-bold text-sm min-w-[100px]"
+                        title="Ver Rutina Completa"
                       >
-                        <ChevronRight className={`w-5 h-5 text-uf-gold transition-transform ${selectedEntrenamiento === entrenamiento.id ? 'rotate-90' : ''
-                          }`} />
+                        <Eye className="w-4 h-4" />
+                        Ver
                       </button>
 
                       <button
                         onClick={() => marcarCompletado(entrenamiento.id)}
-                        className={`p-2 rounded-lg transition-all ${entrenamiento.completado
+                        className={`p-2 rounded-lg transition-all flex items-center justify-center ${entrenamiento.completado
                           ? 'bg-green-700 hover:bg-green-600'
                           : 'bg-gray-700 hover:bg-gray-600'
                           }`}
+                        title={entrenamiento.completado ? "Marcar como pendiente" : "Marcar como completado"}
                       >
                         {entrenamiento.completado ? (
                           <CheckCircle className="w-5 h-5 text-white" />
@@ -314,7 +292,7 @@ function MisEntrenamientos() {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

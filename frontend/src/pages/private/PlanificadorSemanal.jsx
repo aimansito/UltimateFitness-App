@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import SelectorDietaDia from '../../components/calendario/SelectorDietaDia';
+import { Calendar, PartyPopper, Palmtree } from 'lucide-react';
 
 function PlanificadorSemanal() {
   const { isAuthenticated, user } = useAuth();
@@ -37,13 +38,13 @@ function PlanificadorSemanal() {
   const [guardando, setGuardando] = useState(false);
 
   const diasSemana = [
-    { key: 'lunes', nombre: 'Lunes', icon: '📅', color: 'blue' },
-    { key: 'martes', nombre: 'Martes', icon: '📅', color: 'green' },
-    { key: 'miercoles', nombre: 'Miércoles', icon: '📅', color: 'yellow' },
-    { key: 'jueves', nombre: 'Jueves', icon: '📅', color: 'orange' },
-    { key: 'viernes', nombre: 'Viernes', icon: '📅', color: 'red' },
-    { key: 'sabado', nombre: 'Sábado', icon: '🎉', color: 'purple' },
-    { key: 'domingo', nombre: 'Domingo', icon: '🌴', color: 'pink' }
+    { key: 'lunes', nombre: 'Lunes', icon: Calendar, color: 'blue' },
+    { key: 'martes', nombre: 'Martes', icon: Calendar, color: 'green' },
+    { key: 'miercoles', nombre: 'Miércoles', icon: Calendar, color: 'yellow' },
+    { key: 'jueves', nombre: 'Jueves', icon: Calendar, color: 'orange' },
+    { key: 'viernes', nombre: 'Viernes', icon: Calendar, color: 'red' },
+    { key: 'sabado', nombre: 'Sábado', icon: PartyPopper, color: 'purple' },
+    { key: 'domingo', nombre: 'Domingo', icon: Palmtree, color: 'pink' }
   ];
 
   useEffect(() => {
@@ -69,7 +70,7 @@ function PlanificadorSemanal() {
       // TODO: Cargar plan semanal del usuario desde el backend
       // const response = await fetch(`http://localhost:8000/api/custom/calendario-usuario/${user.id}`);
       // const data = await response.json();
-      
+
       // Por ahora, dejamos vacío
       setCargando(false);
     } catch (error) {
@@ -143,10 +144,10 @@ function PlanificadorSemanal() {
       //   body: JSON.stringify({ usuario_id: user.id, plan: planData })
       // });
 
-      alert('¡Plan semanal guardado exitosamente!');
+      toast.success('✅ Plan semanal guardado exitosamente');
     } catch (error) {
       console.error('Error guardando plan:', error);
-      alert('Error al guardar el plan semanal');
+      toast.error('❌ Error al guardar el plan semanal');
     } finally {
       setGuardando(false);
     }
@@ -262,15 +263,14 @@ function PlanificadorSemanal() {
             return (
               <div
                 key={dia.key}
-                className={`bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl overflow-hidden border-2 ${
-                  esHoy ? 'border-uf-gold shadow-lg shadow-uf-gold/20' : 'border-gray-700'
-                }`}
+                className={`bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl overflow-hidden border-2 ${esHoy ? 'border-uf-gold shadow-lg shadow-uf-gold/20' : 'border-gray-700'
+                  }`}
               >
                 {/* HEADER DEL DÍA */}
                 <div className={`bg-gradient-to-r from-${dia.color}-500/20 to-${dia.color}-600/20 border-b-2 border-${dia.color}-500/30 p-4`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-3xl">{dia.icon}</span>
+                      <dia.icon className="w-8 h-8 text-white" />
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="text-xl font-anton font-bold text-white uppercase">{dia.nombre}</h3>
@@ -289,7 +289,7 @@ function PlanificadorSemanal() {
                         )}
                       </div>
                     </div>
-                    
+
                     {/* CHECKBOX COMPLETADO */}
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input

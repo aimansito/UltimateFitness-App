@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Entrenador;
 use App\Repository\EntrenadorRepository;
+use App\Repository\UsuarioRepository;
+use App\Repository\EntrenamientoRepository;
+use App\Repository\DietaRepository;
 use App\Security\RoleChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,15 +24,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class EntrenadorController extends AbstractController
 {
     private EntrenadorRepository $entrenadorRepository;
+    private UsuarioRepository $usuarioRepository;
+    private EntrenamientoRepository $entrenamientoRepository;
+    private DietaRepository $dietaRepository;
     private EntityManagerInterface $entityManager;
     private RoleChecker $roleChecker;
 
     public function __construct(
         EntrenadorRepository $entrenadorRepository,
+        UsuarioRepository $usuarioRepository,
+        EntrenamientoRepository $entrenamientoRepository,
+        DietaRepository $dietaRepository,
         EntityManagerInterface $entityManager,
         RoleChecker $roleChecker
     ) {
         $this->entrenadorRepository = $entrenadorRepository;
+        $this->usuarioRepository = $usuarioRepository;
+        $this->entrenamientoRepository = $entrenamientoRepository;
+        $this->dietaRepository = $dietaRepository;
         $this->entityManager = $entityManager;
         $this->roleChecker = $roleChecker;
     }
@@ -228,8 +240,9 @@ class EntrenadorController extends AbstractController
             $entrenador->setEstadoAplicacion($data['estado_aplicacion'] ?? 'aprobado');
 
             // Hashear contraseña (temporal para entrenadores - mejorar después)
-            $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
+            $hashedPassword = $passwordHasher->hashPassword($entrenador, $data['password']);
             $entrenador->setPasswordHash($hashedPassword);
+
 
             $this->entrenadorRepository->save($entrenador);
 
@@ -383,7 +396,7 @@ class EntrenadorController extends AbstractController
         try {
             // TODO: Obtener usuario actual
             $adminId = 1; // Temporal - usar $this->getUser()->getId()
-            
+
             // TODO: Verificar que el usuario es admin
             // $usuarioActual = $this->getUser();
             // if (!$this->roleChecker->isAdmin($usuarioActual)) {
@@ -425,7 +438,7 @@ class EntrenadorController extends AbstractController
         try {
             // TODO: Obtener usuario actual
             $adminId = 1; // Temporal - usar $this->getUser()->getId()
-            
+
             // TODO: Verificar que el usuario es admin
             // $usuarioActual = $this->getUser();
             // if (!$this->roleChecker->isAdmin($usuarioActual)) {
@@ -494,6 +507,48 @@ class EntrenadorController extends AbstractController
     }
 
     // ============================================
+    // ENDPOINTS DE DASHBOARD
+    // ============================================
+
+    /**
+     * Obtener estadísticas del dashboard para un entrenador
+     * GET /api/entrenadores/{id}/dashboard-stats
+     */
+    #[Route('/{id}/dashboard-stats', name: 'dashboard_stats', methods: ['GET'])]
+    public function dashboardStats(int $id): JsonResponse
+    {
+        try {
+            $entrenador = $this->entrenadorRepository->find($id);
+
+            if (!$entrenador) {
+                return $this->json([
+                    'success' => false,
+                    'error' => 'Entrenador no encontrado',
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // Obtener conteos reales
+            $totalClientes = $this->usuarioRepository->count(['entrenadorAsignado' => $entrenador]);
+            $totalEntrenamientos = $this->entrenamientoRepository->count(['creador' => $entrenador]);
+            $totalDietas = $this->dietaRepository->count(['creador' => $entrenador]);
+
+            return $this->json([
+                'success' => true,
+                'estadisticas' => [
+                    'total_clientes' => $totalClientes,
+                    'entrenamientos_asignados' => $totalEntrenamientos,
+                    'dietas_asignadas' => $totalDietas,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Error al obtener estadísticas del dashboard: ' . $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // ============================================
     // MÉTODO AUXILIAR
     // ============================================
 
@@ -527,8 +582,6 @@ class EntrenadorController extends AbstractController
             $data['estado_aplicacion'] = $entrenador->getEstadoAplicacion();
             $data['motivo_rechazo'] = $entrenador->getMotivoRechazo();
             $data['fecha_aplicacion'] = $entrenador->getFechaAplicacion()?->format('Y-m-d H:i:s');
-            $data['revisado_por'] = $entrenador->getRevisadoPor();
-            $data['fecha_registro'] = $entrenador->getFechaRegistro()?->format('Y-m-d H:i:s');
         }
 
         return $data;

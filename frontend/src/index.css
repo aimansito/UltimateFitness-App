@@ -20,7 +20,7 @@
   --color-uf-red: #FF0000;
   --color-uf-dark: #1a1a1a;
   --color-uf-darker: #0a0a0a;
-  
+
   /* ---------------------------------------- */
   /* FUENTES PERSONALIZADAS */
   /* ---------------------------------------- */
@@ -41,7 +41,12 @@ body {
 }
 
 /* Títulos usan Anton por defecto */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-family-anton);
 }
 
@@ -62,15 +67,18 @@ html {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 /* Animaciones para el modal */
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -81,6 +89,7 @@ html {
     transform: scale(0.9);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -93,4 +102,21 @@ html {
 
 .animate-scaleIn {
   animation: scaleIn 0.3s ease-out;
+}
+
+/* Animación para Toast notifications */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
 }

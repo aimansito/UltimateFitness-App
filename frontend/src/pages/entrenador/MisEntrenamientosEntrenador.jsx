@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import useAuthEntrenador from '../../context/AuthContextEntrenador';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../context/ToastContext';
 import api from '../../services/api';
 import {
   Dumbbell,
@@ -16,23 +17,26 @@ import {
 } from 'lucide-react';
 
 function MisEntrenamientosEntrenador() {
-  const { user } = useAuth();
+  const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
+  const toast = useToast();
   const [entrenamientos, setEntrenamientos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    if (user && user.id) {
+    if (entrenador && entrenador.id) {
       fetchEntrenamientos();
     }
-  }, [user]);
+  }, [entrenador]);
 
   const fetchEntrenamientos = async () => {
     try {
       setLoading(true);
+      setError(null);
       // Endpoint específico para entrenadores (busca por creador_id)
-      const response = await api.get(`/entrenador/mis-entrenamientos/${user.id}`);
+      const response = await api.get(`/entrenador/mis-entrenamientos/${entrenador.id}`);
 
       console.log('✅ Respuesta entrenamientos entrenador:', response.data);
 
@@ -42,7 +46,7 @@ function MisEntrenamientosEntrenador() {
       }
     } catch (error) {
       console.error('❌ Error al cargar entrenamientos:', error);
-      console.error('Detalle del error:', error.response?.data);
+      setError(error.response?.data?.error || error.message || 'Error al cargar los entrenamientos');
     } finally {
       setLoading(false);
     }
@@ -55,12 +59,12 @@ function MisEntrenamientosEntrenador() {
       const response = await api.delete(`/custom/entrenamientos/${entrenamientoId}`);
 
       if (response.data.success) {
-        alert('✅ Entrenamiento eliminado exitosamente');
+        toast.success('✅ Entrenamiento eliminado exitosamente');
         fetchEntrenamientos();
       }
     } catch (error) {
       console.error('Error al eliminar entrenamiento:', error);
-      alert('❌ Error al eliminar entrenamiento');
+      toast.error('❌ Error al eliminar entrenamiento');
     }
   };
 
@@ -87,6 +91,23 @@ function MisEntrenamientosEntrenador() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500 mx-auto mb-4"></div>
           <p className="text-white text-xl">Cargando entrenamientos...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4 flex items-center justify-center">
+        <div className="text-center p-8 bg-black/50 rounded-xl border border-red-500">
+          <h3 className="text-red-500 text-2xl font-bold mb-4">Error</h3>
+          <p className="text-white text-lg mb-6">{String(error)}</p>
+          <button
+            onClick={fetchEntrenamientos}
+            className="bg-purple-600 px-6 py-2 rounded text-white font-bold hover:bg-purple-700"
+          >
+            Reintentar
+          </button>
         </div>
       </div>
     );

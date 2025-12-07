@@ -7,44 +7,41 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// Rutas públicas que NO necesitan token JWT
+// =============================
+// RUTAS PÚBLICAS
+// =============================
 const PUBLIC_ROUTES = [
-  '/login',
-  '/register',
-  '/reset-password',
-  '/blog/posts/public-preview',
-  '/blog/categorias',
+  "/login",
+  "/register",
+  "/reset-password",
+  "/blog/posts/public-preview",
+  "/blog/categorias",
 ];
 
-// Verificar si una URL coincide con un patrón de ruta pública
 const isPublicUrl = (url) => {
   if (!url) return false;
-
-  // Rutas exactas
-  if (PUBLIC_ROUTES.some(route => url.includes(route))) {
-    return true;
-  }
-
-  // Patrón para detalle de post individual: /blog/posts/{slug}
-  // Solo es público si no contiene otros paths como /premium, /categoria, etc.
-  if (url.match(/\/blog\/posts\/[^/]+$/) && !url.includes('public-preview')) {
-    return true;
-  }
-
-  return false;
+  return PUBLIC_ROUTES.some((route) => url.includes(route));
 };
 
+// =============================
+// REQUEST INTERCEPTOR
+// =============================
 api.interceptors.request.use(
   (config) => {
-    // Verificar si la ruta es pública
     const isPublicRoute = isPublicUrl(config.url);
 
-    // Solo agregar token si NO es una ruta pública
     if (!isPublicRoute) {
-      const token = localStorage.getItem("token");
-      if (token) {
+      // Token de usuario normal
+      const userToken = localStorage.getItem("token");
+
+      // Token de entrenador
+      const trainerToken = localStorage.getItem("token_entrenador");
+
+      const finalToken = trainerToken || userToken;
+
+      if (finalToken) {
         config.headers = config.headers || {};
-        config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `Bearer ${finalToken}`;
       }
     }
 
@@ -53,21 +50,24 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Interceptor de respuesta para manejar errores de autenticación
+// =============================
+// RESPONSE INTERCEPTOR
+// =============================
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Si el token es inválido (401), limpiar localStorage
     if (error.response?.status === 401) {
+      // Limpiar ambos tokens
       localStorage.removeItem("token");
       localStorage.removeItem("usuario");
+      localStorage.removeItem("token_entrenador");
+      localStorage.removeItem("entrenador");
 
-      // Solo redirigir si NO es una ruta pública
-      const isPublicRoute = isPublicUrl(error.config?.url);
-      if (!isPublicRoute && window.location.pathname !== '/login') {
-        window.location.href = '/login';
+      if (!isPublicUrl(error.config?.url)) {
+        window.location.href = "/login";
       }
     }
+
     return Promise.reject(error);
   }
 );
