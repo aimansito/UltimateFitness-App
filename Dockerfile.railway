@@ -1,0 +1,61 @@
+# ===============================
+#  Etapa 1: build con Composer
+# ===============================
+FROM php:8.2-fpm AS builder
+
+RUN apt-get update && apt-get install -y \
+    git \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    zip unzip \
+    libsodium-dev \
+ && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip sodium \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Trabajamos dentro del BACKEND de Symfony
+WORKDIR /var/www/html
+
+# Instalar dependencias primero (solo composer.*)
+COPY backend/composer.json backend/composer.lock ./
+RUN composer install --no-dev --optimize-autoloader
+
+# Copiar todo el backend Symfony
+COPY backend ./
+RUN composer dump-autoload --optimize
+
+
+# ===============================
+#  Etapa 2: runtime con Nginx + PHP-FPM
+# ===============================
+FROM php:8.2-fpm
+
+# Misma paridad de extensiones que en el build
+RUN apt-get update && apt-get install -y nginx \
+ && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip sodium \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /var/www/html
+
+# Copiamos lo construido en el stage anterior
+COPY --from=builder /var/www/html /var/www/html
+
+# Usar tu configuración de PHP-FPM
+COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
+
+# Configuración Nginx específica para Railway
+COPY docker/nginx/railway.conf /etc/nginx/conf.d/default.conf
+
+RUN mkdir -p /run/nginx
+
+# Puerto que usaremos en Railway
+ENV PORT=8080
+EXPOSE 8080
+
+# Arrancamos PHP-FPM en background y Nginx en foreground
+CMD sh -c "php-fpm -D && nginx -g 'daemon off;'"
