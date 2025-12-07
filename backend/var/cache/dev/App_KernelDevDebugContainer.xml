@@ -575,6 +575,15 @@
         <argument type="service" id=".service_locator.QaaoWjx.App\Controller\PagoController"/>
       </call>
     </service>
+    <service id="App\Controller\PasswordResetController" class="App\Controller\PasswordResetController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+      <argument type="service" id="security.user_password_hasher"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.QaaoWjx.App\Controller\PasswordResetController"/>
+      </call>
+    </service>
     <service id="App\Controller\PlatoController" class="App\Controller\PlatoController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
       <tag name="container.service_subscriber"/>
@@ -6489,6 +6498,9 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\PagoController" class="App\Controller\PagoController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\PagoController" class="App\Controller\PagoController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\PagoController" class="App\Controller\PagoController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\PasswordResetController" class="App\Controller\PasswordResetController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\PasswordResetController" class="App\Controller\PasswordResetController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\PasswordResetController" class="App\Controller\PasswordResetController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\PlatoController" class="App\Controller\PlatoController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\PlatoController" class="App\Controller\PlatoController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\PlatoController" class="App\Controller\PlatoController" autowire="true" autoconfigure="true" abstract="true"/>
@@ -8213,6 +8225,12 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.QaaoWjx" method="withContext"/>
     </service>
+    <service id=".service_locator.QaaoWjx.App\Controller\PasswordResetController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\PasswordResetController"/>
+      <argument>App\Controller\PasswordResetController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.QaaoWjx" method="withContext"/>
+    </service>
     <service id=".service_locator.QaaoWjx.App\Controller\PlatoController" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator_context" id="App\Controller\PlatoController"/>
       <argument>App\Controller\PlatoController</argument>
@@ -8484,6 +8502,7 @@
           <argument>App\Controller\MisClientesController</argument>
           <argument>App\Controller\MisDietasController</argument>
           <argument>App\Controller\PagoController</argument>
+          <argument>App\Controller\PasswordResetController</argument>
           <argument>App\Controller\PlatoController</argument>
           <argument>App\Controller\PublicBlogController</argument>
           <argument>App\Controller\RegistroController</argument>

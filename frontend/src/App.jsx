@@ -23,6 +23,8 @@ import Blog from "./pages/public/Blog";
 import BlogPost from "./pages/public/BlogPost";
 import DetallePlato from "./pages/public/DetallePlato";
 import PoliticaPrivacidad from "./pages/public/PoliticaPrivacidad";
+import RecuperarPassword from "./pages/public/RecuperarPassword";
+import RestablecerPassword from "./pages/public/RestablecerPassword";
 
 // Dashboard Router
 import DashboardRouter from "./pages/DashboardRouter";
@@ -68,6 +70,8 @@ function App() {
             {/* --------------------------- */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/recuperar-password" element={<RecuperarPassword />} />
+            <Route path="/restablecer-password" element={<RestablecerPassword />} />
             <Route path="/entrenador/login" element={<LoginEntrenador />} />
             <Route path="/register" element={<Register />} />
             <Route path="/upgrade-premium" element={<UpgradePremium />} />

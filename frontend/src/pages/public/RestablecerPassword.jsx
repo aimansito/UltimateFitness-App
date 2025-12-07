@@ -1,0 +1,128 @@
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import axios from "axios";
+
+function RestablecerPassword() {
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get("token");
+
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [message, setMessage] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!token) {
+            setError("Token no válido o no proporcionado.");
+        }
+    }, [token]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (password !== confirmPassword) {
+            setError("Las contraseñas no coinciden");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+        setMessage("");
+
+        try {
+            const response = await axios.post("http://localhost:8000/api/reset-password", {
+                token,
+                password
+            });
+            setMessage(response.data.message);
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 3000);
+        } catch (err) {
+            setError(err.response?.data?.error || "Error al restablecer contraseña.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-uf-darker to-black px-4 py-12">
+            <div className="w-full max-w-md">
+                <div className="bg-uf-gold py-6 text-center rounded-t-lg">
+                    <h1 className="text-3xl font-bold text-black uppercase tracking-wider">
+                        Restablecer Contraseña
+                    </h1>
+                </div>
+
+                <div className="bg-white p-8 rounded-b-lg shadow-2xl">
+                    {message && (
+                        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 text-sm">
+                            {message}
+                        </div>
+                    )}
+
+                    {error && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-sm">
+                            {error}
+                        </div>
+                    )}
+
+                    {!message && (
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <label className="block text-gray-700 font-semibold mb-2 text-sm">
+                                    Nueva Contraseña
+                                </label>
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    required
+                                    className="w-full px-4 py-3 border-b-2 border-uf-gold focus:outline-none focus:border-uf-blue transition bg-white text-gray-800"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-gray-700 font-semibold mb-2 text-sm">
+                                    Confirmar Contraseña
+                                </label>
+                                <input
+                                    type="password"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    placeholder="••••••••"
+                                    required
+                                    className="w-full px-4 py-3 border-b-2 border-uf-gold focus:outline-none focus:border-uf-blue transition bg-white text-gray-800"
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading || !token}
+                                className="w-full bg-uf-gold text-black font-bold py-3 rounded uppercase tracking-wider 
+               hover:bg-uf-blue hover:text-white transition-all duration-300 transform hover:scale-105 
+               shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+                            >
+                                {loading ? "Restableciendo..." : "Cambiar Contraseña"}
+                            </button>
+                        </form>
+                    )}
+
+                    <div className="mt-6 text-center">
+                        <Link
+                            to="/login"
+                            className="text-uf-blue hover:text-uf-gold transition text-sm font-semibold"
+                        >
+                            Volver al Login
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default RestablecerPassword;

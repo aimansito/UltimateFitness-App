@@ -79,6 +79,8 @@ return [
         '/api/pagos/crear-sesion' => [[['_route' => 'api_pagos_create_session', '_controller' => 'App\\Controller\\PagoController::crearSesionCheckout'], null, ['POST' => 0], null, false, false, null]],
         '/api/pagos/webhook' => [[['_route' => 'api_pagos_webhook', '_controller' => 'App\\Controller\\PagoController::webhookStripe'], null, ['POST' => 0], null, false, false, null]],
         '/api/pagos/confirmar' => [[['_route' => 'api_pagos_confirm', '_controller' => 'App\\Controller\\PagoController::confirmarPago'], null, ['POST' => 0], null, false, false, null]],
+        '/api/forgot-password' => [[['_route' => 'api_forgot_password', '_controller' => 'App\\Controller\\PasswordResetController::forgotPassword'], null, ['POST' => 0], null, false, false, null]],
+        '/api/reset-password' => [[['_route' => 'api_reset_password', '_controller' => 'App\\Controller\\PasswordResetController::resetPassword'], null, ['POST' => 0], null, false, false, null]],
         '/api/platos' => [
             [['_route' => 'platos_listar', '_controller' => 'App\\Controller\\PlatoController::listar'], null, ['GET' => 0], null, false, false, null],
             [['_route' => 'platos_crear', '_controller' => 'App\\Controller\\PlatoController::crear'], null, ['POST' => 0], null, false, false, null],

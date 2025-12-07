@@ -69,14 +69,20 @@ function Navbar() {
 
   // FIX 2 → logout correcto según tipo de usuario
   const handleLogout = () => {
+    // Cerrar todos los menús para evitar que se quede "pillado" en mobile
+    setMenuOpen(false);
+    setUserMenuOpen(false);
+    setEntrenamientosOpen(false);
+    setAlimentacionOpen(false);
+
     if (isAuthenticatedEntrenador) {
       logoutEntrenador();
       navigate("/entrenador/login");
       return;
     }
 
+    // Para usuarios normales, el contexto ya maneja la navegación a /login
     logout();
-    navigate("/");
   };
 
   // FIX 3 → menú correcto para entrenador
@@ -241,7 +247,8 @@ function Navbar() {
 
           <div className="border-t border-gray-700">
             <button
-              onClick={() => {
+              onMouseDown={(e) => {
+                e.preventDefault(); // Evitar que el botón pierda foco demasiado pronto
                 setUserMenuOpen(false);
                 handleLogout();
               }}

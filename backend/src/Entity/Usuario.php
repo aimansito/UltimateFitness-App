@@ -115,6 +115,16 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $ultimaConexion = null;
 
     // ============================================
+    // CAMPOS - RECUPERACIÓN DE CONTRASEÑA
+    // ============================================
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $resetTokenExpires = null;
+
+    // ============================================
     // RELACIONES
     // ============================================
 
@@ -437,6 +447,32 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUltimaConexion(?\DateTimeInterface $ultimaConexion): static
     {
         $this->ultimaConexion = $ultimaConexion;
+        return $this;
+    }
+
+    // ============================================
+    // GETTERS Y SETTERS - RESET PASSWORD
+    // ============================================
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): static
+    {
+        $this->resetToken = $resetToken;
+        return $this;
+    }
+
+    public function getResetTokenExpires(): ?\DateTimeInterface
+    {
+        return $this->resetTokenExpires;
+    }
+
+    public function setResetTokenExpires(?\DateTimeInterface $resetTokenExpires): static
+    {
+        $this->resetTokenExpires = $resetTokenExpires;
         return $this;
     }
 
