@@ -12,7 +12,7 @@ function Gym() {
   // ============================================
   // ESTADO
   // ============================================
-  const { isPremium } = useAuth();
+  const { isPremium, isAuthenticated } = useAuth();
   const [ejercicios, setEjercicios] = useState([]);
   const [ejerciciosFiltrados, setEjerciciosFiltrados] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -50,9 +50,63 @@ function Gym() {
       setCargando(true);
       setError(null);
 
-      // Usa API con token
-      const response = await api.get("/custom/ejercicios");
+      // Si no está autenticado, mostrar ejercicios de muestra
+      if (!isAuthenticated) {
+        const ejerciciosMuestra = [
+          {
+            id: 1,
+            nombre: "Press de Banca",
+            descripcion: "Ejercicio fundamental para el desarrollo del pecho",
+            grupoMuscular: "pecho",
+            tipo: "compuesto",
+            nivelDificultad: "intermedio",
+            valoracionPromedio: 4.8,
+            totalValoraciones: 245,
+            videoUrl: null
+          },
+          {
+            id: 2,
+            nombre: "Sentadillas",
+            descripcion: "El rey de los ejercicios para piernas",
+            grupoMuscular: "piernas",
+            tipo: "compuesto",
+            nivelDificultad: "intermedio",
+            valoracionPromedio: 4.9,
+            totalValoraciones: 312,
+            videoUrl: null
+          },
+          {
+            id: 3,
+            nombre: "Dominadas",
+            descripcion: "Ejercicio completo para la espalda",
+            grupoMuscular: "espalda",
+            tipo: "compuesto",
+            nivelDificultad: "avanzado",
+            valoracionPromedio: 4.7,
+            totalValoraciones: 198,
+            videoUrl: null
+          },
+          {
+            id: 4,
+            nombre: "Curl de Bíceps",
+            descripcion: "Aislamiento para el desarrollo de bíceps",
+            grupoMuscular: "biceps",
+            tipo: "aislamiento",
+            nivelDificultad: "principiante",
+            valoracionPromedio: 4.5,
+            totalValoraciones: 167,
+            videoUrl: null
+          }
+        ];
 
+        setEjercicios(ejerciciosMuestra);
+        setEjerciciosFiltrados(ejerciciosMuestra);
+        setCargando(false);
+        return;
+      }
+
+      // Si está autenticado, cargar desde API
+      const response = await api.get("/custom/ejercicios");
       const ejerciciosData = response.data;
 
       console.log("✅ Ejercicios cargados:", ejerciciosData.length);
@@ -112,7 +166,28 @@ function Gym() {
           </p>
         </div>
 
-        {!isPremium && (
+        {!isAuthenticated && (
+          <div className="max-w-4xl mx-auto mb-12">
+            <div className="bg-gradient-to-r from-uf-gold/20 to-yellow-600/20 border-2 border-uf-gold rounded-xl p-8 text-center">
+              <h3 className="text-2xl font-bold text-white mb-3">
+                Regístrate para Ver Todos los Ejercicios
+              </h3>
+              <p className="text-gray-300 mb-4">
+                Accede a nuestra biblioteca completa con más de 60 ejercicios profesionales con videos HD
+              </p>
+              <div className="flex gap-4 justify-center">
+                <a href="/register" className="bg-uf-gold text-black font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition">
+                  Registrarse Gratis
+                </a>
+                <a href="/login" className="bg-gray-700 text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-600 transition">
+                  Iniciar Sesión
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isAuthenticated && !isPremium && (
           <div className="max-w-4xl mx-auto mb-12">
             <div className="bg-gradient-to-r from-uf-gold/20 to-yellow-600/20 border-2 border-uf-gold rounded-xl p-6 text-center">
               <h3 className="text-xl font-bold text-white mb-3">

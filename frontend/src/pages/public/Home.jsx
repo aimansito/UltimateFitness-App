@@ -31,7 +31,7 @@ function Home() {
       icon: Dumbbell,
       title: 'GYM TRAINING',
       description: 'Esta semana tenemos nuevos ejercicios para implementar en nuestra rutina',
-      image: '/images/fondoGym.jpg',
+      image: '/images/gymfondo.jpg',
     },
   ];
 
@@ -45,7 +45,7 @@ function Home() {
         <div
           className="min-h-[700px] bg-cover bg-center relative flex items-start justify-center pt-8 pb-20"
           style={{
-            backgroundImage: 'url(/images/fondoGym.jpg)',
+            backgroundImage: 'url(/images/gymfondo.jpg)',
           }}
         >
           {/* Overlay oscuro */}
@@ -91,7 +91,7 @@ function Home() {
 
                 {/* Botón principal */}
                 <Link
-                  to="/registro"
+                  to="/register"
                   className="group relative overflow-hidden bg-uf-gold hover:bg-uf-blue text-black hover:text-white font-bold px-10 py-3.5 rounded-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl text-sm"
                 >
                   Comenzar Ahora
@@ -165,7 +165,7 @@ function Home() {
             Únete a Ultimate Fitness y comienza tu viaje hacia una versión mejorada de ti mismo.
           </p>
           <Link
-            to="/registro"
+            to="/register"
             className="inline-block bg-uf-gold hover:bg-uf-blue text-black font-bold px-8 py-3 rounded-lg uppercase tracking-wider transition transform hover:scale-105 text-sm"
           >
             Conviértete en Ultimate

@@ -10,8 +10,10 @@ import {
   Receipt,
   Clock,
   AlertCircle,
-  Crown
+  Crown,
+  X
 } from 'lucide-react';
+import api from '../../services/api';
 
 function MiSuscripcion() {
   const { user, isPremium } = useAuth();
@@ -19,6 +21,7 @@ function MiSuscripcion() {
   const [suscripcion, setSuscripcion] = useState(null);
   const [historialPagos, setHistorialPagos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   useEffect(() => {
     const fetchSuscripcion = async () => {
@@ -29,7 +32,7 @@ function MiSuscripcion() {
           id: 1,
           plan: 'Premium Mensual',
           estado: 'activa',
-          precio_mensual: 29.99,
+          precio_mensual: 19.99,
           fecha_inicio: '2024-11-01',
           fecha_renovacion: '2025-12-01',
           metodo_pago: 'Tarjeta terminada en 4242',
@@ -49,9 +52,30 @@ function MiSuscripcion() {
     if (user) fetchSuscripcion();
   }, [user, isPremium]);
 
-  const handleCancelarSuscripcion = () => {
-    if (!confirm('¿Cancelar suscripción Premium?')) return;
-    toast.info('ℹ️ Suscripción cancelada');
+  const handleCancelarSuscripcion = async () => {
+    try {
+      const response = await api.post('/suscripciones/cancelar');
+
+      if (response.data.success) {
+        setShowCancelModal(false);
+        toast.success('✅ Suscripción cancelada correctamente');
+
+        if (response.data.force_logout) {
+          setTimeout(() => {
+            // Limpiar localStorage
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+
+            // Redirigir
+            window.location.href = '/login';
+          }, 1500);
+        }
+      }
+    } catch (error) {
+      console.error('Error al cancelar:', error);
+      setShowCancelModal(false);
+      toast.error('❌ ' + (error.response?.data?.error || 'Error al cancelar la suscripción'));
+    }
   };
 
   const handleReactivarSuscripcion = () => {
@@ -146,8 +170,8 @@ function MiSuscripcion() {
         <div className="flex gap-4 mb-8">
           {suscripcion?.estado === 'activa' ? (
             <button
-              onClick={handleCancelarSuscripcion}
-              className="px-6 py-2 bg-red-600 text-white rounded"
+              onClick={() => setShowCancelModal(true)}
+              className="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
             >
               Cancelar Suscripción
             </button>
@@ -177,6 +201,56 @@ function MiSuscripcion() {
         ))}
 
       </div>
+
+      {/* Modal de Confirmación */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 border-2 border-red-600 rounded-xl max-w-md w-full p-6 relative">
+            <button
+              onClick={() => setShowCancelModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="flex justify-center mb-4">
+              <div className="bg-red-600/20 p-4 rounded-full">
+                <AlertCircle className="w-12 h-12 text-red-600" />
+              </div>
+            </div>
+
+            <h3 className="text-2xl font-bold text-white text-center mb-3">
+              ¿Cancelar Suscripción Premium?
+            </h3>
+
+            <p className="text-gray-300 text-center mb-6">
+              Perderás acceso inmediato a todas las funciones premium:
+            </p>
+
+            <ul className="text-gray-400 text-sm space-y-2 mb-6 pl-6">
+              <li className="list-disc">Entrenador personal asignado</li>
+              <li className="list-disc">Planes de entrenamiento personalizados</li>
+              <li className="list-disc">Dietas personalizadas</li>
+              <li className="list-disc">Acceso completo al blog</li>
+            </ul>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="flex-1 px-6 py-3 bg-gray-700 text-white rounded-lg font-bold hover:bg-gray-600 transition"
+              >
+                Mantener Premium
+              </button>
+              <button
+                onClick={handleCancelarSuscripcion}
+                className="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 transition"
+              >
+                Sí, Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

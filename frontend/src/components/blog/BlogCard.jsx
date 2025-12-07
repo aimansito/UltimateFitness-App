@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Calendar, Eye, Heart, Tag } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 function BlogCard({ post }) {
+  const { isAuthenticated } = useAuth();
   const formatearFecha = (fecha) => {
     return new Date(fecha).toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -77,21 +79,23 @@ function BlogCard({ post }) {
           </div>
         </div>
 
-        {/* Botón leer más */}
-        {post.puede_acceder ? (
-          <Link
-            to={`/blog/${post.slug}`}
-            className="mt-4 block w-full bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold py-2 px-4 rounded-lg text-center hover:from-yellow-600 hover:to-uf-gold transition-all duration-300"
-          >
-            Leer más
-          </Link>
-        ) : (
-          <Link
-            to="/upgrade-premium"
-            className="mt-4 block w-full bg-gray-700 text-gray-300 font-bold py-2 px-4 rounded-lg text-center hover:bg-gray-600 transition-all duration-300 flex items-center justify-center gap-2"
-          >
-            🔒 Hazte Premium
-          </Link>
+        {/* Botón leer más - Solo para usuarios autenticados */}
+        {isAuthenticated && (
+          post.puede_acceder ? (
+            <Link
+              to={`/blog/${post.slug}`}
+              className="mt-4 block w-full bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold py-2 px-4 rounded-lg text-center hover:from-yellow-600 hover:to-uf-gold transition-all duration-300"
+            >
+              Leer más
+            </Link>
+          ) : (
+            <Link
+              to="/upgrade-premium"
+              className="mt-4 block w-full bg-gray-700 text-gray-300 font-bold py-2 px-4 rounded-lg text-center hover:bg-gray-600 transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              🔒 Hazte Premium
+            </Link>
+          )
         )}
       </div>
     </div>

@@ -12,6 +12,8 @@ function DetalleDieta() {
   const [dieta, setDieta] = useState(null);
   const [planDiario, setPlanDiario] = useState(null);
   const [totales, setTotales] = useState(null);
+  const [diaActual, setDiaActual] = useState('lunes');
+  const [diasDisponibles, setDiasDisponibles] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [platoSeleccionado, setPlatoSeleccionado] = useState(null);
@@ -30,20 +32,31 @@ function DetalleDieta() {
     'dificil': '🔴'
   };
 
+  const diasSemana = [
+    { key: 'lunes', nombre: 'Lunes' },
+    { key: 'martes', nombre: 'Martes' },
+    { key: 'miercoles', nombre: 'Miércoles' },
+    { key: 'jueves', nombre: 'Jueves' },
+    { key: 'viernes', nombre: 'Viernes' },
+    { key: 'sabado', nombre: 'Sábado' },
+    { key: 'domingo', nombre: 'Domingo' }
+  ];
+
   useEffect(() => {
     cargarPlanDiario();
-  }, [id]);
+  }, [id, diaActual]);
 
   const cargarPlanDiario = async () => {
     try {
       setCargando(true);
-      const response = await fetch(`http://localhost:8000/api/custom/dietas/${id}/plan-diario`);
+      const response = await fetch(`http://localhost:8000/api/custom/dietas/${id}/plan-diario?dia=${diaActual}`);
       const data = await response.json();
 
       if (data.success) {
         setDieta(data.dieta);
         setPlanDiario(data.planDiario);
         setTotales(data.totales);
+        setDiasDisponibles(data.diasDisponibles || []);
       } else {
         setError('No se pudo cargar la dieta');
       }
@@ -106,10 +119,39 @@ function DetalleDieta() {
           </p>
         </div>
 
+        {/* SELECTOR DE DÍAS */}
+        {diasDisponibles.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-anton font-bold text-white mb-4 uppercase text-center">
+              Seleccionar Día
+            </h2>
+            <div className="flex flex-wrap gap-3 justify-center">
+              {diasSemana.map((dia) => {
+                const disponible = diasDisponibles.includes(dia.key);
+                return (
+                  <button
+                    key={dia.key}
+                    onClick={() => disponible && setDiaActual(dia.key)}
+                    disabled={!disponible}
+                    className={`px-6 py-3 rounded-lg font-bold uppercase text-sm transition-all duration-300 ${diaActual === dia.key
+                        ? 'bg-uf-gold text-black shadow-lg shadow-uf-gold/50'
+                        : disponible
+                          ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                          : 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50'
+                      }`}
+                  >
+                    {dia.nombre}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* TOTALES DEL DÍA */}
         <div className="bg-gradient-to-r from-uf-gold/10 to-yellow-600/10 border-2 border-uf-gold rounded-xl p-6 mb-8">
           <h2 className="text-2xl font-anton font-bold text-white mb-4 uppercase">
-            Total Diario
+            Total del Día - {diasSemana.find(d => d.key === diaActual)?.nombre}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">

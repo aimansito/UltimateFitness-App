@@ -58,5 +58,7 @@ security:
         - { path: ^/api/entrenador/login$, roles: PUBLIC_ACCESS }
         - { path: ^/api/register$, roles: PUBLIC_ACCESS }
         - { path: ^/api/public, roles: PUBLIC_ACCESS }
+        - { path: ^/api/custom/dietas/publicas, roles: PUBLIC_ACCESS }
+        - { path: ^/api/custom/dietas/\d+/plan-diario, roles: PUBLIC_ACCESS }
 
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

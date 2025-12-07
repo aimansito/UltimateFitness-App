@@ -169,6 +169,7 @@ class DietaController extends AbstractController
     #[Route('/dietas/{id}/plan-diario', name: 'dieta_plan_diario', methods: ['GET'])]
     public function planDiario(
         int $id,
+        Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
         $dieta = $entityManager->getRepository(Dieta::class)->find($id);
@@ -180,7 +181,10 @@ class DietaController extends AbstractController
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // Obtener platos de la dieta agrupados por momento del día desde la nueva tabla dieta_platos
+        // Obtener día específico del query param (por defecto 'lunes')
+        $diaSeleccionado = $request->query->get('dia', 'lunes');
+
+        // Obtener platos de la dieta para el día seleccionado
         $connection = $entityManager->getConnection();
         
         $sql = 'SELECT 
@@ -204,13 +208,16 @@ class DietaController extends AbstractController
                     p.total_valoraciones as plato_total_valoraciones
                 FROM dieta_platos dp
                 INNER JOIN platos p ON dp.plato_id = p.id
-                WHERE dp.dieta_id = :dietaId
+                WHERE dp.dieta_id = :dietaId AND dp.dia_semana = :dia
                 ORDER BY 
-                    FIELD(dp.tipo_comida, "desayuno", "media_manana", "almuerzo", "merienda", "cena", "post_entreno"),
+                    FIELD(dp.tipo_comida,  "desayuno", "media_manana", "almuerzo", "merienda", "cena", "post_entreno"),
                     dp.orden ASC';
         
         $stmt = $connection->prepare($sql);
-        $result = $stmt->executeQuery(['dietaId' => $id]);
+        $result = $stmt->executeQuery([
+            'dietaId' => $id,
+            'dia' => $diaSeleccionado
+        ]);
         $dietaPlatos = $result->fetchAllAssociative();
 
         // Agrupar por momento del día
@@ -229,7 +236,7 @@ class DietaController extends AbstractController
             'grasas' => 0
         ];
 
-        // Mapear tipo_comida
+        // Mapeo de nombres de comidas
         $mapeoComidas = [
             'desayuno' => 'desayuno',
             'media_manana' => 'media_mañana',
@@ -329,6 +336,12 @@ class DietaController extends AbstractController
             $totalesDia['grasas'] += $platoTotales['grasas'];
         }
 
+        // Obtener días disponibles para esta dieta
+        $sqlDias = 'SELECT DISTINCT dia_semana FROM dieta_platos WHERE dieta_id = :dietaId ORDER BY FIELD(dia_semana, "lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo")';
+        $stmtDias = $connection->prepare($sqlDias);
+        $resultDias = $stmtDias->executeQuery(['dietaId' => $id]);
+        $diasDisponibles = array_column($resultDias->fetchAllAssociative(), 'dia_semana');
+
         return $this->json([
             'success' => true,
             'dieta' => [
@@ -336,6 +349,8 @@ class DietaController extends AbstractController
                 'nombre' => $dieta->getNombre(),
                 'descripcion' => $dieta->getDescripcion()
             ],
+            'diaActual' => $diaSeleccionado,
+            'diasDisponibles' => $diasDisponibles,
             'planDiario' => $planDiario,
             'totales' => [
                 'calorias' => round($totalesDia['calorias'], 2),

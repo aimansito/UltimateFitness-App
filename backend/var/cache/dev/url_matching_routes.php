@@ -90,6 +90,7 @@ return [
         '/api/suscripciones/info' => [[['_route' => 'api_suscripciones_info', '_controller' => 'App\\Controller\\SubscripcionController::info'], null, ['GET' => 0], null, false, false, null]],
         '/api/suscripciones/mi-suscripcion' => [[['_route' => 'api_suscripciones_mi_suscripcion', '_controller' => 'App\\Controller\\SubscripcionController::miSuscripcion'], null, ['GET' => 0], null, false, false, null]],
         '/api/suscripciones/mi-entrenador' => [[['_route' => 'api_suscripciones_mi_entrenador', '_controller' => 'App\\Controller\\SubscripcionController::miEntrenador'], null, ['GET' => 0], null, false, false, null]],
+        '/api/suscripciones/cancelar' => [[['_route' => 'api_suscripciones_cancelar_premium', '_controller' => 'App\\Controller\\SubscripcionController::cancelarPremium'], null, ['POST' => 0], null, false, false, null]],
         '/api/debug/test-token' => [[['_route' => 'test_token_debug', '_controller' => 'App\\Controller\\TestTokenController::testToken'], null, ['GET' => 0], null, false, false, null]],
         '/api/custom/usuarios' => [[['_route' => 'usuarios_list_all', '_controller' => 'App\\Controller\\UsuarioController::listarTodos'], null, ['GET' => 0], null, false, false, null]],
         '/api/custom/usuarios/estadisticas-globales' => [[['_route' => 'usuarios_global_stats', '_controller' => 'App\\Controller\\UsuarioController::estadisticasGlobales'], null, ['GET' => 0], null, false, false, null]],

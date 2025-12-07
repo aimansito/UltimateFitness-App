@@ -220,4 +220,49 @@ class SubscripcionController extends AbstractController
             ]
         ]);
     }
+
+    // ============================================================
+    //  POST /api/suscripciones/cancelar (solo premium)
+    // ============================================================
+    #[Route('/cancelar', name: 'cancelar_premium', methods: ['POST'])]
+    public function cancelarPremium(Connection $connection): JsonResponse
+    {
+        $usuario = $this->getUser();
+
+        if (!$usuario instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], 401);
+        }
+
+        if (!$usuario->isEsPremium()) {
+            return $this->json([
+                'success' => false,
+                'error' => 'No tienes una suscripción premium activa'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            // Desactivar suscripción activa
+            $sql = "UPDATE suscripciones 
+                    SET activa = 0, auto_renovacion = 0 
+                    WHERE usuario_id = ? AND activa = 1";
+            
+            $connection->executeStatement($sql, [$usuario->getId()]);
+
+            // Cambiar usuario a no premium
+            $usuario->setEsPremium(false);
+            $this->entityManager->flush();
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Suscripción premium cancelada correctamente',
+                'force_logout' => true // Forzar logout para recargar permisos
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Error al cancelar la suscripción: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

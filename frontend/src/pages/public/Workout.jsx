@@ -6,7 +6,7 @@ import BarraFiltros from '../../components/gym/BarraFiltros';
 import api from '../../services/api';
 
 function Workout() {
-    const { isPremium } = useAuth();
+    const { isPremium, isAuthenticated } = useAuth();
     const [ejercicios, setEjercicios] = useState([]);
     const [ejerciciosFiltrados, setEjerciciosFiltrados] = useState([]);
     const [cargando, setCargando] = useState(true);
@@ -37,7 +37,62 @@ function Workout() {
             setCargando(true);
             setError(null);
 
-            // Endpoint correcto según backend: /api/custom/ejercicios
+            // Si no está autenticado, mostrar ejercicios de muestra
+            if (!isAuthenticated) {
+                const ejerciciosMuestra = [
+                    {
+                        id: 1,
+                        nombre: "Flexiones",
+                        descripcion: "Ejercicio clásico de calistenia para pecho y tríceps",
+                        grupoMuscular: "pecho",
+                        tipo: "calistenia",
+                        nivelDificultad: "principiante",
+                        valoracionPromedio: 4.7,
+                        totalValoraciones: 289,
+                        videoUrl: null
+                    },
+                    {
+                        id: 2,
+                        nombre: "Burpees",
+                        descripcion: "Ejercicio funcional de cuerpo completo",
+                        grupoMuscular: "core",
+                        tipo: "funcional",
+                        nivelDificultad: "intermedio",
+                        valoracionPromedio: 4.6,
+                        totalValoraciones: 234,
+                        videoUrl: null
+                    },
+                    {
+                        id: 3,
+                        nombre: "Plancha",
+                        descripcion: "Isométrico fundamental para el core",
+                        grupoMuscular: "core",
+                        tipo: "isométrico",
+                        nivelDificultad: "principiante",
+                        valoracionPromedio: 4.8,
+                        totalValoraciones: 312,
+                        videoUrl: null
+                    },
+                    {
+                        id: 4,
+                        nombre: "Mountain Climbers",
+                        descripcion: "Ejercicio dinámico para cardio y core",
+                        grupoMuscular: "core",
+                        tipo: "funcional",
+                        nivelDificultad: "intermedio",
+                        valoracionPromedio: 4.5,
+                        totalValoraciones: 198,
+                        videoUrl: null
+                    }
+                ];
+
+                setEjercicios(ejerciciosMuestra);
+                setEjerciciosFiltrados(ejerciciosMuestra);
+                setCargando(false);
+                return;
+            }
+
+            // Si está autenticado, cargar desde API
             const response = await api.get('/custom/ejercicios');
 
             const ejerciciosData = Array.isArray(response.data)
@@ -89,7 +144,28 @@ function Workout() {
                     </p>
                 </div>
 
-                {!isPremium && (
+                {!isAuthenticated && (
+                    <div className="max-w-4xl mx-auto mb-12">
+                        <div className="bg-gradient-to-r from-uf-gold/20 to-yellow-600/20 border-2 border-uf-gold rounded-xl p-8 text-center">
+                            <h3 className="text-2xl font-bold text-white mb-3">
+                                Regístrate para Ver Todos los Ejercicios
+                            </h3>
+                            <p className="text-gray-300 mb-4">
+                                Accede a nuestra biblioteca completa de ejercicios funcionales y calistenia con videos HD
+                            </p>
+                            <div className="flex gap-4 justify-center">
+                                <a href="/register" className="bg-uf-gold text-black font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition">
+                                    Registrarse Gratis
+                                </a>
+                                <a href="/login" className="bg-gray-700 text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-600 transition">
+                                    Iniciar Sesión
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {isAuthenticated && !isPremium && (
                     <div className="max-w-4xl mx-auto mb-12">
                         <div className="bg-gradient-to-r from-uf-gold/20 to-yellow-600/20 border-2 border-uf-gold rounded-xl p-6 text-center">
                             <h3 className="text-xl font-bold text-white mb-3">

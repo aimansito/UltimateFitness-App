@@ -113,7 +113,7 @@ function Servicios() {
         {
             id: 'premium',
             nombre: 'ULTIMATE PREMIUM',
-            precio: 49,
+            precio: 19,
             badge: 'MÁS POPULAR',
             descripcion: 'Acceso total a todo nuestro ecosistema fitness',
             destacado: true,
