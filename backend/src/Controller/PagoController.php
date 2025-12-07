@@ -75,8 +75,7 @@ class PagoController extends AbstractController
             }
 
             // TODO: Integrar con Stripe SDK en producción
-            $checkoutUrl = 'http://localhost:5173/upgrade-premium?usuario=' . $usuario->getId();
-
+            $checkoutUrl = $_ENV['FRONTEND_URL'] . '/upgrade-premium?usuario=' . $usuario->getId();
             return $this->json([
                 'success' => true,
                 'checkout_url' => $checkoutUrl,
@@ -254,7 +253,7 @@ class PagoController extends AbstractController
         // Lógica para actualizar usuario a premium
         // Crear suscripción
         // Registrar en historial_pagos
-        
+
         return $this->json(['success' => true, 'message' => 'Pago procesado']);
     }
 
@@ -265,7 +264,7 @@ class PagoController extends AbstractController
     {
         // Lógica para notificar usuario
         // Registrar intento fallido
-        
+
         return $this->json(['success' => true, 'message' => 'Pago fallido procesado']);
     }
 

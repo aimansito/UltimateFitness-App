@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import CalculadoraNutricional from '../../components/dieta/CalculadoraNutricional';
@@ -194,8 +194,8 @@ function CrearDieta() {
       console.log("Enviando dieta al backend:", dietaData);
 
       // Enviar al backend
-      const response = await axios.post(
-        'http://localhost:8000/api/custom/dietas',
+      const response = await api.post(
+        '/custom/dietas',
         dietaData
       );
 

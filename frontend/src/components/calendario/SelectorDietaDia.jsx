@@ -3,6 +3,8 @@
 // Permite elegir entre: Mis Dietas, Del Entrenador, Públicas
 // ============================================
 import { useState, useEffect } from 'react';
+import api from '../../services/api';
+
 
 function SelectorDietaDia({ dia, onSeleccionar, onCerrar }) {
   const [categoriaActiva, setCategoriaActiva] = useState('mis_dietas');
@@ -38,14 +40,14 @@ function SelectorDietaDia({ dia, onSeleccionar, onCerrar }) {
       switch (categoriaActiva) {
         case 'mis_dietas':
           // TODO: Endpoint para dietas del usuario
-          url = 'http://localhost:8000/api/custom/dietas/publicas'; // Temporal
+          url = '/custom/dietas/publicas'; // Temporal
           break;
         case 'entrenador':
           // TODO: Endpoint para dietas del entrenador
-          url = 'http://localhost:8000/api/custom/dietas/publicas'; // Temporal
+          url = '/custom/dietas/publicas'; // Temporal
           break;
         case 'publicas':
-          url = 'http://localhost:8000/api/custom/dietas/publicas';
+          url = '/custom/dietas/publicas';
           break;
       }
 

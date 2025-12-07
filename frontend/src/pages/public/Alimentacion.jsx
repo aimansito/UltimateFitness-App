@@ -4,6 +4,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import api from '../../services/api';
+
 
 function Alimentacion() {
   const { isPremium } = useAuth();
@@ -28,8 +30,8 @@ function Alimentacion() {
   const cargarDietas = async () => {
     try {
       setCargando(true);
-      const response = await fetch('http://localhost:8000/api/custom/dietas/publicas');
-      const data = await response.json();
+      const response = await api.get('/custom/dietas/publicas');
+      const data = response.data;
 
       const dietasData = data.dietas || [];
       setDietas(dietasData);
@@ -236,8 +238,8 @@ function SeccionSuplementos({ isPremium }) {
 
             <div className="flex items-center gap-2 mb-3">
               <span className={`px-3 py-1 rounded-full text-xs font-bold ${suplemento.categoria === 'Proteína' ? 'bg-red-500/20 text-red-400' :
-                  suplemento.categoria === 'Creatina' ? 'bg-purple-500/20 text-purple-400' :
-                    'bg-orange-500/20 text-orange-400'
+                suplemento.categoria === 'Creatina' ? 'bg-purple-500/20 text-purple-400' :
+                  'bg-orange-500/20 text-orange-400'
                 }`}>
                 {suplemento.categoria}
               </span>

@@ -45,7 +45,7 @@ function Blog() {
 
       // Usuario NO autenticado - Usar endpoint público
       if (!isAuthenticated) {
-        url = `http://localhost:8000/api/public/blog/preview`;
+        url = `/public/blog/preview`;
         const response = await axios.get(url);
 
         if (response.data.success) {

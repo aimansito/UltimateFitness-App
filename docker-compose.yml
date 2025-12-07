@@ -71,6 +71,19 @@
     networks:
       - ultimatefitness_network
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ultimatefitness_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - ultimatefitness_network
+
 volumes:
   mysql_data:
 

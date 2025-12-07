@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import ModalReceta from '../../components/ModalReceta';
+import api from '../../services/api';
+
 
 function DetalleDieta() {
   const { id } = useParams();
@@ -49,8 +51,8 @@ function DetalleDieta() {
   const cargarPlanDiario = async () => {
     try {
       setCargando(true);
-      const response = await fetch(`http://localhost:8000/api/custom/dietas/${id}/plan-diario?dia=${diaActual}`);
-      const data = await response.json();
+      const response = await api.get(`/custom/dietas/${id}/plan-diario?dia=${diaActual}`);
+      const data = response.data;
 
       if (data.success) {
         setDieta(data.dieta);
@@ -134,10 +136,10 @@ function DetalleDieta() {
                     onClick={() => disponible && setDiaActual(dia.key)}
                     disabled={!disponible}
                     className={`px-6 py-3 rounded-lg font-bold uppercase text-sm transition-all duration-300 ${diaActual === dia.key
-                        ? 'bg-uf-gold text-black shadow-lg shadow-uf-gold/50'
-                        : disponible
-                          ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                          : 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50'
+                      ? 'bg-uf-gold text-black shadow-lg shadow-uf-gold/50'
+                      : disponible
+                        ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                        : 'bg-gray-900 text-gray-600 cursor-not-allowed opacity-50'
                       }`}
                   >
                     {dia.nombre}
