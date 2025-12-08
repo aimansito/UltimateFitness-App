@@ -14,24 +14,28 @@ function Home() {
       title: '¿QUÉ OFRECEMOS?',
       description: 'Todo lo que tienes que saber y aprender para mantenerte en forma con nuestro método.',
       image: '/images/ofrecemos.jpg',
+      link: '/servicios',
     },
     {
       icon: Salad,
       title: 'DIETA EQUILIBRADA Y VARIADA',
       description: 'Debemos de tener una comida estructurada para llevar a cabo bien nuestro cambio',
       image: '/images/dieta.jpg',
+      link: '/alimentacion',
     },
     {
       icon: Activity,
       title: 'DEPORTE AL AIRE LIBRE',
       description: 'Hacer deporte en zonas exteriores tiene diversas ventajas...',
       image: '/images/running.jpg',
+      link: '/workout',
     },
     {
       icon: Dumbbell,
       title: 'GYM TRAINING',
       description: 'Esta semana tenemos nuevos ejercicios para implementar en nuestra rutina',
       image: '/images/gymfondo.jpg',
+      link: '/gym',
     },
   ];
 
@@ -141,7 +145,7 @@ function Home() {
                     {servicio.description}
                   </p>
                   <Link
-                    to="/servicios"
+                    to={servicio.link}
                     className="block w-full text-center bg-uf-blue hover:bg-uf-gold text-white hover:text-black font-bold py-3 rounded uppercase tracking-wider transition"
                   >
                     SABER MÁS »
