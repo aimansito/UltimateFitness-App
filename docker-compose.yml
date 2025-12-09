@@ -33,7 +33,6 @@
       - mysql
     networks:
       - ultimatefitness_network
-    # SIN PUERTOS EXTERNOS → Solo accesible internamente
 
   backend:
     build:
@@ -51,6 +50,8 @@
     networks:
       - ultimatefitness_network
     command: ["php-fpm", "-F"]
+    volumes:
+      - /app/backend:/var/www/html
 
   nginx:
     image: nginx:alpine
@@ -59,9 +60,8 @@
     expose:
       - "80"
     volumes:
+      - /app/backend:/var/www/html:ro
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-    volumes_from:
-      - backend
     depends_on:
       - backend
     networks:
