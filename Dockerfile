@@ -1,14 +1,6 @@
-# ============================================
-#  DOCKERFILE - PHP-FPM PARA SYMFONY
-# ============================================
-
 FROM php:8.2-fpm
 
-# Eliminar configuraciones duplicadas de pools que causan conflictos
-RUN rm -f /usr/local/etc/php-fpm.d/docker.conf \
-          /usr/local/etc/php-fpm.d/zz-docker.conf
-
-# Instalar dependencias del sistema
+# Dependencias del sistema
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -26,24 +18,18 @@ RUN apt-get update && apt-get install -y \
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Configurar directorio de trabajo
+# Workdir
 WORKDIR /var/www/html
 
-# Copiar archivos de Symfony al contenedor
+# Copiar backend completo dentro del contenedor
 COPY backend/ /var/www/html/
 
-# Instalar dependencias de Composer
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Instalar dependencias SIN ejecutar scripts (evita fallo env)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-# Configurar permisos correctos
-RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public \
-    && chmod -R 775 /var/www/html/var
-
-# Copiar configuración de PHP-FPM
+# Copiar configuración PHP-FPM
 COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
 
-# Exponer puerto PHP-FPM
 EXPOSE 9000
 
-# Ejecutar PHP-FPM en foreground
 CMD ["php-fpm", "-F"]
