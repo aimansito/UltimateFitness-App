@@ -1,4 +1,10 @@
-﻿services:
+﻿version: "3.9"
+
+services:
+
+  # ============================================
+  # 🔵 MYSQL
+  # ============================================
   mysql:
     build:
       context: ./database
@@ -15,51 +21,74 @@
       - ./database/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
       - ultimatefitness_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ujose", "-pjosefa"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # ============================================
+  # 🟣 BACKEND (SYMFONY)
+  # ============================================
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     container_name: ultimatefitness_backend
     restart: unless-stopped
     expose:
       - "9000"
-    env_file:
-      - ./backend/.env.docker
+    environment:
+      APP_ENV: prod
+      DATABASE_URL: "mysql://jose:josefa@mysql:3306/ultimatefitness_db?serverVersion=8.0&charset=utf8mb4"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - ultimatefitness_network
-    volumes:
-      - ./backend:/var/www/html
 
+    # ❗ SOLO montar JWT y var/, NO todo el backend (antes machacabas el código)
+    volumes:
+      - ./backend/var:/var/www/html/var
+      - ./backend/config/jwt:/var/www/html/config/jwt
+
+  # ============================================
+  # 🟠 NGINX (API)
+  # ============================================
   nginx:
     image: nginx:alpine
     container_name: ultimatefitness_nginx
     restart: unless-stopped
     expose:
       - "80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - backend
     networks:
       - ultimatefitness_network
-    volumes:
-      - ./backend:/var/www/html:ro
-      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
 
     labels:
       - "traefik.enable=true"
+
+      # Router API
       - "traefik.http.routers.uf-backend.rule=Host(`api.ultimatefitnessuf.com`)"
       - "traefik.http.routers.uf-backend.entrypoints=websecure"
       - "traefik.http.routers.uf-backend.tls.certresolver=letsencrypt"
+
+      # Middleware de CORS
       - "traefik.http.routers.uf-backend.middlewares=cors-headers"
 
+      # Configuración CORS
       - "traefik.http.middlewares.cors-headers.headers.accesscontrolalloworiginlist=https://ultimatefitnessuf.com,https://api.ultimatefitnessuf.com"
       - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS,PATCH"
       - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowheaders=Content-Type,Authorization,X-Requested-With"
       - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowcredentials=true"
       - "traefik.http.middlewares.cors-headers.headers.accesscontrolmaxage=3600"
 
+  # ============================================
+  # 🟢 FRONTEND (VITE + REACT)
+  # ============================================
   frontend:
     build:
       context: ./frontend
