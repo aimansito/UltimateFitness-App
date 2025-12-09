@@ -205,9 +205,7 @@
     <parameter key="nelmio_cors.map" type="collection">
       <parameter key="^/api" type="collection">
         <parameter key="allow_origin" type="collection">
-          <parameter>http://localhost:5173</parameter>
-          <parameter>http://localhost:3000</parameter>
-          <parameter>http://127.0.0.1:3000</parameter>
+          <parameter>^https?://.*?$</parameter>
         </parameter>
         <parameter key="allow_headers" type="collection">
           <parameter>content-type</parameter>
@@ -227,9 +225,7 @@
     </parameter>
     <parameter key="nelmio_cors.defaults" type="collection">
       <parameter key="allow_origin" type="collection">
-        <parameter>http://localhost:5173</parameter>
-        <parameter>http://localhost:3000</parameter>
-        <parameter>http://127.0.0.1:3000</parameter>
+        <parameter>^https?://.*?$</parameter>
       </parameter>
       <parameter key="allow_credentials">false</parameter>
       <parameter key="allow_headers" type="collection">

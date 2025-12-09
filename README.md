@@ -61,7 +61,7 @@ docker-compose up -d --build
 ## 5. Despliegue en Producción (Demo)
 El proyecto se encuentra desplegado y funcional en la siguiente URL:
 
-🚀 **[VER DEMO ONLINE AQUÍ](https://ultimatefitnessuf.com)** *(Ejemplo)*
+ **[VER PÁGINA AQUÍ](http://ultimatefitnessuf.com)** *(Ejemplo)*
 
 ---
 
