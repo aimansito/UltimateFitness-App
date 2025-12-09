@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 
 function RecuperarPassword() {
     const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ function RecuperarPassword() {
         setMessage("");
 
         try {
-            const response = await axios.post("http://localhost:8000/api/forgot-password", { email });
+            const response = await api.post("/forgot-password", { email });
             setMessage(response.data.message || "Si el email existe, recibirás instrucciones.");
 
             // SIMULACIÓN: En un caso real, el usuario va a su email.

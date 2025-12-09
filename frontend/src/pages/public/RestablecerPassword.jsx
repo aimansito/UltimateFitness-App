@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
 
 function RestablecerPassword() {
     const [searchParams] = useSearchParams();
@@ -31,7 +31,7 @@ function RestablecerPassword() {
         setMessage("");
 
         try {
-            const response = await axios.post("http://localhost:8000/api/reset-password", {
+            const response = await api.post("/reset-password", {
                 token,
                 password
             });

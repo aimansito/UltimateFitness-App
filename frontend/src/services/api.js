@@ -13,6 +13,7 @@ const api = axios.create({
 const PUBLIC_ROUTES = [
   "/login",
   "/register",
+  "/forgot-password",
   "/reset-password",
   "/blog/posts/public-preview",
   "/blog/categorias",
