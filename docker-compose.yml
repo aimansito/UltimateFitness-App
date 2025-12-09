@@ -1,4 +1,7 @@
-﻿services:
+﻿version: "3.9"
+
+services:
+
   mysql:
     build:
       context: ./database
@@ -53,10 +56,21 @@
     networks:
       - ultimatefitness_network
     labels:
-      - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE,PATCH"
+      - "traefik.enable=true"
+
+      # ROUTER PARA EL API
+      - "traefik.http.routers.uf-backend.rule=Host(`api.ultimatefitnessuf.com`)"
+      - "traefik.http.routers.uf-backend.entrypoints=websecure"
+      - "traefik.http.routers.uf-backend.tls.certresolver=letsencrypt"
+
+      # MIDDLEWARE DE CORS
+      - "traefik.http.routers.uf-backend.middlewares=cors-headers"
+
+      # CONFIG CORS
       - "traefik.http.middlewares.cors-headers.headers.accesscontrolalloworiginlist=https://ultimatefitnessuf.com,https://api.ultimatefitnessuf.com"
-      - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowcredentials=true"
+      - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS,PATCH"
       - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowheaders=Content-Type,Authorization,X-Requested-With"
+      - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowcredentials=true"
       - "traefik.http.middlewares.cors-headers.headers.accesscontrolmaxage=3600"
 
   frontend:
