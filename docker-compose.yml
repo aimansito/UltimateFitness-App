@@ -43,8 +43,6 @@
     restart: unless-stopped
     expose:
       - "9000"
-    volumes:
-      - ./backend:/var/www/html
     env_file:
       - ./backend/.env.docker
     depends_on:
@@ -62,11 +60,18 @@
       - "80"
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./backend:/var/www/html
+    volumes_from:
+      - backend
     depends_on:
       - backend
     networks:
       - ultimatefitness_network
+    labels:
+      - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE,PATCH"
+      - "traefik.http.middlewares.cors-headers.headers.accesscontrolalloworiginlist=https://ultimatefitnessuf.com,https://api.ultimatefitnessuf.com"
+      - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowcredentials=true"
+      - "traefik.http.middlewares.cors-headers.headers.accesscontrolallowheaders=Content-Type,Authorization,X-Requested-With"
+      - "traefik.http.middlewares.cors-headers.headers.accesscontrolmaxage=3600"
 
   frontend:
     build:

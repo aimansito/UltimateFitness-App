@@ -29,6 +29,16 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Configurar directorio de trabajo
 WORKDIR /var/www/html
 
+# Copiar archivos de Symfony al contenedor
+COPY backend/ /var/www/html/
+
+# Instalar dependencias de Composer
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Configurar permisos correctos
+RUN chown -R www-data:www-data /var/www/html/var /var/www/html/public \
+    && chmod -R 775 /var/www/html/var
+
 # Copiar configuración de PHP-FPM
 COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
 
