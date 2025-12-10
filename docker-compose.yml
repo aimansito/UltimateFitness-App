@@ -32,7 +32,18 @@ services:
     container_name: uf_nginx
     restart: unless-stopped
     volumes:
-      - ./backend:/var/www/html
+      - symfony_code:/var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - uf_net
+
+  nginx:
+    image: nginx:alpine
+    container_name: uf_nginx
+    restart: unless-stopped
+    volumes:
+      - symfony_code:/var/www/html
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - backend
@@ -44,13 +55,14 @@ services:
       - "traefik.http.routers.uf-api.entrypoints=websecure"
       - "traefik.http.routers.uf-api.tls.certresolver=letsencrypt"
       - "traefik.http.services.uf-api.loadbalancer.server.port=80"
-      - "traefik.http.routers.uf-api.middlewares=cors"
+      - "traefik.http.routers.uf-api.middlewares=uf-cors"
 
-      # Middleware CORS:
-      - "traefik.http.middlewares.cors.headers.accesscontrolalloworigin=*"
-      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS"
-      - "traefik.http.middlewares.cors.headers.accesscontrolallowheaders=*"
-      - "traefik.http.middlewares.cors.headers.accesscontrolallowcredentials=true"
+      # Middleware CORS (Explicito y unico)
+      - "traefik.http.middlewares.uf-cors.headers.accesscontrolalloworiginlist=https://ultimatefitnessuf.com,https://www.ultimatefitnessuf.com"
+      - "traefik.http.middlewares.uf-cors.headers.accesscontrolallowmethods=GET,POST,PUT,DELETE,OPTIONS"
+      - "traefik.http.middlewares.uf-cors.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.uf-cors.headers.accesscontrolallowcredentials=true"
+      - "traefik.http.middlewares.uf-cors.headers.accesscontrolmaxage=3600"
 
   frontend:
     build:
@@ -69,6 +81,7 @@ services:
 
 volumes:
   mysql_data:
+  symfony_code:
 
 networks:
   uf_net:
