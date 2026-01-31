@@ -15,7 +15,6 @@ services:
         value: "*" # Actualizar con URL de Vercel después
       - key: DATABASE_URL
         fromGroup: shared-database-credentials
-        key: DATABASE_URL
       - key: JWT_SECRET_KEY
         value: config/jwt/private.pem
       - key: JWT_PUBLIC_KEY
