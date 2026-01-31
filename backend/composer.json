@@ -39,10 +39,10 @@
     },
     "config": {
         "audit": {
-            "ignore": {
-                "PKSA-365x-2zjk-pt47": true,
-                "PKSA-b35n-565h-rs4q": true
-            }
+            "ignore": [
+                "PKSA-365x-2zjk-pt47",
+                "PKSA-b35n-565h-rs4q"
+            ]
         },
         "allow-plugins": {
             "php-http/discovery": true,
