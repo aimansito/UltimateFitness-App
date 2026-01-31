@@ -2,8 +2,8 @@ FROM php:8.2-apache
 
 # 1. Instalar dependencias del sistema y extensiones PHP
 RUN apt-get update && apt-get install -y \
-    git unzip libzip-dev libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql zip gd mbstring opcache
+    git unzip libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev \
+    && docker-php-ext-install pdo_mysql zip gd mbstring opcache intl
 
 # 2. Configurar Apache DocumentRoot para Symfony (carpeta /public)
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
