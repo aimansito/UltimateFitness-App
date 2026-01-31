@@ -26,6 +26,7 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # 7. Ajustar permisos para Apache
 RUN chown -R www-data:www-data /var/www/html/var
+RUN rm -rf /var/www/html/var/cache/* /var/www/html/var/log/*
 
 # 8. Script de arranque
 # Ejecuta scripts de post-install y arranca Apache
