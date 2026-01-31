@@ -23,6 +23,7 @@ COPY . .
 
 # 6. Instalar dependencias de PHP (Optimizadas para producción)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN echo "--- CONTENIDO DE BUNDLES.PHP ---" && cat config/bundles.php && echo "--- FIN CONTENIDO ---"
 
 # 7. Ajustar permisos para Apache
 RUN chown -R www-data:www-data /var/www/html/var
