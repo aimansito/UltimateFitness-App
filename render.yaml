@@ -4,7 +4,7 @@ services:
     name: ultimate-fitness-backend
     env: docker
     dockerfilePath: ./backend/Dockerfile
-    context: ./backend
+    dockerContext: ./backend
     plan: free
     envVars:
       - key: APP_ENV
