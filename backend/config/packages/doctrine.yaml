@@ -15,6 +15,9 @@ doctrine:
             charset: utf8mb4
             collate: utf8mb4_unicode_ci
 
+        options:
+            !php/const PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT: 0
+
         mapping_types:
             enum: string
             
