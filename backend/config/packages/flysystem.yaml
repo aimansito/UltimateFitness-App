@@ -1,0 +1,20 @@
+flysystem:
+    storages:
+        default.storage:
+            adapter: 'aws'
+            options:
+                client: 'supabase_s3_client'
+                bucket: '%env(SUPABASE_BUCKET)%'
+
+services:
+    supabase_s3_client:
+        class: 'Aws\S3\S3Client'
+        arguments:
+            -
+                version: 'latest'
+                region: '%env(SUPABASE_REGION)%'
+                endpoint: '%env(SUPABASE_STORAGE_URL)%'
+                use_path_style_endpoint: true
+                credentials:
+                    key: '%env(SUPABASE_ACCESS_KEY)%'
+                    secret: '%env(SUPABASE_SECRET_KEY)%'

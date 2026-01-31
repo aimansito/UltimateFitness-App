@@ -353,8 +353,13 @@ class BlogController extends AbstractController
      * Subir imagen de portada para el blog
      * Requiere rol ADMIN
      */
+    /**
+     * POST /api/blog/upload-image
+     * Subir imagen de portada para el blog
+     * Requiere rol ADMIN
+     */
     #[Route('/upload-image', name: 'upload_image', methods: ['POST'])]
-    public function uploadImage(Request $request, SluggerInterface $slugger): JsonResponse
+    public function uploadImage(Request $request, SluggerInterface $slugger, \League\Flysystem\FilesystemOperator $defaultStorage): JsonResponse
     {
         // Verificar autenticación y rol ADMIN
         $user = $this->getUser();
@@ -395,25 +400,34 @@ class BlogController extends AbstractController
 
         $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $slugger->slug($originalFilename);
-        $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-
-        // Directorio de destino
-        $uploadDir = $this->getParameter('kernel.project_dir').'/public/uploads/blog';
-        
-        // Crear directorio si no existe
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
+        $newFilename = 'blog/' . $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
 
         try {
-            $imageFile->move($uploadDir, $newFilename);
+            // Usar Flysystem para subir a Supabase
+            $stream = fopen($imageFile->getPathname(), 'r');
+            $defaultStorage->writeStream($newFilename, $stream);
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
             
+            // Supabase Public URL construction
+            // URL Pública: https://<project_id>.supabase.co/storage/v1/object/public/<bucket>/<filename>
+            $publicUrl = '/storage/v1/object/public/uploads/' . $newFilename;
+            // Nota: El frontend debe añadir el dominio de Supabase si la URL no es completa,
+            // o podemos devolver la URL completa aquí si tenemos la variable de entorno accesible.
+            // Para mantener compatibilidad, devolveremos una ruta relativa que el frontend pueda manejar
+            // o mejor aún, la URL absoluta completa para evitar líos.
+            
+            // Hack para obtener URL absoluta rápido sin inyectar params extra ahora mismo
+            $supabaseProject = 'ozdmncejywgylyjbboip'; // Hardcoded por seguridad de despliegue rápido
+            $fullUrl = "https://{$supabaseProject}.supabase.co/storage/v1/object/public/uploads/{$newFilename}";
+
             return $this->json([
                 'success' => true,
-                'imagen_url' => '/uploads/blog/' . $newFilename,
+                'imagen_url' => $fullUrl,
                 'filename' => $newFilename
             ]);
-        } catch (FileException $e) {
+        } catch (\Exception $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Error al subir la imagen: ' . $e->getMessage()

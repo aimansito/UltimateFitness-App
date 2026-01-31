@@ -1,0 +1,42 @@
+services:
+  # BACKEND (Symfony)
+  - type: web
+    name: ultimate-fitness-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    context: ./backend
+    plan: free
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: APP_SECRET
+        generateValue: true
+      - key: CORS_ALLOW_ORIGIN
+        value: "*" # Actualizar con URL de Vercel después
+      - key: DATABASE_URL
+        fromGroup: shared-database-credentials
+        key: DATABASE_URL
+      - key: JWT_SECRET_KEY
+        value: config/jwt/private.pem
+      - key: JWT_PUBLIC_KEY
+        value: config/jwt/public.pem
+      - key: JWT_PASSPHRASE
+        generateValue: true
+      # Supabase Storage Configuration
+      - key: SUPABASE_STORAGE_URL
+        value: https://ozdmncejywgylyjbboip.supabase.co/storage/v1/s3
+      - key: SUPABASE_REGION
+        value: eu-central-1
+      - key: SUPABASE_ACCESS_KEY
+        value: d9dc7c13a281a87184c2357faffc6ea5
+      - key: SUPABASE_SECRET_KEY
+        value: 0076acbb9639e62ef35cda47e19e9aceec33271663285183c5261ec279b142d1
+      - key: SUPABASE_BUCKET
+        value: uploads
+
+# Guardamos las credenciales de BD en un grupo compartido
+envVarGroups:
+  - name: shared-database-credentials
+    envVars:
+      - key: DATABASE_URL
+        value: mysql://3CoeWriZw3FbSex.root:G2QgyvEbfKu7D432@gateway01.eu-central-1.prod.aws.tidbcloud.com:4000/test?charset=utf8mb4
