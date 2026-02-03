@@ -16,7 +16,8 @@ doctrine:
             collate: utf8mb4_unicode_ci
 
         options:
-            !php/const PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT: 0
+            !php/const PDO::MYSQL_ATTR_SSL_CA: /etc/ssl/certs/ca-certificates.crt
+            !php/const PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT: false
 
         mapping_types:
             enum: string
