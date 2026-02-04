@@ -32,7 +32,8 @@ RUN mkdir -p /var/www/html/config/jwt && chown -R www-data:www-data /var/www/htm
 RUN rm -rf /var/www/html/var/cache/* /var/www/html/var/log/*
 
 # 8. Script de arranque
-# Generamos las llaves JWT al inicio, arreglamos permisos y arrancamos
-CMD php bin/console lexik:jwt:generate-keypair --skip-if-exists && chown -R www-data:www-data config/jwt && composer run-script post-install-cmd && apache2-foreground
+# Generamos las llaves JWT al inicio (FORZADO), arreglamos permisos y arrancamos
+# Eliminamos claves viejas por si acaso y generamos nuevas
+CMD rm -rf config/jwt/*.pem && php bin/console lexik:jwt:generate-keypair --overwrite && chown -R www-data:www-data config/jwt && composer run-script post-install-cmd && apache2-foreground
 
 EXPOSE 80
