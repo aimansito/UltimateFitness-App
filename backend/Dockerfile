@@ -2,7 +2,7 @@ FROM php:8.2-apache
 
 # 1. Instalar dependencias del sistema y extensiones PHP
 RUN apt-get update && apt-get install -y \
-    git unzip libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev \
+    git unzip libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev openssl \
     && docker-php-ext-install pdo_mysql zip gd mbstring opcache intl
 
 # 2. Configurar Apache DocumentRoot para Symfony (carpeta /public)
@@ -26,11 +26,13 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 RUN echo "--- CONTENIDO DE BUNDLES.PHP ---" && cat config/bundles.php && echo "--- FIN CONTENIDO ---"
 
 # 7. Ajustar permisos para Apache
+# 7. Ajustar permisos para Apache
 RUN chown -R www-data:www-data /var/www/html/var
+RUN mkdir -p /var/www/html/config/jwt && chown -R www-data:www-data /var/www/html/config/jwt
 RUN rm -rf /var/www/html/var/cache/* /var/www/html/var/log/*
 
 # 8. Script de arranque
-# Ejecuta scripts de post-install y arranca Apache
-CMD composer run-script post-install-cmd && apache2-foreground
+# Generamos las llaves JWT al inicio, arreglamos permisos y arrancamos
+CMD php bin/console lexik:jwt:generate-keypair --skip-if-exists && chown -R www-data:www-data config/jwt && composer run-script post-install-cmd && apache2-foreground
 
 EXPOSE 80
