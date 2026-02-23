@@ -1,0 +1,19 @@
+-- Nuevos usuarios desde TiDB
+-- Estructura: id, email, roles, password, nombre, apellido, is_active, created_at, nivel_actividad, objetivo, peso, altura, edad, sexo, telefono, entrenador_id, solicitud_pendiente
+
+INSERT INTO `usuario` (id, email, roles, password, nombre, apellido, is_active, created_at, nivel_actividad, objetivo, peso, altura, edad, sexo, telefono, entrenador_id, solicitud_pendiente) VALUES
+(3, 'pepe@example.com', '["ROLE_USER"]', '$2y$13$jtzo8aUdy7aH.HrNKnP.8O95eGH2gYf19Y34XoilPQy4LjGr3gkEW', 'Pepe', 'Martín', 0, '2025-12-06 20:26:51', 'activo', 'ganar_musculo', NULL, NULL, NULL, 'cliente', '655777888', 4, 0),
+(4, 'elena@example.com', '["ROLE_USER"]', '$2y$13$jtzo8aUdy7aH.HrNKnP.8O95eGH2gYf19Y34XoilPQy4LjGr3gkEW', 'Elena', 'Díaz', 0, '2025-12-06 20:26:51', 'ligero', 'cuidar_alimentacion', NULL, NULL, NULL, 'cliente', '655999000', 3, 0),
+(5, 'marco@example.com', '["ROLE_USER"]', '$2y$13$jtzo8aUdy7aH.HrNKnP.8O95eGH2gYf19Y34XoilPQy4LjGr3gkEW', 'Marco', 'Rivas', 1, '2025-12-06 20:26:51', 'ligero', 'perder_grasa', NULL, NULL, NULL, 'cliente', '655444111', 4, 0),
+(6, 'lucia@example.com', '["ROLE_USER"]', '$2y$13$jtzo8aUdy7aH.HrNKnP.8O95eGH2gYf19Y34XoilPQy4LjGr3gkEW', 'Lucía', 'Navas', 0, '2025-12-06 20:26:51', 'moderado', 'ganar_musculo', NULL, NULL, NULL, 'cliente', '655444222', 2, 0),
+(7, 'pablo@example.com', '["ROLE_USER"]', '$2y$13$jtzo8aUdy7aH.HrNKnP.8O95eGH2gYf19Y34XoilPQy4LjGr3gkEW', 'Pablo', 'Rey', 0, '2025-12-06 20:26:51', 'ligero', 'ganar_musculo', NULL, NULL, NULL, 'cliente', '655444333', 3, 0),
+(8, 'rosa@example.com', '["ROLE_USER"]', '$2y$13$jtzo8aUdy7aH.HrNKnP.8O95eGH2gYf19Y34XoilPQy4LjGr3gkEW', 'Rosa', 'Gil', 0, '2025-12-06 20:26:51', 'ligero', 'perder_grasa', NULL, NULL, NULL, 'cliente', '655444444', 4, 0),
+(9, 'hugo@example.com', '["ROLE_USER"]', '$2y$13$jtzo8aUdy7aH.HrNKnP.8O95eGH2gYf19Y34XoilPQy4LjGr3gkEW', 'Hugo', 'Serrano', 1, '2025-12-06 20:26:51', 'moderado', 'cuidar_alimentacion', NULL, NULL, NULL, 'cliente', '655444555', 1, 0),
+(10, 'aimaninstituto2020@gmail.com', '["ROLE_USER"]', '$2y$13$TjQ0zAMMGktPjvrSm9Pl4Ox7fh5ae/OCYonQJf2zrbwSc2NbnHRWa', 'Aiman', 'Harrar Daoud', 1, '2025-12-06 20:51:10', 'moderado', 'ganancia_muscular', 90.00, 185, 21, 'masculino', '633714372', 4, 1),
+(11, 'admin@email.com', '["ROLE_ADMIN"]', '$2y$13$iA1wYIPbHpGfsRundt0pzufiSQg3KNxqevYy1UZPLZO7JnkZ/G.v6', 'Admin', 'Principal', 1, '2025-12-07 01:02:13', 'ligero', 'cuidar_alimentacion', NULL, NULL, NULL, 'admin', NULL, NULL, 0),
+(12, 'admin2@email.com', '["ROLE_ADMIN"]', '$2y$10$FZIoIUkt3B/h5vF.NXU80uPkPsxSqtgZ04zCkNcbROXTyKEjOgU66', 'Admin2', 'Nator', 1, '2025-12-07 02:57:55', 'ligero', 'perdida_peso', 89.00, 186, 21, 'masculino', '633772311', NULL, 0),
+(14, 'ahardao1001@g.educaand.es', '["ROLE_USER"]', '$2y$13$PpPZNOU1IccJWbBODNewoOmepxSoS//BcU0L7V.PJKA1nZRqAopNe', 'Ahardao', '1001', 1, '2025-12-08 10:52:53', 'ligero', 'cuidar_alimentacion', 90.00, 185, 21, 'masculino', '7337373373', 8, 1),
+(30015, 'messi@email.com', '["ROLE_USER"]', '$2y$13$ZvtLPujoNYyRFKwmjikFDu0z9dvn3aWuPbgmO8RbI8Hi81eYnlH.6', 'Lionel', 'Messi', 1, '2026-02-04 13:27:10', 'ligero', 'cuidar_alimentacion', 80.00, 180, 22, 'masculino', '644644464', 10, 1),
+(30016, 'o.alessandragomezm@gmail.com', '["ROLE_USER"]', '$2y$13$NN4LMjWGZT6qpK4LiDVgS.nRuN02kYBVRjc5YGJ5kxhIh8wjZsVae', 'Alessandra', 'Gómez Mary', 1, '2026-02-04 13:32:01', 'moderado', 'ganancia_muscular', 66.00, 160, 20, 'femenino', '663427018', 8, 1),
+(60015, 'supermoises777@gmail.com', '["ROLE_USER"]', '$2y$13$lxgcyGASNYnZJ.SZOoE/2OiFFd7HbCXIjgVznLmdMrgjWbNSeoN92', 'Moises', 'Puerta Diaz', 1, '2026-02-05 20:38:56', 'intenso', 'ganancia_muscular', 67.50, 178, 21, 'masculino', '681296505', 9, 1),
+(90015, 'mirisudu@gmail.com', '["ROLE_USER"]', '$2y$13$SqGBBHC0rsA9QWd2iUsFoeTb9Nqu2C8BOabnqPbGIhLAUOn7mhrxK', 'Miriam', 'Suárez Durán', 1, '2026-02-07 12:52:50', 'intenso', 'mantenimiento', 57.00, 165, 21, 'femenino', '644382078', NULL, 1);

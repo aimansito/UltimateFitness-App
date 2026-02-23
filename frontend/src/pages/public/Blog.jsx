@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
 import api from '../../services/api';
 import BlogCard from '../../components/blog/BlogCard';
 import { Search, Filter, Loader, ChevronLeft, ChevronRight, Lock, Star, UserPlus } from 'lucide-react';
@@ -45,13 +44,13 @@ function Blog() {
 
       // Usuario NO autenticado - Usar endpoint público
       if (!isAuthenticated) {
-        url = `/public/blog/preview`;
-        const response = await axios.get(url);
+        url = `/public/blog/posts?page=${page}&limit=12`;
+        const response = await api.get(url);
 
         if (response.data.success) {
           setPosts(response.data.posts);
           setShowRegistrationBanner(true);
-          setPagination(null);
+          setPagination(response.data.pagination || null);
         }
         setLoading(false);
         return;

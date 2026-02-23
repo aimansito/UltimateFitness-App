@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import { ProtectedRoute } from "./components/common";
+import ScrollToTop from "./components/common/ScrollToTop";
 import ProtectedRouteEntrenador from "./components/ProtectedRouteEntrenador";
 import { ToastProvider } from "./context/ToastContext";
 
@@ -60,6 +61,7 @@ function App() {
   return (
     <ToastProvider>
       <div className="min-h-screen bg-uf-darker flex flex-col">
+        <ScrollToTop />
         <Navbar />
 
         <main className="flex-grow">

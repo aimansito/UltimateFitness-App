@@ -17,6 +17,9 @@ const PUBLIC_ROUTES = [
   "/reset-password",
   "/blog/posts/public-preview",
   "/blog/categorias",
+  "/public/blog/posts",
+  "/public/blog/post/",
+  "/public/blog/preview",
 ];
 
 const isPublicUrl = (url) => {

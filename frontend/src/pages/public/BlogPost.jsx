@@ -33,7 +33,11 @@ function BlogPost() {
       setLoading(true);
       setAccessDenied(false);
 
-      const response = await api.get(`/blog/posts/${slug}`);
+      // Usar endpoint público o autenticado según el estado de autenticación
+      const endpoint = isAuthenticated
+        ? `/blog/posts/${slug}`
+        : `/public/blog/post/${slug}`;
+      const response = await api.get(endpoint);
 
       if (response.data.success) {
         const postData = response.data.post;
