@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import {
   Monitor, Salad, Activity, Dumbbell,
@@ -9,39 +9,6 @@ import {
 import SEO from '../../components/common/SEO';
 
 function Home() {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
-
-  // ============================================
-  // BUSCADOR - Navegación inteligente
-  // ============================================
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return;
-
-    // Mapeo de búsqueda a secciones
-    const searchMap = [
-      { keywords: ['dieta', 'nutricion', 'alimentacion', 'comida', 'comer', 'aliment', 'nutri', 'plato', 'receta'], path: '/alimentacion' },
-      { keywords: ['gym', 'gimnasio', 'pesa', 'banca', 'press', 'curl', 'sentadilla', 'dominada'], path: '/gym' },
-      { keywords: ['workout', 'calistenia', 'funcional', 'cardio', 'flexion', 'burpee', 'plancha'], path: '/workout' },
-      { keywords: ['blog', 'articulo', 'post', 'noticia', 'consejo'], path: '/blog' },
-      { keywords: ['servicio', 'plan', 'precio', 'premium', 'suscripcion'], path: '/servicios' },
-      { keywords: ['contacto', 'email', 'ayuda', 'soporte'], path: '/contacto' },
-      { keywords: ['ejercicio', 'entrena', 'rutina', 'musculo'], path: '/gym' },
-      { keywords: ['suplement', 'proteina', 'creatina', 'whey'], path: '/suplementos' },
-    ];
-
-    for (const entry of searchMap) {
-      if (entry.keywords.some(kw => q.includes(kw))) {
-        navigate(entry.path);
-        return;
-      }
-    }
-
-    // Fallback: ir al blog con búsqueda
-    navigate(`/blog?q=${encodeURIComponent(searchQuery.trim())}`);
-  };
 
   // ============================================
   // DATOS - Cards de servicios
@@ -206,36 +173,15 @@ function Home() {
       {/* ============================================ */}
       <div className="relative">
         <div
-          className="min-h-[700px] bg-cover bg-center relative flex items-start justify-center pt-8 pb-20"
+          className="min-h-[700px] bg-cover bg-center relative flex items-center justify-center pb-20"
           style={{ backgroundImage: 'url(/images/gymfondo.jpg)' }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80"></div>
 
           <div className="container mx-auto px-4 relative z-10">
 
-            {/* BUSCADOR FUNCIONAL */}
-            <div className="max-w-2xl mx-auto mb-0">
-              <form onSubmit={handleSearch} className="relative group">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Buscar ejercicios, dietas, blog..."
-                  className="w-full bg-white/10 backdrop-blur-md text-white placeholder-white/70 px-6 py-4 pr-16 rounded-full font-medium focus:outline-none focus:ring-4 focus:ring-uf-gold/50 transition-all border-2 border-white/20 hover:border-uf-gold/50"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-uf-gold text-black p-3 rounded-full hover:bg-uf-blue hover:scale-110 transition-all"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </button>
-              </form>
-            </div>
-
             {/* CONTENIDO CENTRAL */}
-            <div className="text-center space-y-10 mt-32">
+            <div className="text-center space-y-10">
               <div className="inline-block">
                 <h1 className="bg-uf-gold text-black font-anton font-bold text-3xl md:text-4xl uppercase tracking-wider px-12 py-4 rounded-lg shadow-2xl hover:scale-105 transition-transform duration-300">
                   Conviértete en Ultimate
@@ -268,35 +214,7 @@ function Home() {
         </div>
       </div>
 
-      {/* ============================================ */}
-      {/* 2. STATS COUNTER */}
-      {/* ============================================ */}
-      <div ref={statsRef} className="relative -mt-16 z-20 container mx-auto px-4">
-        <div className="bg-uf-dark/90 backdrop-blur-xl border-2 border-uf-gold/30 rounded-2xl p-8 shadow-2xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-                <div
-                  key={index}
-                  className={`text-center transition-all duration-700 ${statsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
-                  style={{ transitionDelay: `${index * 150}ms` }}
-                >
-                  <div className="inline-flex items-center justify-center bg-uf-gold/10 rounded-full p-4 mb-3">
-                    <IconComponent className={`w-8 h-8 ${stat.color}`} />
-                  </div>
-                  <div className={`text-4xl md:text-5xl font-anton font-bold ${stat.color} mb-1`}>
-                    {stat.value}
-                  </div>
-                  <div className="text-gray-400 text-sm uppercase tracking-wider font-semibold">
-                    {stat.label}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+
 
       {/* ============================================ */}
       {/* 3. SERVICIOS GRID */}
@@ -653,7 +571,37 @@ function Home() {
       </div>
 
       {/* ============================================ */}
-      {/* 9. CTA FINAL */}
+      {/* 9. STATS COUNTER */}
+      {/* ============================================ */}
+      <div ref={statsRef} className="container mx-auto px-4 py-16">
+        <div className="bg-uf-dark/90 backdrop-blur-xl border-2 border-uf-gold/30 rounded-2xl p-8 shadow-2xl">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
+                <div
+                  key={index}
+                  className={`text-center transition-all duration-700 ${statsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                >
+                  <div className="inline-flex items-center justify-center bg-uf-gold/10 rounded-full p-4 mb-3">
+                    <IconComponent className={`w-8 h-8 ${stat.color}`} />
+                  </div>
+                  <div className={`text-4xl md:text-5xl font-anton font-bold ${stat.color} mb-1`}>
+                    {stat.value}
+                  </div>
+                  <div className="text-gray-400 text-sm uppercase tracking-wider font-semibold">
+                    {stat.label}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ============================================ */}
+      {/* 10. CTA FINAL */}
       {/* ============================================ */}
       <div className="container mx-auto px-4 py-20">
         <div className="relative overflow-hidden bg-gradient-to-r from-uf-gold/20 via-uf-blue/10 to-uf-gold/20 border-2 border-uf-gold rounded-2xl p-12 text-center">
