@@ -16,6 +16,8 @@ node_modules/
 frontend/node_modules/
 frontend/dist/
 frontend/.env
+*storybook.log
+frontend/storybook-static/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

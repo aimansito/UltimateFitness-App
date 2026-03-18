@@ -2,6 +2,7 @@
 // SERVICIOS - Página de servicios y planes
 // ============================================
 import { Link } from 'react-router-dom';
+import SEO from '../../components/common/SEO';
 
 function Servicios() {
 
@@ -138,6 +139,11 @@ function Servicios() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black">
+            <SEO 
+                title="Planes y Servicios Premium" 
+                description="Descubre nuestros planes gratuitos y premium. Entrenamientos personalizados, dietas a medida y chat directo con profesionales."
+                keywords="planes gimnasio, entrenador personal online, dietas personalizadas, precios fitness, premium"
+            />
 
             {/* ============================================ */}
             {/* HERO SECTION */}

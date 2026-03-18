@@ -3,8 +3,10 @@
 // Calcula calorías y macros según Harris-Benedict
 // ============================================
 import { useState } from 'react';
+import { useToast } from '../../context/ToastContext';
 
 function CalculadoraNutricional({ onCalcular }) {
+  const toast = useToast();
   const [mostrarCalculadora, setMostrarCalculadora] = useState(true);
   const [formulario, setFormulario] = useState({
     peso: '',
@@ -43,7 +45,7 @@ function CalculadoraNutricional({ onCalcular }) {
 
     // Validar campos
     if (!peso || !altura || !edad) {
-      alert('Por favor, completa todos los campos');
+      toast.warning('Por favor, completa todos los campos');
       return;
     }
 

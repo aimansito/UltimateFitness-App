@@ -7,35 +7,23 @@ function DashboardRouter() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('📊 Dashboard Router - Usuario detectado:');
-    console.log('  → Usuario completo:', user);
-    console.log('  → Nombre:', user?.nombre);
-    console.log('  → Email:', user?.email);
-    console.log('  → Rol:', user?.rol);
-    console.log('  → Es Premium:', isPremium);
-    console.log('  → Autenticado:', isAuthenticated);
-
     if (!isAuthenticated) {
-      console.log('❌ NO autenticado → Redirigiendo a /login');
       navigate('/login');
       return;
     }
 
     // Redirigir según el rol del usuario
     if (user?.rol === 'admin') {
-      console.log('🔐 Admin detectado → /admin/dashboard');
       navigate('/admin/dashboard', { replace: true });
       return;
     }
 
     if (user?.rol === 'entrenador') {
-      console.log('🏋️ Entrenador detectado → /entrenador/dashboard');
       navigate('/entrenador/dashboard', { replace: true });
       return;
     }
 
     // Usuarios normales (premium o gratuito)
-    console.log('👤 Usuario normal detectado → /user/dashboard (Premium:', isPremium, ')');
     navigate('/user/dashboard', { replace: true });
   }, [user, isAuthenticated, isPremium, navigate]);
 

@@ -4,8 +4,10 @@
 // ============================================
 import { useState, useEffect } from "react";
 import api from "../../services/api";
+import { useToast } from "../../context/ToastContext";
 
 function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
+  const toast = useToast();
   const [paso, setPaso] = useState(1); // 1: Categorías, 2: Detalles, 3: Confirmar
   const [nombrePlato, setNombrePlato] = useState("");
   const [descripcionPlato, setDescripcionPlato] = useState("");
@@ -155,12 +157,12 @@ function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
 
   const guardarPlato = async () => {
     if (!nombrePlato.trim()) {
-      alert("Por favor, añade un nombre a tu plato");
+      toast.error("Por favor, añade un nombre a tu plato");
       return;
     }
 
     if (ingredientesSeleccionados.length === 0) {
-      alert("Añade al menos un ingrediente");
+      toast.error("Añade al menos un ingrediente");
       return;
     }
 
@@ -208,14 +210,14 @@ function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
         };
 
         onGuardarPlato(platoParaDieta);
-        alert("¡Plato creado y guardado exitosamente!");
+        toast.success("¡Plato creado y guardado exitosamente!");
         onCerrar();
       } else {
-        alert("Error: " + (result.error || "No se pudo guardar el plato"));
+        toast.error("Error: " + (result.error || "No se pudo guardar el plato"));
       }
     } catch (error) {
       console.error("❌ Error al guardar plato:", error);
-      alert("Error al guardar el plato. Revisa la consola.");
+      toast.error("Error al guardar el plato. Revisa la consola.");
     }
   };
 

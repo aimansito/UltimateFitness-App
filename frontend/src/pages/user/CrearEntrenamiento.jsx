@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
+import { useToast } from "../../context/ToastContext";
 import { ArrowLeft, Save, Plus, Trash2, Dumbbell, Calendar, ChevronDown, ChevronUp, CheckCircle } from "lucide-react";
 
 const DIAS_SEMANA = [
@@ -17,6 +18,7 @@ const DIAS_SEMANA = [
 function CrearEntrenamiento() {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const toast = useToast();
 
     const [nombre, setNombre] = useState("");
     const [descripcion, setDescripcion] = useState("");
@@ -146,28 +148,28 @@ function CrearEntrenamiento() {
 
     const guardarEntrenamiento = async () => {
         if (!nombre.trim()) {
-            alert("Por favor ingresa un nombre para el entrenamiento");
+            toast.error("Por favor ingresa un nombre para el entrenamiento");
             return;
         }
 
         // Validar mínimo 5 días activos
         const diasActivos = dias.filter(d => !d.esDescanso);
         if (diasActivos.length < 5) {
-            alert("Debes tener al menos 5 días de entrenamiento (máximo 2 días de descanso)");
+            toast.error("Debes tener al menos 5 días de entrenamiento (máximo 2 días de descanso)");
             return;
         }
 
         // Validar que días activos tengan concepto
         const diaActivoSinConcepto = diasActivos.find(d => !d.concepto.trim());
         if (diaActivoSinConcepto) {
-            alert(`El día ${diaActivoSinConcepto.nombre} está activo pero no tiene un concepto/título`);
+            toast.error(`El día ${diaActivoSinConcepto.nombre} está activo pero no tiene un concepto/título`);
             return;
         }
 
         // Validar que días activos tengan ejercicios
         const diaActivoSinEjercicios = diasActivos.find(d => d.ejercicios.length === 0);
         if (diaActivoSinEjercicios) {
-            alert(`El día ${diaActivoSinEjercicios.nombre} está activo pero no tiene ejercicios`);
+            toast.error(`El día ${diaActivoSinEjercicios.nombre} está activo pero no tiene ejercicios`);
             return;
         }
 
@@ -175,7 +177,7 @@ function CrearEntrenamiento() {
         for (const dia of diasActivos) {
             const ejercicioSinSeleccionar = dia.ejercicios.find(ej => !ej.ejercicio_id);
             if (ejercicioSinSeleccionar) {
-                alert(`El día ${dia.nombre} tiene ejercicios sin seleccionar`);
+                toast.error(`El día ${dia.nombre} tiene ejercicios sin seleccionar`);
                 return;
             }
         }

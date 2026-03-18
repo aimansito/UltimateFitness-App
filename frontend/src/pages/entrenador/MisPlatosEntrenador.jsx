@@ -55,7 +55,7 @@ function MisPlatosEntrenador() {
       }
     } catch (error) {
       console.error('Error al eliminar plato:', error);
-      alert('❌ Error al eliminar plato');
+      toast.error('❌ Error al eliminar plato');
     }
   };
 

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
-
+import SEO from '../../components/common/SEO';
 
 function Alimentacion() {
   const { isPremium } = useAuth();
@@ -56,6 +56,11 @@ function Alimentacion() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black py-12">
+      <SEO 
+        title="Dietas Profesionales y Nutrición" 
+        description="Planes nutricionales creados por expertos. Filtra dietas por objetivo: perder peso, volumen, mantenimiento."
+        keywords="dietas fitness, nutricion deportiva, perder grasa, volumen, ganar musculo, alimentos"
+      />
       <div className="container mx-auto px-4">
 
         {/* HEADER */}
@@ -139,7 +144,8 @@ function Alimentacion() {
 // COMPONENTE: TarjetaDieta
 // ============================================
 function TarjetaDieta({ dieta, isPremium }) {
-  const esPremium = Math.random() > 0.7; // Simulado
+  // Verificar si la dieta es premium basándose en datos reales
+  const esPremium = dieta.esPremium === true || dieta.tipo === 'premium';
 
   return (
     <Link

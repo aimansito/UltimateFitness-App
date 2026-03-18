@@ -5,11 +5,13 @@ import api from "../../services/api";
 import { ArrowLeft, Save, Plus, Trash2, Calendar, Search } from "lucide-react";
 import ConstructorPlatos from "../../components/dieta/ConstructorPlatos";
 import SelectorPlatos from "../../components/dieta/SelectorPlatos";
+import { useToast } from "../../context/ToastContext";
 
 function CrearDietaCliente() {
   const { clienteId } = useParams();
   const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [cliente, setCliente] = useState(null);
   const [nombreDieta, setNombreDieta] = useState("");
@@ -229,7 +231,7 @@ function CrearDietaCliente() {
 
   const guardarDieta = async () => {
     if (!nombreDieta.trim()) {
-      alert("❌ Debes ingresar un nombre para la dieta");
+      toast.error("Debes ingresar un nombre para la dieta");
       return;
     }
 
@@ -269,8 +271,8 @@ function CrearDietaCliente() {
           !planSemanal[dia][momento.key] ||
           planSemanal[dia][momento.key].length === 0
         ) {
-          alert(
-            `❌ ERROR: Falta añadir platos en:\n\n📅 ${diasLabels[dia]}\n🍽️ ${momento.label}\n\n⚠️ Todos los días y todos los momentos del día deben tener al menos 1 plato o alimento.`
+          toast.error(
+            `Falta añadir platos en:\n\n📅 ${diasLabels[dia]}\n🍽️ ${momento.label}\n\n⚠️ Todos los días y todos los momentos del día deben tener al menos 1 plato o alimento.`
           );
           return;
         }
@@ -325,19 +327,19 @@ function CrearDietaCliente() {
       );
 
       if (response.data.success) {
-        alert(
-          `✅ ¡Dieta creada exitosamente!\n\n📋 ${nombreDieta}\n👤 Asignada a ${cliente.nombre} ${cliente.apellidos}\n🔥 ${totalesDiarios.calorias} kcal/día`
+        toast.success(
+          `¡Dieta creada exitosamente!\n\n📋 ${nombreDieta}\n👤 Asignada a ${cliente.nombre} ${cliente.apellidos}\n🔥 ${totalesDiarios.calorias} kcal/día`
         );
         navigate("/entrenador/dashboard");
       } else {
-        alert("❌ Error al crear la dieta: " + response.data.error);
+        toast.error("Error al crear la dieta: " + response.data.error);
       }
     } catch (error) {
       console.error("Error al guardar dieta:", error);
       if (error.response?.data?.error) {
-        alert("❌ Error: " + error.response.data.error);
+        toast.error("Error: " + error.response.data.error);
       } else {
-        alert("❌ Error al guardar la dieta. Verifica la consola.");
+        toast.error("Error al guardar la dieta. Verifica la consola.");
       }
     } finally {
       setLoading(false);

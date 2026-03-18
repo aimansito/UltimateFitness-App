@@ -12,6 +12,7 @@ import {
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
 
 const DIAS_SEMANA = [
   { numero: 1, nombre: 'Lunes', key: 'lunes' },
@@ -27,6 +28,7 @@ function CrearEntrenamientoCliente() {
   const { clienteId } = useParams();
   const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [cliente, setCliente] = useState(null);
   const [nombre, setNombre] = useState('');
@@ -149,29 +151,29 @@ function CrearEntrenamientoCliente() {
 
   const guardarEntrenamiento = async () => {
     if (!nombre.trim()) {
-      alert('❌ Debes ingresar un nombre para el plan');
+      toast.error('Debes ingresar un nombre para el plan');
       return;
     }
 
     const diasActivos = dias.filter(d => !d.es_descanso);
 
     if (diasActivos.length < 5) {
-      alert(`❌ ERROR: Necesitas al menos 5 días activos.\n\nActualmente: ${diasActivos.length} días`);
+      toast.error(`Necesitas al menos 5 días activos.\n\nActualmente: ${diasActivos.length} días`);
       return;
     }
 
     for (const dia of diasActivos) {
       if (!dia.concepto.trim()) {
-        alert(`❌ ERROR: El día "${DIAS_SEMANA.find(d => d.numero === dia.dia_semana).nombre}" está activo pero no tiene concepto`);
+        toast.error(`El día "${DIAS_SEMANA.find(d => d.numero === dia.dia_semana).nombre}" está activo pero no tiene concepto`);
         return;
       }
       if (dia.ejercicios.length === 0) {
-        alert(`❌ ERROR: El día "${DIAS_SEMANA.find(d => d.numero === dia.dia_semana).nombre}" está activo pero no tiene ejercicios`);
+        toast.error(`El día "${DIAS_SEMANA.find(d => d.numero === dia.dia_semana).nombre}" está activo pero no tiene ejercicios`);
         return;
       }
       const ejercicioSinSeleccionar = dia.ejercicios.find(ej => !ej.ejercicio_id);
       if (ejercicioSinSeleccionar) {
-        alert(`❌ ERROR: El día "${DIAS_SEMANA.find(d => d.numero === dia.dia_semana).nombre}" tiene ejercicios sin seleccionar`);
+        toast.error(`El día "${DIAS_SEMANA.find(d => d.numero === dia.dia_semana).nombre}" tiene ejercicios sin seleccionar`);
         return;
       }
     }
@@ -192,14 +194,14 @@ function CrearEntrenamientoCliente() {
       const response = await api.post('/entrenador/crear-entrenamiento', payload);
 
       if (response.data.success) {
-        alert(`✅ ¡Entrenamiento creado!\n\n💪 ${nombre}\n👤 ${cliente.nombre} ${cliente.apellidos}`);
+        toast.success(`¡Entrenamiento creado!\n\n💪 ${nombre}\n👤 ${cliente.nombre} ${cliente.apellidos}`);
         navigate('/entrenador/dashboard');
       } else {
-        alert('❌ Error: ' + response.data.error);
+        toast.error('Error: ' + response.data.error);
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('❌ Error: ' + (error.response?.data?.error || 'Error desconocido'));
+      toast.error('Error: ' + (error.response?.data?.error || 'Error desconocido'));
     } finally {
       setLoading(false);
     }

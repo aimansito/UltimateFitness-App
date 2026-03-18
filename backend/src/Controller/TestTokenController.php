@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/debug')]
@@ -13,6 +14,10 @@ class TestTokenController extends AbstractController
     #[Route('/test-token', name: 'test_token_debug', methods: ['GET'])]
     public function testToken(Request $request): JsonResponse
     {
+        if ($this->getParameter('kernel.environment') !== 'dev') {
+            throw new NotFoundHttpException();
+        }
+
         $authHeader = $request->headers->get('Authorization');
         $allHeaders = $request->headers->all();
 

@@ -60,5 +60,9 @@ security:
         - { path: ^/api/public, roles: PUBLIC_ACCESS }
         - { path: ^/api/custom/dietas/publicas, roles: PUBLIC_ACCESS }
         - { path: ^/api/custom/dietas/\d+/plan-diario, roles: PUBLIC_ACCESS }
+        - { path: ^/api/health$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/forgot-password$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/reset-password$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/pagos/webhook$, roles: PUBLIC_ACCESS }
 
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

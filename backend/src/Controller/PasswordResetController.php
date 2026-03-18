@@ -32,12 +32,16 @@ class PasswordResetController extends AbstractController
         }
 
         $usuario = $this->entityManager->getRepository(Usuario::class)->findOneBy(['email' => $email]);
+        $isDev = $this->getParameter('kernel.environment') === 'dev';
 
         if (!$usuario) {
-            // Por seguridad, no revelar si el email existe o no, pero para este caso simulado
-            // y por facilidad de debug, retornaremos error si no existe.
-            // En prod idealmente: return new JsonResponse(['message' => 'Si el email existe, se ha enviado un correo.']);
-            return new JsonResponse(['error' => 'No existe un usuario con ese email'], 404);
+            if ($isDev) {
+                return new JsonResponse(['error' => 'No existe un usuario con ese email'], 404);
+            }
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Si el email existe, se ha enviado un correo de recuperación.',
+            ]);
         }
 
         // Generar token
@@ -50,13 +54,15 @@ class PasswordResetController extends AbstractController
 
         // SIMULACIÓN DE ENVÍO DE EMAIL
         // En un entorno real aquí se enviaría el email.
-        // Retornamos el token para que el frontend pueda simular el link.
-        
-        return new JsonResponse([
+        $response = [
             'success' => true,
-            'message' => 'Email de recuperación enviado (simulado)',
-            'debug_token' => $token // SOLO PARA DEV/TEST
-        ]);
+            'message' => 'Si el email existe, se ha enviado un correo de recuperación.',
+        ];
+        if ($this->getParameter('kernel.environment') === 'dev') {
+            $response['debug_token'] = $token;
+        }
+
+        return new JsonResponse($response);
     }
 
     #[Route('/api/reset-password', name: 'api_reset_password', methods: ['POST'])]

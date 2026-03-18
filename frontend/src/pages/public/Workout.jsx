@@ -4,6 +4,7 @@ import TarjetaEjercicio from '../../components/gym/TarjetaEjercicio';
 import ModalEjercicio from '../../components/gym/ModalEjercicio';
 import BarraFiltros from '../../components/gym/BarraFiltros';
 import api from '../../services/api';
+import SEO from '../../components/common/SEO';
 
 function Workout() {
     const { isPremium, isAuthenticated } = useAuth();
@@ -133,6 +134,11 @@ function Workout() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black py-12">
+            <SEO 
+                title="Entrenamiento Funcional y Calistenia" 
+                description="Consigue resultados entrenando al aire libre o en casa con ejercicios funcionales y rutinas de calistenia."
+                keywords="entrenamiento funcional, calistenia, rutinas en casa, peso corporal, flexiones, burpees"
+            />
             <div className="container mx-auto px-4">
 
                 <div className="text-center mb-12">
@@ -171,9 +177,9 @@ function Workout() {
                             <h3 className="text-xl font-bold text-white mb-3">
                                 Hazte Premium para acceder a videos HD
                             </h3>
-                            <button className="bg-uf-gold text-black font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition">
+                            <a href="/upgrade-premium" className="inline-block bg-uf-gold text-black font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition">
                                 Actualizar a Premium
-                            </button>
+                            </a>
                         </div>
                     </div>
                 )}

@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import BlogCard from '../../components/blog/BlogCard';
 import { Search, Filter, Loader, ChevronLeft, ChevronRight, Lock, Star, UserPlus } from 'lucide-react';
+import SEO from '../../components/common/SEO';
 
 function Blog() {
   const { isAuthenticated, isPremium } = useAuth();
@@ -130,6 +131,11 @@ function Blog() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
+      <SEO 
+        title="Blog de Fitness y Nutrición" 
+        description="Lee los mejores artículos y consejos sobre entrenamiento, salud mental, y trucos para tu dieta."
+        keywords="blog fitness, noticias gimnasio, artículos salud, recomendaciones nutricion, motivación gym"
+      />
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}

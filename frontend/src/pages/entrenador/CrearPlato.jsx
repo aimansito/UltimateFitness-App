@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthEntrenador from "../../context/AuthContextEntrenador";
 import api from "../../services/api";
+import { useToast } from "../../context/ToastContext";
 import { ArrowLeft, Save, Trash2, Plus } from "lucide-react";
 
 function CrearPlato() {
   const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [paso, setPaso] = useState(1); // 1: Ingredientes, 2: Detalles, 3: Confirmar
   const [nombrePlato, setNombrePlato] = useState("");
@@ -98,7 +100,7 @@ function CrearPlato() {
       }
     } catch (error) {
       console.error("Error cargando alimentos:", error);
-      alert("❌ Error al cargar alimentos");
+      toast.error("Error al cargar alimentos");
     } finally {
       setCargando(false);
     }
@@ -151,12 +153,12 @@ function CrearPlato() {
 
   const guardarPlato = async () => {
     if (!nombrePlato.trim()) {
-      alert("❌ Por favor, añade un nombre al plato");
+      toast.error("Por favor, añade un nombre al plato");
       return;
     }
 
     if (ingredientesSeleccionados.length === 0) {
-      alert("❌ Añade al menos un ingrediente");
+      toast.error("Añade al menos un ingrediente");
       return;
     }
 
@@ -181,14 +183,14 @@ function CrearPlato() {
       const response = await api.post("/platos", dataToSend);
 
       if (response.data.success) {
-        alert("✅ Plato creado exitosamente");
+        toast.success("✅ Plato creado exitosamente");
         navigate("/entrenador/mis-platos");
       } else {
-        alert("❌ Error: " + (response.data.error || "No se pudo guardar el plato"));
+        toast.error("Error: " + (response.data.error || "No se pudo guardar el plato"));
       }
     } catch (error) {
       console.error("❌ Error al guardar plato:", error);
-      alert("❌ Error al guardar el plato: " + (error.response?.data?.error || error.message));
+      toast.error("Error al guardar el plato: " + (error.response?.data?.error || error.message));
     } finally {
       setGuardando(false);
     }

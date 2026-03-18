@@ -200,7 +200,7 @@ function CrearDieta() {
       );
 
       if (response.data.success) {
-        alert(`✅ ¡Dieta guardada exitosamente!\n\nID: ${response.data.dieta.id}\nNombre: ${response.data.dieta.nombre}`);
+        toast.success(`¡Dieta guardada exitosamente!\n\nNombre: ${response.data.dieta.nombre}`);
         navigate("/mis-dietas");
       } else {
         toast.error("❌ No se pudo guardar la dieta");

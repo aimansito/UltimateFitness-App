@@ -5,7 +5,7 @@ const authServiceEntrenador = {
     try {
       const response = await api.post("/entrenador/login", { email, password });
 
-      console.log("LOGIN ENTRENADOR RESPONSE:", response.data);
+
 
       if (response.data.token && response.data.entrenador) {
         const token = response.data.token;

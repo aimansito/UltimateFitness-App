@@ -53,11 +53,7 @@ class AdminController extends AbstractController
     public function dashboard(): JsonResponse
     {
         try {
-            // TODO: Verificar que el usuario es admin
-            // $usuarioActual = $this->getUser();
-            // if (!$this->roleChecker->isAdmin($usuarioActual)) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            // Acceso admin verificado en App\EventListener\AdminAccessSubscriber
 
             $conn = $this->entityManager->getConnection();
 
@@ -98,10 +94,7 @@ class AdminController extends AbstractController
     public function listarUsuarios(Request $request): JsonResponse
     {
         try {
-            // TODO: Verificar admin
-            // if (!$this->roleChecker->isAdmin($this->getUser())) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            // Acceso admin verificado en App\EventListener\AdminAccessSubscriber
 
             $search = $request->query->get('search');
             $esPremium = $request->query->get('premium');

@@ -5,6 +5,7 @@
 
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 import BuscadorAlimentos from "./BuscadorAlimentos";
 import SelectorPlatos from "./SelectorPlatos.jsx";
 
@@ -17,6 +18,7 @@ function SeccionComida({
   onActualizarCantidad,
 }) {
   const { user } = useAuth();
+  const toast = useToast();
 
   const [mostrarBuscador, setMostrarBuscador] = useState(false);
   const [mostrarSelectorPlatos, setMostrarSelectorPlatos] = useState(false);
@@ -55,7 +57,7 @@ function SeccionComida({
   // ==========================
   const requirePremium = (callback) => {
     if (!user?.es_premium) {
-      alert("Esta función es exclusiva para usuarios Premium.");
+      toast.warning("Esta función es exclusiva para usuarios Premium.");
       return;
     }
     callback();

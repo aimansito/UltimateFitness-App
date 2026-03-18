@@ -17,9 +17,6 @@ export function AuthProvider({ children }) {
       const storedUser = authService.getUser();
       const token = authService.getToken();
 
-      console.log("Cargando usuario desde localStorage:", storedUser);
-      console.log("Token disponible:", !!token);
-
       if (storedUser && token) {
         setUser(storedUser);
       }
@@ -38,8 +35,6 @@ export function AuthProvider({ children }) {
     try {
       const data = await authService.login(email, password);
 
-      console.log("Resultado del login:", data);
-
       if (data?.success) {
         setUser(data.usuario);
         navigate("/dashboard");
@@ -57,7 +52,6 @@ export function AuthProvider({ children }) {
   // LOGOUT
   // ================================
   const logout = () => {
-    console.log("Cerrando sesión...");
     authService.logout();
     setUser(null);
     navigate("/login");

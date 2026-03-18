@@ -1,6 +1,6 @@
 nelmio_cors:
     defaults:
-        allow_origin: ['https://ultimatefitnessuf.com', 'https://www.ultimatefitnessuf.com']
+        allow_origin: ['https://ultimatefitnessuf.com', 'https://www.ultimatefitnessuf.com', 'http://localhost:5173', 'http://127.0.0.1:5173']
         allow_credentials: true
         allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With']
         allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS']
@@ -8,7 +8,7 @@ nelmio_cors:
 
     paths:
         '^/':
-            allow_origin: ['https://ultimatefitnessuf.com', 'https://www.ultimatefitnessuf.com']
+            allow_origin: ['https://ultimatefitnessuf.com', 'https://www.ultimatefitnessuf.com', 'http://localhost:5173', 'http://127.0.0.1:5173']
             allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS']
             allow_credentials: true

@@ -37,11 +37,14 @@ api.interceptors.request.use(
     if (!isPublicRoute) {
       // Token de usuario normal
       const userToken = localStorage.getItem("token");
-
       // Token de entrenador
       const trainerToken = localStorage.getItem("token_entrenador");
 
-      const finalToken = trainerToken || userToken;
+      // Usar el token del entrenador SÓLO para peticiones a /entrenador ó /custom/entrenador
+      // En caso contrario, usar el token de usuario normal.
+      const isEntrenadorRoute = config.url && (config.url.startsWith("/entrenador") || config.url.includes("/custom/entrenador"));
+      
+      const finalToken = isEntrenadorRoute && trainerToken ? trainerToken : userToken;
 
       if (finalToken) {
         config.headers = config.headers || {};
@@ -61,14 +64,21 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Limpiar ambos tokens
-      localStorage.removeItem("token");
-      localStorage.removeItem("usuario");
-      localStorage.removeItem("token_entrenador");
-      localStorage.removeItem("entrenador");
+      const isEntrenadorRoute = error.config?.url && (error.config.url.startsWith("/entrenador") || error.config.url.includes("/custom/entrenador"));
 
-      if (!isPublicUrl(error.config?.url)) {
-        window.location.href = "/login";
+      if (isEntrenadorRoute) {
+        // Limpiar solo token entrenador y redirigir a portal de entrenador (usando /login o la ruta correcta)
+        localStorage.removeItem("token_entrenador");
+        localStorage.removeItem("entrenador");
+        window.location.href = "/login-entrenador"; // Asumiendo que esta es la ruta para inicio de sesión de formador/entrenador. Si no existe, se puede cambiar a /login
+      } else {
+        // Limpiar solo token usuario y redirigir a login
+        localStorage.removeItem("token");
+        localStorage.removeItem("usuario");
+        
+        if (!isPublicUrl(error.config?.url)) {
+          window.location.href = "/login";
+        }
       }
     }
 
