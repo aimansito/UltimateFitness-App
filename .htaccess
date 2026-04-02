@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------
+# SEGURIDAD GENERAL DEL DIRECTORIO RAÍZ
+# ----------------------------------------------------------------------
+
+# 1. Prevenir el listado de directorios (evita ver todos los archivos si no hay index)
+Options -Indexes
+
+# 2. Bloquear acceso a archivos y carpetas ocultas (cualquiera que empiece por un punto .)
+# Esto protege .env, .git, .gitignore, .htaccess, etc.
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+<DirectoryMatch "^\.|\/\.">
+    Require all denied
+</DirectoryMatch>
+
+# 3. Bloquear acceso a extensiones con información sensible (SQL, logs, configs...)
+# (?i) hace que no importe si están en mayúsculas o minúsculas.
+<FilesMatch "(?i)\.(env|sql|log|ini|yaml|yml|lock|sh|bak|swp|md)$">
+    Require all denied
+</FilesMatch>
+
+# 4. Bloquear el acceso a archivos de configuración específicos y Docker
+<FilesMatch "(?i)^(composer\.json|package\.json|package-lock\.json|railway\.json|scripts_.*\.json|Dockerfile.*|docker-compose.*)$">
+    Require all denied
+</FilesMatch>

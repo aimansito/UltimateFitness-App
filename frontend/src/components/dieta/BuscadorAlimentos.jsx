@@ -18,14 +18,18 @@ function BuscadorAlimentos({ onSeleccionar, onCerrar }) {
   }, []);
 
   useEffect(() => {
-    if (busqueda.length >= 2) {
-      const filtrados = alimentos.filter(alimento =>
-        alimento.nombre.toLowerCase().includes(busqueda.toLowerCase())
-      );
-      setAlimentosFiltrados(filtrados);
-    } else {
-      setAlimentosFiltrados([]);
-    }
+    const timer = setTimeout(() => {
+      if (busqueda.length >= 2) {
+        const filtrados = alimentos.filter(alimento =>
+          alimento.nombre.toLowerCase().includes(busqueda.toLowerCase())
+        );
+        setAlimentosFiltrados(filtrados);
+      } else {
+        setAlimentosFiltrados([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [busqueda, alimentos]);
 
   const cargarAlimentos = async () => {

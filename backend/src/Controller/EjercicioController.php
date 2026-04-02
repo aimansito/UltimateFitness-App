@@ -17,14 +17,32 @@ class EjercicioController extends AbstractController
     // LISTAR TODOS LOS EJERCICIOS (NUEVO)
     // ============================================
     #[Route('/ejercicios', name: 'ejercicios_listar_todos', methods: ['GET'])]
-    public function listarTodos(EntityManagerInterface $entityManager): JsonResponse
-    {
-        $ejercicios = $entityManager->getRepository(Ejercicio::class)
-            ->findBy([], ['nombre' => 'ASC']);
+    public function listarTodos(
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $page = (int) $request->query->get('page', 1);
+        $limit = (int) $request->query->get('limit', 20);
+        
+        $page = $page > 0 ? $page : 1;
+        $limit = $limit > 0 && $limit <= 100 ? $limit : 20;
+        $offset = ($page - 1) * $limit;
 
-        return $this->json(array_map(function($ejercicio) {
-            return $this->serializeEjercicio($ejercicio);
-        }, $ejercicios));
+        $repository = $entityManager->getRepository(Ejercicio::class);
+        $totalEjercicios = $repository->count([]);
+        
+        $ejercicios = $repository->findBy([], ['nombre' => 'ASC'], $limit, $offset);
+
+        return $this->json([
+            'success' => true,
+            'total' => $totalEjercicios,
+            'page' => $page,
+            'limit' => $limit,
+            'total_pages' => ceil($totalEjercicios / $limit),
+            'ejercicios' => array_map(function($ejercicio) {
+                return $this->serializeEjercicio($ejercicio);
+            }, $ejercicios)
+        ]);
     }
 
     // ============================================
@@ -160,6 +178,15 @@ class EjercicioController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        // Verificar que el usuario está autenticado
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Debes iniciar sesión para valorar un ejercicio'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
         $ejercicio = $entityManager->getRepository(Ejercicio::class)->find($id);
         
         if (!$ejercicio) {

@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /user/
+Disallow: /perfil/
+Disallow: /mis-*
+Disallow: /mi-*
+Disallow: /crear-*
+Disallow: /entrenador/
+
+Sitemap: https://ultimatefitness.es/sitemap.xml

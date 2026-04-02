@@ -13,6 +13,7 @@ import {
   Star,
   UserPlus
 } from 'lucide-react';
+import SEO from '../../components/common/SEO';
 
 function BlogPost() {
   const { slug } = useParams();
@@ -236,6 +237,25 @@ function BlogPost() {
   // Renderizar post completo (usuario con acceso)
   return (
     <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
+      {post && (
+        <SEO
+          title={post.titulo}
+          description={post.extracto || `Lee ${post.titulo} en el blog de Ultimate Fitness`}
+          keywords={`${post.categoria || 'fitness'}, blog fitness, ${post.titulo}`}
+          image={post.imagen_portada}
+          type="article"
+          jsonLd={{
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": post.titulo,
+            "description": post.extracto,
+            "image": post.imagen_portada ? `https://ultimatefitness.es${post.imagen_portada}` : undefined,
+            "datePublished": post.fecha_publicacion,
+            "author": { "@type": "Organization", "name": "Ultimate Fitness" },
+            "publisher": { "@type": "Organization", "name": "Ultimate Fitness", "logo": { "@type": "ImageObject", "url": "https://ultimatefitness.es/logos/logo.png" } }
+          }}
+        />
+      )}
       <div className="max-w-4xl mx-auto">
 
         {/* Botón volver */}

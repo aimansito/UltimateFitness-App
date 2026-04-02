@@ -1,10 +1,8 @@
-// ============================================
-// LOGIN PAGE - Página de inicio de sesión
-// ============================================
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Input, Button } from "../../components/common";
+import SEO from "../../components/common/SEO";
 
 function Login() {
   // ============================================
@@ -69,6 +67,11 @@ function Login() {
   // ============================================
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-uf-darker to-black px-4 py-12">
+      <SEO
+        title="Iniciar Sesión"
+        description="Accede a tu cuenta de Ultimate Fitness para gestionar tus entrenamientos, dietas y seguimiento de progreso."
+        noindex={true}
+      />
       {/* ============================================ */}
       {/* HEADER DORADO */}
       {/* ============================================ */}

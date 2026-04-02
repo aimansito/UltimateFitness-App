@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import { ChevronLeft, ChevronRight, Check, User, Activity, Target } from 'lucide-react';
+import SEO from '../../components/common/SEO';
 
 function Register() {
     const navigate = useNavigate();
@@ -179,6 +180,11 @@ function Register() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-uf-darker to-black px-4 py-12">
+            <SEO
+                title="Crear Cuenta"
+                description="Regístrate gratis en Ultimate Fitness. Accede a rutinas de gimnasio, planes de dieta y entrenadores profesionales."
+                keywords="registro fitness, crear cuenta fitness, entrenamiento online gratis"
+            />
             <div className="w-full max-w-3xl">
                 {/* Header */}
                 <div className="bg-uf-gold py-6 text-center rounded-t-lg">

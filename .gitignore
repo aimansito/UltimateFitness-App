@@ -27,3 +27,19 @@ yarn-error.log*
 .vscode/
 .DS_Store
 Thumbs.db
+
+# -----------------------------------------------------------------------------
+# ARCHIVOS SENSIBLES, BACKUPS Y CREDENCIALES
+# -----------------------------------------------------------------------------
+# Ignorar archivos SQL (backups y dumps)
+*.sql
+
+# Ignorar entorno global si contiene secretos (Symfony suele usar .env.local pero por si acaso)
+#.env
+
+# Ignorar configuraciones locales
+docker-compose.override.yml
+*.bak
+*.swp
+.env.backup
+

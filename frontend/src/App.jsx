@@ -24,8 +24,12 @@ import Blog from "./pages/public/Blog";
 import BlogPost from "./pages/public/BlogPost";
 import DetallePlato from "./pages/public/DetallePlato";
 import PoliticaPrivacidad from "./pages/public/PoliticaPrivacidad";
+import AvisoLegal from "./pages/public/AvisoLegal";
+import TerminosCondiciones from "./pages/public/TerminosCondiciones";
+import PoliticaCookies from "./pages/public/PoliticaCookies";
 import RecuperarPassword from "./pages/public/RecuperarPassword";
 import RestablecerPassword from "./pages/public/RestablecerPassword";
+import CookieBanner from "./components/common/CookieBanner";
 
 // Dashboard Router
 import DashboardRouter from "./pages/DashboardRouter";
@@ -62,6 +66,7 @@ function App() {
     <ToastProvider>
       <div className="min-h-screen bg-uf-darker flex flex-col">
         <ScrollToTop />
+        <CookieBanner />
         <Navbar />
 
         <main className="flex-grow">
@@ -89,15 +94,26 @@ function App() {
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/plato/:id" element={<DetallePlato />} />
             <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+            <Route path="/aviso-legal" element={<AvisoLegal />} />
+            <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
+            <Route path="/politica-cookies" element={<PoliticaCookies />} />
 
             {/* Crear contenido del entrenador para clientes */}
             <Route
               path="/entrenador/cliente/:clienteId/crear-dieta"
-              element={<CrearDietaCliente />}
+              element={
+                <ProtectedRouteEntrenador>
+                  <CrearDietaCliente />
+                </ProtectedRouteEntrenador>
+              }
             />
             <Route
               path="/entrenador/cliente/:clienteId/crear-entrenamiento"
-              element={<CrearEntrenamientoCliente />}
+              element={
+                <ProtectedRouteEntrenador>
+                  <CrearEntrenamientoCliente />
+                </ProtectedRouteEntrenador>
+              }
             />
 
             {/* --------------------------- */}
@@ -303,8 +319,28 @@ function App() {
             <Route
               path="*"
               element={
-                <div className="text-white p-8 text-center text-2xl min-h-screen flex items-center justify-center">
-                  Página no encontrada - 404
+                <div className="min-h-screen flex items-center justify-center px-4">
+                  <div className="text-center max-w-lg">
+                    <h1 className="text-9xl font-anton font-bold text-uf-gold mb-4 animate-pulse">404</h1>
+                    <h2 className="text-3xl font-anton text-white mb-4 uppercase tracking-wider">Página no encontrada</h2>
+                    <p className="text-gray-400 mb-8 text-lg">
+                      Lo sentimos, la página que buscas no existe o ha sido movida.
+                    </p>
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+                      <Link
+                        to="/"
+                        className="bg-uf-gold hover:bg-uf-blue text-black hover:text-white font-bold px-8 py-3 rounded-lg uppercase tracking-wider transition-all duration-300 transform hover:scale-105 text-sm"
+                      >
+                        Volver al Inicio
+                      </Link>
+                      <Link
+                        to="/contacto"
+                        className="border-2 border-white/30 hover:border-uf-gold text-white hover:text-uf-gold font-bold px-8 py-3 rounded-lg uppercase tracking-wider transition-all duration-300 text-sm"
+                      >
+                        Contactar
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               }
             />

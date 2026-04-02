@@ -163,8 +163,8 @@ function Home() {
 
   return (
     <div className="min-h-screen">
-      <SEO 
-        title="Inicio" 
+      <SEO
+        title="Inicio"
         description="Únete a Ultimate Fitness y transforma tu cuerpo con nuestros entrenadores expertos, planes de dieta personalizados y gran comunidad."
       />
 
@@ -596,6 +596,44 @@ function Home() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </div>
+
+      {/* ============================================ */}
+      {/* 9.5 LEAD MAGNET (Captura de Email) */}
+      {/* ============================================ */}
+      <div className="container mx-auto px-4 py-12">
+        <div className="bg-gradient-to-r from-gray-900 to-black border border-uf-gold/30 rounded-2xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8">
+          <div className="flex-1 text-center md:text-left">
+            <h3 className="text-3xl font-anton font-bold text-white mb-2 uppercase">
+              Descarga nuestra <span className="text-uf-gold">Guía Gratuita </span>
+            </h3>
+            <p className="text-gray-400 mb-6 font-medium">
+              Aprende a estructurar tus macros y entrenamientos con nuestra guía de 7 días. ¡Totalmente gratis!
+            </p>
+            <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => { e.preventDefault(); alert('¡Gracias! Revisa tu correo en unos minutos.'); }}>
+              <input
+                type="email"
+                placeholder="Tu mejor email..."
+                required
+                className="flex-1 bg-gray-800 border border-gray-600 focus:border-uf-gold text-white px-4 py-3 rounded-lg focus:outline-none transition"
+              />
+              <button
+                type="submit"
+                className="bg-uf-gold hover:bg-yellow-500 text-black font-bold px-8 py-3 rounded-lg uppercase tracking-wider transition transform hover:scale-105"
+              >
+                Quiero la guía
+              </button>
+            </form>
+            <p className="text-xs text-gray-500 mt-3">Al descargar aceptas recibir tips semanales. Cero spam.</p>
+          </div>
+          <div className="hidden md:flex flex-1 justify-center relative">
+            <div className="absolute w-40 h-40 bg-uf-gold/20 rounded-full blur-3xl"></div>
+            <div className="relative border-4 border-uf-darker rounded-xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-all duration-300">
+              <img src="/images/dieta.jpg" alt="Guía Nutricional Ultimate Fitness" className="w-64 h-auto object-cover opacity-80" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" }} />
+              <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-center py-2 border-t border-uf-gold font-bold text-sm text-uf-gold">PDF GRATUITO</div>
+            </div>
           </div>
         </div>
       </div>

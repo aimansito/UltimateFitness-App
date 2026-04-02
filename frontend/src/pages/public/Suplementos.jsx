@@ -1,4 +1,5 @@
 import { Pill, Heart, Zap, Shield } from 'lucide-react';
+import SEO from '../../components/common/SEO';
 
 function Suplementos() {
     const suplementos = [
@@ -30,6 +31,11 @@ function Suplementos() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black py-12">
+            <SEO
+                title="Suplementos Deportivos"
+                description="Guía completa de suplementos deportivos: proteína whey, creatina, BCAA y vitaminas. Aprende cuáles necesitas para mejorar tu rendimiento."
+                keywords="suplementos deportivos, proteína whey, creatina, BCAA, vitaminas fitness"
+            />
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h1 className="text-5xl md:text-6xl font-anton font-bold text-white mb-4 uppercase tracking-wider">

@@ -117,17 +117,17 @@ function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/politica-privacidad" className="text-gray-400 hover:text-uf-gold transition-colors text-sm">
+                <Link to="/terminos-condiciones" className="text-gray-400 hover:text-uf-gold transition-colors text-sm">
                   Términos y Condiciones
                 </Link>
               </li>
               <li>
-                <Link to="/politica-privacidad" className="text-gray-400 hover:text-uf-gold transition-colors text-sm">
+                <Link to="/politica-cookies" className="text-gray-400 hover:text-uf-gold transition-colors text-sm">
                   Política de Cookies
                 </Link>
               </li>
               <li>
-                <Link to="/politica-privacidad" className="text-gray-400 hover:text-uf-gold transition-colors text-sm">
+                <Link to="/aviso-legal" className="text-gray-400 hover:text-uf-gold transition-colors text-sm">
                   Aviso Legal
                 </Link>
               </li>
@@ -190,7 +190,7 @@ function Footer() {
         {/* ============================================ */}
         <div className="text-center">
           <p className="text-gray-500 text-xs">
-            © 2025 <span className="text-uf-gold font-semibold">ULTIMATE FITNESS</span>. Todos los derechos reservados.
+            © {new Date().getFullYear()} <span className="text-uf-gold font-semibold">ULTIMATE FITNESS</span>. Todos los derechos reservados.
           </p>
           <p className="text-gray-600 text-xs mt-1">
             Diseñado con ❤️ para transformar vidas

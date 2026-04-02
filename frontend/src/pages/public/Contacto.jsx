@@ -1,7 +1,5 @@
-// ============================================
-// CONTACTO - Página de contacto
-// ============================================
 import { useState } from 'react';
+import SEO from '../../components/common/SEO';
 
 function Contacto() {
   // ============================================
@@ -89,6 +87,11 @@ function Contacto() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black py-20">
+      <SEO
+        title="Contacto"
+        description="Ponte en contacto con Ultimate Fitness. Resolvemos tus dudas sobre planes premium, entrenadores personales y servicios de fitness online."
+        keywords="contacto ultimate fitness, soporte fitness, entrenador personal online contacto"
+      />
 
       {/* HEADER */}
       <div className="container mx-auto px-4 mb-16 text-center">

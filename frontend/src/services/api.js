@@ -43,7 +43,7 @@ api.interceptors.request.use(
       // Usar el token del entrenador SÓLO para peticiones a /entrenador ó /custom/entrenador
       // En caso contrario, usar el token de usuario normal.
       const isEntrenadorRoute = config.url && (config.url.startsWith("/entrenador") || config.url.includes("/custom/entrenador"));
-      
+
       const finalToken = isEntrenadorRoute && trainerToken ? trainerToken : userToken;
 
       if (finalToken) {
@@ -70,12 +70,12 @@ api.interceptors.response.use(
         // Limpiar solo token entrenador y redirigir a portal de entrenador (usando /login o la ruta correcta)
         localStorage.removeItem("token_entrenador");
         localStorage.removeItem("entrenador");
-        window.location.href = "/login-entrenador"; // Asumiendo que esta es la ruta para inicio de sesión de formador/entrenador. Si no existe, se puede cambiar a /login
+        window.location.href = "/entrenador/login";
       } else {
         // Limpiar solo token usuario y redirigir a login
         localStorage.removeItem("token");
         localStorage.removeItem("usuario");
-        
+
         if (!isPublicUrl(error.config?.url)) {
           window.location.href = "/login";
         }

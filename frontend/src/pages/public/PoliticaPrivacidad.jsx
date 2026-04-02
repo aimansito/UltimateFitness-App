@@ -3,10 +3,16 @@
 // ============================================
 import { Link } from 'react-router-dom';
 import { Shield, Cookie, Mail, FileText, Lock, Eye } from 'lucide-react';
+import SEO from '../../components/common/SEO';
 
 function PoliticaPrivacidad() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-black via-uf-darker to-black py-12 px-4">
+            <SEO
+                title="Política de Privacidad y Cookies"
+                description="Política de privacidad, protección de datos y cookies de Ultimate Fitness conforme al RGPD y la LSSI."
+                keywords="política privacidad, RGPD, cookies, protección datos fitness"
+            />
             <div className="container mx-auto max-w-5xl">
 
                 {/* Header */}
