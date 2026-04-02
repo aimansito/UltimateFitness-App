@@ -20,7 +20,9 @@ import {
   UserCheck,
   Mail,
   Phone,
-  ChevronRight
+  ChevronRight,
+  Loader,
+  Crown
 } from 'lucide-react';
 
 function DashboardUsuario() {
