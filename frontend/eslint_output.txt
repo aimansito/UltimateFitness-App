@@ -1,0 +1,126 @@
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\components\calendario\SelectorDietaDia.jsx
+   6:8  error    'api' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                       no-unused-vars
+  33:6  warning  React Hook useEffect has a missing dependency: 'cargarDietas'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\components\common\Toast.jsx
+  1:10  error  'useState' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\components\dieta\ConstructorPlatos.jsx
+   63:6   warning  React Hook useEffect has a missing dependency: 'calcularTotales'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  175:59  error    'index' is defined but never used                                                                                   no-unused-vars
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\components\dieta\SeccionComida.jsx
+  15:3   error  'onAgregarAlimento' is defined but never used                                                       no-unused-vars
+  23:10  error  'mostrarBuscador' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  23:27  error  'setMostrarBuscador' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\components\layout\Navbar.jsx
+  36:5  error  'login' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\context\AuthContext.jsx
+    5:14  error  Fast refresh only works when a file only exports components. Move your React context(s) to a separate file                      react-refresh/only-export-components
+  129:17  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\context\AuthContextEntrenador.jsx
+  38:25  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\context\ToastContext.jsx
+  6:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\admin\DashboardAdmin.jsx
+   12:13  error    'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                         no-unused-vars
+   52:8   warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  135:18  error    'error' is defined but never used                                                                            no-unused-vars
+  152:18  error    'error' is defined but never used                                                                            no-unused-vars
+  164:18  error    'error' is defined but never used                                                                            no-unused-vars
+  178:18  error    'error' is defined but never used                                                                            no-unused-vars
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\entrenador\CrearDietaCliente.jsx
+   19:10  error    'alimentos' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                        no-unused-vars
+   20:10  error    'platos' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                           no-unused-vars
+  108:6   warning  React Hook useEffect has a missing dependency: 'fetchCliente'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\entrenador\CrearEntrenamientoCliente.jsx
+  56:6  warning  React Hook useEffect has a missing dependency: 'fetchCliente'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\entrenador\CrearPlato.jsx
+  65:6  warning  React Hook useEffect has a missing dependency: 'cargarAlimentos'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  69:6  warning  React Hook useEffect has a missing dependency: 'calcularTotales'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\entrenador\DashboardEntrenador.jsx
+  32:6  warning  React Hook useEffect has missing dependencies: 'logout' and 'navigate'. Either include them or remove the dependency array                      react-hooks/exhaustive-deps
+  48:6  warning  React Hook useEffect has missing dependencies: 'fetchDashboardData' and 'fetchMisClientes'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\entrenador\DetalleDietaEntrenador.jsx
+   9:11  error    'entrenador' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                            no-unused-vars
+  30:6   warning  React Hook useEffect has a missing dependency: 'fetchDetalleDieta'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\entrenador\MisDietasEntrenador.jsx
+  32:6  warning  React Hook useEffect has a missing dependency: 'fetchDietas'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\entrenador\MisEntrenamientosEntrenador.jsx
+  32:6  warning  React Hook useEffect has a missing dependency: 'fetchEntrenamientos'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\entrenador\MisPlatosEntrenador.jsx
+  29:6  warning  React Hook useEffect has a missing dependency: 'fetchPlatos'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\private\PlanificadorSemanal.jsx
+   12:28  error    'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                         no-unused-vars
+   56:6   warning  React Hook useEffect has a missing dependency: 'navigate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  118:9   error    'duplicarDieta' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                no-unused-vars
+  132:13  error    'planData' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                     no-unused-vars
+  147:7   error    'toast' is not defined                                                                                       no-undef
+  150:7   error    'toast' is not defined                                                                                       no-undef
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\public\Alimentacion.jsx
+  146:32  error  'isPremium' is defined but never used  no-unused-vars
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\public\Blog.jsx
+  32:6  warning  React Hook useEffect has a missing dependency: 'fetchPosts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\public\BlogPost.jsx
+  20:9   error    'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                      no-unused-vars
+  24:24  error    'setRelacionados' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u               no-unused-vars
+  30:6   warning  React Hook useEffect has a missing dependency: 'fetchPost'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\public\CrearDieta.jsx
+  50:6  warning  React Hook useEffect has a missing dependency: 'toast'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\public\DetalleDieta.jsx
+  49:6  warning  React Hook useEffect has a missing dependency: 'cargarPlanDiario'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\public\DetallePlato.jsx
+  21:6  warning  React Hook useEffect has a missing dependency: 'fetchPlato'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\public\Gym.jsx
+  47:6  warning  React Hook useEffect has a missing dependency: 'cargarEjercicios'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\public\Workout.jsx
+  34:8  warning  React Hook useEffect has a missing dependency: 'cargarEjercicios'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\user\CrearEntrenamiento.jsx
+  439:76  error  'index' is defined but never used  no-unused-vars
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\user\DashboardUsuario.jsx
+  76:18  error  'error' is defined but never used  no-unused-vars
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\user\DetalleDieta.jsx
+   9:11  error    'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                  no-unused-vars
+  30:6   warning  React Hook useEffect has a missing dependency: 'fetchDetalleDieta'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\user\DetalleEntrenamiento.jsx
+  33:8  warning  React Hook useEffect has a missing dependency: 'fetchDetalleEntrenamiento'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\user\MisDietas.jsx
+  38:6  warning  React Hook useEffect has a missing dependency: 'fetchMisDietas'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\pages\user\MisEntrenamientos.jsx
+  28:10  error  'selectedEntrenamiento' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  28:33  error  'setSelectedEntrenamiento' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+C:\xampp\htdocs\ultimate-fitness\frontend\src\services\authService.js
+  29:14  error  'error' is defined but never used  no-unused-vars
+
+✖ 57 problems (33 errors, 24 warnings)
+
