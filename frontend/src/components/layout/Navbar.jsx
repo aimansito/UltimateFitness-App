@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import useAuthEntrenador from "../../context/AuthContextEntrenador";
 import Badge from "../common/Badge";
+import { ENTRENADORES, PAGOS } from "../../config/funciones";
 import {
   Dumbbell,
   Utensils,
@@ -19,6 +20,7 @@ import {
   Star,
   Shield,
   LogOut,
+  Search,
 } from "lucide-react";
 
 function Navbar() {
@@ -28,7 +30,7 @@ function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { user, logout, isPremium, isAuthenticated } = useAuth();
+  const { user, logout, isPremium, isAuthenticated, accesoCompleto } = useAuth();
 
   // FIX 1 → Nombres correctos del contexto entrenador
   const {
@@ -89,6 +91,7 @@ function Navbar() {
   const getUserMenuItems = () => {
     const commonItems = [
       { label: "Mis Datos Personales", path: "/perfil/datos", icon: User },
+      ...(!entrenador ? [{ label: "Gestionar cuenta", path: "/cuenta", icon: Shield }] : []),
     ];
 
     // ENTRENADOR
@@ -109,22 +112,14 @@ function Navbar() {
       ];
     }
 
-    // PREMIUM
-    if (isPremium && user?.rol !== "admin") {
-      return [
-        { label: "Mi Panel", path: "/dashboard", icon: Activity },
-        { label: "Mis Entrenamientos", path: "/mis-entrenamientos", icon: Dumbbell },
-        { label: "Mis Dietas", path: "/mis-dietas", icon: Utensils },
-        { label: "Mi Suscripción", path: "/mi-suscripcion", icon: CreditCard },
-        ...commonItems,
-      ];
-    }
-
-    // GRATUITO
+    // CLIENTE (las opciones de entrenador y de pago dependen de config/funciones.js)
     return [
       { label: "Mi Panel", path: "/dashboard", icon: Activity },
+      ...(ENTRENADORES && isPremium ? [{ label: "Buscar Entrenador", path: "/user/descubrir", icon: Search }] : []),
+      ...(accesoCompleto ? [{ label: "Mis Entrenamientos", path: "/mis-entrenamientos", icon: Dumbbell }] : []),
       { label: "Mis Dietas", path: "/mis-dietas", icon: Utensils },
-      { label: "Hazte Premium", path: "/upgrade-premium", icon: Star },
+      ...(PAGOS && isPremium ? [{ label: "Mi Suscripción", path: "/mi-suscripcion", icon: CreditCard }] : []),
+      ...(PAGOS && !isPremium ? [{ label: "Hazte Premium", path: "/upgrade-premium", icon: Star }] : []),
       ...commonItems,
     ];
   };
@@ -154,9 +149,9 @@ function Navbar() {
       { path: "/mis-dietas?tab=publicas", label: "Dietas Públicas", icon: Utensils },
     ];
 
-    if (isPremium) {
+    if (accesoCompleto) {
       menuItems.unshift(
-        { path: "/mis-dietas?tab=asignadas", label: "Dietas Asignadas", icon: User },
+        ...(ENTRENADORES ? [{ path: "/mis-dietas?tab=asignadas", label: "Dietas Asignadas", icon: User }] : []),
         { path: "/mis-dietas?tab=creadas", label: "Historial de Dietas", icon: Calendar }
       );
     }
@@ -170,7 +165,7 @@ function Navbar() {
       { path: "/workout", label: "Workout", icon: Activity },
     ];
 
-    if (isPremium && !entrenador) {
+    if (accesoCompleto && !entrenador) {
       menuItems.push({
         path: "/crear-entrenamiento",
         label: "Crear Mi Entrenamiento",
@@ -286,7 +281,7 @@ function Navbar() {
   // ============================================
   return (
     <nav
-      className={`border-b sticky top-0 z-50 shadow-xl ${isPremium ? "bg-black border-uf-red/30" : "bg-black border-uf-gold/20"
+      className={`border-b sticky top-0 z-50 shadow-xl ${isPremium ? "bg-black/80 backdrop-blur-xl border-uf-red/30" : "bg-black/80 backdrop-blur-xl border-uf-line"
         }`}
     >
       <div className="w-full px-6">
@@ -317,7 +312,7 @@ function Navbar() {
                     <Link
                       to={link.path}
                       className={`
-                        font-audiowide font-bold text-xs uppercase tracking-widest pb-1 border-b-2 transition-all duration-300
+                        flex items-center h-10 font-bold text-xs uppercase tracking-widest border-b-2 transition-all duration-300
                         ${isActive(link.path)
                           ? isPremium
                             ? "text-uf-red border-uf-red"
@@ -343,7 +338,7 @@ function Navbar() {
                           }
                         }}
                         className={`
-                          font-audiowide font-bold text-xs uppercase tracking-widest pb-1 border-b-2 transition-all duration-300
+                          flex items-center h-10 font-bold text-xs uppercase tracking-widest border-b-2 transition-all duration-300
                           ${isPremium
                             ? "text-white border-transparent hover:text-uf-red hover:border-uf-red"
                             : "text-white border-transparent hover:text-uf-gold hover:border-uf-gold"
@@ -417,9 +412,11 @@ function Navbar() {
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${getUserButtonColor()}`}
+                    className={`flex items-center gap-2 pl-2 pr-4 py-2 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg ${getUserButtonColor()}`}
                   >
-                    <User className="w-5 h-5" />
+                    <span className="flex items-center justify-center w-7 h-7 rounded-full bg-black/10">
+                      <User className="w-4 h-4" />
+                    </span>
                     <span className="text-sm">
                       {entrenador?.nombre || user?.nombre || "Usuario"}
                     </span>
@@ -441,13 +438,13 @@ function Navbar() {
               <>
                 <Link
                   to="/login"
-                  className="text-white font-bold text-xs uppercase hover:text-uf-gold transition-all duration-300"
+                  className="text-gray-300 font-bold text-xs uppercase px-4 py-2 rounded-full hover:text-uf-gold hover:bg-white/5 transition-all duration-300"
                 >
                   Iniciar Sesión
                 </Link>
                 <Link
                   to="/register"
-                  className="bg-uf-gold text-black font-bold px-5 py-2 rounded uppercase text-xs hover:bg-uf-blue hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  className="bg-uf-gold text-black font-bold px-5 py-2.5 rounded-full uppercase text-xs hover:bg-uf-blue hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 >
                   Crear Cuenta
                 </Link>

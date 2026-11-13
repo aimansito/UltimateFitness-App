@@ -17,7 +17,6 @@ use ApiPlatform\Doctrine\Common\State\LinksHandlerTrait as CommonLinksHandlerTra
 use ApiPlatform\Metadata\Exception\RuntimeException;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\Util\StateOptionsTrait;
 use Doctrine\ODM\MongoDB\Aggregation\Builder;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
@@ -29,7 +28,6 @@ use Doctrine\Persistence\ManagerRegistry;
 trait LinksHandlerTrait
 {
     use CommonLinksHandlerTrait;
-    use StateOptionsTrait;
 
     private ManagerRegistry $managerRegistry;
 
@@ -130,7 +128,7 @@ trait LinksHandlerTrait
             return $aggregation;
         }
 
-        $results = $aggregation->getAggregation($executeOptions)->getIterator()->toArray();
+        $results = $aggregation->execute($executeOptions)->toArray();
         $in = [];
         foreach ($results as $result) {
             foreach ($result[$lookupPropertyAlias] ?? [] as $lookupResult) {
@@ -144,18 +142,26 @@ trait LinksHandlerTrait
 
     private function getLinkFromClass(Link $link, Operation $operation): string
     {
-        $documentClass = $this->getStateOptionsClass($operation, $operation->getClass(), Options::class);
         $fromClass = $link->getFromClass();
-        if ($fromClass === $operation->getClass() && $documentClass) {
+        if ($fromClass === $operation->getClass() && $documentClass = $this->getStateOptionsDocumentClass($operation)) {
             return $documentClass;
         }
 
         $operation = $this->resourceMetadataCollectionFactory->create($fromClass)->getOperation();
 
-        if ($documentClass = $this->getStateOptionsClass($operation, null, Options::class)) {
+        if ($documentClass = $this->getStateOptionsDocumentClass($operation)) {
             return $documentClass;
         }
 
         throw new \Exception('Can not found a doctrine class for this link.');
+    }
+
+    private function getStateOptionsDocumentClass(Operation $operation): ?string
+    {
+        if (($options = $operation->getStateOptions()) && $options instanceof Options && $documentClass = $options->getDocumentClass()) {
+            return $documentClass;
+        }
+
+        return null;
     }
 }

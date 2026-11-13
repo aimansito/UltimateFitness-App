@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+dist/
+build/
+.next/
+
+# Docker
+docker/
+
+# Cache & temp
+.cache/
+.vite/
+var/
+.phpunit.cache/
+
+# IDE & system
+.idea/
+.vscode/
+.git/
+*.lock
+
+# Database dumps
+*.sql
+
+# Minified bundles (pollute the graph with useless nodes)
+backend/public/bundles/
+*.min.js
+*.min.css
+
+# Graphify output (don't index itself)
+graphify-out/

@@ -14,14 +14,12 @@ declare(strict_types=1);
 namespace ApiPlatform\Symfony\Validator\State;
 
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\Metadata\Parameter;
 use ApiPlatform\State\ParameterNotFound;
 use ApiPlatform\State\ProviderInterface;
 use ApiPlatform\State\Util\ParameterParserTrait;
 use ApiPlatform\Validator\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -42,7 +40,7 @@ final class ParameterValidatorProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
     {
-        if (!($request = $context['request'] ?? null) instanceof Request) {
+        if (!($request = $context['request']) instanceof Request) {
             return $this->decorated->provide($operation, $uriVariables, $context);
         }
 
@@ -57,27 +55,22 @@ final class ParameterValidatorProvider implements ProviderInterface
                 continue;
             }
 
+            $key = $parameter->getKey();
             $value = $parameter->getValue();
             if ($value instanceof ParameterNotFound) {
                 $value = null;
             }
 
-            $violations = [];
-            if (\is_array($value) && $properties = $parameter->getExtraProperties()['_properties'] ?? []) {
-                foreach ($properties as $property) {
-                    $violations = [...$violations, ...$this->validator->validate($value[$property] ?? null, $constraints)];
-                }
-            } else {
-                $violations = $this->validator->validate($value, $constraints);
-            }
-
+            $violations = $this->validator->validate($value, $constraints);
             foreach ($violations as $violation) {
                 $constraintViolationList->add(new ConstraintViolation(
                     $violation->getMessage(),
                     $violation->getMessageTemplate(),
                     $violation->getParameters(),
                     $violation->getRoot(),
-                    $this->getProperty($parameter, $violation),
+                    $parameter->getProperty() ?? (
+                        str_contains($key, ':property') ? str_replace('[:property]', $violation->getPropertyPath(), $key) : $key.$violation->getPropertyPath()
+                    ),
                     $violation->getInvalidValue(),
                     $violation->getPlural(),
                     $violation->getCode(),
@@ -92,25 +85,5 @@ final class ParameterValidatorProvider implements ProviderInterface
         }
 
         return $this->decorated->provide($operation, $uriVariables, $context);
-    }
-
-    // There's a `property` inside Parameter but it's used for hydra:search only as here we want the parameter name instead
-    private function getProperty(Parameter $parameter, ConstraintViolationInterface $violation): string
-    {
-        $key = $parameter->getKey();
-
-        if (str_contains($key, '[:property]')) {
-            return str_replace('[:property]', $violation->getPropertyPath(), $key);
-        }
-
-        if (str_contains($key, ':property')) {
-            return str_replace(':property', $violation->getPropertyPath(), $key);
-        }
-
-        if ($p = $violation->getPropertyPath()) {
-            return $p;
-        }
-
-        return $key;
     }
 }

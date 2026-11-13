@@ -224,17 +224,9 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
             try {
                 return $this->iriConverter->getResourceFromIri($data, $context + ['fetch_data' => true]);
             } catch (ItemNotFoundException $e) {
-                if (!isset($context['not_normalizable_value_exceptions'])) {
-                    throw new UnexpectedValueException($e->getMessage(), $e->getCode(), $e);
-                }
-
-                throw NotNormalizableValueException::createForUnexpectedDataType(\sprintf('The type of the "%s" resource "string" (IRI), "%s" given.', $resourceClass, \gettype($data)), $data, [$resourceClass], $context['deserialization_path'] ?? null, true, $e->getCode(), $e);
+                throw new UnexpectedValueException($e->getMessage(), $e->getCode(), $e);
             } catch (InvalidArgumentException $e) {
-                if (!isset($context['not_normalizable_value_exceptions'])) {
-                    throw new UnexpectedValueException(\sprintf('Invalid IRI "%s".', $data), $e->getCode(), $e);
-                }
-
-                throw NotNormalizableValueException::createForUnexpectedDataType(\sprintf('The type of the "%s" resource "string" (IRI), "%s" given.', $resourceClass, \gettype($data)), $data, [$resourceClass], $context['deserialization_path'] ?? null, true, $e->getCode(), $e);
+                throw new UnexpectedValueException(\sprintf('Invalid IRI "%s".', $data), $e->getCode(), $e);
             }
         }
 
@@ -306,8 +298,6 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
             foreach ($constructorParameters as $constructorParameter) {
                 $paramName = $constructorParameter->name;
                 $key = $this->nameConverter ? $this->nameConverter->normalize($paramName, $class, $format, $context) : $paramName;
-                $attributeContext = $this->getAttributeDenormalizationContext($class, $paramName, $context);
-                $attributeContext['deserialization_path'] = $attributeContext['deserialization_path'] ?? $key;
 
                 $allowed = false === $allowedAttributes || (\is_array($allowedAttributes) && \in_array($paramName, $allowedAttributes, true));
                 $ignored = !$this->isAllowedAttribute($class, $paramName, $format, $context);
@@ -320,8 +310,10 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
                         $params[] = $data[$paramName];
                     }
                 } elseif ($allowed && !$ignored && (isset($data[$key]) || \array_key_exists($key, $data))) {
+                    $constructorContext = $context;
+                    $constructorContext['deserialization_path'] = $context['deserialization_path'] ?? $key;
                     try {
-                        $params[] = $this->createConstructorArgument($data[$key], $key, $constructorParameter, $attributeContext, $format);
+                        $params[] = $this->createConstructorArgument($data[$key], $key, $constructorParameter, $constructorContext, $format);
                     } catch (NotNormalizableValueException $exception) {
                         if (!isset($context['not_normalizable_value_exceptions'])) {
                             throw $exception;
@@ -340,19 +332,7 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
                         $missingConstructorArguments[] = $constructorParameter->name;
                     }
 
-                    $constructorParameterType = 'unknown';
-                    $reflectionType = $constructorParameter->getType();
-                    if ($reflectionType instanceof \ReflectionNamedType) {
-                        $constructorParameterType = $reflectionType->getName();
-                    }
-
-                    $exception = NotNormalizableValueException::createForUnexpectedDataType(
-                        \sprintf('Failed to create object because the class misses the "%s" property.', $constructorParameter->name),
-                        null,
-                        [$constructorParameterType],
-                        $attributeContext['deserialization_path'],
-                        true
-                    );
+                    $exception = NotNormalizableValueException::createForUnexpectedDataType(\sprintf('Failed to create object because the class misses the "%s" property.', $constructorParameter->name), $data, ['unknown'], $context['deserialization_path'] ?? null, true);
                     $context['not_normalizable_value_exceptions'][] = $exception;
                 }
             }
@@ -393,7 +373,7 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
         return $mappedClass;
     }
 
-    protected function createConstructorArgument($parameterData, string $key, \ReflectionParameter $constructorParameter, array $context, ?string $format = null): mixed
+    protected function createConstructorArgument($parameterData, string $key, \ReflectionParameter $constructorParameter, array &$context, ?string $format = null): mixed
     {
         return $this->createAndValidateAttributeValue($constructorParameter->name, $parameterData, $format, $context);
     }
@@ -585,14 +565,32 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
                 if (!isset($context['not_normalizable_value_exceptions'])) {
                     throw new UnexpectedValueException($e->getMessage(), $e->getCode(), $e);
                 }
+                $context['not_normalizable_value_exceptions'][] = NotNormalizableValueException::createForUnexpectedDataType(
+                    $e->getMessage(),
+                    $value,
+                    [$className],
+                    $context['deserialization_path'] ?? null,
+                    true,
+                    $e->getCode(),
+                    $e
+                );
 
-                throw NotNormalizableValueException::createForUnexpectedDataType($e->getMessage(), $value, [$className], $context['deserialization_path'] ?? null, true, $e->getCode(), $e);
+                return null;
             } catch (InvalidArgumentException $e) {
                 if (!isset($context['not_normalizable_value_exceptions'])) {
                     throw new UnexpectedValueException(\sprintf('Invalid IRI "%s".', $value), $e->getCode(), $e);
                 }
+                $context['not_normalizable_value_exceptions'][] = NotNormalizableValueException::createForUnexpectedDataType(
+                    $e->getMessage(),
+                    $value,
+                    [$className],
+                    $context['deserialization_path'] ?? null,
+                    true,
+                    $e->getCode(),
+                    $e
+                );
 
-                throw NotNormalizableValueException::createForUnexpectedDataType($e->getMessage(), $value, [$className], $context['deserialization_path'] ?? null, true, $e->getCode(), $e);
+                return null;
             }
         }
 
@@ -873,7 +871,6 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
         $propertyMetadata = $this->propertyMetadataFactory->create($context['resource_class'], $attribute, $this->getFactoryOptions($context));
         $types = $propertyMetadata->getBuiltinTypes() ?? [];
         $isMultipleTypes = \count($types) > 1;
-        $denormalizationException = null;
 
         foreach ($types as $type) {
             if (null === $value && ($type->isNullable() || ($context[static::DISABLE_TYPE_ENFORCEMENT] ?? false))) {
@@ -899,18 +896,7 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
                 $context['resource_class'] = $resourceClass;
                 unset($context['uri_variables']);
 
-                try {
-                    return $this->denormalizeCollection($attribute, $propertyMetadata, $type, $resourceClass, $value, $format, $context);
-                } catch (NotNormalizableValueException $e) {
-                    // union/intersect types: try the next type, if not valid, an exception will be thrown at the end
-                    if ($isMultipleTypes) {
-                        $denormalizationException ??= $e;
-
-                        continue;
-                    }
-
-                    throw $e;
-                }
+                return $this->denormalizeCollection($attribute, $propertyMetadata, $type, $resourceClass, $value, $format, $context);
             }
 
             if (
@@ -920,18 +906,7 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
                 $resourceClass = $this->resourceClassResolver->getResourceClass(null, $className);
                 $childContext = $this->createChildContext($this->createOperationContext($context, $resourceClass), $attribute, $format);
 
-                try {
-                    return $this->denormalizeRelation($attribute, $propertyMetadata, $resourceClass, $value, $format, $childContext);
-                } catch (NotNormalizableValueException $e) {
-                    // union/intersect types: try the next type, if not valid, an exception will be thrown at the end
-                    if ($isMultipleTypes) {
-                        $denormalizationException ??= $e;
-
-                        continue;
-                    }
-
-                    throw $e;
-                }
+                return $this->denormalizeRelation($attribute, $propertyMetadata, $resourceClass, $value, $format, $childContext);
             }
 
             if (
@@ -946,18 +921,7 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
 
                 unset($context['resource_class'], $context['uri_variables']);
 
-                try {
-                    return $this->serializer->denormalize($value, $className.'[]', $format, $context);
-                } catch (NotNormalizableValueException $e) {
-                    // union/intersect types: try the next type, if not valid, an exception will be thrown at the end
-                    if ($isMultipleTypes) {
-                        $denormalizationException ??= $e;
-
-                        continue;
-                    }
-
-                    throw $e;
-                }
+                return $this->serializer->denormalize($value, $className.'[]', $format, $context);
             }
 
             if (null !== $className = $type->getClassName()) {
@@ -967,18 +931,7 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
 
                 unset($context['resource_class'], $context['uri_variables']);
 
-                try {
-                    return $this->serializer->denormalize($value, $className, $format, $context);
-                } catch (NotNormalizableValueException $e) {
-                    // union/intersect types: try the next type, if not valid, an exception will be thrown at the end
-                    if ($isMultipleTypes) {
-                        $denormalizationException ??= $e;
-
-                        continue;
-                    }
-
-                    throw $e;
-                }
+                return $this->serializer->denormalize($value, $className, $format, $context);
             }
 
             /* From @see AbstractObjectNormalizer::validateAndDenormalize() */
@@ -1052,10 +1005,6 @@ abstract class AbstractItemNormalizer extends AbstractObjectNormalizer
                     throw $e;
                 }
             }
-        }
-
-        if ($denormalizationException) {
-            throw $denormalizationException;
         }
 
         return $value;

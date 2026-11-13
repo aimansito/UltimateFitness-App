@@ -131,29 +131,16 @@ final class PublishMercureUpdatesListener
     public function postFlush(): void
     {
         try {
-            $creatingObjects = clone $this->createdObjects;
-            foreach ($creatingObjects as $object) {
-                if ($this->createdObjects->contains($object)) {
-                    $this->createdObjects->detach($object);
-                }
-                $this->publishUpdate($object, $creatingObjects[$object], 'create');
+            foreach ($this->createdObjects as $object) {
+                $this->publishUpdate($object, $this->createdObjects[$object], 'create');
             }
 
-            $updatingObjects = clone $this->updatedObjects;
-            foreach ($updatingObjects as $object) {
-                if ($this->updatedObjects->contains($object)) {
-                    $this->updatedObjects->detach($object);
-                }
-                $this->publishUpdate($object, $updatingObjects[$object], 'update');
+            foreach ($this->updatedObjects as $object) {
+                $this->publishUpdate($object, $this->updatedObjects[$object], 'update');
             }
 
-            $deletingObjects = clone $this->deletedObjects;
-            foreach ($deletingObjects as $object) {
-                $options = $this->deletedObjects[$object];
-                if ($this->deletedObjects->contains($object)) {
-                    $this->deletedObjects->detach($object);
-                }
-                $this->publishUpdate($object, $deletingObjects[$object], 'delete');
+            foreach ($this->deletedObjects as $object) {
+                $this->publishUpdate($object, $this->deletedObjects[$object], 'delete');
             }
         } finally {
             $this->reset();
@@ -202,7 +189,7 @@ final class PublishMercureUpdatesListener
 
         foreach ($options as $key => $value) {
             if (!isset(self::ALLOWED_KEYS[$key])) {
-                throw new InvalidArgumentException(\sprintf('The option "%s" set in the "mercure" attribute of the "%s" resource does not exist. Existing options: "%s"', $key, $resourceClass, implode('", "', array_keys(self::ALLOWED_KEYS))));
+                throw new InvalidArgumentException(\sprintf('The option "%s" set in the "mercure" attribute of the "%s" resource does not exist. Existing options: "%s"', $key, $resourceClass, implode('", "', self::ALLOWED_KEYS)));
             }
         }
 
@@ -250,6 +237,7 @@ final class PublishMercureUpdatesListener
         }
 
         $updates = array_merge([$this->buildUpdate($iri, $data, $options)], $this->getGraphQlSubscriptionUpdates($object, $options, $type));
+
         foreach ($updates as $update) {
             if ($options['enable_async_update'] && $this->messageBus) {
                 $this->dispatch($update);

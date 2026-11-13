@@ -70,7 +70,6 @@ final class SwaggerUiProcessor implements ProcessorInterface
                 'flow' => $this->openApiOptions->getOAuthFlow(),
                 'tokenUrl' => $this->openApiOptions->getOAuthTokenUrl(),
                 'authorizationUrl' => $this->openApiOptions->getOAuthAuthorizationUrl(),
-                'redirectUrl' => $request->getSchemeAndHttpHost().'/vendor/api-platform/swagger-ui/oauth2-redirect.html',
                 'scopes' => $this->openApiOptions->getOAuthScopes(),
                 'clientId' => $this->oauthClientId,
                 'clientSecret' => $this->oauthClientSecret,

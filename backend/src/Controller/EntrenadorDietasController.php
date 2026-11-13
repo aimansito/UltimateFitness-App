@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Dieta;
+use App\Entity\Entrenador;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,6 +24,13 @@ class EntrenadorDietasController extends AbstractController
         int $entrenadorId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $entrenadorActual = $this->getUser();
+        if (!$entrenadorActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+        // El id de la URL no es de fiar: se usa siempre el entrenador autenticado.
+        $entrenadorId = $entrenadorActual->getId();
+
         try {
             $conn = $entityManager->getConnection();
 
@@ -81,6 +89,16 @@ class EntrenadorDietasController extends AbstractController
         int $dietaId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $entrenadorActual = $this->getUser();
+        if (!$entrenadorActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $dietaCheck = $entityManager->getRepository(Dieta::class)->find($dietaId);
+        if (!$dietaCheck || $dietaCheck->getCreador()?->getId() !== $entrenadorActual->getId()) {
+            return $this->json(['success' => false, 'error' => 'Dieta no encontrada'], Response::HTTP_NOT_FOUND);
+        }
+
         try {
             $conn = $entityManager->getConnection();
 
@@ -127,10 +145,15 @@ class EntrenadorDietasController extends AbstractController
         int $dietaId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $entrenadorActual = $this->getUser();
+        if (!$entrenadorActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
         try {
             $dieta = $entityManager->getRepository(Dieta::class)->find($dietaId);
 
-            if (!$dieta) {
+            if (!$dieta || $dieta->getCreador()?->getId() !== $entrenadorActual->getId()) {
                 return $this->json([
                     'success' => false,
                     'error' => 'Dieta no encontrada'

@@ -53,7 +53,7 @@ final class AccessCheckerProvider implements ProviderInterface
 
                 $isGranted = $operation->getSecurityAfterResolver();
                 $message = $operation->getSecurityMessageAfterResolver();
-                break;
+                // no break
             default:
                 $isGranted = $operation->getSecurity();
                 $message = $operation->getSecurityMessage();

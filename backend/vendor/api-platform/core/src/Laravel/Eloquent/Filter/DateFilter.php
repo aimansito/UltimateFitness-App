@@ -84,10 +84,7 @@ final class DateFilter implements FilterInterface, JsonSchemaFilterInterface, Op
         return ['type' => 'date'];
     }
 
-    /**
-     * @return OpenApiParameter[]
-     */
-    public function getOpenApiParameters(Parameter $parameter): array
+    public function getOpenApiParameters(Parameter $parameter): OpenApiParameter|array|null
     {
         $in = $parameter instanceof QueryParameter ? 'query' : 'header';
         $key = $parameter->getKey();

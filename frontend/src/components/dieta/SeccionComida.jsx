@@ -4,10 +4,8 @@
 // ============================================
 
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { useToast } from "../../context/ToastContext";
-import BuscadorAlimentos from "./BuscadorAlimentos";
 import SelectorPlatos from "./SelectorPlatos.jsx";
+import Icono from '../common/Icono';
 
 function SeccionComida({
   momento,
@@ -17,10 +15,6 @@ function SeccionComida({
   onEliminarItem,
   onActualizarCantidad,
 }) {
-  const { user } = useAuth();
-  const toast = useToast();
-
-  const [mostrarBuscador, setMostrarBuscador] = useState(false);
   const [mostrarSelectorPlatos, setMostrarSelectorPlatos] = useState(false);
 
   // Tailwind no permite strings dinámicas en colores así que usamos clases predefinidas
@@ -52,17 +46,6 @@ function SeccionComida({
     { calorias: 0, proteinas: 0, carbohidratos: 0, grasas: 0 }
   );
 
-  // ==========================
-  // CHECK PREMIUM
-  // ==========================
-  const requirePremium = (callback) => {
-    if (!user?.es_premium) {
-      toast.warning("Esta función es exclusiva para usuarios Premium.");
-      return;
-    }
-    callback();
-  };
-
   return (
     <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl overflow-hidden border-2 border-gray-700">
 
@@ -71,7 +54,7 @@ function SeccionComida({
         <div className="flex items-center justify-between mb-3">
           {/* Nombre */}
           <div className="flex items-center gap-3">
-            <span className="text-3xl">{momento.icon}</span>
+            <span className="text-3xl"><Icono de={momento.icon} className="w-6 h-6 inline-block" /></span>
             <div>
               <h3 className="text-xl font-anton font-bold text-white uppercase">
                 {momento.nombre}
@@ -110,7 +93,7 @@ function SeccionComida({
         <div>
           {/* PLATO PREDEFINIDO */}
           <button
-            onClick={() => requirePremium(() => setMostrarSelectorPlatos(true))}
+            onClick={() => setMostrarSelectorPlatos(true)}
             className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -177,6 +177,15 @@ class EntrenamientoController extends AbstractController
             ], Response::HTTP_NOT_FOUND);
         }
 
+        $esPropio = ($user instanceof Usuario && $entrenamientoOriginal->getCreadorUsuario()?->getId() === $user->getId())
+            || ($user instanceof Entrenador && $entrenamientoOriginal->getCreador()?->getId() === $user->getId());
+        if (!$entrenamientoOriginal->isEsPublico() && !$esPropio) {
+            return $this->json([
+                'success' => false,
+                'error' => 'Entrenamiento no encontrado'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         // Crear copia
         $entrenamientoClon = new Entrenamiento();
         $entrenamientoClon->setNombre($entrenamientoOriginal->getNombre() . ' (Copia)');
@@ -379,10 +388,15 @@ class EntrenamientoController extends AbstractController
         EntityManagerInterface $entityManager
     ): JsonResponse {
         $user = $this->getUser(); // Entrenador
-        // Verificar rol entrenador... (omitido por brevedad, se asume middleware o check simple)
+        if (!$user instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'Solo un entrenador puede asignar entrenamientos'], Response::HTTP_FORBIDDEN);
+        }
 
         $entrenamiento = $entityManager->getRepository(Entrenamiento::class)->find($id);
         if (!$entrenamiento) {
+            return $this->json(['success' => false, 'error' => 'Entrenamiento no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+        if ($entrenamiento->getCreador()?->getId() !== $user->getId()) {
             return $this->json(['success' => false, 'error' => 'Entrenamiento no encontrado'], Response::HTTP_NOT_FOUND);
         }
 
@@ -392,6 +406,9 @@ class EntrenamientoController extends AbstractController
 
         if (!$cliente) {
             return $this->json(['success' => false, 'error' => 'Cliente no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+        if ($cliente->getEntrenadorAsignado()?->getId() !== $user->getId()) {
+            return $this->json(['success' => false, 'error' => 'Este cliente no está asignado a tu cuenta de entrenador'], Response::HTTP_FORBIDDEN);
         }
 
         // Para asignar, lo ideal es clonar el entrenamiento y asignarlo al usuario, 

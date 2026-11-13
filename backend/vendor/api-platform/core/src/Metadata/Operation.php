@@ -811,8 +811,6 @@ abstract class Operation extends Metadata
         ?string $policy = null,
         array|string|null $middleware = null,
         ?bool $queryParameterValidationEnabled = null,
-        protected ?bool $strictQueryParameterValidation = null,
-        protected ?bool $hideHydraOperation = null,
         protected array $extraProperties = [],
     ) {
         parent::__construct(
@@ -858,8 +856,6 @@ abstract class Operation extends Metadata
             policy: $policy,
             middleware: $middleware,
             queryParameterValidationEnabled: $queryParameterValidationEnabled,
-            strictQueryParameterValidation: $strictQueryParameterValidation,
-            hideHydraOperation: $hideHydraOperation,
             extraProperties: $extraProperties,
         );
     }
@@ -874,7 +870,7 @@ abstract class Operation extends Metadata
         return $this->read;
     }
 
-    public function withRead(bool $read = true): static
+    public function withRead(bool $read = true): self
     {
         $self = clone $this;
         $self->read = $read;
@@ -887,7 +883,7 @@ abstract class Operation extends Metadata
         return $this->deserialize;
     }
 
-    public function withDeserialize(bool $deserialize = true): static
+    public function withDeserialize(bool $deserialize = true): self
     {
         $self = clone $this;
         $self->deserialize = $deserialize;
@@ -900,7 +896,7 @@ abstract class Operation extends Metadata
         return $this->validate;
     }
 
-    public function withValidate(bool $validate = true): static
+    public function withValidate(bool $validate = true): self
     {
         $self = clone $this;
         $self->validate = $validate;
@@ -913,7 +909,7 @@ abstract class Operation extends Metadata
         return $this->write;
     }
 
-    public function withWrite(bool $write = true): static
+    public function withWrite(bool $write = true): self
     {
         $self = clone $this;
         $self->write = $write;
@@ -926,7 +922,7 @@ abstract class Operation extends Metadata
         return $this->serialize;
     }
 
-    public function withSerialize(bool $serialize = true): static
+    public function withSerialize(bool $serialize = true): self
     {
         $self = clone $this;
         $self->serialize = $serialize;
@@ -939,7 +935,7 @@ abstract class Operation extends Metadata
         return $this->priority;
     }
 
-    public function withPriority(int $priority = 0): static
+    public function withPriority(int $priority = 0): self
     {
         $self = clone $this;
         $self->priority = $priority;
@@ -952,7 +948,7 @@ abstract class Operation extends Metadata
         return $this->name;
     }
 
-    public function withName(string $name = ''): static
+    public function withName(string $name = ''): self
     {
         $self = clone $this;
         $self->name = $name;

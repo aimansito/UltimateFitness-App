@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
+import solicitudesService from '../../services/solicitudesService';
+import { useToast } from '../../context/ToastContext';
 import { EntrenadorCard } from '../../components/user/EntrenadorCard';
+import PanelSocial from '../../components/social/PanelSocial';
+import { ENTRENADORES, PAGOS } from '../../config/funciones';
 import {
   User,
   Dumbbell,
@@ -22,19 +26,23 @@ import {
   Phone,
   ChevronRight,
   Loader,
-  Crown
+  Crown,
+  Search,
+  X
 } from 'lucide-react';
 
 function DashboardUsuario() {
-  const { user, isPremium } = useAuth();
+  const { user, accesoCompleto: isPremium } = useAuth();
+  const toast = useToast();
   const [estadisticas, setEstadisticas] = useState(null);
   const [entrenador, setEntrenador] = useState(null);
+  const [miSolicitud, setMiSolicitud] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await api.get(`/usuarios/${user.id}/progreso`);
+        const response = await api.get(`/custom/usuarios/${user.id}/progreso`);
         if (response.data.success) {
           const stats = response.data.estadisticas;
           const uData = response.data.usuario;
@@ -44,9 +52,9 @@ function DashboardUsuario() {
             entrenamientos_pendientes: (stats.totalAgendados || 0) - (stats.totalCompletados || 0),
             dias_activo_mes: stats.diasActivo || 0,
             objetivo: uData.objetivo || user?.objetivo || 'Mantener peso',
-            peso_actual: user?.peso_actual || 70,
-            proximo_entrenamiento: new Date().toISOString(),
-            racha_dias: stats.diasActivo > 0 ? 1 : 0
+            peso_actual: user?.peso_actual ?? null,
+            proximo_entrenamiento: null,
+            entrenamientos_agendados: stats.totalAgendados || 0
           } : {
             demo_entrenamientos: stats.totalAgendados || 0,
             demo_dietas: 0,
@@ -65,22 +73,49 @@ function DashboardUsuario() {
     if (user) fetchDashboardData();
   }, [user, isPremium]);
 
-  useEffect(() => {
-    const fetchEntrenador = async () => {
-      if (isPremium) {
-        try {
-          const response = await api.get('/suscripciones/mi-entrenador');
-          if (response.data.success) {
-            setEntrenador(response.data.entrenador);
-          }
-        } catch (error) {
-          console.log('Usuario premium sin entrenador asignado aún');
-        }
-      }
-    };
+  const fetchEntrenador = async () => {
+    if (!ENTRENADORES || !isPremium) return;
 
+    try {
+      const response = await api.get('/suscripciones/mi-entrenador');
+      if (response.data.success) {
+        setEntrenador(response.data.entrenador);
+        setMiSolicitud(null);
+        return;
+      }
+    } catch {
+      // Usuario premium sin entrenador asignado aún
+    }
+
+    const resSolicitud = await solicitudesService.miSolicitud();
+    setMiSolicitud(resSolicitud.success ? resSolicitud.solicitud : null);
+  };
+
+  useEffect(() => {
     fetchEntrenador();
   }, [isPremium]);
+
+  const handleFinalizarRelacion = async () => {
+    const res = await solicitudesService.finalizar();
+    if (res.success) {
+      toast.success('Relación finalizada');
+      setEntrenador(null);
+      fetchEntrenador();
+    } else {
+      toast.error(res.error);
+    }
+  };
+
+  const handleCancelarSolicitud = async () => {
+    if (!miSolicitud) return;
+    const res = await solicitudesService.cancelar(miSolicitud.id);
+    if (res.success) {
+      toast.success('Solicitud cancelada');
+      setMiSolicitud(null);
+    } else {
+      toast.error(res.error);
+    }
+  };
 
   if (loading) {
     return (
@@ -95,7 +130,7 @@ function DashboardUsuario() {
   ======================================= */
   if (!isPremium) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-uf-darker to-black py-12 px-4 relative overflow-hidden">
+      <div className="min-h-screen bg-uf-darker py-12 px-4 relative overflow-hidden">
         {/* Glow Effects */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-uf-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
@@ -116,7 +151,9 @@ function DashboardUsuario() {
           </div>
 
           {/* Contenido principal */}
-          <div className="bg-gray-900/80 backdrop-blur-2xl p-8 rounded-b-2xl border-x border-b border-gray-800 shadow-2xl">
+          <div className="bg-uf-card p-8 rounded-b-2xl border-x border-b border-uf-line shadow-2xl">
+
+            <PanelSocial />
 
             {/* Banner Objetivo */}
             <div className="bg-gradient-to-r from-blue-900/40 to-black border border-blue-500/30 p-8 rounded-2xl mb-8 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-blue-500/50 transition">
@@ -125,7 +162,7 @@ function DashboardUsuario() {
                   <Target className="text-blue-400 w-6 h-6" /> Objetivo Principal
                 </h3>
                 <p className="text-4xl text-white font-bold capitalize">
-                  {estadisticas?.objetivo}
+                  {(estadisticas?.objetivo || user?.objetivo || 'Sin definir').replace(/_/g, ' ')}
                 </p>
               </div>
               <div className="text-right">
@@ -168,14 +205,14 @@ function DashboardUsuario() {
      LAYOUT - USUARIO PREMIUM
   ======================================= */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black py-12 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-uf-darker py-12 px-4 relative overflow-hidden">
       {/* Background glow effects for Premium */}
       <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-red-600/10 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-uf-gold/10 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
-        <div className="bg-gradient-to-r from-red-800 via-red-700 to-red-900 py-8 px-10 rounded-t-2xl text-white shadow-2xl flex flex-col md:flex-row justify-between items-center gap-4 relative overflow-hidden">
+        <div className={`${PAGOS ? 'bg-gradient-to-r from-red-800 via-red-700 to-red-900 text-white' : 'bg-gradient-to-r from-uf-gold to-yellow-600 text-black'} py-8 px-10 rounded-t-2xl shadow-2xl flex flex-col md:flex-row justify-between items-center gap-4 relative overflow-hidden`}>
           <div className="absolute -right-10 -top-10 opacity-10 rotate-12">
             <Crown className="w-64 h-64" />
           </div>
@@ -184,50 +221,91 @@ function DashboardUsuario() {
               <Star className="w-8 h-8 text-uf-gold fill-uf-gold" />
             </div>
             <div>
-              <p className="text-red-200 uppercase tracking-widest text-xs font-bold mb-1">Miembro Exclusivo</p>
+              <p className={`${PAGOS ? 'text-red-200' : 'text-black/70'} uppercase tracking-widest text-xs font-bold mb-1`}>{PAGOS ? 'Miembro Exclusivo' : 'Tu panel'}</p>
               <h1 className="text-4xl font-anton font-bold tracking-wide">
                 HOLA, {user?.nombre?.toUpperCase()}
               </h1>
             </div>
           </div>
-          <div className="relative z-10 bg-black/20 backdrop-blur-md px-6 py-3 rounded-xl border border-red-500/30 flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-red-300" />
+          <div className={`relative z-10 bg-black/20 backdrop-blur-md px-6 py-3 rounded-xl border flex items-center gap-3 ${PAGOS ? 'border-red-500/30' : 'border-black/10'}`}>
+            <Calendar className={`w-5 h-5 ${PAGOS ? 'text-red-300' : 'text-black'}`} />
             <span className="font-semibold tracking-wide">{new Date().toLocaleDateString('es-ES')}</span>
           </div>
         </div>
 
         {/* Contenido Dashboard Premium */}
-        <div className="bg-gray-900/60 backdrop-blur-2xl p-6 md:p-10 rounded-b-2xl border-x border-b border-red-900/50 shadow-2xl">
+        <div className="bg-uf-card p-6 md:p-10 rounded-b-2xl border-x border-b border-uf-line shadow-2xl">
+
+          <PanelSocial />
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10">
-            <Stat icon={<CheckCircle className="text-green-500" />} label="Completados" value={estadisticas?.entrenamientos_completados} border="border-green-500/30" bg="bg-green-500/5" />
-            <Stat icon={<Clock className="text-orange-500" />} label="Pendientes" value={estadisticas?.entrenamientos_pendientes} border="border-orange-500/30" bg="bg-orange-500/5" />
-            <Stat icon={<Activity className="text-blue-500" />} label="Días Activo" value={estadisticas?.dias_activo_mes} border="border-blue-500/30" bg="bg-blue-500/5" />
-            <Stat icon={<Zap className="text-uf-gold" />} label="Racha Actual" value={`${estadisticas?.racha_dias} 🔥`} border="border-uf-gold/30" bg="bg-uf-gold/5" />
+            <Stat icon={<CheckCircle className="text-green-500" />} label="Completados" value={estadisticas?.entrenamientos_completados ?? 0} border="border-green-500/30" bg="bg-green-500/5" />
+            <Stat icon={<Clock className="text-orange-500" />} label="Pendientes" value={estadisticas?.entrenamientos_pendientes ?? 0} border="border-orange-500/30" bg="bg-orange-500/5" />
+            <Stat icon={<Activity className="text-blue-500" />} label="Días Activo" value={estadisticas?.dias_activo_mes ?? 0} border="border-blue-500/30" bg="bg-blue-500/5" />
+            <Stat icon={<Zap className="text-uf-gold" />} label="Agendados" value={estadisticas?.entrenamientos_agendados ?? 0} border="border-uf-gold/30" bg="bg-uf-gold/5" />
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8 mb-10">
+          <div className={`grid gap-8 mb-10 ${ENTRENADORES ? 'lg:grid-cols-3' : 'md:grid-cols-2'}`}>
             {/* Columna Izquierda: Entrenador (ocupa 2 columnas) */}
+            {ENTRENADORES && (
             <div className="lg:col-span-2 flex flex-col gap-8">
               {/* MI ENTRENADOR */}
-              <div className="bg-gray-800/50 rounded-2xl border border-gray-700 p-1">
-                <EntrenadorCard entrenador={entrenador} />
-              </div>
+              {entrenador ? (
+                <div className="bg-gray-800/50 rounded-2xl border border-gray-700 p-1">
+                  <EntrenadorCard entrenador={entrenador} />
+                  <div className="px-6 pb-6">
+                    <button
+                      onClick={handleFinalizarRelacion}
+                      className="text-sm text-red-400 hover:text-red-300 font-semibold flex items-center gap-2"
+                    >
+                      <X className="w-4 h-4" /> Finalizar relación
+                    </button>
+                  </div>
+                </div>
+              ) : miSolicitud ? (
+                <div className="bg-gradient-to-br from-uf-gold/10 to-black border-2 border-uf-gold p-8 rounded-2xl">
+                  <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                    <Clock className="w-6 h-6 text-uf-gold" /> Solicitud pendiente
+                  </h3>
+                  <p className="text-gray-300 mb-4">
+                    Esperando respuesta de {miSolicitud.entrenador?.nombre_completo}.
+                  </p>
+                  <button
+                    onClick={handleCancelarSolicitud}
+                    className="text-sm text-red-400 hover:text-red-300 font-semibold flex items-center gap-2"
+                  >
+                    <X className="w-4 h-4" /> Cancelar solicitud
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-gray-800/40 border border-gray-700/50 border-dashed p-10 rounded-2xl text-center">
+                  <Search className="mx-auto text-uf-gold mb-4" size={40} />
+                  <h3 className="text-xl font-bold text-white mb-2">Aún no tienes entrenador</h3>
+                  <p className="text-gray-400 mb-6">Descubre entrenadores disponibles y solicita entrenar con el que más te convenza.</p>
+                  <Link
+                    to="/user/descubrir"
+                    className="inline-flex items-center gap-2 bg-uf-gold px-6 py-3 text-black font-bold uppercase tracking-wider rounded-xl hover:bg-yellow-500 transition-all"
+                  >
+                    <Search className="w-5 h-5" /> Buscar Entrenador
+                  </Link>
+                </div>
+              )}
             </div>
+            )}
 
             {/* Columna Derecha: Objetivos y Próximo entrenamiento */}
-            <div className="flex flex-col gap-6">
+            <div className={ENTRENADORES ? 'flex flex-col gap-6' : 'contents'}>
               <div className="bg-gradient-to-br from-purple-900/30 to-black border border-purple-500/30 p-6 rounded-2xl shadow-xl group hover:border-purple-500/60 transition">
                 <h3 className="text-purple-300 text-sm font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
                   <Target className="w-5 h-5 text-purple-400" /> Mi Meta
                 </h3>
                 <p className="text-white font-anton text-2xl uppercase tracking-wider mb-2 group-hover:text-purple-200 transition">
-                  {estadisticas?.objetivo}
+                  {(estadisticas?.objetivo || user?.objetivo || 'Sin definir').replace(/_/g, ' ')}
                 </p>
                 <div className="bg-black/50 rounded-lg p-3 inline-flex items-center gap-3">
                   <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></div>
-                  <span className="text-gray-300 font-semibold">{estadisticas?.peso_actual} kg</span>
+                  <span className="text-gray-300 font-semibold">{estadisticas?.peso_actual ?? user?.peso_actual ?? '—'} kg</span>
                 </div>
               </div>
 
@@ -237,7 +315,9 @@ function DashboardUsuario() {
                     <Calendar className="w-5 h-5 text-red-500" /> Siguiente Cita
                   </h3>
                   <p className="text-white font-anton text-3xl mb-4">
-                    {new Date(estadisticas?.proximo_entrenamiento).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+                    {estadisticas?.proximo_entrenamiento
+                      ? new Date(estadisticas.proximo_entrenamiento).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })
+                      : 'Sin planificar'}
                   </p>
                 </div>
                 <Link
@@ -254,7 +334,11 @@ function DashboardUsuario() {
           <div className="grid md:grid-cols-3 gap-6">
             <Quick to="/mis-entrenamientos" icon={<Dumbbell className="w-8 h-8 text-blue-400 mb-3" />} title="Rutinas" hoverColor="hover:border-blue-500/50 hover:shadow-blue-500/10" />
             <Quick to="/mis-dietas" icon={<Utensils className="w-8 h-8 text-green-400 mb-3" />} title="Mi Dieta" hoverColor="hover:border-green-500/50 hover:shadow-green-500/10" />
-            <Quick to="/mi-suscripcion" icon={<CreditCard className="w-8 h-8 text-uf-gold mb-3" />} title="Facturación" hoverColor="hover:border-uf-gold/50 hover:shadow-uf-gold/10" />
+            {PAGOS ? (
+              <Quick to="/mi-suscripcion" icon={<CreditCard className="w-8 h-8 text-uf-gold mb-3" />} title="Facturación" hoverColor="hover:border-uf-gold/50 hover:shadow-uf-gold/10" />
+            ) : (
+              <Quick to="/perfil/datos" icon={<User className="w-8 h-8 text-uf-gold mb-3" />} title="Mis datos" hoverColor="hover:border-uf-gold/50 hover:shadow-uf-gold/10" />
+            )}
           </div>
 
         </div>

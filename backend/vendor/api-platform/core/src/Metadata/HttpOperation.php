@@ -155,8 +155,6 @@ class HttpOperation extends Operation
         protected ?array $exceptionToStatus = null,
         protected ?array $links = null,
         protected ?array $errors = null,
-        protected ?bool $strictQueryParameterValidation = null,
-        protected ?bool $hideHydraOperation = null,
 
         ?string $shortName = null,
         ?string $class = null,
@@ -259,8 +257,6 @@ class HttpOperation extends Operation
             policy: $policy,
             middleware: $middleware,
             queryParameterValidationEnabled: $queryParameterValidationEnabled,
-            strictQueryParameterValidation: $strictQueryParameterValidation,
-            hideHydraOperation: $hideHydraOperation,
             extraProperties: $extraProperties
         );
     }
@@ -270,7 +266,7 @@ class HttpOperation extends Operation
         return $this->method;
     }
 
-    public function withMethod(string $method): static
+    public function withMethod(string $method): self
     {
         $self = clone $this;
         $self->method = $method;
@@ -299,7 +295,7 @@ class HttpOperation extends Operation
     /**
      * @param string[]|string $types
      */
-    public function withTypes($types): static
+    public function withTypes($types): self
     {
         $self = clone $this;
         $self->types = (array) $types;
@@ -312,7 +308,7 @@ class HttpOperation extends Operation
         return $this->formats;
     }
 
-    public function withFormats($formats = null): static
+    public function withFormats($formats = null): self
     {
         $self = clone $this;
         $self->formats = $formats;
@@ -325,7 +321,7 @@ class HttpOperation extends Operation
         return $this->inputFormats;
     }
 
-    public function withInputFormats($inputFormats = null): static
+    public function withInputFormats($inputFormats = null): self
     {
         $self = clone $this;
         $self->inputFormats = $inputFormats;
@@ -338,7 +334,7 @@ class HttpOperation extends Operation
         return $this->outputFormats;
     }
 
-    public function withOutputFormats($outputFormats = null): static
+    public function withOutputFormats($outputFormats = null): self
     {
         $self = clone $this;
         $self->outputFormats = $outputFormats;
@@ -351,7 +347,7 @@ class HttpOperation extends Operation
         return $this->uriVariables;
     }
 
-    public function withUriVariables($uriVariables): static
+    public function withUriVariables($uriVariables): self
     {
         $self = clone $this;
         $self->uriVariables = $uriVariables;
@@ -364,7 +360,7 @@ class HttpOperation extends Operation
         return $this->routePrefix;
     }
 
-    public function withRoutePrefix(string $routePrefix): static
+    public function withRoutePrefix(string $routePrefix): self
     {
         $self = clone $this;
         $self->routePrefix = $routePrefix;
@@ -377,7 +373,7 @@ class HttpOperation extends Operation
         return $this->routeName;
     }
 
-    public function withRouteName(?string $routeName): static
+    public function withRouteName(?string $routeName): self
     {
         $self = clone $this;
         $self->routeName = $routeName;
@@ -390,7 +386,7 @@ class HttpOperation extends Operation
         return $this->defaults;
     }
 
-    public function withDefaults(array $defaults): static
+    public function withDefaults(array $defaults): self
     {
         $self = clone $this;
         $self->defaults = $defaults;
@@ -403,7 +399,7 @@ class HttpOperation extends Operation
         return $this->requirements;
     }
 
-    public function withRequirements(array $requirements): static
+    public function withRequirements(array $requirements): self
     {
         $self = clone $this;
         $self->requirements = $requirements;
@@ -416,7 +412,7 @@ class HttpOperation extends Operation
         return $this->options;
     }
 
-    public function withOptions(array $options): static
+    public function withOptions(array $options): self
     {
         $self = clone $this;
         $self->options = $options;
@@ -429,7 +425,7 @@ class HttpOperation extends Operation
         return $this->stateless;
     }
 
-    public function withStateless($stateless): static
+    public function withStateless($stateless): self
     {
         $self = clone $this;
         $self->stateless = $stateless;
@@ -442,7 +438,7 @@ class HttpOperation extends Operation
         return $this->sunset;
     }
 
-    public function withSunset(string $sunset): static
+    public function withSunset(string $sunset): self
     {
         $self = clone $this;
         $self->sunset = $sunset;
@@ -455,7 +451,7 @@ class HttpOperation extends Operation
         return $this->acceptPatch;
     }
 
-    public function withAcceptPatch(string $acceptPatch): static
+    public function withAcceptPatch(string $acceptPatch): self
     {
         $self = clone $this;
         $self->acceptPatch = $acceptPatch;
@@ -468,7 +464,7 @@ class HttpOperation extends Operation
         return $this->status;
     }
 
-    public function withStatus(int $status): static
+    public function withStatus(int $status): self
     {
         $self = clone $this;
         $self->status = $status;
@@ -481,7 +477,7 @@ class HttpOperation extends Operation
         return $this->host;
     }
 
-    public function withHost(string $host): static
+    public function withHost(string $host): self
     {
         $self = clone $this;
         $self->host = $host;
@@ -494,7 +490,7 @@ class HttpOperation extends Operation
         return $this->schemes;
     }
 
-    public function withSchemes(array $schemes): static
+    public function withSchemes(array $schemes): self
     {
         $self = clone $this;
         $self->schemes = $schemes;
@@ -507,7 +503,7 @@ class HttpOperation extends Operation
         return $this->condition;
     }
 
-    public function withCondition(string $condition): static
+    public function withCondition(string $condition): self
     {
         $self = clone $this;
         $self->condition = $condition;
@@ -520,7 +516,7 @@ class HttpOperation extends Operation
         return $this->controller;
     }
 
-    public function withController(string $controller): static
+    public function withController(string $controller): self
     {
         $self = clone $this;
         $self->controller = $controller;
@@ -533,7 +529,7 @@ class HttpOperation extends Operation
         return $this->headers;
     }
 
-    public function withHeaders(array $headers): static
+    public function withHeaders(array $headers): self
     {
         $self = clone $this;
         $self->headers = $headers;
@@ -546,7 +542,7 @@ class HttpOperation extends Operation
         return $this->cacheHeaders;
     }
 
-    public function withCacheHeaders(array $cacheHeaders): static
+    public function withCacheHeaders(array $cacheHeaders): self
     {
         $self = clone $this;
         $self->cacheHeaders = $cacheHeaders;
@@ -559,7 +555,7 @@ class HttpOperation extends Operation
         return $this->paginationViaCursor;
     }
 
-    public function withPaginationViaCursor(array $paginationViaCursor): static
+    public function withPaginationViaCursor(array $paginationViaCursor): self
     {
         $self = clone $this;
         $self->paginationViaCursor = $paginationViaCursor;
@@ -572,7 +568,7 @@ class HttpOperation extends Operation
         return $this->hydraContext;
     }
 
-    public function withHydraContext(array $hydraContext): static
+    public function withHydraContext(array $hydraContext): self
     {
         $self = clone $this;
         $self->hydraContext = $hydraContext;
@@ -585,7 +581,7 @@ class HttpOperation extends Operation
         return $this->openapi;
     }
 
-    public function withOpenapi(bool|OpenApiOperation|Webhook $openapi): static
+    public function withOpenapi(bool|OpenApiOperation|Webhook $openapi): self
     {
         $self = clone $this;
         $self->openapi = $openapi;
@@ -598,7 +594,7 @@ class HttpOperation extends Operation
         return $this->exceptionToStatus;
     }
 
-    public function withExceptionToStatus(array $exceptionToStatus): static
+    public function withExceptionToStatus(array $exceptionToStatus): self
     {
         $self = clone $this;
         $self->exceptionToStatus = $exceptionToStatus;
@@ -614,7 +610,7 @@ class HttpOperation extends Operation
     /**
      * @param WebLink[] $links
      */
-    public function withLinks(array $links): static
+    public function withLinks(array $links): self
     {
         $self = clone $this;
         $self->links = $links;
@@ -630,7 +626,7 @@ class HttpOperation extends Operation
     /**
      * @param class-string<ProblemExceptionInterface>[] $errors
      */
-    public function withErrors(array $errors): static
+    public function withErrors(array $errors): self
     {
         $self = clone $this;
         $self->errors = $errors;

@@ -1,266 +1,104 @@
 // ============================================
-// GYM - Biblioteca de ejercicios
+// GYM - Biblioteca de ejercicios de gimnasio
 // ============================================
-import api from "../../services/api";
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import TarjetaEjercicio from '../../components/gym/TarjetaEjercicio';
-import ModalEjercicio from '../../components/gym/ModalEjercicio';
-import BarraFiltros from '../../components/gym/BarraFiltros';
-import SEO from '../../components/common/SEO';
+import BibliotecaEjercicios from '../../components/gym/BibliotecaEjercicios';
+
+const EJERCICIOS_MUESTRA = [
+  {
+    id: 1,
+    nombre: 'Press de Banca',
+    descripcion: 'Ejercicio fundamental para el desarrollo del pecho',
+    grupoMuscular: 'pecho',
+    tipo: 'compuesto',
+    nivelDificultad: 'intermedio',
+    valoracionPromedio: 4.8,
+    totalValoraciones: 245,
+    videoUrl: null,
+  },
+  {
+    id: 2,
+    nombre: 'Sentadillas',
+    descripcion: 'El rey de los ejercicios para piernas',
+    grupoMuscular: 'piernas',
+    tipo: 'compuesto',
+    nivelDificultad: 'intermedio',
+    valoracionPromedio: 4.9,
+    totalValoraciones: 312,
+    videoUrl: null,
+  },
+  {
+    id: 3,
+    nombre: 'Dominadas',
+    descripcion: 'Ejercicio completo para la espalda',
+    grupoMuscular: 'espalda',
+    tipo: 'compuesto',
+    nivelDificultad: 'avanzado',
+    valoracionPromedio: 4.7,
+    totalValoraciones: 198,
+    videoUrl: null,
+  },
+  {
+    id: 4,
+    nombre: 'Curl de Bíceps',
+    descripcion: 'Aislamiento para el desarrollo de bíceps',
+    grupoMuscular: 'biceps',
+    tipo: 'aislamiento',
+    nivelDificultad: 'principiante',
+    valoracionPromedio: 4.5,
+    totalValoraciones: 167,
+    videoUrl: null,
+  },
+  {
+    id: 5,
+    nombre: 'Press Militar',
+    descripcion: 'Press de hombro de pie con barra, básico de fuerza para deltoides',
+    grupoMuscular: 'hombros',
+    tipo: 'compuesto',
+    nivelDificultad: 'avanzado',
+    valoracionPromedio: 4.7,
+    totalValoraciones: 198,
+    videoUrl: null,
+  },
+  {
+    id: 6,
+    nombre: 'Plancha Abdominal',
+    descripcion: 'Isométrico de core manteniendo el cuerpo alineado',
+    grupoMuscular: 'core',
+    tipo: 'aislamiento',
+    nivelDificultad: 'principiante',
+    valoracionPromedio: 4.7,
+    totalValoraciones: 289,
+    videoUrl: null,
+  },
+];
+
+const RUTINA_EJEMPLO = [
+  { dia: 'Lunes', grupo: 'pecho', titulo: 'Pecho', ejercicio: 'Press de Banca' },
+  { dia: 'Martes', grupo: 'espalda', titulo: 'Espalda', ejercicio: 'Dominadas' },
+  { dia: 'Miércoles', grupo: 'piernas', titulo: 'Piernas', ejercicio: 'Sentadillas' },
+  { dia: 'Jueves', grupo: null, titulo: 'Descanso', ejercicio: null },
+  { dia: 'Viernes', grupo: 'hombros', titulo: 'Hombros', ejercicio: 'Press Militar' },
+  { dia: 'Sábado', grupo: 'brazos', titulo: 'Brazos', ejercicio: 'Curl de Bíceps' },
+  { dia: 'Domingo', grupo: null, titulo: 'Descanso', ejercicio: null },
+];
 
 function Gym() {
-  // ============================================
-  // ESTADO
-  // ============================================
-  const { isPremium, isAuthenticated } = useAuth();
-  const [ejercicios, setEjercicios] = useState([]);
-  const [ejerciciosFiltrados, setEjerciciosFiltrados] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
-  const [ejercicioSeleccionado, setEjercicioSeleccionado] = useState(null);
-
-  // Filtros
-  const [musculoSeleccionado, setMusculoSeleccionado] = useState('TODOS');
-  const [nivelSeleccionado, setNivelSeleccionado] = useState('');
-
-  // ============================================
-  // GRUPOS MUSCULARES
-  // ============================================
-  const gruposMusculares = [
-    { id: 'TODOS', nombre: 'TODOS' },
-    { id: 'pecho', nombre: 'PECHO' },
-    { id: 'espalda', nombre: 'ESPALDA' },
-    { id: 'piernas', nombre: 'PIERNAS' },
-    { id: 'hombros', nombre: 'HOMBROS' },
-    { id: 'biceps', nombre: 'BÍCEPS' },
-    { id: 'triceps', nombre: 'TRÍCEPS' },
-    { id: 'core', nombre: 'CORE' },
-    { id: 'gluteos', nombre: 'GLÚTEOS' }
-  ];
-
-  // ============================================
-  // CARGAR EJERCICIOS
-  // ============================================
-  useEffect(() => {
-    cargarEjercicios();
-  }, []);
-
-  const cargarEjercicios = async () => {
-    try {
-      setCargando(true);
-      setError(null);
-
-      // Si no está autenticado, mostrar ejercicios de muestra
-      if (!isAuthenticated) {
-        const ejerciciosMuestra = [
-          {
-            id: 1,
-            nombre: "Press de Banca",
-            descripcion: "Ejercicio fundamental para el desarrollo del pecho",
-            grupoMuscular: "pecho",
-            tipo: "compuesto",
-            nivelDificultad: "intermedio",
-            valoracionPromedio: 4.8,
-            totalValoraciones: 245,
-            videoUrl: null
-          },
-          {
-            id: 2,
-            nombre: "Sentadillas",
-            descripcion: "El rey de los ejercicios para piernas",
-            grupoMuscular: "piernas",
-            tipo: "compuesto",
-            nivelDificultad: "intermedio",
-            valoracionPromedio: 4.9,
-            totalValoraciones: 312,
-            videoUrl: null
-          },
-          {
-            id: 3,
-            nombre: "Dominadas",
-            descripcion: "Ejercicio completo para la espalda",
-            grupoMuscular: "espalda",
-            tipo: "compuesto",
-            nivelDificultad: "avanzado",
-            valoracionPromedio: 4.7,
-            totalValoraciones: 198,
-            videoUrl: null
-          },
-          {
-            id: 4,
-            nombre: "Curl de Bíceps",
-            descripcion: "Aislamiento para el desarrollo de bíceps",
-            grupoMuscular: "biceps",
-            tipo: "aislamiento",
-            nivelDificultad: "principiante",
-            valoracionPromedio: 4.5,
-            totalValoraciones: 167,
-            videoUrl: null
-          }
-        ];
-
-        setEjercicios(ejerciciosMuestra);
-        setEjerciciosFiltrados(ejerciciosMuestra);
-        setCargando(false);
-        return;
-      }
-
-      // Si está autenticado, cargar desde API
-      const response = await api.get("/custom/ejercicios");
-      const ejerciciosData = response.data;
-      setEjercicios(ejerciciosData);
-      setEjerciciosFiltrados(ejerciciosData);
-
-    } catch (err) {
-      console.error("❌ Error:", err);
-      setError(err.message);
-    } finally {
-      setCargando(false);
-    }
-  };
-
-  // ============================================
-  // FILTRAR EJERCICIOS
-  // ============================================
-  useEffect(() => {
-    let filtrados = [...ejercicios];
-
-    if (musculoSeleccionado !== 'TODOS') {
-      filtrados = filtrados.filter(ej =>
-        ej.grupoMuscular?.toLowerCase() === musculoSeleccionado.toLowerCase()
-      );
-    }
-
-    if (nivelSeleccionado) {
-      filtrados = filtrados.filter(ej =>
-        ej.nivelDificultad?.toLowerCase() === nivelSeleccionado.toLowerCase()
-      );
-    }
-
-    setEjerciciosFiltrados(filtrados);
-  }, [musculoSeleccionado, nivelSeleccionado, ejercicios]);
-
-  // ============================================
-  // ABRIR MODAL
-  // ============================================
-  const abrirModal = (ejercicio) => {
-    setEjercicioSeleccionado(ejercicio);
-  };
-
-  // ============================================
-  // RENDER
-  // ============================================
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black py-12">
-      <SEO 
-        title="Gimnasio y Ejercicios" 
-        description="Biblioteca completa de ejercicios de gimnasio, clasificados por grupo muscular y nivel. Domina la técnica perfecta."
-        keywords="ejercicios gimnasio, cómo hacer press de banca, rutinas gym, ejercicios pecho, ejercicios espalda, fitness"
-      />
-      <div className="container mx-auto px-4">
-
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-anton font-bold text-white mb-4 uppercase tracking-wider">
-            Biblioteca de <span className="text-uf-gold">Ejercicios</span>
-          </h1>
-          <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-            Explora nuestra colección completa de ejercicios
-          </p>
-        </div>
-
-        {!isAuthenticated && (
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="bg-gradient-to-r from-uf-gold/20 to-yellow-600/20 border-2 border-uf-gold rounded-xl p-8 text-center">
-              <h3 className="text-2xl font-bold text-white mb-3">
-                Regístrate para Ver Todos los Ejercicios
-              </h3>
-              <p className="text-gray-300 mb-4">
-                Accede a nuestra biblioteca completa con más de 60 ejercicios profesionales con videos HD
-              </p>
-              <div className="flex gap-4 justify-center">
-                <a href="/register" className="bg-uf-gold text-black font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition">
-                  Registrarse Gratis
-                </a>
-                <a href="/login" className="bg-gray-700 text-white font-bold px-8 py-3 rounded-lg hover:bg-gray-600 transition">
-                  Iniciar Sesión
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {isAuthenticated && !isPremium && (
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="bg-gradient-to-r from-uf-gold/20 to-yellow-600/20 border-2 border-uf-gold rounded-xl p-6 text-center">
-              <h3 className="text-xl font-bold text-white mb-3">
-                Hazte Premium para acceder a videos HD
-              </h3>
-              <a href="/upgrade-premium" className="inline-block bg-uf-gold text-black font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition">
-                Actualizar a Premium
-              </a>
-            </div>
-          </div>
-        )}
-
-        {!cargando && !error && (
-          <BarraFiltros
-            gruposMusculares={gruposMusculares}
-            musculoSeleccionado={musculoSeleccionado}
-            setMusculoSeleccionado={setMusculoSeleccionado}
-            nivelSeleccionado={nivelSeleccionado}
-            setNivelSeleccionado={setNivelSeleccionado}
-          />
-        )}
-
-        {cargando && (
-          <div className="flex flex-col justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-uf-gold mb-4"></div>
-            <p className="text-white text-xl">Cargando...</p>
-          </div>
-        )}
-
-        {error && (
-          <div className="text-center py-20">
-            <p className="text-red-400 text-xl mb-4">Error al cargar</p>
-            <button
-              onClick={cargarEjercicios}
-              className="bg-uf-gold text-black font-bold px-8 py-3 rounded-lg"
-            >
-              Reintentar
-            </button>
-          </div>
-        )}
-
-        {!cargando && !error && ejerciciosFiltrados.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {ejerciciosFiltrados.map((ejercicio) => (
-              <TarjetaEjercicio
-                key={ejercicio.id}
-                ejercicio={ejercicio}
-                isPremium={isPremium}
-                onClick={() => abrirModal(ejercicio)}
-              />
-            ))}
-          </div>
-        )}
-
-        {!cargando && !error && ejerciciosFiltrados.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-gray-400 text-xl">No se encontraron ejercicios</p>
-          </div>
-        )}
-
-      </div>
-
-      {ejercicioSeleccionado && (
-        <ModalEjercicio
-          ejercicio={ejercicioSeleccionado}
-          onClose={() => setEjercicioSeleccionado(null)}
-          isPremium={isPremium}
-        />
-      )}
-    </div>
+    <BibliotecaEjercicios
+      seo={{
+        title: 'Gimnasio y Ejercicios',
+        description:
+          'Biblioteca completa de ejercicios de gimnasio, clasificados por grupo muscular y nivel. Domina la técnica perfecta.',
+        keywords:
+          'ejercicios gimnasio, cómo hacer press de banca, rutinas gym, ejercicios pecho, ejercicios espalda, fitness',
+      }}
+      eyebrow="Gym training"
+      title="Biblioteca de"
+      highlight="Ejercicios"
+      subtitle="Explora los ejercicios por grupo muscular y nivel, con la zona trabajada marcada en cada uno."
+      ejerciciosMuestra={EJERCICIOS_MUESTRA}
+      rutinaEjemplo={RUTINA_EJEMPLO}
+    />
   );
 }
 

@@ -15,6 +15,49 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_dia', columns: ['dia_semana'])]
 class CalendarioUsuario
 {
+    #[ORM\Column(name: 'compartido_en_feed', options: ['default' => false])]
+    private bool $compartidoEnFeed = false;
+
+    #[ORM\Column(name: 'fecha_completado', type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $fechaCompletado = null;
+
+    // Tarjeta del entreno: se gestionan por SQL en SocialController; mapeadas para que el esquema cuadre
+    #[ORM\Column(name: 'foto_url', length: 500, nullable: true)]
+    private ?string $fotoUrl = null;
+
+    #[ORM\Column(name: 'dia_hecho', length: 100, nullable: true)]
+    private ?string $diaHecho = null;
+
+    #[ORM\Column(name: 'ejercicios_hechos', type: 'json', nullable: true)]
+    private ?array $ejerciciosHechos = null;
+
+    public function getFotoUrl(): ?string
+    {
+        return $this->fotoUrl;
+    }
+
+    public function isCompartidoEnFeed(): bool
+    {
+        return $this->compartidoEnFeed;
+    }
+
+    public function setCompartidoEnFeed(bool $compartidoEnFeed): static
+    {
+        $this->compartidoEnFeed = $compartidoEnFeed;
+        return $this;
+    }
+
+    public function getFechaCompletado(): ?\DateTimeInterface
+    {
+        return $this->fechaCompletado;
+    }
+
+    public function setFechaCompletado(?\DateTimeInterface $fechaCompletado): static
+    {
+        $this->fechaCompletado = $fechaCompletado;
+        return $this;
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

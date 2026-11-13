@@ -1,143 +1,128 @@
 // ============================================
-// TÉRMINOS Y CONDICIONES
+// TÉRMINOS Y CONDICIONES DE USO
 // ============================================
 import { Link } from 'react-router-dom';
-import { FileCheck, Shield } from 'lucide-react';
-import SEO from '../../components/common/SEO';
+import { FileText } from 'lucide-react';
+import { PaginaLegal, Lista, Correo } from '../../components/legal/PaginaLegal';
+import { TITULAR, EDAD_MINIMA } from '../../config/legal';
 
 function TerminosCondiciones() {
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-black via-uf-darker to-black py-12 px-4">
-            <SEO
-                title="Términos y Condiciones"
-                description="Términos y condiciones de uso de Ultimate Fitness. Reglas de suscripción, política de reembolsos y obligaciones del usuario."
-                keywords="términos condiciones, condiciones uso, suscripción fitness, reembolsos"
-            />
-            <div className="container mx-auto max-w-5xl">
+  const secciones = [
+    {
+      id: 'aceptacion',
+      titulo: 'Qué regulan',
+      contenido: (
+        <p>
+          Estas condiciones regulan el uso de {TITULAR.marca} con una cuenta registrada. Al crear la cuenta las aceptas. El titular del servicio se identifica en el{' '}
+          <Link to="/aviso-legal" className="text-uf-gold hover:underline">Aviso legal</Link> y el tratamiento de tus datos se explica en la{' '}
+          <Link to="/politica-privacidad" className="text-uf-gold hover:underline">Política de privacidad</Link>.
+        </p>
+      ),
+    },
+    {
+      id: 'servicio',
+      titulo: 'El servicio',
+      contenido: (
+        <>
+          <p>{TITULAR.marca} te permite:</p>
+          <Lista>
+            <li>Crear, organizar y planificar rutinas de entrenamiento y planes de alimentación.</li>
+            <li>Consultar la biblioteca de ejercicios, dietas y el blog.</li>
+            <li>Tener un perfil, seguir a otras personas y compartir, guardar o copiar rutinas, dietas y platos.</li>
+            <li>Registrar los entrenamientos que completas, con los ejercicios hechos y una foto opcional, compartirlos en el feed y descargar la imagen para tus redes.</li>
+          </Lista>
+          <p>El servicio es gratuito. Si en el futuro se ofrece algún plan de pago, se informará antes de forma clara y nunca se cobrará sin tu aceptación expresa.</p>
+        </>
+      ),
+    },
+    {
+      id: 'cuenta',
+      titulo: 'Tu cuenta',
+      contenido: (
+        <Lista>
+          <li>Debes tener al menos {EDAD_MINIMA} años.</li>
+          <li>Los datos que facilites deben ser veraces. No puedes suplantar a otra persona.</li>
+          <li>Eres responsable de mantener tu contraseña en secreto. Si sospechas que alguien la conoce, cámbiala.</li>
+          <li>Puedes eliminar tu cuenta cuando quieras desde <Link to="/cuenta" className="text-uf-gold hover:underline">Gestionar cuenta</Link>, o escribiendo a <Correo email={TITULAR.email} />.</li>
+        </Lista>
+      ),
+    },
+    {
+      id: 'contenido',
+      titulo: 'Contenido que publicas',
+      contenido: (
+        <>
+          <p>
+            Lo que creas (rutinas, dietas, platos, foto y biografía) sigue siendo tuyo. Cuando lo haces visible, nos permites mostrarlo en el servicio y permites a otras personas usuarias
+            verlo y guardarlo o copiarlo en su propia cuenta para uso personal. Este permiso es gratuito y termina cuando lo vuelves privado o lo borras, salvo las copias que otras personas ya hayan hecho.
+          </p>
+          <p>No puedes publicar contenido:</p>
+          <Lista>
+            <li>Que no sea tuyo o no tengas derecho a compartir (por ejemplo, fotos en las que salgan otras personas sin su permiso).</li>
+            <li>Fotos con desnudos, de contenido sexual o de menores de edad.</li>
+            <li>Ilegal, ofensivo, discriminatorio o que acose a otras personas.</li>
+            <li>Que recomiende prácticas peligrosas para la salud, sustancias prohibidas o dietas extremas.</li>
+            <li>Publicitario o de spam.</li>
+          </Lista>
+          <p>Podemos retirar el contenido que incumpla estas normas y, si el incumplimiento es grave o repetido, suspender la cuenta, informándote del motivo.</p>
+        </>
+      ),
+    },
+    {
+      id: 'salud',
+      titulo: 'Salud y responsabilidad',
+      contenido: (
+        <>
+          <p>
+            Las rutinas y dietas, incluidas las creadas por otras personas usuarias, son orientativas y no constituyen consejo médico, nutricional ni de un profesional del deporte.
+            Antes de empezar un programa de ejercicio o de cambiar tu alimentación, consulta con un profesional, sobre todo si tienes una lesión, una enfermedad, estás embarazada o tomas medicación.
+          </p>
+          <p>
+            Para el ejercicio, escucha a tu cuerpo y detente si notas dolor, mareo o malestar. El titular no responde de los daños derivados de seguir contenido publicado por otras personas usuarias,
+            sin perjuicio de los derechos que te reconoce la normativa de consumidores.
+          </p>
+        </>
+      ),
+    },
+    {
+      id: 'disponibilidad',
+      titulo: 'Disponibilidad y cambios del servicio',
+      contenido: (
+        <p>
+          Procuramos que el servicio funcione siempre, pero puede haber interrupciones por mantenimiento o causas ajenas. Podemos cambiar o retirar funciones;
+          si un cambio te afecta de forma importante, te avisaremos con antelación razonable.
+        </p>
+      ),
+    },
+    {
+      id: 'cambios',
+      titulo: 'Cambios en estas condiciones',
+      contenido: (
+        <p>
+          Si cambiamos estas condiciones te avisaremos por email o en la plataforma al menos 15 días antes de que se apliquen. Si no estás de acuerdo, puedes dejar de usar el servicio y eliminar tu cuenta.
+        </p>
+      ),
+    },
+    {
+      id: 'ley',
+      titulo: 'Ley aplicable y reclamaciones',
+      contenido: (
+        <p>
+          Se aplica la ley española. Para cualquier duda o reclamación escribe a <Correo email={TITULAR.email} />. Si eres consumidor, puedes acudir a los juzgados de tu domicilio.
+        </p>
+      ),
+    },
+  ];
 
-                {/* Header */}
-                <div className="bg-uf-gold rounded-t-lg py-8 px-6 text-center">
-                    <div className="flex items-center justify-center gap-3 mb-2">
-                        <FileCheck className="w-10 h-10 text-black" />
-                        <h1 className="text-4xl font-bold text-black uppercase tracking-wider">
-                            Términos y Condiciones
-                        </h1>
-                    </div>
-                    <p className="text-black/70 mt-2">Ultimate Fitness - Condiciones de Uso del Servicio</p>
-                </div>
-
-                {/* Contenido */}
-                <div className="bg-gray-800 rounded-b-lg shadow-2xl p-8 text-white space-y-8">
-
-                    {/* 1. Aceptación */}
-                    <section>
-                        <h2 className="text-2xl font-bold text-uf-gold mb-4">1. Aceptación de los Términos</h2>
-                        <p className="text-gray-300 leading-relaxed">
-                            Al registrarte y utilizar los servicios de Ultimate Fitness, aceptas estos Términos y Condiciones en su totalidad.
-                            Si no estás de acuerdo con alguna de estas condiciones, no debes utilizar nuestros servicios.
-                        </p>
-                    </section>
-
-                    {/* 2. Descripción del servicio */}
-                    <section>
-                        <h2 className="text-2xl font-bold text-uf-gold mb-4">2. Descripción del Servicio</h2>
-                        <p className="text-gray-300 leading-relaxed mb-4">Ultimate Fitness ofrece:</p>
-                        <ul className="list-disc list-inside text-gray-300 space-y-2 ml-4">
-                            <li>Planes de entrenamiento y rutinas de ejercicio.</li>
-                            <li>Planificador de dietas y calculadora nutricional.</li>
-                            <li>Contenido informativo a través del blog.</li>
-                            <li>Servicios premium con entrenador personal asignado (suscripción de pago).</li>
-                        </ul>
-                    </section>
-
-                    {/* 3. Registro */}
-                    <section>
-                        <h2 className="text-2xl font-bold text-uf-gold mb-4">3. Registro de Usuario</h2>
-                        <p className="text-gray-300 leading-relaxed mb-4">
-                            Para acceder a ciertos servicios, es necesario crear una cuenta. El usuario se compromete a:
-                        </p>
-                        <ul className="list-disc list-inside text-gray-300 space-y-2 ml-4">
-                            <li>Proporcionar información veraz y actualizada.</li>
-                            <li>Mantener la confidencialidad de sus credenciales de acceso.</li>
-                            <li>Ser mayor de 16 años o contar con el consentimiento de un tutor legal.</li>
-                            <li>No crear cuentas falsas ni suplantando la identidad de otras personas.</li>
-                        </ul>
-                    </section>
-
-                    {/* 4. Suscripciones y pagos */}
-                    <section>
-                        <h2 className="text-2xl font-bold text-uf-gold mb-4">4. Suscripciones y Pagos</h2>
-                        <div className="space-y-4">
-                            <div className="bg-gray-900 border-l-4 border-uf-gold p-4">
-                                <h3 className="font-bold text-white mb-2">Plan Gratuito</h3>
-                                <p className="text-gray-300">Acceso a contenido básico, rutinas generales y blog público.</p>
-                            </div>
-                            <div className="bg-gray-900 border-l-4 border-uf-gold p-4">
-                                <h3 className="font-bold text-white mb-2">Plan Premium</h3>
-                                <p className="text-gray-300">
-                                    Incluye entrenador personal, dietas personalizadas, contenido exclusivo y soporte prioritario.
-                                    El cobro se realiza de forma mensual a través de Stripe.
-                                </p>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* 5. Política de reembolsos */}
-                    <section>
-                        <h2 className="text-2xl font-bold text-uf-gold mb-4">5. Política de Cancelación y Reembolsos</h2>
-                        <ul className="list-disc list-inside text-gray-300 space-y-2 ml-4">
-                            <li>El usuario puede cancelar su suscripción en cualquier momento.</li>
-                            <li>La cancelación toma efecto al final del período facturado.</li>
-                            <li>No se realizan reembolsos por períodos parciales ya facturados.</li>
-                            <li>En caso de error en el cobro, contactar a soporte para su resolución.</li>
-                        </ul>
-                    </section>
-
-                    {/* 6. Contenido del usuario */}
-                    <section>
-                        <h2 className="text-2xl font-bold text-uf-gold mb-4">6. Contenido Generado por el Usuario</h2>
-                        <p className="text-gray-300 leading-relaxed">
-                            Los usuarios que creen contenido (dietas personalizadas, platos, valoraciones) mantienen la propiedad de dicho contenido.
-                            Al publicarlo en la plataforma, otorgan a Ultimate Fitness una licencia no exclusiva para mostrarlo en el servicio.
-                            Ultimate Fitness se reserva el derecho de eliminar contenido inapropiado o que vulnere derechos de terceros.
-                        </p>
-                    </section>
-
-                    {/* 7. Limitación de responsabilidad */}
-                    <section>
-                        <h2 className="text-2xl font-bold text-uf-gold mb-4">7. Limitación de Responsabilidad</h2>
-                        <div className="bg-gray-900 border border-red-500/30 rounded-lg p-4">
-                            <p className="text-gray-300 leading-relaxed">
-                                <strong className="text-red-400">Importante:</strong> Los planes de ejercicio y nutrición ofrecidos por Ultimate Fitness
-                                son informativos y no sustituyen el consejo de profesionales médicos. Consulta a un profesional de la salud
-                                antes de iniciar cualquier programa de ejercicio o dieta.
-                            </p>
-                        </div>
-                    </section>
-
-                    {/* 8. Modificaciones */}
-                    <section className="bg-uf-gold/10 border border-uf-gold rounded-lg p-6">
-                        <h2 className="text-2xl font-bold text-uf-gold mb-3">8. Modificación de los Términos</h2>
-                        <p className="text-gray-300 leading-relaxed">
-                            Ultimate Fitness se reserva el derecho de modificar estos términos. Los cambios significativos se
-                            notificarán mediante email o aviso en la plataforma. El uso continuado del servicio tras la notificación
-                            implica la aceptación de los términos modificados.
-                        </p>
-                    </section>
-
-                    {/* Volver */}
-                    <div className="text-center pt-6">
-                        <Link
-                            to="/"
-                            className="inline-block bg-uf-gold hover:bg-uf-blue text-black hover:text-white font-bold px-8 py-3 rounded-lg uppercase tracking-wider transition-all transform hover:scale-105"
-                        >
-                            Volver al Inicio
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <PaginaLegal
+      titulo="Términos y condiciones"
+      subtitulo="Las reglas para usar el servicio con tu cuenta."
+      descripcionSeo="Términos y condiciones de uso de Ultimate Fitness."
+      icono={FileText}
+      secciones={secciones}
+    />
+  );
 }
 
 export default TerminosCondiciones;

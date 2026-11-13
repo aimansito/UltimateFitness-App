@@ -3,138 +3,211 @@
 // ============================================
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowRight, Flame, FlaskConical, Lock, Salad, Star, Zap } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import SEO from '../../components/common/SEO';
+import PageHeader from '../../components/common/PageHeader';
+import Reveal from '../../components/common/Reveal';
+
+const OBJETIVOS = [
+  { id: 'TODAS', nombre: 'Todas' },
+  { id: 'perder_peso', nombre: 'Pérdida de peso' },
+  { id: 'ganar_masa', nombre: 'Ganancia muscular' },
+  { id: 'definicion', nombre: 'Definición' },
+  { id: 'rendimiento', nombre: 'Rendimiento deportivo' },
+  { id: 'mantenimiento', nombre: 'Mantenimiento' },
+];
+
+// Plan semanal de ejemplo (solo para visitantes)
+const PLAN_EJEMPLO = [
+  { dia: 'Lunes', comida: 'Pollo con arroz y verduras', kcal: '2.200 kcal' },
+  { dia: 'Martes', comida: 'Salmón con batata asada', kcal: '2.100 kcal' },
+  { dia: 'Miércoles', comida: 'Pasta integral con pavo', kcal: '2.300 kcal' },
+  { dia: 'Jueves', comida: 'Tortilla de claras y avena', kcal: '2.000 kcal' },
+  { dia: 'Viernes', comida: 'Ternera con quinoa', kcal: '2.250 kcal' },
+  { dia: 'Sábado', comida: 'Pescado blanco con ensalada', kcal: '2.100 kcal' },
+  { dia: 'Domingo', comida: 'Comida libre controlada', kcal: '2.400 kcal' },
+];
+
+const SUPLEMENTOS = [
+  { nombre: 'Whey Protein Isolate', categoria: 'Proteína', descripcion: 'Proteína de suero aislada de máxima pureza', premium: false },
+  { nombre: 'Creatina Monohidrato', categoria: 'Creatina', descripcion: 'Creatina pura micronizada de grado farmacéutico', premium: false },
+  { nombre: 'Pre-Workout Extreme', categoria: 'Pre-entreno', descripcion: 'Fórmula avanzada con cafeína y beta-alanina', premium: true },
+];
 
 function Alimentacion() {
-  const { isPremium } = useAuth();
+  const { accesoCompleto: isPremium, isAuthenticated } = useAuth();
   const [dietas, setDietas] = useState([]);
   const [dietasFiltradas, setDietasFiltradas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [objetivoSeleccionado, setObjetivoSeleccionado] = useState('TODAS');
 
-  const objetivos = [
-    { id: 'TODAS', nombre: 'TODAS' },
-    { id: 'perder_peso', nombre: 'PÉRDIDA DE PESO' },
-    { id: 'ganar_masa', nombre: 'GANANCIA MUSCULAR' },
-    { id: 'definicion', nombre: 'DEFINICIÓN' },
-    { id: 'rendimiento', nombre: 'RENDIMIENTO DEPORTIVO' },
-    { id: 'mantenimiento', nombre: 'MANTENIMIENTO' }
-  ];
-
   useEffect(() => {
+    const cargarDietas = async () => {
+      try {
+        setCargando(true);
+        const response = await api.get('/custom/dietas/publicas');
+        const dietasData = response.data?.dietas || [];
+        setDietas(dietasData);
+        setDietasFiltradas(dietasData);
+      } catch (error) {
+        console.error('Error cargando dietas:', error);
+      } finally {
+        setCargando(false);
+      }
+    };
     cargarDietas();
   }, []);
-
-  const cargarDietas = async () => {
-    try {
-      setCargando(true);
-      const response = await api.get('/custom/dietas/publicas');
-      const data = response.data;
-
-      const dietasData = data.dietas || [];
-      setDietas(dietasData);
-      setDietasFiltradas(dietasData);
-    } catch (error) {
-      console.error('Error cargando dietas:', error);
-    } finally {
-      setCargando(false);
-    }
-  };
 
   useEffect(() => {
     if (objetivoSeleccionado === 'TODAS') {
       setDietasFiltradas(dietas);
     } else {
-      const filtradas = dietas.filter(d =>
-        d.nombre?.toLowerCase().includes(objetivoSeleccionado.toLowerCase())
+      setDietasFiltradas(
+        dietas.filter((d) => d.nombre?.toLowerCase().includes(objetivoSeleccionado.toLowerCase()))
       );
-      setDietasFiltradas(filtradas);
     }
   }, [objetivoSeleccionado, dietas]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black py-12">
-      <SEO 
-        title="Dietas Profesionales y Nutrición" 
+    <div className="min-h-screen bg-uf-darker">
+      <SEO
+        title="Dietas Profesionales y Nutrición"
         description="Planes nutricionales creados por expertos. Filtra dietas por objetivo: perder peso, volumen, mantenimiento."
         keywords="dietas fitness, nutricion deportiva, perder grasa, volumen, ganar musculo, alimentos"
       />
-      <div className="container mx-auto px-4">
 
-        {/* HEADER */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-anton font-bold text-white mb-4 uppercase tracking-wider">
-            <span className="text-uf-gold">Dietas</span> Profesionales
-          </h1>
-          <p className="text-gray-400 text-lg max-w-3xl mx-auto mb-8">
-            Planes nutricionales diseñados por expertos, clasificados por objetivos y valorados por la comunidad
-          </p>
-        </div>
+      <PageHeader
+        eyebrow="Nutrición"
+        title="Dietas"
+        highlight="Profesionales"
+        subtitle="Planes nutricionales clasificados por objetivo y valorados por la comunidad."
+      />
 
+      <div className="container mx-auto px-4 py-12">
         {/* FILTROS */}
-        <div className="mb-12">
-          <div className="flex flex-wrap gap-3 justify-center">
-            {objetivos.map((objetivo) => (
-              <button
-                key={objetivo.id}
-                onClick={() => setObjetivoSeleccionado(objetivo.id)}
-                className={`
-                  px-6 py-3 rounded-lg font-bold uppercase text-sm transition-all duration-300
-                  ${objetivoSeleccionado === objetivo.id
-                    ? 'bg-uf-gold text-black shadow-lg shadow-uf-gold/50'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                  }
-                `}
-              >
-                {objetivo.nombre}
-              </button>
-            ))}
-          </div>
+        <div className="mb-12 flex flex-wrap justify-center gap-2" role="group" aria-label="Objetivo">
+          {OBJETIVOS.map((objetivo) => (
+            <button
+              key={objetivo.id}
+              type="button"
+              onClick={() => setObjetivoSeleccionado(objetivo.id)}
+              aria-pressed={objetivoSeleccionado === objetivo.id}
+              className={`rounded-full border px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-300 ${
+                objetivoSeleccionado === objetivo.id
+                  ? 'border-uf-gold bg-uf-gold text-black shadow-lg shadow-uf-gold/30'
+                  : 'border-uf-line bg-white/[0.03] text-gray-400 hover:border-uf-gold/60 hover:text-white'
+              }`}
+            >
+              {objetivo.nombre}
+            </button>
+          ))}
         </div>
 
         {/* DIETAS DESTACADAS */}
-        <div className="mb-16">
-          <div className="flex items-center gap-3 mb-8">
-            <svg className="w-8 h-8 text-uf-gold" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-            <h2 className="text-3xl font-anton font-bold text-white uppercase">
-              Dietas Destacadas
+        <section className="mb-20">
+          <div className="mb-8">
+            <span className="uf-eyebrow">Selección</span>
+            <h2 className="mt-3 font-anton text-3xl uppercase text-white md:text-4xl">
+              Dietas <span className="uf-text-gold">Destacadas</span>
             </h2>
           </div>
 
           {cargando && (
-            <div className="flex justify-center py-20">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-uf-gold"></div>
+            <div className="flex justify-center py-20" role="status">
+              <div className="h-14 w-14 animate-spin rounded-full border-b-4 border-t-4 border-uf-gold" />
             </div>
           )}
 
           {!cargando && dietasFiltradas.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {dietasFiltradas.map((dieta) => (
-                <TarjetaDieta
-                  key={dieta.id}
-                  dieta={dieta}
-                  isPremium={isPremium}
-                />
+                <TarjetaDieta key={dieta.id} dieta={dieta} />
               ))}
             </div>
           )}
 
           {!cargando && dietasFiltradas.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-gray-400 text-xl">
-                No se encontraron dietas con este filtro
-              </p>
+            <div className="uf-card py-16 text-center">
+              <p className="text-lg text-uf-muted">No se encontraron dietas con este filtro</p>
             </div>
           )}
-        </div>
+        </section>
 
         {/* SUPLEMENTOS */}
-        <SeccionSuplementos isPremium={isPremium} />
+        <section>
+          <div className="mb-8">
+            <span className="uf-eyebrow">Complementa</span>
+            <h2 className="mt-3 font-anton text-3xl uppercase text-white md:text-4xl">
+              <span className="uf-text-gold">Suplementos</span> Recomendados
+            </h2>
+          </div>
 
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {SUPLEMENTOS.map((suplemento) => {
+              const bloqueado = suplemento.premium && !isPremium;
+              return (
+                <div key={suplemento.nombre} className="uf-card flex items-start gap-4 p-6">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-uf-gold/30 bg-uf-gold/10 text-uf-gold">
+                    {bloqueado ? <Lock className="h-5 w-5" /> : <FlaskConical className="h-5 w-5" />}
+                  </span>
+                  <div>
+                    <span className="uf-chip">{suplemento.categoria}</span>
+                    <h3 className="mt-3 font-anton text-xl uppercase text-white">{suplemento.nombre}</h3>
+                    <p className="mt-1 text-sm text-uf-muted">{suplemento.descripcion}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* EJEMPLO DE PLAN SEMANAL (solo visitantes) */}
+        {!isAuthenticated && !cargando && (
+          <section className="mt-24">
+            <Reveal className="mb-10 text-center">
+              <span className="uf-eyebrow justify-center">Planificación</span>
+              <h2 className="mt-4 font-anton text-4xl uppercase text-white md:text-5xl">
+                Ejemplo de <span className="uf-text-gold">Plan Semanal</span>
+              </h2>
+              <p className="mt-3 text-uf-muted">Así se vería una semana de comidas equilibradas y variadas</p>
+            </Reveal>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+              {PLAN_EJEMPLO.map((d, i) => (
+                <Reveal key={d.dia} delay={i * 50}>
+                  <div className="uf-card flex h-full flex-col items-center p-4 text-center">
+                    <p className="font-audiowide text-[10px] uppercase tracking-widest text-uf-muted">{d.dia}</p>
+                    <span className="my-4 flex h-12 w-12 items-center justify-center rounded-full border border-uf-gold/30 bg-uf-gold/10 text-uf-gold">
+                      <Salad className="h-5 w-5" />
+                    </span>
+                    <p className="flex-1 text-sm font-semibold leading-snug text-white">{d.comida}</p>
+                    <p className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-uf-gold">
+                      <Flame className="h-3.5 w-3.5" />
+                      {d.kcal}
+                    </p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+
+            <Reveal className="mt-8">
+              <div className="relative isolate overflow-hidden rounded-[1.5rem] border border-uf-gold/50 bg-uf-card px-6 py-12 text-center">
+                <div className="uf-glow -z-10 left-1/2 top-0 h-56 w-[30rem] -translate-x-1/2" aria-hidden="true" />
+                <h3 className="font-anton text-3xl uppercase text-white md:text-4xl">¿Quieres tu propia dieta a medida?</h3>
+                <p className="mx-auto mt-3 max-w-xl text-gray-300">
+                  Regístrate gratis y crea tu plan nutricional personalizado según tu objetivo.
+                </p>
+                <Link to="/register" className="uf-btn uf-btn-primary mt-7">
+                  <Zap className="h-4 w-4" />
+                  Crear mi dieta
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </Reveal>
+          </section>
+        )}
       </div>
     </div>
   );
@@ -143,124 +216,44 @@ function Alimentacion() {
 // ============================================
 // COMPONENTE: TarjetaDieta
 // ============================================
-function TarjetaDieta({ dieta, isPremium }) {
-  // Verificar si la dieta es premium basándose en datos reales
+function TarjetaDieta({ dieta }) {
   const esPremium = dieta.esPremium === true || dieta.tipo === 'premium';
 
   return (
-    <Link
-      to={`/dieta/${dieta.id}`}
-      className="group relative bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl overflow-hidden border-2 border-gray-700 hover:border-uf-gold transition-all duration-300 transform hover:scale-105"
-    >
-      {esPremium && (
-        <div className="absolute top-3 right-3 bg-uf-gold text-black px-3 py-1 rounded-full font-bold text-xs flex items-center gap-1 z-10">
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-          </svg>
-          PREMIUM
-        </div>
-      )}
-
-      <div className="h-48 bg-gradient-to-br from-uf-gold/20 to-green-500/20 flex items-center justify-center">
-        <svg className="w-24 h-24 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
+    <Link to={`/dieta/${dieta.id}`} className="uf-card uf-card-hover group flex h-full flex-col p-5">
+      <div className="mb-4 flex items-center justify-between">
+        <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-uf-gold/30 bg-uf-gold/10 text-uf-gold">
+          <Salad className="h-5 w-5" />
+        </span>
+        {esPremium && (
+          <span className="uf-chip border-uf-gold/40 bg-uf-gold/10 text-uf-gold">
+            <Star className="h-3 w-3 fill-uf-gold" />
+            Premium
+          </span>
+        )}
       </div>
 
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-white mb-2 uppercase">
-          {dieta.nombre}
-        </h3>
-        <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-          {dieta.descripcion || 'Plan nutricional completo'}
-        </p>
+      <h3 className="font-anton text-xl uppercase leading-tight text-white transition-colors group-hover:text-uf-gold">
+        {dieta.nombre}
+      </h3>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <svg
-                key={i}
-                className={`w-4 h-4 ${i < Math.floor(dieta.valoracionPromedio || 0) ? 'text-uf-gold' : 'text-gray-600'}`}
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            ))}
-            <span className="text-gray-400 text-sm ml-2">
-              ({dieta.totalValoraciones || 0})
-            </span>
-          </div>
-        </div>
+      <p className="mt-2 line-clamp-2 flex-1 text-xs leading-relaxed text-uf-muted">
+        {dieta.descripcion || 'Plan nutricional completo'}
+      </p>
+
+      <div className="mt-4 flex items-center justify-between border-t border-uf-line pt-4">
+        <span className="flex items-center gap-0.5" aria-label={`Valoración ${dieta.valoracionPromedio || 0} de 5`}>
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={`h-3.5 w-3.5 ${i < Math.floor(dieta.valoracionPromedio || 0) ? 'fill-uf-gold text-uf-gold' : 'text-gray-700'}`}
+            />
+          ))}
+          <span className="ml-1 text-xs text-gray-600">({dieta.totalValoraciones || 0})</span>
+        </span>
+        <ArrowRight className="h-4 w-4 text-uf-muted transition-all group-hover:translate-x-1 group-hover:text-uf-gold" />
       </div>
     </Link>
-  );
-}
-
-// ============================================
-// COMPONENTE: SeccionSuplementos
-// ============================================
-function SeccionSuplementos({ isPremium }) {
-  const suplementos = [
-    {
-      nombre: 'WHEY PROTEIN ISOLATE',
-      categoria: 'Proteína',
-      descripcion: 'Proteína de suero aislada de máxima pureza',
-      premium: false
-    },
-    {
-      nombre: 'CREATINA MONOHIDRATO',
-      categoria: 'Creatina',
-      descripcion: 'Creatina pura micronizada de grado farmacéutico',
-      premium: false
-    },
-    {
-      nombre: 'PRE-WORKOUT EXTREME',
-      categoria: 'Pre-entreno',
-      descripcion: 'Fórmula avanzada con cafeína y beta-alanina',
-      premium: true
-    }
-  ];
-
-  return (
-    <div>
-      <h2 className="text-3xl font-anton font-bold text-white uppercase mb-8">
-        <span className="text-uf-gold">Suplementos</span> Recomendados
-      </h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {suplementos.map((suplemento, index) => (
-          <div
-            key={index}
-            className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border-2 border-gray-700 hover:border-uf-gold transition-all duration-300"
-          >
-            {suplemento.premium && !isPremium && (
-              <div className="flex items-center justify-center mb-4">
-                <svg className="w-16 h-16 text-uf-gold" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" />
-                </svg>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2 mb-3">
-              <span className={`px-3 py-1 rounded-full text-xs font-bold ${suplemento.categoria === 'Proteína' ? 'bg-red-500/20 text-red-400' :
-                suplemento.categoria === 'Creatina' ? 'bg-purple-500/20 text-purple-400' :
-                  'bg-orange-500/20 text-orange-400'
-                }`}>
-                {suplemento.categoria}
-              </span>
-            </div>
-
-            <h3 className="text-lg font-bold text-white mb-2 uppercase">
-              {suplemento.nombre}
-            </h3>
-            <p className="text-gray-400 text-sm">
-              {suplemento.descripcion}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
 

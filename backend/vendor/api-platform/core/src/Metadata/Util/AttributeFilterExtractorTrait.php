@@ -49,7 +49,7 @@ trait AttributeFilterExtractorTrait
         if ($filterAttribute->properties) {
             foreach ($filterAttribute->properties as $property => $strategy) {
                 if (\is_int($property)) {
-                    $properties[$strategy] = $properties[$strategy] = null !== $reflectionProperty ? $filterAttribute->strategy : null;
+                    $properties[$strategy] = null;
                 } else {
                     $properties[$property] = $strategy;
                 }

@@ -15,9 +15,7 @@ namespace ApiPlatform\Doctrine\Orm\Filter;
 
 use ApiPlatform\Doctrine\Common\Filter\BooleanFilterTrait;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use ApiPlatform\Metadata\JsonSchemaFilterInterface;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\Metadata\Parameter;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
@@ -108,7 +106,7 @@ use Doctrine\ORM\QueryBuilder;
  * @author Amrouche Hamza <hamza.simperfit@gmail.com>
  * @author Teoh Han Hui <teohhanhui@gmail.com>
  */
-final class BooleanFilter extends AbstractFilter implements JsonSchemaFilterInterface
+final class BooleanFilter extends AbstractFilter
 {
     use BooleanFilterTrait;
 
@@ -146,13 +144,5 @@ final class BooleanFilter extends AbstractFilter implements JsonSchemaFilterInte
         $queryBuilder
             ->andWhere(\sprintf('%s.%s = :%s', $alias, $field, $valueParameter))
             ->setParameter($valueParameter, $value);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function getSchema(Parameter $parameter): array
-    {
-        return ['type' => 'boolean'];
     }
 }

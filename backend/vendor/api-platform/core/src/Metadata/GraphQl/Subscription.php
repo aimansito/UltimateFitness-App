@@ -73,8 +73,6 @@ final class Subscription extends Operation
         ?OptionsInterface $stateOptions = null,
         array|Parameters|null $parameters = null,
         ?bool $queryParameterValidationEnabled = null,
-        mixed $rules = null,
-        ?string $policy = null,
         array $extraProperties = [],
     ) {
         parent::__construct(
@@ -130,8 +128,6 @@ final class Subscription extends Operation
             stateOptions: $stateOptions,
             parameters: $parameters,
             queryParameterValidationEnabled: $queryParameterValidationEnabled,
-            policy: $policy,
-            rules: $rules,
             extraProperties: $extraProperties,
         );
     }

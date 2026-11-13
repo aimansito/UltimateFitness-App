@@ -16,11 +16,7 @@ namespace ApiPlatform\Doctrine\Orm\Filter;
 use ApiPlatform\Doctrine\Common\Filter\RangeFilterInterface;
 use ApiPlatform\Doctrine\Common\Filter\RangeFilterTrait;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use ApiPlatform\Metadata\OpenApiParameterFilterInterface;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\Metadata\Parameter;
-use ApiPlatform\Metadata\QueryParameter;
-use ApiPlatform\OpenApi\Model\Parameter as OpenApiParameter;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 
@@ -109,7 +105,7 @@ use Doctrine\ORM\QueryBuilder;
  *
  * @author Lee Siong Chan <ahlee2326@me.com>
  */
-final class RangeFilter extends AbstractFilter implements RangeFilterInterface, OpenApiParameterFilterInterface
+final class RangeFilter extends AbstractFilter implements RangeFilterInterface
 {
     use RangeFilterTrait;
 
@@ -225,18 +221,5 @@ final class RangeFilter extends AbstractFilter implements RangeFilterInterface, 
 
                 break;
         }
-    }
-
-    public function getOpenApiParameters(Parameter $parameter): OpenApiParameter|array|null
-    {
-        $in = $parameter instanceof QueryParameter ? 'query' : 'header';
-        $key = $parameter->getKey();
-
-        return [
-            new OpenApiParameter(name: $key.'[gt]', in: $in),
-            new OpenApiParameter(name: $key.'[lt]', in: $in),
-            new OpenApiParameter(name: $key.'[gte]', in: $in),
-            new OpenApiParameter(name: $key.'[lte]', in: $in),
-        ];
     }
 }

@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuthEntrenador from "../../context/AuthContextEntrenador";
 import api from "../../services/api";
 import { useToast } from "../../context/ToastContext";
 import { ArrowLeft, Save, Trash2, Plus } from "lucide-react";
+import { Clock } from 'lucide-react';
+import Icono from '../../components/common/Icono';
+import { Apple, Beef, BicepsFlexed, Carrot, Coffee, Milk, Moon, Nut, Sunrise, UtensilsCrossed, Wheat } from 'lucide-react';
 
 function CrearPlato() {
-  const { entrenador } = useAuthEntrenador();
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -37,21 +38,21 @@ function CrearPlato() {
   });
 
   const categorias = {
-    proteina: { nombre: "Proteínas", icon: "🥩", color: "red" },
-    carbohidrato: { nombre: "Carbohidratos", icon: "🍚", color: "blue" },
-    grasa: { nombre: "Grasas Saludables", icon: "🥑", color: "green" },
-    verdura: { nombre: "Verduras", icon: "🥦", color: "emerald" },
-    fruta: { nombre: "Frutas", icon: "🍎", color: "orange" },
-    lacteo: { nombre: "Lácteos", icon: "🥛", color: "purple" },
+    proteina: { nombre: "Proteínas", icon: Beef, color: "red" },
+    carbohidrato: { nombre: "Carbohidratos", icon: Wheat, color: "blue" },
+    grasa: { nombre: "Grasas Saludables", icon: Nut, color: "green" },
+    verdura: { nombre: "Verduras", icon: Carrot, color: "emerald" },
+    fruta: { nombre: "Frutas", icon: Apple, color: "orange" },
+    lacteo: { nombre: "Lácteos", icon: Milk, color: "purple" },
   };
 
   const tiposComida = {
-    desayuno: { nombre: "Desayuno", icon: "🌅" },
-    media_manana: { nombre: "Media Mañana", icon: "☕" },
-    almuerzo: { nombre: "Almuerzo", icon: "🍽️" },
-    merienda: { nombre: "Merienda", icon: "🍎" },
-    cena: { nombre: "Cena", icon: "🌙" },
-    post_entreno: { nombre: "Post-Entreno", icon: "💪" },
+    desayuno: { nombre: "Desayuno", icon: Sunrise },
+    media_manana: { nombre: "Media Mañana", icon: Coffee },
+    almuerzo: { nombre: "Almuerzo", icon: UtensilsCrossed },
+    merienda: { nombre: "Merienda", icon: Apple },
+    cena: { nombre: "Cena", icon: Moon },
+    post_entreno: { nombre: "Post-Entreno", icon: BicepsFlexed },
   };
 
   const dificultades = {
@@ -171,25 +172,24 @@ function CrearPlato() {
         tipo_comida: tipoComida,
         dificultad: dificultad,
         tiempo_preparacion: tiempoPreparacion ? parseInt(tiempoPreparacion) : null,
-        creador_id: entrenador.id, // ID del entrenador
         ingredientes: ingredientesSeleccionados.map((ing) => ({
           alimento_id: ing.alimentoId,
           cantidad_gramos: ing.cantidad,
         })),
       };
 
-      console.log("📤 Enviando plato:", dataToSend);
+      console.log("Enviando plato:", dataToSend);
 
       const response = await api.post("/platos", dataToSend);
 
       if (response.data.success) {
-        toast.success("✅ Plato creado exitosamente");
+        toast.success("Plato creado exitosamente");
         navigate("/entrenador/mis-platos");
       } else {
         toast.error("Error: " + (response.data.error || "No se pudo guardar el plato"));
       }
     } catch (error) {
-      console.error("❌ Error al guardar plato:", error);
+      console.error("Error al guardar plato:", error);
       toast.error("Error al guardar el plato: " + (error.response?.data?.error || error.message));
     } finally {
       setGuardando(false);
@@ -215,7 +215,7 @@ function CrearPlato() {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-3xl font-bold text-white uppercase tracking-wider flex items-center gap-3">
-                🔨 Crear Nuevo Plato
+                Crear Nuevo Plato
               </h1>
               <p className="text-blue-100 mt-1">Diseña una receta personalizada</p>
             </div>
@@ -250,7 +250,7 @@ function CrearPlato() {
               {ingredientesSeleccionados.length > 0 && (
                 <div className="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 border-2 border-blue-500">
                   <h3 className="text-xl font-bold text-white mb-4 uppercase flex items-center gap-2">
-                    📋 Tu Plato ({ingredientesSeleccionados.length} ingredientes)
+                    Tu Plato ({ingredientesSeleccionados.length} ingredientes)
                   </h3>
 
                   <div className="space-y-3 mb-4">
@@ -325,7 +325,7 @@ function CrearPlato() {
                 {Object.entries(categorias).map(([key, cat]) => (
                   <div key={key} className="bg-gray-800 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-2xl">{cat.icon}</span>
+                      <span className="text-2xl"><Icono de={cat.icon} className="w-6 h-6 inline-block" /></span>
                       <h4 className="text-lg font-bold text-white">{cat.nombre}</h4>
                       <span className="text-gray-500 text-sm">
                         ({alimentosPorCategoria[key]?.length || 0} opciones)
@@ -415,7 +415,7 @@ function CrearPlato() {
                                 : "bg-gray-700 text-white border-gray-600 hover:border-gray-500"
                               }`}
                           >
-                            <div className="text-xl mb-1">{tipo.icon}</div>
+                            <div className="text-xl mb-1"><Icono de={tipo.icon} className="w-6 h-6 inline-block" /></div>
                             <div className="font-bold text-sm">{tipo.nombre}</div>
                           </div>
                         </label>
@@ -484,7 +484,7 @@ function CrearPlato() {
 
                 <div className="flex items-center gap-4 mb-4 flex-wrap">
                   <span className="bg-gray-800 text-white px-4 py-2 rounded-lg font-bold">
-                    {tiposComida[tipoComida].icon} {tiposComida[tipoComida].nombre}
+                    <Icono de={tiposComida[tipoComida].icon} className="w-4 h-4 inline-block mr-1" /> {tiposComida[tipoComida].nombre}
                   </span>
                   <span className="bg-gray-800 text-white px-4 py-2 rounded-lg">
                     {ingredientesSeleccionados.length} ingredientes
@@ -494,7 +494,7 @@ function CrearPlato() {
                   </span>
                   {tiempoPreparacion && (
                     <span className="bg-gray-800 text-white px-4 py-2 rounded-lg">
-                      ⏱️ {tiempoPreparacion} min
+                      <Clock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{tiempoPreparacion} min
                     </span>
                   )}
                 </div>

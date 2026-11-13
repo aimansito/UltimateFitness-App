@@ -15,8 +15,11 @@ class PasswordResetController extends AbstractController
     private $entityManager;
     private $passwordHasher;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        private \App\Service\CorreosCuenta $correos
+    ) {
         $this->entityManager = $entityManager;
         $this->passwordHasher = $passwordHasher;
     }
@@ -27,7 +30,7 @@ class PasswordResetController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $email = $data['email'] ?? null;
 
-        if (!$email) {
+        if (!is_string($email) || $email === '') {
             return new JsonResponse(['error' => 'Email requerido'], 400);
         }
 
@@ -52,8 +55,8 @@ class PasswordResetController extends AbstractController
 
         $this->entityManager->flush();
 
-        // SIMULACIÓN DE ENVÍO DE EMAIL
-        // En un entorno real aquí se enviaría el email.
+        $this->correos->recuperacion($usuario, $token);
+
         $response = [
             'success' => true,
             'message' => 'Si el email existe, se ha enviado un correo de recuperación.',
@@ -72,8 +75,11 @@ class PasswordResetController extends AbstractController
         $token = $data['token'] ?? null;
         $newPassword = $data['password'] ?? null;
 
-        if (!$token || !$newPassword) {
+        if (!is_string($token) || $token === '' || !is_string($newPassword) || $newPassword === '') {
             return new JsonResponse(['error' => 'Token y nueva contraseña requeridos'], 400);
+        }
+        if (strlen($newPassword) < 8) {
+            return new JsonResponse(['error' => 'La contraseña debe tener al menos 8 caracteres'], 400);
         }
 
         $usuario = $this->entityManager->getRepository(Usuario::class)->findOneBy(['resetToken' => $token]);

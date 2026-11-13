@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Entrenador;
+use App\Entity\Usuario;
 use App\Repository\EntrenadorRepository;
 use App\Repository\UsuarioRepository;
 use App\Repository\EntrenamientoRepository;
@@ -150,11 +151,10 @@ class EntrenadorController extends AbstractController
     public function listarTodosAdmin(Request $request): JsonResponse
     {
         try {
-            // TODO: Verificar que el usuario es admin
-            // $usuarioActual = $this->getUser();
-            // if (!$this->roleChecker->isAdmin($usuarioActual)) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            $usuarioActual = $this->getUser();
+            if (!$usuarioActual instanceof Usuario || !$this->roleChecker->isAdmin($usuarioActual)) {
+                return $this->roleChecker->denyAccess();
+            }
 
             $page = $request->query->getInt('page', 1);
             $limit = $request->query->getInt('limit', 20);
@@ -202,11 +202,10 @@ class EntrenadorController extends AbstractController
         UserPasswordHasherInterface $passwordHasher
     ): JsonResponse {
         try {
-            // TODO: Verificar que el usuario es admin
-            // $usuarioActual = $this->getUser();
-            // if (!$this->roleChecker->isAdmin($usuarioActual)) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            $usuarioActual = $this->getUser();
+            if (!$usuarioActual instanceof Usuario || !$this->roleChecker->isAdmin($usuarioActual)) {
+                return $this->roleChecker->denyAccess();
+            }
 
             $data = json_decode($request->getContent(), true);
 
@@ -267,11 +266,10 @@ class EntrenadorController extends AbstractController
     public function actualizarEntrenador(int $id, Request $request): JsonResponse
     {
         try {
-            // TODO: Verificar que el usuario es admin
-            // $usuarioActual = $this->getUser();
-            // if (!$this->roleChecker->isAdmin($usuarioActual)) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            $usuarioActual = $this->getUser();
+            if (!$usuarioActual instanceof Usuario || !$this->roleChecker->isAdmin($usuarioActual)) {
+                return $this->roleChecker->denyAccess();
+            }
 
             $entrenador = $this->entrenadorRepository->find($id);
 
@@ -318,11 +316,10 @@ class EntrenadorController extends AbstractController
     public function eliminarEntrenador(int $id): JsonResponse
     {
         try {
-            // TODO: Verificar que el usuario es admin
-            // $usuarioActual = $this->getUser();
-            // if (!$this->roleChecker->isAdmin($usuarioActual)) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            $usuarioActual = $this->getUser();
+            if (!$usuarioActual instanceof Usuario || !$this->roleChecker->isAdmin($usuarioActual)) {
+                return $this->roleChecker->denyAccess();
+            }
 
             $entrenador = $this->entrenadorRepository->find($id);
 
@@ -361,11 +358,10 @@ class EntrenadorController extends AbstractController
     public function aplicacionesPendientes(): JsonResponse
     {
         try {
-            // TODO: Verificar que el usuario es admin
-            // $usuarioActual = $this->getUser();
-            // if (!$this->roleChecker->isAdmin($usuarioActual)) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            $usuarioActual = $this->getUser();
+            if (!$usuarioActual instanceof Usuario || !$this->roleChecker->isAdmin($usuarioActual)) {
+                return $this->roleChecker->denyAccess();
+            }
 
             $entrenadores = $this->entrenadorRepository->findAplicacionesPendientes();
 
@@ -394,14 +390,10 @@ class EntrenadorController extends AbstractController
     public function aprobarAplicacion(int $id): JsonResponse
     {
         try {
-            // TODO: Obtener usuario actual
-            $adminId = 1; // Temporal - usar $this->getUser()->getId()
-
-            // TODO: Verificar que el usuario es admin
-            // $usuarioActual = $this->getUser();
-            // if (!$this->roleChecker->isAdmin($usuarioActual)) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            $usuarioActual = $this->getUser();
+            if (!$usuarioActual instanceof Usuario || !$this->roleChecker->isAdmin($usuarioActual)) {
+                return $this->roleChecker->denyAccess();
+            }
 
             $entrenador = $this->entrenadorRepository->find($id);
 
@@ -412,7 +404,7 @@ class EntrenadorController extends AbstractController
                 ], Response::HTTP_NOT_FOUND);
             }
 
-            $entrenador->aprobar($adminId);
+            $entrenador->aprobar();
             $this->entityManager->flush();
 
             return $this->json([
@@ -436,14 +428,10 @@ class EntrenadorController extends AbstractController
     public function rechazarAplicacion(int $id, Request $request): JsonResponse
     {
         try {
-            // TODO: Obtener usuario actual
-            $adminId = 1; // Temporal - usar $this->getUser()->getId()
-
-            // TODO: Verificar que el usuario es admin
-            // $usuarioActual = $this->getUser();
-            // if (!$this->roleChecker->isAdmin($usuarioActual)) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            $usuarioActual = $this->getUser();
+            if (!$usuarioActual instanceof Usuario || !$this->roleChecker->isAdmin($usuarioActual)) {
+                return $this->roleChecker->denyAccess();
+            }
 
             $entrenador = $this->entrenadorRepository->find($id);
 
@@ -457,7 +445,7 @@ class EntrenadorController extends AbstractController
             $data = json_decode($request->getContent(), true);
             $motivo = $data['motivo'] ?? 'No cumple con los requisitos';
 
-            $entrenador->rechazar($adminId, $motivo);
+            $entrenador->rechazar($motivo);
             $this->entityManager->flush();
 
             return $this->json([
@@ -485,11 +473,10 @@ class EntrenadorController extends AbstractController
     public function estadisticas(): JsonResponse
     {
         try {
-            // TODO: Verificar que el usuario es admin
-            // $usuarioActual = $this->getUser();
-            // if (!$this->roleChecker->isAdmin($usuarioActual)) {
-            //     return $this->roleChecker->denyAccess();
-            // }
+            $usuarioActual = $this->getUser();
+            if (!$usuarioActual instanceof Usuario || !$this->roleChecker->isAdmin($usuarioActual)) {
+                return $this->roleChecker->denyAccess();
+            }
 
             $estadisticas = $this->entrenadorRepository->getEstadisticas();
             $estadisticas['valoracion_promedio_global'] = $this->entrenadorRepository->getValoracionPromedioGlobal();
@@ -562,8 +549,6 @@ class EntrenadorController extends AbstractController
             'nombre' => $entrenador->getNombre(),
             'apellidos' => $entrenador->getApellidos(),
             'nombre_completo' => $entrenador->getNombreCompleto(),
-            'email' => $entrenador->getEmail(),
-            'telefono' => $entrenador->getTelefono(),
             'especialidad' => $entrenador->getEspecialidad(),
             'especialidad_formateada' => $entrenador->getEspecialidadFormateada(),
             'biografia' => $entrenador->getBiografia(),
@@ -577,6 +562,8 @@ class EntrenadorController extends AbstractController
 
         // Incluir datos privados solo para admin
         if ($includePrivate) {
+            $data['email'] = $entrenador->getEmail();
+            $data['telefono'] = $entrenador->getTelefono();
             $data['certificacion'] = $entrenador->getCertificacion();
             $data['cv_url'] = $entrenador->getCvUrl();
             $data['estado_aplicacion'] = $entrenador->getEstadoAplicacion();

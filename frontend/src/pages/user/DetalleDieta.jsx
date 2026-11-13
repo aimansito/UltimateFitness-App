@@ -32,14 +32,14 @@ function DetalleDieta() {
   const fetchDetalleDieta = async () => {
     try {
       const response = await api.get(`/usuario/dieta/${dietaId}/detalle`);
-      console.log('✅ Detalle dieta:', response.data);
+      console.log('Detalle dieta:', response.data);
 
       if (response.data.success) {
         setDieta(response.data.dieta);
         setPlanSemanal(response.data.planSemanal);
       }
     } catch (error) {
-      console.error('❌ Error al cargar dieta:', error);
+      console.error('Error al cargar dieta:', error);
       console.error('Detalle del error:', error.response?.data);
     } finally {
       setLoading(false);

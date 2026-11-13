@@ -13,13 +13,15 @@ declare(strict_types=1);
 
 namespace ApiPlatform\Hydra\Serializer;
 
+use ApiPlatform\Doctrine\Odm\State\Options as ODMOptions;
+use ApiPlatform\Doctrine\Orm\State\Options;
 use ApiPlatform\JsonLd\Serializer\HydraPrefixTrait;
 use ApiPlatform\Metadata\FilterInterface;
+use ApiPlatform\Metadata\Parameter;
 use ApiPlatform\Metadata\Parameters;
 use ApiPlatform\Metadata\QueryParameterInterface;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\Metadata\ResourceClassResolverInterface;
-use ApiPlatform\State\Util\StateOptionsTrait;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -34,7 +36,6 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 final class CollectionFiltersNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use HydraPrefixTrait;
-    use StateOptionsTrait;
     private ?ContainerInterface $filterLocator = null;
 
     /**
@@ -101,7 +102,15 @@ final class CollectionFiltersNormalizer implements NormalizerInterface, Normaliz
             }
         }
 
-        $resourceClass = $this->getStateOptionsClass($operation, $resourceClass);
+        if ($options = $operation->getStateOptions()) {
+            if ($options instanceof Options && $options->getEntityClass()) {
+                $resourceClass = $options->getEntityClass();
+            }
+
+            if ($options instanceof ODMOptions && $options->getDocumentClass()) {
+                $resourceClass = $options->getDocumentClass();
+            }
+        }
 
         if ($currentFilters || ($parameters && \count($parameters))) {
             $hydraPrefix = $this->getHydraPrefix($context + $this->defaultContext);
@@ -124,9 +133,10 @@ final class CollectionFiltersNormalizer implements NormalizerInterface, Normaliz
     /**
      * Returns the content of the Hydra search property.
      *
-     * @param FilterInterface[] $filters
+     * @param FilterInterface[]        $filters
+     * @param array<string, Parameter> $parameters
      */
-    private function getSearch(string $resourceClass, array $parts, array $filters, ?Parameters $parameters, string $hydraPrefix): array
+    private function getSearch(string $resourceClass, array $parts, array $filters, array|Parameters|null $parameters, string $hydraPrefix): array
     {
         $variables = [];
         $mapping = [];
@@ -143,16 +153,10 @@ final class CollectionFiltersNormalizer implements NormalizerInterface, Normaliz
                 continue;
             }
 
-            if (($filterId = $parameter->getFilter()) && \is_string($filterId) && ($filter = $this->getFilter($filterId))) {
-                $filterDescription = $filter->getDescription($resourceClass);
-
-                foreach ($filterDescription as $variable => $description) {
-                    // // This is a practice induced by PHP and is not necessary when implementing URI template
+            if (!($property = $parameter->getProperty()) && ($filterId = $parameter->getFilter()) && ($filter = $this->getFilter($filterId))) {
+                foreach ($filter->getDescription($resourceClass) as $variable => $description) {
+                    // This is a practice induced by PHP and is not necessary when implementing URI template
                     if (str_ends_with((string) $variable, '[]')) {
-                        continue;
-                    }
-
-                    if (($prop = $parameter->getProperty()) && ($description['property'] ?? null) !== $prop) {
                         continue;
                     }
 
@@ -167,27 +171,10 @@ final class CollectionFiltersNormalizer implements NormalizerInterface, Normaliz
                     $mapping[] = $m;
                 }
 
-                if ($filterDescription) {
-                    continue;
-                }
-            }
-
-            if (str_contains($key, ':property') && $parameter->getProperties()) {
-                $required = $parameter->getRequired();
-                foreach ($parameter->getProperties() as $prop) {
-                    $k = str_replace(':property', $prop, $key);
-                    $m = ['@type' => 'IriTemplateMapping', 'variable' => $k, 'property' => $prop];
-                    $variables[] = $k;
-                    if (null !== $required) {
-                        $m['required'] = $required;
-                    }
-                    $mapping[] = $m;
-                }
-
                 continue;
             }
 
-            if (!($property = $parameter->getProperty())) {
+            if (!$property) {
                 continue;
             }
 

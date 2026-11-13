@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
+import SubirAvatar from "../../components/social/SubirAvatar";
 import {
   User,
   Mail,
@@ -17,6 +18,8 @@ import {
   AlertCircle,
   Star,
   Shield,
+  Image,
+  MessageSquare,
 } from "lucide-react";
 
 function MisDatosPersonales() {
@@ -37,6 +40,8 @@ function MisDatosPersonales() {
     edad: "",
     sexo: "",
     nivel_actividad: "",
+    foto_url: "",
+    bio_corta: "",
   });
 
   const [originalData, setOriginalData] = useState({});
@@ -57,6 +62,8 @@ function MisDatosPersonales() {
         edad: user.edad || "",
         sexo: user.sexo || "",
         nivel_actividad: user.nivel_actividad || "ligero",
+        foto_url: user.foto_url || "",
+        bio_corta: user.bio_corta || "",
       };
 
       setFormData(userData);
@@ -372,7 +379,7 @@ function MisDatosPersonales() {
             </div>
 
             {/* Objetivo */}
-            <div>
+            <div className="border-b border-gray-700 pb-6">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
                 <Target className="w-6 h-6 text-uf-gold" />
                 Objetivo
@@ -391,6 +398,45 @@ function MisDatosPersonales() {
                 <option value="tonificar">Tonificar</option>
                 <option value="cuidar_alimentacion">Cuidar alimentación</option>
               </select>
+            </div>
+
+            {/* Perfil público */}
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                <Image className="w-6 h-6 text-uf-gold" />
+                Perfil público
+              </h2>
+              <p className="text-gray-400 text-sm mb-6">
+                Tu foto y tu bio se muestran en tu perfil público. Nunca se comparten tus datos de salud.
+              </p>
+
+              <div className="space-y-6">
+                <div>
+                  <p className="block text-gray-300 font-semibold mb-3 text-sm">Foto de perfil</p>
+                  <SubirAvatar
+                    nombre={`${user?.nombre || ''} ${user?.apellidos || ''}`}
+                    fotoUrl={user?.foto_url}
+                    onCambio={(foto_url) => updateUser({ ...user, foto_url })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-300 font-semibold mb-2 text-sm flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-uf-gold" />
+                    Bio corta
+                  </label>
+                  <textarea
+                    name="bio_corta"
+                    value={formData.bio_corta}
+                    onChange={handleChange}
+                    disabled={!editing}
+                    maxLength={280}
+                    rows={3}
+                    placeholder="Cuenta un poco sobre ti y tus objetivos (se muestra en tu perfil público)"
+                    className="w-full px-4 py-3 bg-gray-900 border-b-2 border-uf-gold text-white disabled:bg-gray-800 disabled:text-gray-400 resize-none"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* BOTONES */}

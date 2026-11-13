@@ -6,6 +6,8 @@ import { ArrowLeft, Save, Plus, Trash2, Calendar, Search } from "lucide-react";
 import ConstructorPlatos from "../../components/dieta/ConstructorPlatos";
 import SelectorPlatos from "../../components/dieta/SelectorPlatos";
 import { useToast } from "../../context/ToastContext";
+import Icono from '../../components/common/Icono';
+import { BicepsFlexed, Coffee, CupSoda, Flame, Moon, Sunrise, UtensilsCrossed } from 'lucide-react';
 
 function CrearDietaCliente() {
   const { clienteId } = useParams();
@@ -93,12 +95,12 @@ function CrearDietaCliente() {
   ];
 
   const momentosComida = [
-    { key: "desayuno", label: "Desayuno", icon: "🌅" },
-    { key: "media_manana", label: "Media Mañana", icon: "☕" },
-    { key: "almuerzo", label: "Almuerzo", icon: "🍽️" },
-    { key: "merienda", label: "Merienda", icon: "🥤" },
-    { key: "cena", label: "Cena", icon: "🌙" },
-    { key: "post_entreno", label: "Post-Entreno", icon: "💪" },
+    { key: "desayuno", label: "Desayuno", icon: Sunrise },
+    { key: "media_manana", label: "Media Mañana", icon: Coffee },
+    { key: "almuerzo", label: "Almuerzo", icon: UtensilsCrossed },
+    { key: "merienda", label: "Merienda", icon: CupSoda },
+    { key: "cena", label: "Cena", icon: Moon },
+    { key: "post_entreno", label: "Post-Entreno", icon: BicepsFlexed },
   ];
 
   useEffect(() => {
@@ -272,7 +274,7 @@ function CrearDietaCliente() {
           planSemanal[dia][momento.key].length === 0
         ) {
           toast.error(
-            `Falta añadir platos en:\n\n📅 ${diasLabels[dia]}\n🍽️ ${momento.label}\n\n⚠️ Todos los días y todos los momentos del día deben tener al menos 1 plato o alimento.`
+            `Falta añadir platos en:\n\n${diasLabels[dia]}\n${momento.label}\n\nTodos los días y todos los momentos del día deben tener al menos 1 plato o alimento.`
           );
           return;
         }
@@ -309,7 +311,6 @@ function CrearDietaCliente() {
     const dietaData = {
       nombre: nombreDieta,
       descripcion: descripcionDieta,
-      creador_id: entrenador.id,
       cliente_id: parseInt(clienteId),
       calorias_totales: totalesDiarios.calorias,
       proteinas_totales: totalesDiarios.proteinas,
@@ -328,7 +329,7 @@ function CrearDietaCliente() {
 
       if (response.data.success) {
         toast.success(
-          `¡Dieta creada exitosamente!\n\n📋 ${nombreDieta}\n👤 Asignada a ${cliente.nombre} ${cliente.apellidos}\n🔥 ${totalesDiarios.calorias} kcal/día`
+          `¡Dieta creada exitosamente!\n\n${nombreDieta}\nAsignada a ${cliente.nombre} ${cliente.apellidos}\n${totalesDiarios.calorias} kcal/día`
         );
         navigate("/entrenador/dashboard");
       } else {
@@ -503,7 +504,7 @@ function CrearDietaCliente() {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h4 className="text-xl font-bold text-white flex items-center gap-2">
-                        <span>{momento.icon}</span>
+                        <span><Icono de={momento.icon} className="w-6 h-6 inline-block" /></span>
                         {momento.label}
                       </h4>
                       <p className="text-sm text-gray-400 mt-1">
@@ -598,7 +599,7 @@ function CrearDietaCliente() {
                         {/* Macros */}
                         <div className="flex gap-3 text-xs mt-3 pt-3 border-t border-gray-700">
                           <span className="text-orange-400 font-semibold">
-                            🔥 {Math.round(item.calorias)} kcal
+                            <Flame className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{Math.round(item.calorias)} kcal
                           </span>
                           <span className="text-blue-400">
                             P: {Math.round(item.proteinas)}g

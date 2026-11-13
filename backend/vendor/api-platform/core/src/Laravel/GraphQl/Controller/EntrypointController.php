@@ -32,9 +32,6 @@ final class EntrypointController
     use ContentNegotiationTrait;
     private int $debug;
 
-    /**
-     * @param array<string, string[]> $formats
-     */
     public function __construct(
         private readonly SchemaBuilderInterface $schemaBuilder,
         private readonly ExecutorInterface $executor,
@@ -43,7 +40,6 @@ final class EntrypointController
         private readonly ErrorHandlerInterface $errorHandler,
         bool $debug = false,
         ?Negotiator $negotiator = null,
-        private readonly array $formats = [],
     ) {
         $this->debug = $debug ? DebugFlag::INCLUDE_DEBUG_MESSAGE | DebugFlag::INCLUDE_TRACE : DebugFlag::NONE;
         $this->negotiator = $negotiator ?? new Negotiator();
@@ -52,23 +48,14 @@ final class EntrypointController
     public function __invoke(Request $request): Response
     {
         $formats = ['json' => ['application/json'], 'html' => ['text/html']];
-
-        foreach ($this->formats as $k => $f) {
-            if (!isset($formats[$k])) {
-                $formats[$k] = $f;
-            }
-        }
-
-        $this->addRequestFormats($request, $formats);
         $format = $this->getRequestFormat($request, $formats, false);
-        $request->setRequestFormat($format);
 
         try {
             if ($request->isMethod('GET') && 'html' === $format) {
                 return ($this->graphiQlAction)();
             }
 
-            [$query, $operationName, $variables] = $this->parseRequest($request, $format);
+            [$query, $operationName, $variables] = $this->parseRequest($request);
             if (null === $query) {
                 throw new BadRequestHttpException('GraphQL query is not valid.');
             }
@@ -91,7 +78,7 @@ final class EntrypointController
      *
      * @return array{0: array<string, mixed>|null, 1: string, 2: array<string, mixed>}
      */
-    private function parseRequest(Request $request, string $format): array
+    private function parseRequest(Request $request): array
     {
         $queryParameters = $request->query->all();
         $query = $queryParameters['query'] ?? null;
@@ -104,15 +91,16 @@ final class EntrypointController
             return [$query, $operationName, $variables];
         }
 
-        if ('json' === $format) {
+        $contentType = method_exists(Request::class, 'getContentTypeFormat') ? $request->getContentTypeFormat() : $request->getContentType();
+        if ('json' === $contentType) {
             return $this->parseData($query, $operationName, $variables, $request->getContent());
         }
 
-        if ('graphql' === $format) {
+        if ('graphql' === $contentType) {
             $query = $request->getContent();
         }
 
-        if ('multipart' === $format) {
+        if (\in_array($contentType, ['multipart', 'form'], true)) {
             return $this->parseMultipartRequest($query, $operationName, $variables, $request->request->all(), $request->files->all());
         }
 

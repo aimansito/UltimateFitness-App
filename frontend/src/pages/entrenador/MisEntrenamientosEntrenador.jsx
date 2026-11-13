@@ -38,14 +38,14 @@ function MisEntrenamientosEntrenador() {
       // Endpoint específico para entrenadores (busca por creador_id)
       const response = await api.get(`/entrenador/mis-entrenamientos/${entrenador.id}`);
 
-      console.log('✅ Respuesta entrenamientos entrenador:', response.data);
+      console.log('Respuesta entrenamientos entrenador:', response.data);
 
       if (response.data.success) {
         // Los entrenamientos creados por el entrenador
         setEntrenamientos(response.data.creados || []);
       }
     } catch (error) {
-      console.error('❌ Error al cargar entrenamientos:', error);
+      console.error('Error al cargar entrenamientos:', error);
       setError(error.response?.data?.error || error.message || 'Error al cargar los entrenamientos');
     } finally {
       setLoading(false);
@@ -59,12 +59,12 @@ function MisEntrenamientosEntrenador() {
       const response = await api.delete(`/custom/entrenamientos/${entrenamientoId}`);
 
       if (response.data.success) {
-        toast.success('✅ Entrenamiento eliminado exitosamente');
+        toast.success('Entrenamiento eliminado exitosamente');
         fetchEntrenamientos();
       }
     } catch (error) {
       console.error('Error al eliminar entrenamiento:', error);
-      toast.error('❌ Error al eliminar entrenamiento');
+      toast.error('Error al eliminar entrenamiento');
     }
   };
 

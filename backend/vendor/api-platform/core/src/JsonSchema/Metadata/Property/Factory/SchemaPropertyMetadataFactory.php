@@ -34,10 +34,8 @@ final class SchemaPropertyMetadataFactory implements PropertyMetadataFactoryInte
 
     public const JSON_SCHEMA_USER_DEFINED = 'user_defined_schema';
 
-    public function __construct(
-        ResourceClassResolverInterface $resourceClassResolver,
-        private readonly ?PropertyMetadataFactoryInterface $decorated = null,
-    ) {
+    public function __construct(ResourceClassResolverInterface $resourceClassResolver, private readonly ?PropertyMetadataFactoryInterface $decorated = null)
+    {
         $this->resourceClassResolver = $resourceClassResolver;
     }
 
@@ -106,7 +104,7 @@ final class SchemaPropertyMetadataFactory implements PropertyMetadataFactoryInte
         // never override the following keys if at least one is already set or if there's a custom openapi context
         if ([] === $types
             || ($propertySchema['type'] ?? $propertySchema['$ref'] ?? $propertySchema['anyOf'] ?? $propertySchema['allOf'] ?? $propertySchema['oneOf'] ?? false)
-            || \array_key_exists('type', $propertyMetadata->getOpenapiContext() ?? [])
+            || ($propertyMetadata->getOpenapiContext() ?? false)
         ) {
             return $propertyMetadata->withSchema($propertySchema);
         }
@@ -200,8 +198,6 @@ final class SchemaPropertyMetadataFactory implements PropertyMetadataFactoryInte
      * Gets the JSON Schema document which specifies the data type corresponding to the given PHP class, and recursively adds needed new schema to the current schema if provided.
      *
      * Note: if the class is not part of exceptions listed above, any class is considered as a resource.
-     *
-     * @throws PropertyNotFoundException
      */
     private function getClassType(?string $className, bool $nullable, ?bool $readableLink): array
     {
@@ -244,8 +240,7 @@ final class SchemaPropertyMetadataFactory implements PropertyMetadataFactoryInte
             ];
         }
 
-        $isResourceClass = $this->isResourceClass($className);
-        if (!$isResourceClass && is_a($className, \BackedEnum::class, true)) {
+        if (!$this->isResourceClass($className) && is_a($className, \BackedEnum::class, true)) {
             $enumCases = array_map(static fn (\BackedEnum $enum): string|int => $enum->value, $className::cases());
 
             $type = \is_string($enumCases[0] ?? '') ? 'string' : 'integer';
@@ -260,7 +255,7 @@ final class SchemaPropertyMetadataFactory implements PropertyMetadataFactoryInte
             ];
         }
 
-        if (true !== $readableLink && $isResourceClass) {
+        if (true !== $readableLink && $this->isResourceClass($className)) {
             return [
                 'type' => 'string',
                 'format' => 'iri-reference',
@@ -268,6 +263,7 @@ final class SchemaPropertyMetadataFactory implements PropertyMetadataFactoryInte
             ];
         }
 
+        // TODO: add propertyNameCollectionFactory and recurse to find the underlying schema? Right now SchemaFactory does the job so we don't compute anything here.
         return ['type' => Schema::UNKNOWN_TYPE];
     }
 

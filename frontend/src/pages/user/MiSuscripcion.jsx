@@ -58,7 +58,7 @@ function MiSuscripcion() {
 
       if (response.data.success) {
         setShowCancelModal(false);
-        toast.success('✅ Suscripción cancelada correctamente');
+        toast.success('Suscripción cancelada correctamente');
 
         if (response.data.force_logout) {
           setTimeout(() => {
@@ -74,12 +74,12 @@ function MiSuscripcion() {
     } catch (error) {
       console.error('Error al cancelar:', error);
       setShowCancelModal(false);
-      toast.error('❌ ' + (error.response?.data?.error || 'Error al cancelar la suscripción'));
+      toast.error('' + (error.response?.data?.error || 'Error al cancelar la suscripción'));
     }
   };
 
   const handleReactivarSuscripcion = () => {
-    toast.success('✅ Suscripción reactivada');
+    toast.success('Suscripción reactivada');
   };
 
   if (loading) {

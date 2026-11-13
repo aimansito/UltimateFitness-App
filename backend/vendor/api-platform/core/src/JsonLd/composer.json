@@ -24,17 +24,14 @@
     ],
     "require": {
         "php": ">=8.2",
-        "api-platform/state": "^4.1",
-        "api-platform/metadata": "^4.1",
-        "api-platform/serializer": "^4.1"
+        "api-platform/state": "^3.4 || ^4.0",
+        "api-platform/metadata": "^3.4 || ^4.0",
+        "api-platform/serializer": "^3.4 || ^4.0"
     },
     "autoload": {
         "psr-4": {
             "ApiPlatform\\JsonLd\\": ""
         },
-        "files": [
-            "./HydraContext.php"
-        ],
         "exclude-from-classmap": [
             "/Tests/"
         ]
@@ -51,7 +48,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "4.2.x-dev",
+            "dev-main": "4.0.x-dev",
             "dev-3.4": "3.4.x-dev"
         },
         "symfony": {
@@ -66,12 +63,6 @@
         "test": "./vendor/bin/phpunit"
     },
     "require-dev": {
-        "phpunit/phpunit": "11.5.x-dev"
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/soyuka/phpunit"
-        }
-    ]
+        "phpunit/phpunit": "^11.2"
+    }
 }

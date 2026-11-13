@@ -179,7 +179,7 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
 
     public static function joinTableRequired(string $fieldName): self
     {
-        return new self(sprintf("The mapping of field '%s' requires an the 'joinTable' attribute.", $fieldName));
+        return new self(sprintf("The mapping of field '%s' requires the 'joinTable' attribute.", $fieldName));
     }
 
     /**
@@ -327,6 +327,24 @@ class MappingException extends PersistenceMappingException implements ORMExcepti
             'File mapping drivers must have a valid directory path, ' .
             'however the given path ' . $path . ' seems to be incorrect!',
         );
+    }
+
+    /**
+     * Returns an exception that indicates that discriminator entries used in a discriminator map
+     * does not exist in the backed enum provided by enumType option.
+     *
+     * @param array<int,int|string> $entries     The discriminator entries that could not be found.
+     * @param string                $owningClass The class that declares the discriminator map.
+     * @param string                $enumType    The enum that entries were checked against.
+     */
+    public static function invalidEntriesInDiscriminatorMap(array $entries, string $owningClass, string $enumType): self
+    {
+        return new self(sprintf(
+            "The entries %s in the discriminator map of class '%s' do not correspond to enum cases of '%s'.",
+            implode(', ', array_map(static fn ($entry): string => sprintf("'%s'", $entry), $entries)),
+            $owningClass,
+            $enumType,
+        ));
     }
 
     /**
@@ -695,6 +713,21 @@ EXCEPTION
             'Mapping virtual property "%s" on entity "%s" is not allowed.',
             $propertyName,
             $entityName,
+        ));
+    }
+
+    public static function invalidOrderByDirection(
+        string $direction,
+        string $orderByField,
+        string $fieldName,
+        string $className,
+    ): self {
+        return new self(sprintf(
+            'Invalid order direction "%s" for field "%s" in association "%s" of class "%s". Valid directions are "ASC" and "DESC".',
+            $direction,
+            $orderByField,
+            $fieldName,
+            $className,
         ));
     }
 }

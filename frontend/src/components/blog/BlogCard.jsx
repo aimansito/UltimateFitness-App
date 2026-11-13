@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Calendar, Eye, Heart, Tag } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { Lock, Star } from 'lucide-react';
 
 function BlogCard({ post }) {
   const { isAuthenticated } = useAuth();
@@ -44,7 +45,7 @@ function BlogCard({ post }) {
           {post.es_premium && (
             <div className="absolute top-4 left-4 bg-gradient-to-r from-uf-gold to-yellow-600 px-3 py-1 rounded-full shadow-lg">
               <span className="text-black font-bold text-xs flex items-center gap-1">
-                ⭐ PREMIUM
+                <Star className="inline-block w-4 h-4 mr-1 -mt-0.5 text-uf-gold fill-uf-gold" aria-hidden="true" />PREMIUM
               </span>
             </div>
           )}
@@ -93,7 +94,7 @@ function BlogCard({ post }) {
               to="/upgrade-premium"
               className="mt-4 block w-full bg-gray-700 text-gray-300 font-bold py-2 px-4 rounded-lg text-center hover:bg-gray-600 transition-all duration-300 flex items-center justify-center gap-2"
             >
-              🔒 Hazte Premium
+              <Lock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />Hazte Premium
             </Link>
           )
         )}

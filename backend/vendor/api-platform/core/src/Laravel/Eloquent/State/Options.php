@@ -23,7 +23,6 @@ class Options implements OptionsInterface
      * @see LinksHandlerInterface
      */
     public function __construct(
-        protected ?string $modelClass = null,
         protected mixed $handleLinks = null,
     ) {
     }
@@ -37,19 +36,6 @@ class Options implements OptionsInterface
     {
         $self = clone $this;
         $self->handleLinks = $handleLinks;
-
-        return $self;
-    }
-
-    public function getModelClass(): ?string
-    {
-        return $this->modelClass;
-    }
-
-    public function withModelClass(?string $modelClass): self
-    {
-        $self = clone $this;
-        $self->modelClass = $modelClass;
 
         return $self;
     }

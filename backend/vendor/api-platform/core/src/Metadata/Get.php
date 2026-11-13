@@ -98,8 +98,6 @@ final class Get extends HttpOperation
         mixed $rules = null,
         ?string $policy = null,
         array|string|null $middleware = null,
-        ?bool $strictQueryParameterValidation = null,
-        protected ?bool $hideHydraOperation = null,
         array $extraProperties = [],
     ) {
         parent::__construct(
@@ -179,8 +177,6 @@ final class Get extends HttpOperation
             rules: $rules,
             policy: $policy,
             middleware: $middleware,
-            strictQueryParameterValidation: $strictQueryParameterValidation,
-            hideHydraOperation: $hideHydraOperation,
             extraProperties: $extraProperties,
         );
     }

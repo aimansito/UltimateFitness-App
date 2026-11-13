@@ -15,12 +15,8 @@ namespace ApiPlatform\Doctrine\Orm\Filter;
 
 use ApiPlatform\Doctrine\Common\Filter\OrderFilterInterface;
 use ApiPlatform\Doctrine\Common\Filter\OrderFilterTrait;
-use ApiPlatform\Doctrine\Common\Filter\PropertyPlaceholderOpenApiParameterTrait;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use ApiPlatform\Metadata\JsonSchemaFilterInterface;
-use ApiPlatform\Metadata\OpenApiParameterFilterInterface;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\Metadata\Parameter;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -199,12 +195,11 @@ use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
  * @author Kévin Dunglas <dunglas@gmail.com>
  * @author Théo FIDRY <theo.fidry@gmail.com>
  */
-final class OrderFilter extends AbstractFilter implements OrderFilterInterface, JsonSchemaFilterInterface, OpenApiParameterFilterInterface
+final class OrderFilter extends AbstractFilter implements OrderFilterInterface
 {
     use OrderFilterTrait;
-    use PropertyPlaceholderOpenApiParameterTrait;
 
-    public function __construct(?ManagerRegistry $managerRegistry = null, string $orderParameterName = 'order', ?LoggerInterface $logger = null, ?array $properties = null, ?NameConverterInterface $nameConverter = null, private readonly ?string $orderNullsComparison = null)
+    public function __construct(ManagerRegistry $managerRegistry, string $orderParameterName = 'order', ?LoggerInterface $logger = null, ?array $properties = null, ?NameConverterInterface $nameConverter = null, private readonly ?string $orderNullsComparison = null)
     {
         if (null !== $properties) {
             $properties = array_map(static function ($propertyOptions) {
@@ -229,17 +224,12 @@ final class OrderFilter extends AbstractFilter implements OrderFilterInterface, 
      */
     public function apply(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
-        if (
-            isset($context['filters'])
-            && (!isset($context['filters'][$this->orderParameterName]) || !\is_array($context['filters'][$this->orderParameterName]))
-            && !isset($context['parameter'])
-        ) {
+        if (isset($context['filters']) && !isset($context['filters'][$this->orderParameterName])) {
             return;
         }
 
-        $parameter = $context['parameter'] ?? null;
-        if (null !== ($value = $context['filters'][$parameter?->getProperty()] ?? null)) {
-            $this->filterProperty($this->denormalizePropertyName($parameter->getProperty()), $value, $queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);
+        if (!isset($context['filters'][$this->orderParameterName]) || !\is_array($context['filters'][$this->orderParameterName])) {
+            parent::apply($queryBuilder, $queryNameGenerator, $resourceClass, $operation, $context);
 
             return;
         }
@@ -252,13 +242,13 @@ final class OrderFilter extends AbstractFilter implements OrderFilterInterface, 
     /**
      * {@inheritdoc}
      */
-    protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
+    protected function filterProperty(string $property, $direction, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void
     {
         if (!$this->isPropertyEnabled($property, $resourceClass) || !$this->isPropertyMapped($property, $resourceClass)) {
             return;
         }
 
-        $direction = $this->normalizeValue($value, $property);
+        $direction = $this->normalizeValue($direction, $property);
         if (null === $direction) {
             return;
         }
@@ -280,13 +270,5 @@ final class OrderFilter extends AbstractFilter implements OrderFilterInterface, 
         }
 
         $queryBuilder->addOrderBy(\sprintf('%s.%s', $alias, $field), $direction);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getSchema(Parameter $parameter): array
-    {
-        return ['type' => 'string', 'enum' => ['asc', 'desc']];
     }
 }

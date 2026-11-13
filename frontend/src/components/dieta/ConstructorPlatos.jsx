@@ -5,6 +5,8 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { useToast } from "../../context/ToastContext";
+import Icono from '../common/Icono';
+import { Apple, Beef, BicepsFlexed, Carrot, Coffee, Milk, Moon, Nut, Sunrise, UtensilsCrossed, Wheat } from 'lucide-react';
 
 function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
   const toast = useToast();
@@ -35,21 +37,21 @@ function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
   });
 
   const categorias = {
-    proteina: { nombre: "Proteínas", icon: "🥩", color: "red" },
-    carbohidrato: { nombre: "Carbohidratos", icon: "🍚", color: "blue" },
-    grasa: { nombre: "Grasas Saludables", icon: "🥑", color: "green" },
-    verdura: { nombre: "Verduras", icon: "🥦", color: "emerald" },
-    fruta: { nombre: "Frutas", icon: "🍎", color: "orange" },
-    lacteo: { nombre: "Lácteos", icon: "🥛", color: "purple" },
+    proteina: { nombre: "Proteínas", icon: Beef, color: "red" },
+    carbohidrato: { nombre: "Carbohidratos", icon: Wheat, color: "blue" },
+    grasa: { nombre: "Grasas Saludables", icon: Nut, color: "green" },
+    verdura: { nombre: "Verduras", icon: Carrot, color: "emerald" },
+    fruta: { nombre: "Frutas", icon: Apple, color: "orange" },
+    lacteo: { nombre: "Lácteos", icon: Milk, color: "purple" },
   };
 
   const tiposComida = {
-    desayuno: { nombre: "Desayuno", icon: "🌅" },
-    media_manana: { nombre: "Media Mañana", icon: "☕" },
-    almuerzo: { nombre: "Almuerzo", icon: "🍽️" },
-    merienda: { nombre: "Merienda", icon: "🍎" },
-    cena: { nombre: "Cena", icon: "🌙" },
-    post_entreno: { nombre: "Post-Entreno", icon: "💪" },
+    desayuno: { nombre: "Desayuno", icon: Sunrise },
+    media_manana: { nombre: "Media Mañana", icon: Coffee },
+    almuerzo: { nombre: "Almuerzo", icon: UtensilsCrossed },
+    merienda: { nombre: "Merienda", icon: Apple },
+    cena: { nombre: "Cena", icon: Moon },
+    post_entreno: { nombre: "Post-Entreno", icon: BicepsFlexed },
   };
 
   // Cargar alimentos por tipo
@@ -178,11 +180,11 @@ function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
         })),
       };
 
-      console.log("📤 Enviando plato al backend:", dataToSend);
+      console.log("Enviando plato al backend:", dataToSend);
 
       const response = await api.post("/platos", dataToSend);
       const result = response.data;
-      console.log("✅ Respuesta del backend:", result);
+      console.log("Respuesta del backend:", result);
 
       if (result.success) {
         // Crear objeto para añadir a la dieta actual
@@ -216,7 +218,7 @@ function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
         toast.error("Error: " + (result.error || "No se pudo guardar el plato"));
       }
     } catch (error) {
-      console.error("❌ Error al guardar plato:", error);
+      console.error("Error al guardar plato:", error);
       toast.error("Error al guardar el plato. Revisa la consola.");
     }
   };
@@ -237,7 +239,7 @@ function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <h2 className="text-3xl font-anton font-bold text-black mb-2 uppercase">
-                🔨 Construye Tu Plato Personalizado
+                Construye Tu Plato Personalizado
               </h2>
               <p className="text-gray-800">
                 Selecciona ingredientes de cada categoría y crea tu receta
@@ -404,7 +406,7 @@ function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
                 {Object.entries(categorias).map(([key, cat]) => (
                   <div key={key} className="bg-gray-800 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-2xl">{cat.icon}</span>
+                      <span className="text-2xl"><Icono de={cat.icon} className="w-6 h-6 inline-block" /></span>
                       <h4 className="text-lg font-bold text-white">
                         {cat.nombre}
                       </h4>
@@ -516,7 +518,7 @@ function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
                                 : "bg-gray-700 text-white border-gray-600 hover:border-gray-500"
                             }`}
                           >
-                            <div className="text-xl mb-1">{tipo.icon}</div>
+                            <div className="text-xl mb-1"><Icono de={tipo.icon} className="w-6 h-6 inline-block" /></div>
                             <div className="font-bold text-sm">
                               {tipo.nombre}
                             </div>
@@ -558,7 +560,7 @@ function ConstructorPlatos({ onGuardarPlato, onCerrar }) {
 
                 <div className="flex items-center gap-4 mb-4">
                   <span className="bg-gray-800 text-white px-4 py-2 rounded-lg font-bold">
-                    {tiposComida[tipoComida].icon}{" "}
+                    <Icono de={tiposComida[tipoComida].icon} className="w-4 h-4 inline-block mr-1" />{" "}
                     {tiposComida[tipoComida].nombre}
                   </span>
                   <span className="bg-gray-800 text-white px-4 py-2 rounded-lg">

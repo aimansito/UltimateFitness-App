@@ -1,0 +1,22 @@
+# Archivos subidos por usuarios: nunca se ejecutan como código
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<FilesMatch "(?i)\.(php\d?|phtml|phar|pht|phps|cgi|pl|py|sh|htaccess|html?|svg|js)$">
+    Require all denied
+</FilesMatch>
+Options -Indexes -ExecCGI
+RemoveHandler .php .phtml .phar
+RemoveType .php .phtml .phar
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    # Imágenes públicas con nombre aleatorio: se permiten desde otro origen para poder
+    # dibujarlas en un <canvas> (descargar la tarjeta del entreno) sin bloquearlo
+    <FilesMatch "(?i)\.(jpe?g|png|webp)$">
+        Header set Access-Control-Allow-Origin "*"
+        Header set Cross-Origin-Resource-Policy "cross-origin"
+    </FilesMatch>
+</IfModule>

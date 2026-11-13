@@ -98,8 +98,6 @@ final class GetCollection extends HttpOperation implements CollectionOperationIn
         array|string|null $rules = null,
         ?string $policy = null,
         array|string|null $middleware = null,
-        ?bool $strictQueryParameterValidation = null,
-        protected ?bool $hideHydraOperation = null,
         array $extraProperties = [],
         private ?string $itemUriTemplate = null,
     ) {
@@ -180,8 +178,6 @@ final class GetCollection extends HttpOperation implements CollectionOperationIn
             rules: $rules,
             policy: $policy,
             middleware: $middleware,
-            strictQueryParameterValidation: $strictQueryParameterValidation,
-            hideHydraOperation: $hideHydraOperation,
             stateOptions: $stateOptions,
         );
     }

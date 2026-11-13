@@ -1,0 +1,45 @@
+# Dependencies (miles de archivos inútiles)
+node_modules/
+vendor/
+
+# Build output
+dist/
+build/
+.next/
+
+# API Platform bundles (JS minificado)
+backend/public/bundles/
+*.min.js
+*.min.css
+
+# Database dumps (enormes, sin valor para código)
+*.sql
+*.sql.gz
+
+# Docker runtime
+docker/
+
+# Cache y temp
+.cache/
+.vite/
+var/
+.phpunit.cache/
+*.log
+
+# IDE y sistema
+.idea/
+.vscode/
+.git/
+*.lock
+
+# Graphify output
+graphify-out/
+
+# Archivos de entorno con secretos
+.env
+.env.local
+.env.*.local
+
+# Media uploads
+uploads/
+public/uploads/

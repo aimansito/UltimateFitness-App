@@ -14,11 +14,12 @@ import {
   UserPlus
 } from 'lucide-react';
 import SEO from '../../components/common/SEO';
+import DOMPurify from 'dompurify';
 
 function BlogPost() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated, isPremium } = useAuth();
+  const { isAuthenticated, accesoCompleto: isPremium } = useAuth();
   const toast = useToast();
   const [post, setPost] = useState(null);
   const [relacionados, setRelacionados] = useState([]);
@@ -78,7 +79,7 @@ function BlogPost() {
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      toast.success('✅ Enlace copiado al portapapeles');
+      toast.success('Enlace copiado al portapapeles');
     }
   };
 
@@ -321,7 +322,8 @@ function BlogPost() {
         {/* Contenido del post */}
         <div
           className="prose prose-invert prose-lg max-w-none mb-12"
-          dangerouslySetInnerHTML={{ __html: post.contenido }}
+          // El HTML del post se limpia: aunque lo escribe un admin, un script colado robaría la sesión de quien lo lea
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.contenido || '') }}
           style={{
             color: '#d1d5db',
             lineHeight: '1.8'

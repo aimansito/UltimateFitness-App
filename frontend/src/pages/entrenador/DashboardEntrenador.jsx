@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../services/api";
+import solicitudesService from "../../services/solicitudesService";
+import { useToast } from "../../context/ToastContext";
 import useAuthEntrenador from "../../context/AuthContextEntrenador";
 import {
   Users,
@@ -10,17 +12,24 @@ import {
   Activity,
   ChevronRight,
   Target,
+  Inbox,
+  Check,
+  X,
 } from "lucide-react";
+import Icono from '../../components/common/Icono';
+import { BicepsFlexed, Salad, TrendingDown } from 'lucide-react';
 
 function DashboardEntrenador() {
   const { entrenador, isAuthenticated, logout } = useAuthEntrenador();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const toast = useToast();
 
   const [vistaActual, setVistaActual] = useState("dashboard");
   const [estadisticas, setEstadisticas] = useState(null);
   const [misClientes, setMisClientes] = useState([]);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+  const [solicitudes, setSolicitudes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Si NO está autenticado → fuera
@@ -44,8 +53,38 @@ function DashboardEntrenador() {
     if (entrenador) {
       fetchDashboardData();
       fetchMisClientes();
+      fetchSolicitudes();
     }
   }, [entrenador]);
+
+  const fetchSolicitudes = async () => {
+    const res = await solicitudesService.listarPendientes();
+    if (res.success) {
+      setSolicitudes(res.solicitudes);
+    }
+  };
+
+  const handleAceptar = async (solicitud) => {
+    const res = await solicitudesService.aceptar(solicitud.id);
+    if (res.success) {
+      toast.success(`Solicitud de ${solicitud.usuario?.nombre_completo} aceptada`);
+      fetchSolicitudes();
+      fetchMisClientes();
+      fetchDashboardData();
+    } else {
+      toast.error(res.error);
+    }
+  };
+
+  const handleRechazar = async (solicitud) => {
+    const res = await solicitudesService.rechazar(solicitud.id);
+    if (res.success) {
+      toast.success('Solicitud rechazada');
+      fetchSolicitudes();
+    } else {
+      toast.error(res.error);
+    }
+  };
 
   // Cargar estadísticas reales desde backend
   const fetchDashboardData = async () => {
@@ -78,13 +117,13 @@ function DashboardEntrenador() {
 
   // Diccionario de objetivos
   const objetivosMap = {
-    ganar_masa: { label: "Ganar Masa", icon: "💪", color: "blue" },
-    perder_peso: { label: "Perder Peso", icon: "📉", color: "red" },
-    resistencia: { label: "Resistencia", icon: "🏃", color: "green" },
-    tonificar: { label: "Tonificar", icon: "🎯", color: "purple" },
+    ganar_masa: { label: "Ganar Masa", icon: BicepsFlexed, color: "blue" },
+    perder_peso: { label: "Perder Peso", icon: TrendingDown, color: "red" },
+    resistencia: { label: "Resistencia", icon: Activity, color: "green" },
+    tonificar: { label: "Tonificar", icon: Target, color: "purple" },
     cuidar_alimentacion: {
       label: "Cuidar Alimentación",
-      icon: "🥗",
+      icon: Salad,
       color: "emerald",
     },
   };
@@ -150,6 +189,17 @@ function DashboardEntrenador() {
             >
               <Users className="w-5 h-5" />
               Mis Clientes ({misClientes.length})
+            </button>
+
+            <button
+              onClick={() => setVistaActual("solicitudes")}
+              className={`px-6 py-2 rounded-lg font-bold transition-all flex items-center gap-2 ${vistaActual === "solicitudes"
+                  ? "bg-black text-uf-gold"
+                  : "bg-black/20 text-black hover:bg-black/30"
+                }`}
+            >
+              <Inbox className="w-5 h-5" />
+              Solicitudes ({solicitudes.length})
             </button>
           </div>
         </div>
@@ -246,7 +296,7 @@ function DashboardEntrenador() {
                           <span
                             className={`inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-${objetivo.color}-600/20 text-${objetivo.color}-400 font-bold`}
                           >
-                            {objetivo.icon} {objetivo.label}
+                            <Icono de={objetivo.icon} className="w-6 h-6 inline-block" /> {objetivo.label}
                           </span>
                         </div>
 
@@ -312,6 +362,51 @@ function DashboardEntrenador() {
                       </h3>
                     </button>
                   </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* SOLICITUDES */}
+          {vistaActual === "solicitudes" && (
+            <div>
+              {solicitudes.length === 0 ? (
+                <p className="text-gray-400">No tienes solicitudes pendientes.</p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {solicitudes.map((solicitud) => (
+                    <div
+                      key={solicitud.id}
+                      className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg border-2 border-gray-700 p-6"
+                    >
+                      <h3 className="text-white text-xl font-bold">
+                        {solicitud.usuario?.nombre_completo}
+                      </h3>
+                      {solicitud.usuario?.objetivo && (
+                        <p className="text-gray-400 text-sm mt-1">
+                          Objetivo: {solicitud.usuario.objetivo}
+                        </p>
+                      )}
+                      {solicitud.mensaje && (
+                        <p className="text-gray-300 mt-3 italic">"{solicitud.mensaje}"</p>
+                      )}
+
+                      <div className="flex gap-3 mt-5">
+                        <button
+                          onClick={() => handleAceptar(solicitud)}
+                          className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white font-bold py-2 rounded-lg transition"
+                        >
+                          <Check className="w-4 h-4" /> Aceptar
+                        </button>
+                        <button
+                          onClick={() => handleRechazar(solicitud)}
+                          className="flex-1 flex items-center justify-center gap-2 bg-gray-700 hover:bg-red-700 text-white font-bold py-2 rounded-lg transition"
+                        >
+                          <X className="w-4 h-4" /> Rechazar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

@@ -13,11 +13,10 @@ declare(strict_types=1);
 
 namespace ApiPlatform\State\Provider;
 
-use ApiPlatform\Metadata\HttpOperation;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\Exception\ParameterNotSupportedException;
 use ApiPlatform\State\Exception\ProviderNotFoundException;
 use ApiPlatform\State\ParameterNotFound;
+use ApiPlatform\State\ParameterProviderInterface;
 use ApiPlatform\State\ProviderInterface;
 use ApiPlatform\State\Util\ParameterParserTrait;
 use ApiPlatform\State\Util\RequestParser;
@@ -50,27 +49,9 @@ final class ParameterProvider implements ProviderInterface
             $request->attributes->set('_api_header_parameters', $request->headers->all());
         }
 
+        $context = ['operation' => $operation] + $context;
         $parameters = $operation->getParameters();
-
-        if ($operation instanceof HttpOperation && true === $operation->getStrictQueryParameterValidation()) {
-            $keys = [];
-            foreach ($parameters as $parameter) {
-                $keys[] = $parameter->getKey();
-            }
-
-            foreach (array_keys($request->attributes->get('_api_query_parameters')) as $key) {
-                if (!\in_array($key, $keys, true)) {
-                    throw new ParameterNotSupportedException($key);
-                }
-            }
-        }
-
         foreach ($parameters ?? [] as $parameter) {
-            $extraProperties = $parameter->getExtraProperties();
-            unset($extraProperties['_api_values']);
-            $parameters->add($parameter->getKey(), $parameter = $parameter->withExtraProperties($extraProperties));
-
-            $context = ['operation' => $operation] + $context;
             $values = $this->getParameterValues($parameter, $request, $context);
             $value = $this->extractParameterValues($parameter, $values);
 
@@ -98,15 +79,13 @@ final class ParameterProvider implements ProviderInterface
                 continue;
             }
 
-            if (\is_string($provider)) {
-                if (!$this->locator->has($provider)) {
-                    throw new ProviderNotFoundException(\sprintf('Provider "%s" not found on operation "%s"', $provider, $operation->getName()));
-                }
-
-                $provider = $this->locator->get($provider);
+            if (!\is_string($provider) || !$this->locator->has($provider)) {
+                throw new ProviderNotFoundException(\sprintf('Provider "%s" not found on operation "%s"', $provider, $operation->getName()));
             }
 
-            if (($op = $provider->provide($parameter, $values, $context)) instanceof Operation) {
+            /** @var ParameterProviderInterface $providerInstance */
+            $providerInstance = $this->locator->get($provider);
+            if (($op = $providerInstance->provide($parameter, $values, $context)) instanceof Operation) {
                 $operation = $op;
             }
         }

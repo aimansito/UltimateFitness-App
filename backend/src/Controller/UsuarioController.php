@@ -6,6 +6,7 @@ use App\Entity\Usuario;
 use App\Entity\CalendarioUsuario;
 use App\Entity\Suscripcion;
 use App\Entity\HistorialPago;
+use App\Security\RoleChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -162,10 +163,16 @@ class UsuarioController extends AbstractController
     public function actualizar(
         int $id,
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || ($usuarioActual->getId() !== $id && !$roleChecker->isAdmin($usuarioActual))) {
+            return $roleChecker->denyAccess();
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
-        
+
         if (!$usuario) {
             return $this->json([
                 'success' => false,
@@ -205,6 +212,10 @@ class UsuarioController extends AbstractController
         if (isset($data['observaciones'])) {
             $usuario->setObservaciones($data['observaciones']);
         }
+        // La foto solo se cambia desde POST /api/perfil/avatar (archivo validado en servidor)
+        if (isset($data['bio_corta'])) {
+            $usuario->setBioCorta($data['bio_corta']);
+        }
 
         $entityManager->flush();
 
@@ -226,7 +237,9 @@ class UsuarioController extends AbstractController
                 'edad' => $usuario->getEdad(),
                 'peso_actual' => $usuario->getPesoActual(),
                 'altura' => $usuario->getAltura(),
-                'nivel_actividad' => $usuario->getNivelActividad()
+                'nivel_actividad' => $usuario->getNivelActividad(),
+                'foto_url' => $usuario->getFotoUrl(),
+                'bio_corta' => $usuario->getBioCorta()
             ]
         ]);
     }
@@ -237,10 +250,18 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/upgrade-premium', name: 'usuarios_upgrade_premium', methods: ['POST'])]
     public function upgradePremium(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        // Premium solo lo concede un admin (o, cuando haya pagos, el webhook de Stripe):
+        // nadie puede hacerse premium a sí mismo llamando a esta ruta.
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || !$roleChecker->isAdmin($usuarioActual)) {
+            return $roleChecker->denyAccess('Requiere permisos de administrador');
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
-        
+
         if (!$usuario) {
             return $this->json([
                 'success' => false,
@@ -383,10 +404,13 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/hacer-premium', name: 'usuarios_make_premium', methods: ['POST'])]
     public function hacerPremium(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
-        // TODO: Verificar que el usuario actual es admin
-        // if ($currentUser->getRol() !== 'admin') { return error; }
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || !$roleChecker->isAdmin($usuarioActual)) {
+            return $roleChecker->denyAccess('Requiere permisos de administrador');
+        }
 
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
 
@@ -427,9 +451,13 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/quitar-premium', name: 'usuarios_remove_premium', methods: ['POST'])]
     public function quitarPremium(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
-        // TODO: Verificar que el usuario actual es admin
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || !$roleChecker->isAdmin($usuarioActual)) {
+            return $roleChecker->denyAccess('Requiere permisos de administrador');
+        }
 
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
 
@@ -460,8 +488,14 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/es-admin', name: 'usuarios_check_admin', methods: ['GET'])]
     public function esAdmin(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || ($usuarioActual->getId() !== $id && !$roleChecker->isAdmin($usuarioActual))) {
+            return $roleChecker->denyAccess();
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
 
         if (!$usuario) {
@@ -484,8 +518,14 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/perfil-completo', name: 'usuarios_profile_full', methods: ['GET'])]
     public function perfilCompleto(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || ($usuarioActual->getId() !== $id && !$roleChecker->isAdmin($usuarioActual))) {
+            return $roleChecker->denyAccess();
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
 
         if (!$usuario) {
@@ -543,9 +583,13 @@ class UsuarioController extends AbstractController
     // ============================================
     #[Route('/usuarios', name: 'usuarios_list_all', methods: ['GET'])]
     public function listarTodos(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
-        // TODO: Verificar que el usuario actual es admin
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || !$roleChecker->isAdmin($usuarioActual)) {
+            return $roleChecker->denyAccess('Requiere permisos de administrador');
+        }
 
         $usuarios = $entityManager->getRepository(Usuario::class)->findAll();
 
@@ -573,9 +617,13 @@ class UsuarioController extends AbstractController
     // ============================================
     #[Route('/usuarios/estadisticas-globales', name: 'usuarios_global_stats', methods: ['GET'])]
     public function estadisticasGlobales(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
-        // TODO: Verificar que el usuario actual es admin
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || !$roleChecker->isAdmin($usuarioActual)) {
+            return $roleChecker->denyAccess('Requiere permisos de administrador');
+        }
 
         $totalUsuarios = $entityManager->getRepository(Usuario::class)->count([]);
         $usuariosPremium = $entityManager->getRepository(Usuario::class)->count(['esPremium' => true]);

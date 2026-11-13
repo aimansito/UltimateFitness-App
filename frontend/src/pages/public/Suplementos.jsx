@@ -81,7 +81,7 @@ function Suplementos() {
                 <div className="mt-12 max-w-4xl mx-auto">
                     <div className="bg-gradient-to-r from-uf-gold/10 to-yellow-600/10 border-2 border-uf-gold rounded-xl p-8">
                         <h3 className="text-2xl font-bold text-white mb-4">
-                            ⚠️ Importante
+                            Importante
                         </h3>
                         <p className="text-gray-300 leading-relaxed">
                             Los suplementos son complementos a una dieta equilibrada, no sustitutos.

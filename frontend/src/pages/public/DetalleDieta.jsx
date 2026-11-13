@@ -6,6 +6,8 @@ import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import ModalReceta from '../../components/ModalReceta';
 import api from '../../services/api';
+import Icono from '../../components/common/Icono';
+import { Apple, Clock, Coffee, Moon, Star, Sunrise, UtensilsCrossed } from 'lucide-react';
 
 
 function DetalleDieta() {
@@ -21,17 +23,17 @@ function DetalleDieta() {
   const [platoSeleccionado, setPlatoSeleccionado] = useState(null);
 
   const momentosDelDia = [
-    { key: 'desayuno', nombre: 'DESAYUNO', icon: '🌅', color: 'orange' },
-    { key: 'media_mañana', nombre: 'MEDIA MAÑANA', icon: '☕', color: 'yellow' },
-    { key: 'comida', nombre: 'COMIDA', icon: '🍽️', color: 'green' },
-    { key: 'merienda', nombre: 'MERIENDA', icon: '🍎', color: 'red' },
-    { key: 'cena', nombre: 'CENA', icon: '🌙', color: 'blue' }
+    { key: 'desayuno', nombre: 'DESAYUNO', icon: Sunrise, color: 'orange' },
+    { key: 'media_mañana', nombre: 'MEDIA MAÑANA', icon: Coffee, color: 'yellow' },
+    { key: 'comida', nombre: 'COMIDA', icon: UtensilsCrossed, color: 'green' },
+    { key: 'merienda', nombre: 'MERIENDA', icon: Apple, color: 'red' },
+    { key: 'cena', nombre: 'CENA', icon: Moon, color: 'blue' }
   ];
 
   const iconosDificultad = {
-    'facil': '🟢',
-    'media': '🟡',
-    'dificil': '🔴'
+    'facil': 'bg-green-500',
+    'media': 'bg-yellow-400',
+    'dificil': 'bg-red-500'
   };
 
   const diasSemana = [
@@ -206,7 +208,7 @@ function DetalleDieta() {
                 <div className={`bg-gradient-to-r from-${momento.color}-500/20 to-${momento.color}-600/20 border-b-2 border-${momento.color}-500/30 p-4`}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-3xl">{momento.icon}</span>
+                      <span className="text-3xl"><Icono de={momento.icon} className="w-6 h-6 inline-block" /></span>
                       <div>
                         <h3 className="text-xl font-anton font-bold text-white uppercase">
                           {momento.nombre}
@@ -256,13 +258,13 @@ function DetalleDieta() {
                             </p>
                             <div className="flex flex-wrap gap-3 text-xs">
                               <span className="bg-gray-700 text-gray-300 px-3 py-1 rounded-full flex items-center gap-1">
-                                🕐 {plato.tiempo_preparacion} min
+                                <Clock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{plato.tiempo_preparacion} min
                               </span>
                               <span className="bg-gray-700 text-gray-300 px-3 py-1 rounded-full flex items-center gap-1">
-                                {iconosDificultad[plato.dificultad]} {plato.dificultad}
+                                <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${iconosDificultad[plato.dificultad]}`} aria-hidden="true" />{plato.dificultad}
                               </span>
                               <span className="bg-gray-700 text-gray-300 px-3 py-1 rounded-full flex items-center gap-1">
-                                ⭐ {plato.valoracion_promedio} ({plato.total_valoraciones})
+                                <Star className="inline-block w-4 h-4 mr-1 -mt-0.5 text-uf-gold fill-uf-gold" aria-hidden="true" />{plato.valoracion_promedio} ({plato.total_valoraciones})
                               </span>
                             </div>
                           </div>

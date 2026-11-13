@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Doctrine\ORM\Mapping\Driver;
 
-use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping\Builder\EntityListenerBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\MappingException;
@@ -16,12 +14,14 @@ use DOMDocument;
 use InvalidArgumentException;
 use LogicException;
 use SimpleXMLElement;
+use SortDirection;
 
+use function array_key_exists;
 use function assert;
+use function class_exists;
 use function constant;
 use function count;
 use function defined;
-use function enum_exists;
 use function explode;
 use function extension_loaded;
 use function file_get_contents;
@@ -289,13 +289,16 @@ class XmlDriver extends FileDriver
         // Evaluate <id ...> mappings
         $associationIds = [];
         foreach ($xmlRoot->id ?? [] as $idElement) {
+            $position = isset($idElement['position']) ? (int) $idElement['position'] : null;
+
             if (isset($idElement['association-key']) && $this->evaluateBoolean($idElement['association-key'])) {
-                $associationIds[(string) $idElement['name']] = true;
+                $associationIds[(string) $idElement['name']] = $position;
                 continue;
             }
 
-            $mapping       = $this->columnToArray($idElement);
-            $mapping['id'] = true;
+            $mapping               = $this->columnToArray($idElement);
+            $mapping['id']         = true;
+            $mapping['idPosition'] = $position;
 
             $metadata->mapField($mapping);
 
@@ -337,8 +340,9 @@ class XmlDriver extends FileDriver
                     $mapping['targetEntity'] = (string) $oneToOneElement['target-entity'];
                 }
 
-                if (isset($associationIds[$mapping['fieldName']])) {
-                    $mapping['id'] = true;
+                if (array_key_exists($mapping['fieldName'], $associationIds)) {
+                    $mapping['id']         = true;
+                    $mapping['idPosition'] = $associationIds[$mapping['fieldName']];
                 }
 
                 if (isset($oneToOneElement['fetch'])) {
@@ -409,10 +413,7 @@ class XmlDriver extends FileDriver
                 if (isset($oneToManyElement->{'order-by'})) {
                     $orderBy = [];
                     foreach ($oneToManyElement->{'order-by'}->{'order-by-field'} ?? [] as $orderByField) {
-                        $orderBy[(string) $orderByField['name']] = isset($orderByField['direction'])
-                            ? (string) $orderByField['direction']
-                            // @phpstan-ignore classConstant.deprecated
-                            : (enum_exists(Order::class) ? Order::Ascending->value : Criteria::ASC);
+                        $orderBy[(string) $orderByField['name']] = $this->getDirection($orderByField, $className);
                     }
 
                     $mapping['orderBy'] = $orderBy;
@@ -444,8 +445,9 @@ class XmlDriver extends FileDriver
                     $mapping['targetEntity'] = (string) $manyToOneElement['target-entity'];
                 }
 
-                if (isset($associationIds[$mapping['fieldName']])) {
-                    $mapping['id'] = true;
+                if (array_key_exists($mapping['fieldName'], $associationIds)) {
+                    $mapping['id']         = true;
+                    $mapping['idPosition'] = $associationIds[$mapping['fieldName']];
                 }
 
                 if (isset($manyToOneElement['fetch'])) {
@@ -516,6 +518,14 @@ class XmlDriver extends FileDriver
                         $joinTable['schema'] = (string) $joinTableElement['schema'];
                     }
 
+                    if (isset($joinTableElement['foreign-key-name'])) {
+                        $joinTable['foreignKeyName'] = (string) $joinTableElement['foreign-key-name'];
+                    }
+
+                    if (isset($joinTableElement['inverse-foreign-key-name'])) {
+                        $joinTable['inverseForeignKeyName'] = (string) $joinTableElement['inverse-foreign-key-name'];
+                    }
+
                     if (isset($joinTableElement->options)) {
                         $joinTable['options'] = $this->parseOptions($joinTableElement->options->children());
                     }
@@ -538,10 +548,9 @@ class XmlDriver extends FileDriver
                 if (isset($manyToManyElement->{'order-by'})) {
                     $orderBy = [];
                     foreach ($manyToManyElement->{'order-by'}->{'order-by-field'} ?? [] as $orderByField) {
-                        $orderBy[(string) $orderByField['name']] = isset($orderByField['direction'])
-                            ? (string) $orderByField['direction']
-                            // @phpstan-ignore classConstant.deprecated
-                            : (enum_exists(Order::class) ? Order::Ascending->value : Criteria::ASC);
+                        $direction = $this->getDirection($orderByField, $className);
+
+                        $orderBy[(string) $orderByField['name']] = $direction;
                     }
 
                     $mapping['orderBy'] = $orderBy;
@@ -599,6 +608,14 @@ class XmlDriver extends FileDriver
                         'name'      => (string) $joinTableElement['name'],
                         'schema'    => (string) $joinTableElement['schema'],
                     ];
+
+                    if (isset($joinTableElement['foreign-key-name'])) {
+                        $joinTable['foreignKeyName'] = (string) $joinTableElement['foreign-key-name'];
+                    }
+
+                    if (isset($joinTableElement['inverse-foreign-key-name'])) {
+                        $joinTable['inverseForeignKeyName'] = (string) $joinTableElement['inverse-foreign-key-name'];
+                    }
 
                     if (isset($joinTableElement->options)) {
                         $joinTable['options'] = $this->parseOptions($joinTableElement->options->children());
@@ -665,15 +682,30 @@ class XmlDriver extends FileDriver
      * Parses (nested) option elements.
      *
      * @return mixed[] The options array.
-     * @phpstan-return array<int|string, array<int|string, mixed|string>|bool|string>
+     * @phpstan-return array<int|string, array<int|string, mixed|string>|bool|string|object>
      */
     private function parseOptions(SimpleXMLElement|null $options): array
     {
         $array = [];
 
         foreach ($options ?? [] as $option) {
+            $value = null;
             if ($option->count()) {
-                $value = $this->parseOptions($option->children());
+                // Check if this option contains an <object> element
+                $children         = $option->children();
+                $hasObjectElement = false;
+
+                foreach ($children as $child) {
+                    if ($child->getName() === 'object') {
+                        $value            = $this->parseObjectElement($child);
+                        $hasObjectElement = true;
+                        break;
+                    }
+                }
+
+                if (! $hasObjectElement) {
+                    $value = $this->parseOptions($children);
+                }
             } else {
                 $value = (string) $option;
             }
@@ -694,6 +726,33 @@ class XmlDriver extends FileDriver
     }
 
     /**
+     * Parses an <object> element and returns the instantiated object.
+     *
+     * @param SimpleXMLElement $objectElement The XML element.
+     *
+     * @return object The instantiated object.
+     *
+     * @throws MappingException If the object specification is invalid.
+     * @throws InvalidArgumentException If the class does not exist.
+     */
+    private function parseObjectElement(SimpleXMLElement $objectElement): object
+    {
+        $attributes = $objectElement->attributes();
+
+        if (! isset($attributes->class)) {
+            throw MappingException::missingRequiredOption('object', 'class');
+        }
+
+        $className = (string) $attributes->class;
+
+        if (! class_exists($className)) {
+            throw new InvalidArgumentException(sprintf('Class "%s" does not exist', $className));
+        }
+
+        return new $className();
+    }
+
+    /**
      * Constructs a joinColumn mapping array based on the information
      * found in the given SimpleXMLElement.
      *
@@ -707,6 +766,7 @@ class XmlDriver extends FileDriver
      *                   nullable?: bool,
      *                   onDelete?: string,
      *                   columnDefinition?: string,
+     *                   foreignKeyName?: string,
      *                   options?: mixed[]
      *               }
      */
@@ -731,6 +791,10 @@ class XmlDriver extends FileDriver
 
         if (isset($joinColumnElement['column-definition'])) {
             $joinColumn['columnDefinition'] = (string) $joinColumnElement['column-definition'];
+        }
+
+        if (isset($joinColumnElement['foreign-key-name'])) {
+            $joinColumn['foreignKeyName'] = (string) $joinColumnElement['foreign-key-name'];
         }
 
         if (isset($joinColumnElement['options'])) {
@@ -940,5 +1004,17 @@ class XmlDriver extends FileDriver
         $flag = (string) $element;
 
         return $flag === 'true' || $flag === '1';
+    }
+
+    private function getDirection(SimpleXMLElement $orderByField, string $className): SortDirection
+    {
+        $direction = (string) ($orderByField['direction'] ?? 'ASC');
+
+        assert(in_array($direction, ['ASC', 'DESC'], true));
+
+        return match (strtoupper($direction)) {
+            'ASC' => SortDirection::Ascending,
+            'DESC' => SortDirection::Descending,
+        };
     }
 }

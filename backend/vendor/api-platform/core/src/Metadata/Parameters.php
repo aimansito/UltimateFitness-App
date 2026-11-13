@@ -22,9 +22,6 @@ use ApiPlatform\Metadata\Exception\RuntimeException;
  */
 final class Parameters implements \IteratorAggregate, \Countable
 {
-    /**
-     * @var array<int, array{0: string, 1: Parameter}>
-     */
     private array $parameters = [];
 
     /**
@@ -71,11 +68,9 @@ final class Parameters implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @template T of Parameter
-     *
-     * @param class-string<T> $parameterClass
+     * @param class-string $parameterClass
      */
-    public function remove(string $key, string $parameterClass = QueryParameter::class): self
+    public function remove(string $key, string $parameterClass): self
     {
         foreach ($this->parameters as $i => [$parameterName, $parameter]) {
             if ($parameterName === $key && $parameterClass === $parameter::class) {
@@ -89,13 +84,9 @@ final class Parameters implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @template T of Parameter
-     *
-     * @param class-string<T> $parameterClass
-     *
-     * @return T|null
+     * @param class-string $parameterClass
      */
-    public function get(string $key, string $parameterClass = QueryParameter::class): ?Parameter
+    public function get(string $key, string $parameterClass): ?Parameter
     {
         foreach ($this->parameters as [$parameterName, $parameter]) {
             if ($parameterName === $key && $parameterClass === $parameter::class) {
@@ -107,11 +98,9 @@ final class Parameters implements \IteratorAggregate, \Countable
     }
 
     /**
-     * @template T of Parameter
-     *
-     * @param class-string<T> $parameterClass
+     * @param class-string $parameterClass
      */
-    public function has(string $key, string $parameterClass = QueryParameter::class): bool
+    public function has(string $key, string $parameterClass): bool
     {
         foreach ($this->parameters as [$parameterName, $parameter]) {
             if ($parameterName === $key && $parameterClass === $parameter::class) {
@@ -129,7 +118,7 @@ final class Parameters implements \IteratorAggregate, \Countable
 
     public function sort(): self
     {
-        usort($this->parameters, static fn (array $a, array $b): int => $b[1]->getPriority() - $a[1]->getPriority());
+        usort($this->parameters, fn ($a, $b): int|float => $b[1]->getPriority() - $a[1]->getPriority());
 
         return $this;
     }

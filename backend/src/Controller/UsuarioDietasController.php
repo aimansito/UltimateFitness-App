@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Dieta;
+use App\Entity\Entrenador;
+use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,6 +23,11 @@ class UsuarioDietasController extends AbstractController
         int $usuarioId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || $usuarioActual->getId() !== $usuarioId) {
+            return $this->json(['success' => false, 'error' => 'Acceso denegado'], Response::HTTP_FORBIDDEN);
+        }
+
         try {
             $conn = $entityManager->getConnection();
 
@@ -90,6 +98,22 @@ class UsuarioDietasController extends AbstractController
         int $dietaId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario && !$usuarioActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $dietaCheck = $entityManager->getRepository(Dieta::class)->find($dietaId);
+        if (!$dietaCheck) {
+            return $this->json(['success' => false, 'error' => 'Dieta no encontrada'], Response::HTTP_NOT_FOUND);
+        }
+        $esPropietario = $usuarioActual instanceof Usuario
+            ? $dietaCheck->getAsignadoAUsuario()?->getId() === $usuarioActual->getId()
+            : $dietaCheck->getCreador()?->getId() === $usuarioActual->getId();
+        if (!$esPropietario) {
+            return $this->json(['success' => false, 'error' => 'Dieta no encontrada'], Response::HTTP_NOT_FOUND);
+        }
+
         try {
             $conn = $entityManager->getConnection();
 

@@ -63,6 +63,10 @@ security:
         - { path: ^/api/health$, roles: PUBLIC_ACCESS }
         - { path: ^/api/forgot-password$, roles: PUBLIC_ACCESS }
         - { path: ^/api/reset-password$, roles: PUBLIC_ACCESS }
-        - { path: ^/api/pagos/webhook$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/stripe/webhook$, roles: PUBLIC_ACCESS }
+        # Capa social: lectura pública (el controlador filtra según quién mira)
+        - { path: ^/api/perfil/publico/, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/social/(seguidores|seguidos)/, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/social/feed/, roles: PUBLIC_ACCESS, methods: [GET] }
 
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

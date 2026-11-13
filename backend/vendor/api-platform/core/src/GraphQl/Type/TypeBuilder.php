@@ -278,7 +278,6 @@ final class TypeBuilder implements ContextAwareTypeBuilderInterface
                 'itemsPerPage' => GraphQLType::nonNull(GraphQLType::int()),
                 'lastPage' => GraphQLType::nonNull(GraphQLType::int()),
                 'totalCount' => GraphQLType::nonNull(GraphQLType::int()),
-                'currentPage' => GraphQLType::nonNull(GraphQLType::int()),
                 'hasNextPage' => GraphQLType::nonNull(GraphQLType::boolean()),
             ],
         ];

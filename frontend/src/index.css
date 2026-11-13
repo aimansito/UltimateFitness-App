@@ -24,32 +24,54 @@
   --font-family-anton: 'Anton', sans-serif;
   --font-family-audiowide: 'Audiowide', sans-serif;
   --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-anton: 'Anton', sans-serif;
+  --font-audiowide: 'Audiowide', sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Superficies */
+  --color-uf-card: #131313;
+  --color-uf-card-2: #171717;
+  --color-uf-line: #232323;
+  --color-uf-muted: #8a8a8a;
+
+  /* Grises neutros (sin tinte azulado) para que todas las superficies sigan la marca */
+  --color-gray-950: #0a0a0a;
+  --color-gray-900: #111111;
+  --color-gray-800: #1a1a1a;
+  --color-gray-700: #2a2a2a;
+  --color-gray-600: #4a4a4a;
+  --color-gray-500: #737373;
+  --color-gray-400: #a3a3a3;
+  --color-gray-300: #d4d4d4;
+  --color-gray-200: #e5e5e5;
 }
 
 /* ============================================ */
 /* ESTILOS GLOBALES */
 /* ============================================ */
-body {
-  background-color: var(--color-uf-darker);
-  color: white;
-  font-family: var(--font-family-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@layer base {
+  body {
+    background-color: var(--color-uf-darker);
+    color: white;
+    font-family: var(--font-family-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-/* Títulos usan Anton por defecto */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-family-anton);
-}
+  /* Títulos usan Anton por defecto */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-family-anton);
+  }
 
-/* Links sin subrayado */
-a {
-  text-decoration: none;
+  /* Links sin subrayado */
+  a {
+    text-decoration: none;
+  }
 }
 
 /* ============================================ */
@@ -116,4 +138,195 @@ html {
 
 .animate-slide-in {
   animation: slideIn 0.3s ease-out;
+}
+
+/* ============================================ */
+/* SISTEMA DE DISEÑO — primitivas compartidas */
+/* ============================================ */
+
+/* Anton solo tiene peso 400: evita la negrita sintética (emborrona los titulares) */
+h1, h2, h3, h4, h5, h6, .font-anton {
+  font-synthesis: none;
+  letter-spacing: 0.01em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-uf-gold);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-uf-gold);
+  color: #000;
+}
+
+@layer components {
+/* Etiqueta pequeña sobre los titulares */
+.uf-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-audiowide);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-uf-gold);
+}
+
+.uf-eyebrow::before {
+  content: '';
+  width: 1.75rem;
+  height: 1px;
+  background: var(--color-uf-gold);
+}
+
+/* Tarjeta base */
+.uf-card {
+  position: relative;
+  background: linear-gradient(180deg, #151515 0%, #101010 100%);
+  border: 1px solid var(--color-uf-line);
+  border-radius: 1.25rem;
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.uf-card-hover:hover {
+  border-color: color-mix(in srgb, var(--color-uf-gold) 60%, transparent);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -18px color-mix(in srgb, var(--color-uf-gold) 35%, transparent);
+}
+
+/* Botones */
+.uf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.95rem 1.9rem;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.uf-btn-primary {
+  background: var(--color-uf-gold);
+  color: #000;
+  box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--color-uf-gold) 70%, transparent);
+}
+
+.uf-btn-primary:hover {
+  background: #e3a826;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -10px color-mix(in srgb, var(--color-uf-gold) 85%, transparent);
+}
+
+.uf-btn-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+}
+
+.uf-btn-ghost:hover {
+  border-color: var(--color-uf-gold);
+  color: var(--color-uf-gold);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* Chip / badge */
+.uf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-uf-line);
+  background: rgba(255, 255, 255, 0.03);
+  color: #c7c7c7;
+}
+
+/* Fondo de rejilla sutil con máscara radial */
+.uf-grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 100%);
+}
+
+/* Halo dorado decorativo */
+.uf-glow {
+  position: absolute;
+  border-radius: 9999px;
+  background: var(--color-uf-gold);
+  filter: blur(120px);
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+/* Texto con degradado dorado */
+.uf-text-gold {
+  background: linear-gradient(180deg, #f0bf4a 0%, var(--color-uf-gold) 60%, #9a6d0e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Aparición al hacer scroll (ver components/common/Reveal.jsx) */
+.uf-reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.uf-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Cinta en movimiento */
+@keyframes ufMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.uf-marquee {
+  display: flex;
+  width: max-content;
+  animation: ufMarquee 38s linear infinite;
+}
+
+@keyframes ufFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.uf-float {
+  animation: ufFloat 6s ease-in-out infinite;
+}
+
+@keyframes ufPulseRing {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+/* Mapa muscular: transición suave al cambiar de grupo */
+.uf-muscle-map polygon {
+  transition: fill 0.45s ease;
+}
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .uf-reveal { opacity: 1; transform: none; transition: none; }
+  .uf-marquee, .uf-float { animation: none; }
+  html { scroll-behavior: auto; }
 }

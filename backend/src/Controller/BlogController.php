@@ -54,7 +54,7 @@ class BlogController extends AbstractController
     ): JsonResponse {
         // Obtener usuario actual (puede ser null si no está logueado)
         $user = $this->getUser();
-        $esPremium = $user && method_exists($user, 'isEsPremium') && $user->isEsPremium();
+        $esPremium = $this->accesoCompleto($user);
 
         // Parámetros de paginación
         $page = max(1, (int)$request->query->get('page', 1));
@@ -124,7 +124,7 @@ class BlogController extends AbstractController
     ): JsonResponse {
         // Verificar que el usuario sea premium
         $user = $this->getUser();
-        $esPremium = $user && method_exists($user, 'isEsPremium') && $user->isEsPremium();
+        $esPremium = $this->accesoCompleto($user);
 
         if (!$esPremium) {
             return $this->json([
@@ -179,7 +179,7 @@ class BlogController extends AbstractController
         EntityManagerInterface $em
     ): JsonResponse {
         $user = $this->getUser();
-        $esPremium = $user && method_exists($user, 'isEsPremium') && $user->isEsPremium();
+        $esPremium = $this->accesoCompleto($user);
 
         // Parámetros
         $searchTerm = $request->query->get('q', '');
@@ -243,7 +243,7 @@ class BlogController extends AbstractController
         EntityManagerInterface $em
     ): JsonResponse {
         $user = $this->getUser();
-        $esPremium = $user && method_exists($user, 'isEsPremium') && $user->isEsPremium();
+        $esPremium = $this->accesoCompleto($user);
 
         // Parámetros de paginación
         $page = max(1, (int)$request->query->get('page', 1));
@@ -305,7 +305,7 @@ class BlogController extends AbstractController
         }
         
         $user = $this->getUser();
-        $esPremium = $user && method_exists($user, 'isEsPremium') && $user->isEsPremium();
+        $esPremium = $this->accesoCompleto($user);
         
         // 🔒 CONTROL DE ACCESO
         if ($post->isEsPremium() && !$esPremium) {
@@ -610,6 +610,21 @@ class BlogController extends AbstractController
     }
     
     
+    /**
+     * Mientras los pagos estén desactivados (PAGOS_ACTIVOS=0) no hay plan de pago:
+     * cualquier cuenta registrada accede a todo el contenido.
+     */
+    private function accesoCompleto(mixed $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+        if (!$this->getParameter('app.pagos_activos')) {
+            return true;
+        }
+        return method_exists($user, 'isEsPremium') && $user->isEsPremium();
+    }
+
     private function serializePost(BlogPost $post, bool $usuarioPremium, bool $incluirContenido = false): array
     {
         $data = [

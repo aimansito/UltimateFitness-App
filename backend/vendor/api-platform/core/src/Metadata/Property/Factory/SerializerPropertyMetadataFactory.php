@@ -52,14 +52,12 @@ final class SerializerPropertyMetadataFactory implements PropertyMetadataFactory
             if ($denormalizationGroups && !\is_array($denormalizationGroups)) {
                 $denormalizationGroups = [$denormalizationGroups];
             }
-
-            $ignoredAttributes = $options['ignored_attributes'] ?? [];
         } catch (ResourceClassNotFoundException) {
             // TODO: for input/output classes, the serializer groups must be read from the actual resource class
             return $propertyMetadata;
         }
 
-        $propertyMetadata = $this->transformReadWrite($propertyMetadata, $resourceClass, $property, $normalizationGroups, $denormalizationGroups, $ignoredAttributes);
+        $propertyMetadata = $this->transformReadWrite($propertyMetadata, $resourceClass, $property, $normalizationGroups, $denormalizationGroups);
         $types = $propertyMetadata->getBuiltinTypes() ?? [];
 
         if (!$this->isResourceClass($resourceClass) && $types) {
@@ -82,12 +80,8 @@ final class SerializerPropertyMetadataFactory implements PropertyMetadataFactory
      * @param string[]|null $normalizationGroups
      * @param string[]|null $denormalizationGroups
      */
-    private function transformReadWrite(ApiProperty $propertyMetadata, string $resourceClass, string $propertyName, ?array $normalizationGroups = null, ?array $denormalizationGroups = null, array $ignoredAttributes = []): ApiProperty
+    private function transformReadWrite(ApiProperty $propertyMetadata, string $resourceClass, string $propertyName, ?array $normalizationGroups = null, ?array $denormalizationGroups = null): ApiProperty
     {
-        if (\in_array($propertyName, $ignoredAttributes, true)) {
-            return $propertyMetadata->withWritable(false)->withReadable(false);
-        }
-
         $serializerAttributeMetadata = $this->getSerializerAttributeMetadata($resourceClass, $propertyName);
         $groups = $serializerAttributeMetadata ? $serializerAttributeMetadata->getGroups() : [];
         $ignored = $serializerAttributeMetadata && $serializerAttributeMetadata->isIgnored();

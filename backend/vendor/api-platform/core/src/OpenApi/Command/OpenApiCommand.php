@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace ApiPlatform\OpenApi\Command;
 
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -27,7 +26,6 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Dumps Open API documentation.
  */
-#[AsCommand(name: 'api:openapi:export')]
 final class OpenApiCommand extends Command
 {
     public function __construct(private readonly OpenApiFactoryInterface $openApiFactory, private readonly NormalizerInterface $normalizer)
@@ -45,8 +43,7 @@ final class OpenApiCommand extends Command
             ->addOption('yaml', 'y', InputOption::VALUE_NONE, 'Dump the documentation in YAML')
             ->addOption('output', 'o', InputOption::VALUE_OPTIONAL, 'Write output to file')
             ->addOption('spec-version', null, InputOption::VALUE_OPTIONAL, 'Open API version to use (2 or 3) (2 is deprecated)', '3')
-            ->addOption('api-gateway', null, InputOption::VALUE_NONE, 'Enable the Amazon API Gateway compatibility mode')
-            ->addOption('filter-tags', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Filter only matching x-apiplatform-tag operations', null);
+            ->addOption('api-gateway', null, InputOption::VALUE_NONE, 'Enable the Amazon API Gateway compatibility mode');
     }
 
     /**
@@ -56,11 +53,9 @@ final class OpenApiCommand extends Command
     {
         $filesystem = new Filesystem();
         $io = new SymfonyStyle($input, $output);
-        $data = $this->normalizer->normalize(
-            $this->openApiFactory->__invoke(['filter_tags' => $input->getOption('filter-tags')]),
-            'json',
-            ['spec_version' => $input->getOption('spec-version')]
-        );
+        $data = $this->normalizer->normalize($this->openApiFactory->__invoke(), 'json', [
+            'spec_version' => $input->getOption('spec-version'),
+        ]);
 
         if ($input->getOption('yaml') && !class_exists(Yaml::class)) {
             $output->writeln('The "symfony/yaml" component is not installed.');
@@ -83,5 +78,10 @@ final class OpenApiCommand extends Command
         $output->writeln($content);
 
         return \defined(Command::class.'::SUCCESS') ? Command::SUCCESS : 0;
+    }
+
+    public static function getDefaultName(): string
+    {
+        return 'api:openapi:export';
     }
 }

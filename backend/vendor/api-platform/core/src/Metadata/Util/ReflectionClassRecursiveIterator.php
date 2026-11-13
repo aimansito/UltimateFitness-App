@@ -22,36 +22,19 @@ namespace ApiPlatform\Metadata\Util;
  */
 final class ReflectionClassRecursiveIterator
 {
-    /**
-     * @var array<string, array<class-string, \ReflectionClass>>
-     */
-    private static array $localCache;
-
     private function __construct()
     {
     }
 
-    /**
-     * @param string[] $directories
-     * @param string   $ignoreRegex Laravel uses (?!.*Test\.php$) to avoid loading pest class tests
-     *
-     * @return array<class-string, \ReflectionClass>
-     */
-    public static function getReflectionClassesFromDirectories(array $directories, string $ignoreRegex = ''): array
+    public static function getReflectionClassesFromDirectories(array $directories): \Iterator
     {
-        $id = hash('xxh3', implode('', $directories));
-        if (isset(self::$localCache[$id])) {
-            return self::$localCache[$id];
-        }
-
-        $includedFiles = [];
         foreach ($directories as $path) {
             $iterator = new \RegexIterator(
                 new \RecursiveIteratorIterator(
-                    new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::FOLLOW_SYMLINKS),
+                    new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS),
                     \RecursiveIteratorIterator::LEAVES_ONLY
                 ),
-                '/^'.$ignoreRegex.'.+\.php$/i',
+                '/^.+\.php$/i',
                 \RecursiveRegexIterator::GET_MATCH
             );
 
@@ -78,15 +61,12 @@ final class ReflectionClassRecursiveIterator
         $sortedInterfaces = get_declared_interfaces();
         sort($sortedInterfaces);
         $declared = [...$sortedClasses, ...$sortedInterfaces];
-        $ret = [];
         foreach ($declared as $className) {
             $reflectionClass = new \ReflectionClass($className);
             $sourceFile = $reflectionClass->getFileName();
             if (isset($includedFiles[$sourceFile])) {
-                $ret[$className] = $reflectionClass;
+                yield $className => $reflectionClass;
             }
         }
-
-        return self::$localCache[$id] = $ret;
     }
 }

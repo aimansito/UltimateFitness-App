@@ -7,6 +7,7 @@ namespace Doctrine\ORM\Mapping;
 use BackedEnum;
 use BadMethodCallException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Schema\DefaultExpression\CurrentTimestamp;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\Deprecations\Deprecation;
 use Doctrine\Instantiator\Instantiator;
@@ -25,6 +26,7 @@ use LogicException;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionProperty;
+use SortDirection;
 use Stringable;
 
 use function array_column;
@@ -45,6 +47,8 @@ use function count;
 use function defined;
 use function enum_exists;
 use function explode;
+use function func_get_arg;
+use function func_num_args;
 use function implode;
 use function in_array;
 use function interface_exists;
@@ -57,8 +61,10 @@ use function sprintf;
 use function str_contains;
 use function str_replace;
 use function strtolower;
+use function strtoupper;
 use function trait_exists;
 use function trim;
+use function usort;
 
 /**
  * A <tt>ClassMetadata</tt> instance holds all the object-relational mapping metadata
@@ -329,6 +335,13 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
     public array $identifier = [];
 
     /**
+     * READ-ONLY: The position of each identifier field, used to control the order of composite primary key fields.
+     *
+     * @phpstan-var array<string, int>
+     */
+    public array $identifierPositions = [];
+
+    /**
      * READ-ONLY: The inheritance mapping type used by the class.
      *
      * @phpstan-var self::INHERITANCE_TYPE_*
@@ -546,7 +559,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
      */
     public LegacyReflectionFields|array $reflFields = [];
 
-    /** @var array<string, PropertyAccessors\PropertyAccessor> */
+    /** @var array<string, PropertyAccessor> */
     public array $propertyAccessors = [];
 
     private InstantiatorInterface|null $instantiator = null;
@@ -584,7 +597,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
     /**
      * Gets the ReflectionProperties of the mapped class.
      *
-     * @return PropertyAccessor[] An array of PropertyAccessor instances.
+     * @return array<string, PropertyAccessor> An array of PropertyAccessor instances by name.
      */
     public function getPropertyAccessors(): array
     {
@@ -729,6 +742,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
             'fieldNames',
             'embeddedClasses',
             'identifier',
+            'identifierPositions',
             'isIdentifierComposite', // TODO: REMOVE
             'name',
             'namespace', // TODO: REMOVE
@@ -1241,7 +1255,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
             }
 
             if (! in_array($mapping->fieldName, $this->identifier, true)) {
-                $this->identifier[] = $mapping->fieldName;
+                $this->registerIdentifierField($mapping->fieldName, $mapping->idPosition);
             }
 
             // Check for composite key
@@ -1344,7 +1358,7 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
                 }
 
                 assert(is_string($mapping['fieldName']));
-                $this->identifier[]              = $mapping['fieldName'];
+                $this->registerIdentifierField($mapping['fieldName'], $mapping['idPosition'] ?? null);
                 $this->containsForeignIdentifier = true;
             }
 
@@ -1360,6 +1374,8 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
                 );
             }
         }
+
+        unset($mapping['idPosition']);
 
         // Mandatory attributes for both sides
         // Mandatory: fieldName, targetEntity
@@ -1502,9 +1518,17 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
      *
      * @phpstan-param list<mixed> $identifier
      */
-    public function setIdentifier(array $identifier): void
+    public function setIdentifier(array $identifier/*, array $positions = []*/): void
     {
-        $this->identifier            = $identifier;
+        $positions = func_num_args() > 1 ? func_get_arg(1) : [];
+
+        $this->identifier          = [];
+        $this->identifierPositions = [];
+
+        foreach ($identifier as $fieldName) {
+            $this->registerIdentifierField($fieldName, $positions[$fieldName] ?? null);
+        }
+
         $this->isIdentifierComposite = (count($this->identifier) > 1);
     }
 
@@ -2001,6 +2025,10 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
     {
         $mapping['type'] = self::ONE_TO_MANY;
 
+        if (isset($mapping['orderBy'])) {
+            $mapping['orderBy'] = $this->normalizeOrderBy($mapping['orderBy'], $mapping['fieldName']);
+        }
+
         $mapping = $this->_validateAndCompleteAssociationMapping($mapping);
 
         $this->_storeAssociationMapping($mapping);
@@ -2028,6 +2056,10 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
     public function mapManyToMany(array $mapping): void
     {
         $mapping['type'] = self::MANY_TO_MANY;
+
+        if (isset($mapping['orderBy'])) {
+            $mapping['orderBy'] = $this->normalizeOrderBy($mapping['orderBy'], $mapping['fieldName']);
+        }
 
         $mapping = $this->_validateAndCompleteAssociationMapping($mapping);
 
@@ -2204,6 +2236,20 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
                 throw MappingException::invalidDiscriminatorColumnType($this->name, $columnDef['type']);
             }
 
+            if (isset($columnDef['enumType'])) {
+                if (! enum_exists($columnDef['enumType'])) {
+                    throw MappingException::nonEnumTypeMapped($this->name, $columnDef['fieldName'], $columnDef['enumType']);
+                }
+
+                if (
+                    defined('Doctrine\DBAL\Types\Types::ENUM')
+                    && $columnDef['type'] === Types::ENUM
+                    && ! isset($columnDef['options']['values'])
+                ) {
+                    $columnDef['options']['values'] = array_column($columnDef['enumType']::cases(), 'value');
+                }
+            }
+
             $this->discriminatorColumn = DiscriminatorColumnMapping::fromMappingArray($columnDef);
         }
     }
@@ -2222,6 +2268,8 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
      * Used for JOINED and SINGLE_TABLE inheritance mapping strategies.
      *
      * @param array<int|string, string> $map
+     *
+     * @throws MappingException
      */
     public function setDiscriminatorMap(array $map): void
     {
@@ -2239,6 +2287,16 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
                     return $value > 1;
                 }))),
             );
+        }
+
+        $values = $this->discriminatorColumn->options['values'] ?? null;
+
+        if ($values !== null) {
+            $diff = array_diff(array_keys($map), $values);
+
+            if ($diff !== []) {
+                throw MappingException::invalidEntriesInDiscriminatorMap(array_values($diff), $this->name, $this->discriminatorColumn->enumType);
+            }
         }
 
         foreach ($map as $value => $className) {
@@ -2454,9 +2512,9 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
 
         if (! isset($mapping['default'])) {
             if (in_array($mapping['type'], ['integer', 'bigint', 'smallint'], true)) {
-                $mapping['default'] = 1;
+                $mapping['options']['default'] = 1;
             } elseif ($mapping['type'] === 'datetime') {
-                $mapping['default'] = 'CURRENT_TIMESTAMP';
+                $mapping['options']['default'] = class_exists(CurrentTimestamp::class) ? new CurrentTimestamp() : 'CURRENT_TIMESTAMP';
             } else {
                 throw MappingException::unsupportedOptimisticLockingType($this->name, $mapping['fieldName'], $mapping['type']);
             }
@@ -2695,5 +2753,55 @@ class ClassMetadata implements PersistenceClassMetadata, Stringable
         }
 
         return $sequencePrefix;
+    }
+
+    private function registerIdentifierField(string $fieldName, int|null $idPosition): void
+    {
+        $this->identifier[]                    = $fieldName;
+        $this->identifierPositions[$fieldName] = $idPosition ?? 0;
+
+        usort(
+            $this->identifier,
+            fn (string $field1, string $field2) => $this->identifierPositions[$field1] <=> $this->identifierPositions[$field2],
+        );
+    }
+
+    /**
+     * Normalizes orderBy array values to SortDirection instances.
+     *
+     * @param array<string, SortDirection|string> $orderBy
+     *
+     * @return array<string, SortDirection>
+     */
+    private function normalizeOrderBy(array $orderBy, string $fieldName): array
+    {
+        $normalized = [];
+
+        foreach ($orderBy as $field => $direction) {
+            if ($direction instanceof SortDirection) {
+                $normalized[$field] = $direction;
+            } else {
+                Deprecation::trigger(
+                    'doctrine/orm',
+                    'https://github.com/doctrine/orm/issues/11313',
+                    '%s::%s : Using "%s" as an order by direction is deprecated in favor of passing a SortDirection instance',
+                    $this->name,
+                    $fieldName,
+                    $direction,
+                );
+                $normalized[$field] = match (strtoupper($direction)) {
+                    'ASC' => SortDirection::Ascending,
+                    'DESC' => SortDirection::Descending,
+                    default => throw MappingException::invalidOrderByDirection(
+                        $direction,
+                        $field,
+                        $fieldName,
+                        $this->name,
+                    ),
+                };
+            }
+        }
+
+        return $normalized;
     }
 }

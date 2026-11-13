@@ -63,25 +63,23 @@ final class PaginationExtension implements AggregationResultCollectionExtensionI
          * @var DocumentRepository
          */
         $repository = $manager->getRepository($resourceClass);
-
-        $facet = $aggregationBuilder->facet();
-        $addFields = $aggregationBuilder->addFields();
-
-        // Get the results slice, from $offset to $offset + $limit
-        // MongoDB does not support $limit: O, so we return an empty array directly
+        $resultsAggregationBuilder = $repository->createAggregationBuilder()->skip($offset);
         if ($limit > 0) {
-            $facet->field('results')->pipeline($repository->createAggregationBuilder()->skip($offset)->limit($limit));
+            $resultsAggregationBuilder->limit($limit);
         } else {
-            $addFields->field('results')->literal([]);
+            // Results have to be 0 but MongoDB does not support a limit equal to 0.
+            $resultsAggregationBuilder->match()->field(Paginator::LIMIT_ZERO_MARKER_FIELD)->equals(Paginator::LIMIT_ZERO_MARKER);
         }
 
-        // Count the total number of items
-        $facet->field('count')->pipeline($repository->createAggregationBuilder()->count('count'));
-
-        // Store pagination metadata, read by the Paginator
-        // Using __ to avoid field names mapping
-        $addFields->field('__api_first_result__')->literal($offset);
-        $addFields->field('__api_max_results__')->literal($limit);
+        $aggregationBuilder
+            ->facet()
+            ->field('results')->pipeline(
+                $resultsAggregationBuilder
+            )
+            ->field('count')->pipeline(
+                $repository->createAggregationBuilder()
+                    ->count('count')
+            );
     }
 
     /**
@@ -111,7 +109,7 @@ final class PaginationExtension implements AggregationResultCollectionExtensionI
         $attribute = $operation?->getExtraProperties()['doctrine_mongodb'] ?? [];
         $executeOptions = $attribute['execute_options'] ?? [];
 
-        return new Paginator($aggregationBuilder->getAggregation($executeOptions)->getIterator(), $manager->getUnitOfWork(), $resourceClass);
+        return new Paginator($aggregationBuilder->execute($executeOptions), $manager->getUnitOfWork(), $resourceClass, $aggregationBuilder->getPipeline());
     }
 
     private function addCountToContext(Builder $aggregationBuilder, array $context): array

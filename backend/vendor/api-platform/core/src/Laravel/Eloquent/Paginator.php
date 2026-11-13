@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace ApiPlatform\Laravel\Eloquent;
 
-use ApiPlatform\State\Pagination\HasNextPagePaginatorInterface;
 use ApiPlatform\State\Pagination\PaginatorInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use IteratorAggregate;
@@ -22,10 +21,10 @@ use IteratorAggregate;
  * @implements IteratorAggregate<mixed,object>
  * @implements PaginatorInterface<object>
  */
-final class Paginator implements PaginatorInterface, HasNextPagePaginatorInterface, \IteratorAggregate
+final class Paginator implements PaginatorInterface, \IteratorAggregate
 {
     /**
-     * @param LengthAwarePaginator<int, object> $paginator
+     * @param LengthAwarePaginator<object> $paginator
      */
     public function __construct(
         private readonly LengthAwarePaginator $paginator,
@@ -34,7 +33,7 @@ final class Paginator implements PaginatorInterface, HasNextPagePaginatorInterfa
 
     public function count(): int
     {
-        return $this->paginator->count(); // @phpstan-ignore-line
+        return $this->paginator->count();
     }
 
     public function getLastPage(): float
@@ -60,10 +59,5 @@ final class Paginator implements PaginatorInterface, HasNextPagePaginatorInterfa
     public function getIterator(): \Traversable
     {
         return $this->paginator->getIterator();
-    }
-
-    public function hasNextPage(): bool
-    {
-        return $this->paginator->hasMorePages();
     }
 }

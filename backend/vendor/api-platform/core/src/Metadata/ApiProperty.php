@@ -14,43 +14,33 @@ declare(strict_types=1);
 namespace ApiPlatform\Metadata;
 
 use Symfony\Component\PropertyInfo\Type;
-use Symfony\Component\Serializer\Attribute\Context;
-use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Serializer\Attribute\Ignore;
-use Symfony\Component\Serializer\Attribute\MaxDepth;
-use Symfony\Component\Serializer\Attribute\SerializedName;
-use Symfony\Component\Serializer\Attribute\SerializedPath;
 
 /**
  * ApiProperty annotation.
  *
  * @author Kévin Dunglas <dunglas@gmail.com>
  */
-#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::TARGET_PARAMETER | \Attribute::TARGET_CLASS_CONSTANT | \Attribute::TARGET_CLASS | \Attribute::IS_REPEATABLE)]
+#[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::TARGET_PARAMETER | \Attribute::TARGET_CLASS_CONSTANT | \Attribute::TARGET_CLASS)]
 final class ApiProperty
 {
-    private ?array $types;
-    private ?array $serialize;
-
     /**
-     * @param bool|null                                                                                                                                   $readableLink            https://api-platform.com/docs/core/serialization/#force-iri-with-relations-of-the-same-type-parentchilds-relations
-     * @param bool|null                                                                                                                                   $writableLink            https://api-platform.com/docs/core/serialization/#force-iri-with-relations-of-the-same-type-parentchilds-relations
-     * @param bool|null                                                                                                                                   $required                https://api-platform.com/docs/admin/validation/#client-side-validation
-     * @param bool|null                                                                                                                                   $identifier              https://api-platform.com/docs/core/identifiers/
-     * @param mixed                                                                                                                                       $example                 https://api-platform.com/docs/core/openapi/#using-the-openapi-and-swagger-contexts
-     * @param string|null                                                                                                                                 $deprecationReason       https://api-platform.com/docs/core/deprecations/#deprecating-resource-classes-operations-and-properties
-     * @param bool|null                                                                                                                                   $fetchEager              https://api-platform.com/docs/core/performance/#eager-loading
-     * @param array|null                                                                                                                                  $jsonldContext           https://api-platform.com/docs/core/extending-jsonld-context/#extending-json-ld-and-hydra-contexts
-     * @param array|null                                                                                                                                  $openapiContext          https://api-platform.com/docs/core/openapi/#using-the-openapi-and-swagger-contexts
-     * @param bool|null                                                                                                                                   $push                    https://api-platform.com/docs/core/push-relations/
-     * @param string|\Stringable|null                                                                                                                     $security                https://api-platform.com/docs/core/security
-     * @param string|\Stringable|null                                                                                                                     $securityPostDenormalize https://api-platform.com/docs/core/security/#executing-access-control-rules-after-denormalization
-     * @param string[]                                                                                                                                    $types                   the RDF types of this property
-     * @param string[]                                                                                                                                    $iris
-     * @param Type[]                                                                                                                                      $builtinTypes
-     * @param string|null                                                                                                                                 $uriTemplate             (experimental) whether to return the subRessource collection IRI instead of an iterable of IRI
-     * @param string|null                                                                                                                                 $property                The property name
-     * @param Context|Groups|Ignore|SerializedName|SerializedPath|MaxDepth|array<array-key, Context|Groups|Ignore|SerializedName|SerializedPath|MaxDepth> $serialize               Serializer attributes
+     * @param bool|null               $readableLink            https://api-platform.com/docs/core/serialization/#force-iri-with-relations-of-the-same-type-parentchilds-relations
+     * @param bool|null               $writableLink            https://api-platform.com/docs/core/serialization/#force-iri-with-relations-of-the-same-type-parentchilds-relations
+     * @param bool|null               $required                https://api-platform.com/docs/admin/validation/#client-side-validation
+     * @param bool|null               $identifier              https://api-platform.com/docs/core/identifiers/
+     * @param mixed                   $example                 https://api-platform.com/docs/core/openapi/#using-the-openapi-and-swagger-contexts
+     * @param string|null             $deprecationReason       https://api-platform.com/docs/core/deprecations/#deprecating-resource-classes-operations-and-properties
+     * @param bool|null               $fetchEager              https://api-platform.com/docs/core/performance/#eager-loading
+     * @param array|null              $jsonldContext           https://api-platform.com/docs/core/extending-jsonld-context/#extending-json-ld-and-hydra-contexts
+     * @param array|null              $openapiContext          https://api-platform.com/docs/core/openapi/#using-the-openapi-and-swagger-contexts
+     * @param bool|null               $push                    https://api-platform.com/docs/core/push-relations/
+     * @param string|\Stringable|null $security                https://api-platform.com/docs/core/security
+     * @param string|\Stringable|null $securityPostDenormalize https://api-platform.com/docs/core/security/#executing-access-control-rules-after-denormalization
+     * @param string[]                $types                   the RDF types of this property
+     * @param string[]                $iris
+     * @param Type[]                  $builtinTypes
+     * @param string|null             $uriTemplate             (experimental) whether to return the subRessource collection IRI instead of an iterable of IRI
+     * @param string|null             $property                The property name
      */
     public function __construct(
         private ?string $description = null,
@@ -203,7 +193,7 @@ final class ApiProperty
          * </div>
          */
         private string|\Stringable|null $securityPostDenormalize = null,
-        array|string|null $types = null,
+        private array|string|null $types = null,
         /*
          * The related php types.
          */
@@ -215,15 +205,11 @@ final class ApiProperty
         private ?string $uriTemplate = null,
         private ?string $property = null,
         private ?string $policy = null,
-        array|Context|Groups|Ignore|SerializedName|SerializedPath|MaxDepth|null $serialize = null,
-        /**
-         * Whether to document this property as a hydra:supportedProperty.
-         */
-        private ?bool $hydra = null,
         private array $extraProperties = [],
     ) {
-        $this->types = \is_string($types) ? (array) $types : $types;
-        $this->serialize = \is_array($serialize) ? $serialize : [$serialize];
+        if (\is_string($types)) {
+            $this->types = (array) $types;
+        }
     }
 
     public function getProperty(): ?string
@@ -231,7 +217,7 @@ final class ApiProperty
         return $this->property;
     }
 
-    public function withProperty(string $property): static
+    public function withProperty(string $property): self
     {
         $self = clone $this;
         $self->property = $property;
@@ -244,7 +230,7 @@ final class ApiProperty
         return $this->description;
     }
 
-    public function withDescription(string $description): static
+    public function withDescription(string $description): self
     {
         $self = clone $this;
         $self->description = $description;
@@ -257,7 +243,7 @@ final class ApiProperty
         return $this->readable;
     }
 
-    public function withReadable(bool $readable): static
+    public function withReadable(bool $readable): self
     {
         $self = clone $this;
         $self->readable = $readable;
@@ -270,7 +256,7 @@ final class ApiProperty
         return $this->writable;
     }
 
-    public function withWritable(bool $writable): static
+    public function withWritable(bool $writable): self
     {
         $self = clone $this;
         $self->writable = $writable;
@@ -283,7 +269,7 @@ final class ApiProperty
         return $this->readableLink;
     }
 
-    public function withReadableLink(bool $readableLink): static
+    public function withReadableLink(bool $readableLink): self
     {
         $self = clone $this;
         $self->readableLink = $readableLink;
@@ -296,7 +282,7 @@ final class ApiProperty
         return $this->writableLink;
     }
 
-    public function withWritableLink(bool $writableLink): static
+    public function withWritableLink(bool $writableLink): self
     {
         $self = clone $this;
         $self->writableLink = $writableLink;
@@ -309,7 +295,7 @@ final class ApiProperty
         return $this->required;
     }
 
-    public function withRequired(bool $required): static
+    public function withRequired(bool $required): self
     {
         $self = clone $this;
         $self->required = $required;
@@ -322,7 +308,7 @@ final class ApiProperty
         return $this->identifier;
     }
 
-    public function withIdentifier(bool $identifier): static
+    public function withIdentifier(bool $identifier): self
     {
         $self = clone $this;
         $self->identifier = $identifier;
@@ -335,7 +321,7 @@ final class ApiProperty
         return $this->default;
     }
 
-    public function withDefault($default): static
+    public function withDefault($default): self
     {
         $self = clone $this;
         $self->default = $default;
@@ -348,7 +334,7 @@ final class ApiProperty
         return $this->example;
     }
 
-    public function withExample(mixed $example): static
+    public function withExample(mixed $example): self
     {
         $self = clone $this;
         $self->example = $example;
@@ -361,7 +347,7 @@ final class ApiProperty
         return $this->deprecationReason;
     }
 
-    public function withDeprecationReason($deprecationReason): static
+    public function withDeprecationReason($deprecationReason): self
     {
         $self = clone $this;
         $self->deprecationReason = $deprecationReason;
@@ -374,7 +360,7 @@ final class ApiProperty
         return $this->fetchable;
     }
 
-    public function withFetchable($fetchable): static
+    public function withFetchable($fetchable): self
     {
         $self = clone $this;
         $self->fetchable = $fetchable;
@@ -387,7 +373,7 @@ final class ApiProperty
         return $this->fetchEager;
     }
 
-    public function withFetchEager($fetchEager): static
+    public function withFetchEager($fetchEager): self
     {
         $self = clone $this;
         $self->fetchEager = $fetchEager;
@@ -400,7 +386,7 @@ final class ApiProperty
         return $this->jsonldContext;
     }
 
-    public function withJsonldContext($jsonldContext): static
+    public function withJsonldContext($jsonldContext): self
     {
         $self = clone $this;
         $self->jsonldContext = $jsonldContext;
@@ -413,7 +399,7 @@ final class ApiProperty
         return $this->openapiContext;
     }
 
-    public function withOpenapiContext($openapiContext): static
+    public function withOpenapiContext($openapiContext): self
     {
         $self = clone $this;
         $self->openapiContext = $openapiContext;
@@ -426,7 +412,7 @@ final class ApiProperty
         return $this->jsonSchemaContext;
     }
 
-    public function withJsonSchemaContext($jsonSchemaContext): static
+    public function withJsonSchemaContext($jsonSchemaContext): self
     {
         $self = clone $this;
         $self->jsonSchemaContext = $jsonSchemaContext;
@@ -439,7 +425,7 @@ final class ApiProperty
         return $this->push;
     }
 
-    public function withPush($push): static
+    public function withPush($push): self
     {
         $self = clone $this;
         $self->push = $push;
@@ -452,7 +438,7 @@ final class ApiProperty
         return $this->security instanceof \Stringable ? (string) $this->security : $this->security;
     }
 
-    public function withSecurity($security): static
+    public function withSecurity($security): self
     {
         $self = clone $this;
         $self->security = $security;
@@ -465,7 +451,7 @@ final class ApiProperty
         return $this->securityPostDenormalize instanceof \Stringable ? (string) $this->securityPostDenormalize : $this->securityPostDenormalize;
     }
 
-    public function withSecurityPostDenormalize($securityPostDenormalize): static
+    public function withSecurityPostDenormalize($securityPostDenormalize): self
     {
         $self = clone $this;
         $self->securityPostDenormalize = $securityPostDenormalize;
@@ -481,7 +467,7 @@ final class ApiProperty
     /**
      * @param string[]|string $types
      */
-    public function withTypes(array|string $types = []): static
+    public function withTypes(array|string $types = []): self
     {
         $self = clone $this;
         $self->types = (array) $types;
@@ -500,7 +486,7 @@ final class ApiProperty
     /**
      * @param Type[] $builtinTypes
      */
-    public function withBuiltinTypes(array $builtinTypes = []): static
+    public function withBuiltinTypes(array $builtinTypes = []): self
     {
         $self = clone $this;
         $self->builtinTypes = $builtinTypes;
@@ -513,7 +499,7 @@ final class ApiProperty
         return $this->schema;
     }
 
-    public function withSchema(array $schema = []): static
+    public function withSchema(array $schema = []): self
     {
         $self = clone $this;
         $self->schema = $schema;
@@ -521,7 +507,7 @@ final class ApiProperty
         return $self;
     }
 
-    public function withInitializable(?bool $initializable): static
+    public function withInitializable(?bool $initializable): self
     {
         $self = clone $this;
         $self->initializable = $initializable;
@@ -539,7 +525,7 @@ final class ApiProperty
         return $this->extraProperties;
     }
 
-    public function withExtraProperties(array $extraProperties = []): static
+    public function withExtraProperties(array $extraProperties = []): self
     {
         $self = clone $this;
         $self->extraProperties = $extraProperties;
@@ -560,7 +546,7 @@ final class ApiProperty
      *
      * @param string|string[] $iris
      */
-    public function withIris(string|array $iris): static
+    public function withIris(string|array $iris): self
     {
         $metadata = clone $this;
         $metadata->iris = (array) $iris;
@@ -576,7 +562,7 @@ final class ApiProperty
         return $this->genId;
     }
 
-    public function withGenId(bool $genId): static
+    public function withGenId(bool $genId): self
     {
         $metadata = clone $this;
         $metadata->genId = $genId;
@@ -594,7 +580,7 @@ final class ApiProperty
         return $this->uriTemplate;
     }
 
-    public function withUriTemplate(?string $uriTemplate): static
+    public function withUriTemplate(?string $uriTemplate): self
     {
         $metadata = clone $this;
         $metadata->uriTemplate = $uriTemplate;
@@ -611,35 +597,6 @@ final class ApiProperty
     {
         $self = clone $this;
         $self->policy = $policy;
-
-        return $self;
-    }
-
-    public function getSerialize(): ?array
-    {
-        return $this->serialize;
-    }
-
-    /**
-     * @param Context|Groups|Ignore|SerializedName|SerializedPath|MaxDepth|array<array-key, Context|Groups|Ignore|SerializedName|SerializedPath|MaxDepth> $serialize
-     */
-    public function withSerialize(array|Context|Groups|Ignore|SerializedName|SerializedPath|MaxDepth $serialize): static
-    {
-        $self = clone $this;
-        $self->serialize = (array) $serialize;
-
-        return $self;
-    }
-
-    public function getHydra(): ?bool
-    {
-        return $this->hydra;
-    }
-
-    public function withHydra(bool $hydra): static
-    {
-        $self = clone $this;
-        $self->hydra = $hydra;
 
         return $self;
     }

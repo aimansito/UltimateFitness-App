@@ -13,12 +13,10 @@ declare(strict_types=1);
 
 namespace ApiPlatform\Doctrine\Orm\Filter;
 
-use ApiPlatform\Doctrine\Common\Filter\ManagerRegistryAwareInterface;
 use ApiPlatform\Doctrine\Common\Filter\PropertyAwareFilterInterface;
 use ApiPlatform\Doctrine\Common\PropertyHelperTrait;
 use ApiPlatform\Doctrine\Orm\PropertyHelperTrait as OrmPropertyHelperTrait;
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
-use ApiPlatform\Metadata\Exception\RuntimeException;
 use ApiPlatform\Metadata\Operation;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,18 +24,14 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
 
-abstract class AbstractFilter implements FilterInterface, PropertyAwareFilterInterface, ManagerRegistryAwareInterface
+abstract class AbstractFilter implements FilterInterface, PropertyAwareFilterInterface
 {
     use OrmPropertyHelperTrait;
     use PropertyHelperTrait;
     protected LoggerInterface $logger;
 
-    public function __construct(
-        protected ?ManagerRegistry $managerRegistry = null,
-        ?LoggerInterface $logger = null,
-        protected ?array $properties = null,
-        protected ?NameConverterInterface $nameConverter = null,
-    ) {
+    public function __construct(protected ManagerRegistry $managerRegistry, ?LoggerInterface $logger = null, protected ?array $properties = null, protected ?NameConverterInterface $nameConverter = null)
+    {
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -59,41 +53,27 @@ abstract class AbstractFilter implements FilterInterface, PropertyAwareFilterInt
      */
     abstract protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?Operation $operation = null, array $context = []): void;
 
-    public function hasManagerRegistry(): bool
+    protected function getManagerRegistry(): ManagerRegistry
     {
-        return $this->managerRegistry instanceof ManagerRegistry;
-    }
-
-    public function getManagerRegistry(): ManagerRegistry
-    {
-        if (!$this->hasManagerRegistry()) {
-            throw new RuntimeException('ManagerRegistry must be initialized before accessing it.');
-        }
-
         return $this->managerRegistry;
     }
 
-    public function setManagerRegistry(ManagerRegistry $managerRegistry): void
-    {
-        $this->managerRegistry = $managerRegistry;
-    }
-
-    public function getProperties(): ?array
+    protected function getProperties(): ?array
     {
         return $this->properties;
-    }
-
-    /**
-     * @param array<string, mixed> $properties
-     */
-    public function setProperties(array $properties): void
-    {
-        $this->properties = $properties;
     }
 
     protected function getLogger(): LoggerInterface
     {
         return $this->logger;
+    }
+
+    /**
+     * @param string[] $properties
+     */
+    public function setProperties(array $properties): void
+    {
+        $this->properties = $properties;
     }
 
     /**

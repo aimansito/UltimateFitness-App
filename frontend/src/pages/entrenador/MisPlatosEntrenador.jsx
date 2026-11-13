@@ -50,12 +50,12 @@ function MisPlatosEntrenador() {
       const response = await api.delete(`/platos/${platoId}`);
 
       if (response.data.success) {
-        toast.success('✅ Plato eliminado exitosamente');
+        toast.success('Plato eliminado exitosamente');
         fetchPlatos();
       }
     } catch (error) {
       console.error('Error al eliminar plato:', error);
-      toast.error('❌ Error al eliminar plato');
+      toast.error('Error al eliminar plato');
     }
   };
 

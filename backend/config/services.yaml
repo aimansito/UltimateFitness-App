@@ -1,3 +1,9 @@
+parameters:
+    # Interruptor de pagos. 0 = sin plan de pago: toda cuenta registrada accede a todo.
+    # Debe ir a la par con PAGOS en frontend/src/config/funciones.js
+    env(PAGOS_ACTIVOS): '0'
+    app.pagos_activos: '%env(bool:PAGOS_ACTIVOS)%'
+
 services:
     _defaults:
         autowire: true

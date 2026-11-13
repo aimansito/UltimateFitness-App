@@ -25,7 +25,7 @@ class EjercicioController extends AbstractController
         $limit = (int) $request->query->get('limit', 20);
         
         $page = $page > 0 ? $page : 1;
-        $limit = $limit > 0 && $limit <= 100 ? $limit : 20;
+        $limit = $limit > 0 && $limit <= 300 ? $limit : 20;
         $offset = ($page - 1) * $limit;
 
         $repository = $entityManager->getRepository(Ejercicio::class);
@@ -239,7 +239,8 @@ class EjercicioController extends AbstractController
             'nivelDificultad' => $ejercicio->getNivelDificultad(),
             'valoracionPromedio' => $ejercicio->getValoracionPromedio(),
             'totalValoraciones' => $ejercicio->getTotalValoraciones(),
-            'videoUrl' => $ejercicio->getVideoUrl()
+            'videoUrl' => $ejercicio->getVideoUrl(),
+            'imagenUrl' => $ejercicio->getImagenUrl()
         ];
     }
 }

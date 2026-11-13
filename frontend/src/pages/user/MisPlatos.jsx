@@ -5,16 +5,14 @@ import api from '../../services/api';
 import {
   Utensils,
   Clock,
-  TrendingUp,
   Star,
   ChevronRight,
-  Award,
   Plus,
   Search
 } from 'lucide-react';
 
 function MisPlatos() {
-  const { user, isPremium } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [platos, setPlatos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,34 +61,6 @@ function MisPlatos() {
     }
   };
 
-  if (!isPremium) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-12 rounded-lg shadow-2xl border border-gray-700">
-            <Award className="w-20 h-20 text-uf-gold mx-auto mb-6" />
-
-            <h1 className="text-3xl font-bold text-white mb-4">
-              Función Premium
-            </h1>
-
-            <p className="text-gray-300 mb-8 text-lg">
-              Los platos personalizados están disponibles solo para usuarios Premium.
-            </p>
-
-            <a
-              href="/upgrade-premium"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold px-8 py-4 rounded-lg uppercase tracking-wider hover:from-yellow-600 hover:to-uf-gold transition-all duration-300 transform hover:scale-105"
-            >
-              <Award className="w-5 h-5" />
-              Ver Planes Premium
-            </a>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4 flex items-center justify-center">
@@ -115,6 +85,13 @@ function MisPlatos() {
             </h1>
             <p className="text-gray-400 mt-1">Platos que has creado en tus dietas</p>
           </div>
+          <button
+            onClick={() => navigate('/mis-platos/crear')}
+            className="flex items-center gap-2 bg-uf-gold text-black font-bold px-6 py-3 rounded-lg hover:bg-yellow-500 transition"
+          >
+            <Plus className="w-5 h-5" />
+            Crear Plato
+          </button>
         </div>
 
         {/* Buscador */}

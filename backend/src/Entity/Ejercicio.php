@@ -37,6 +37,9 @@ class Ejercicio
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $videoUrl = null;
 
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $imagenUrl = null;
+
     #[ORM\Column(length: 20, options: ['default' => 'intermedio'])]
     private string $nivelDificultad = 'intermedio';
 
@@ -101,6 +104,15 @@ class Ejercicio
     public function setVideoUrl(?string $videoUrl): static
     {
         $this->videoUrl = $videoUrl;
+        return $this;
+    }
+    public function getImagenUrl(): ?string
+    {
+        return $this->imagenUrl;
+    }
+    public function setImagenUrl(?string $imagenUrl): static
+    {
+        $this->imagenUrl = $imagenUrl;
         return $this;
     }
     public function getNivelDificultad(): string

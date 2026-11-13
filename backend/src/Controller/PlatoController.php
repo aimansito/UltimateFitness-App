@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Plato;
 use App\Entity\PlatoAlimento;
 use App\Entity\Alimento;
+use App\Entity\Entrenador;
+use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -94,6 +96,14 @@ public function crear(
     Request $request,
     EntityManagerInterface $entityManager
 ): JsonResponse {
+    $usuarioActual = $this->getUser();
+    if (!$usuarioActual instanceof Entrenador && !$usuarioActual instanceof Usuario) {
+        return $this->json([
+            'success' => false,
+            'error' => 'No autenticado'
+        ], Response::HTTP_UNAUTHORIZED);
+    }
+
     $data = json_decode($request->getContent(), true);
 
     if (!isset($data['nombre'])) {
@@ -119,7 +129,7 @@ public function crear(
     $plato->setTiempoPreparacion($data['tiempo_preparacion'] ?? null);
     $plato->setDificultad($data['dificultad'] ?? 'media');
     $plato->setEsPublico($data['es_publico'] ?? true);
-    $plato->setCreadorId($data['creador_id'] ?? null);
+    $plato->setCreadorId($usuarioActual->getId());
 
     // Persistir el plato primero
     $entityManager->persist($plato);
@@ -169,9 +179,14 @@ public function crear(
         Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $entrenadorActual = $this->getUser();
+        if (!$entrenadorActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $plato = $entityManager->getRepository(Plato::class)->find($id);
 
-        if (!$plato) {
+        if (!$plato || $plato->getCreadorId() !== $entrenadorActual->getId()) {
             return $this->json([
                 'success' => false,
                 'error' => 'Plato no encontrado'
@@ -238,9 +253,14 @@ public function crear(
         int $id,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $entrenadorActual = $this->getUser();
+        if (!$entrenadorActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $plato = $entityManager->getRepository(Plato::class)->find($id);
 
-        if (!$plato) {
+        if (!$plato || $plato->getCreadorId() !== $entrenadorActual->getId()) {
             return $this->json([
                 'success' => false,
                 'error' => 'Plato no encontrado'

@@ -2,8 +2,11 @@
 // SELECTOR DE DIETA PARA DÍA ESPECÍFICO
 // Permite elegir entre: Mis Dietas, Del Entrenador, Públicas
 // ============================================
+import { ENTRENADORES } from "../../config/funciones";
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
+import Icono from '../common/Icono';
+import { Globe, GraduationCap, Star, User } from 'lucide-react';
 
 
 function SelectorDietaDia({ dia, onSeleccionar, onCerrar }) {
@@ -13,9 +16,9 @@ function SelectorDietaDia({ dia, onSeleccionar, onCerrar }) {
   const [cargando, setCargando] = useState(true);
 
   const categorias = {
-    mis_dietas: { nombre: 'Mis Dietas', icon: '👤', descripcion: 'Dietas que has creado' },
-    entrenador: { nombre: 'De Mi Entrenador', icon: '🎓', descripcion: 'Recomendadas por tu entrenador' },
-    publicas: { nombre: 'Públicas', icon: '🌍', descripcion: 'Dietas de la comunidad' }
+    mis_dietas: { nombre: 'Mis Dietas', icon: User, descripcion: 'Dietas que has creado' },
+    ...(ENTRENADORES ? { entrenador: { nombre: 'De Mi Entrenador', icon: GraduationCap, descripcion: 'Recomendadas por tu entrenador' } } : {}),
+    publicas: { nombre: 'Públicas', icon: Globe, descripcion: 'Dietas de la comunidad' }
   };
 
   const diasNombres = {
@@ -114,7 +117,7 @@ function SelectorDietaDia({ dia, onSeleccionar, onCerrar }) {
                     : 'bg-gray-800 text-white border-gray-700 hover:border-gray-600'
                 }`}
               >
-                <div className="text-3xl mb-2">{cat.icon}</div>
+                <div className="text-3xl mb-2"><Icono de={cat.icon} className="w-6 h-6 inline-block" /></div>
                 <div className="font-bold text-sm">{cat.nombre}</div>
                 <div className={`text-xs mt-1 ${categoriaActiva === key ? 'text-gray-800' : 'text-gray-500'}`}>
                   {cat.descripcion}
@@ -158,7 +161,7 @@ function SelectorDietaDia({ dia, onSeleccionar, onCerrar }) {
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
                           <span className="text-uf-gold font-bold">{dieta.valoracionPromedio}</span>
-                          <span className="text-yellow-400">⭐</span>
+                          <span className="text-yellow-400"><Star className="inline-block w-4 h-4 mr-1 -mt-0.5 text-uf-gold fill-uf-gold" aria-hidden="true" /></span>
                           <span className="text-gray-500 text-sm">({dieta.totalValoraciones})</span>
                         </div>
                         <div className="text-gray-500 text-sm">

@@ -1,3 +1,4 @@
+import { PAGOS } from "../../config/funciones";
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -5,9 +6,10 @@ import api from '../../services/api';
 import BlogCard from '../../components/blog/BlogCard';
 import { Search, Filter, Loader, ChevronLeft, ChevronRight, Lock, Star, UserPlus } from 'lucide-react';
 import SEO from '../../components/common/SEO';
+import PageHeader from '../../components/common/PageHeader';
 
 function Blog() {
-  const { isAuthenticated, isPremium } = useAuth();
+  const { isAuthenticated, accesoCompleto: isPremium } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -130,28 +132,24 @@ function Blog() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black py-12 px-4">
+    <div className="min-h-screen bg-uf-darker">
       <SEO 
         title="Blog de Fitness y Nutrición" 
         description="Lee los mejores artículos y consejos sobre entrenamiento, salud mental, y trucos para tu dieta."
         keywords="blog fitness, noticias gimnasio, artículos salud, recomendaciones nutricion, motivación gym"
       />
-      <div className="max-w-7xl mx-auto">
-
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-white mb-4 uppercase tracking-wider">
-            Blog <span className="text-uf-gold">Ultimate Fitness</span>
-          </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Consejos, rutinas y todo lo que necesitas para alcanzar tus objetivos
-          </p>
-        </div>
+      <PageHeader
+        eyebrow="Aprende"
+        title="Blog"
+        highlight="Ultimate Fitness"
+        subtitle="Consejos, rutinas y todo lo que necesitas para alcanzar tus objetivos"
+      />
+      <div className="mx-auto max-w-7xl px-4 py-12">
 
         {/* Banner de registro (solo para no autenticados) */}
         {showRegistrationBanner && (
-          <div className="bg-gradient-to-r from-uf-gold/20 to-yellow-600/20 border-2 border-uf-gold rounded-lg p-8 mb-8 text-center">
-            <UserPlus className="w-16 h-16 text-uf-gold mx-auto mb-4" />
+          <div className="uf-card mb-10 border-uf-gold/40 p-8 text-center">
+            <UserPlus className="mx-auto mb-4 h-10 w-10 text-uf-gold" />
             <h2 className="text-3xl font-bold text-white mb-3">
               Regístrate para Acceder a Todo el Contenido
             </h2>
@@ -160,7 +158,7 @@ function Blog() {
             </p>
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-uf-gold to-yellow-600 text-black font-bold px-8 py-4 rounded-lg uppercase tracking-wider hover:from-yellow-600 hover:to-uf-gold transition-all duration-300 transform hover:scale-105"
+              className="uf-btn uf-btn-primary"
             >
               <UserPlus className="w-5 h-5" />
               Registrarse Gratis
@@ -197,7 +195,7 @@ function Blog() {
               <h3 className="text-white font-bold">Categorías:</h3>
             </div>
             <div className="flex flex-wrap gap-3">
-              {categorias.map((cat) => {
+              {categorias.filter((cat) => PAGOS || !cat.requiresPremium).map((cat) => {
                 const isLocked = cat.requiresPremium && !isPremium;
 
                 return (

@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace ApiPlatform\Laravel\Eloquent\Extension;
 
 use ApiPlatform\Laravel\Eloquent\Filter\FilterInterface;
-use ApiPlatform\Metadata\CollectionOperationInterface;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ParameterNotFound;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,15 +36,11 @@ final readonly class FilterQueryExtension implements QueryExtensionInterface
      */
     public function apply(Builder $builder, array $uriVariables, Operation $operation, $context = []): Builder
     {
-        if (!$operation instanceof CollectionOperationInterface) {
-            return $builder;
-        }
-
         $context['uri_variables'] = $uriVariables;
         $context['operation'] = $operation;
 
         foreach ($operation->getParameters() ?? [] as $parameter) {
-            if (null === ($values = $parameter->getValue()) || $values instanceof ParameterNotFound) {
+            if (!($values = $parameter->getValue()) || $values instanceof ParameterNotFound) {
                 continue;
             }
 

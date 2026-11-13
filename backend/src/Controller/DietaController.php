@@ -74,8 +74,13 @@ class DietaController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario && !$usuarioActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $data = json_decode($request->getContent(), true);
-        
+
         if (!isset($data['nombre']) || !isset($data['plan'])) {
             return $this->json([
                 'success' => false,
@@ -88,7 +93,7 @@ class DietaController extends AbstractController
         $dieta->setDescripcion($data['descripcion'] ?? '');
         $dieta->setEsPublica($data['es_publica'] ?? false);
         $dieta->setFechaCreacion(new \DateTime());
-        
+
         // Guardar totales nutricionales
         if (isset($data['calorias_totales'])) {
             $dieta->setCaloriasTotales($data['calorias_totales']);
@@ -102,26 +107,21 @@ class DietaController extends AbstractController
         if (isset($data['grasas_totales'])) {
             $dieta->setGrasasTotales($data['grasas_totales']);
         }
-        
-        // Asignar a usuario si se proporciona (Usuario Premium creando su propia dieta)
-        if (isset($data['asignado_a_usuario_id'])) {
-            $usuario = $entityManager->getRepository(Usuario::class)->find($data['asignado_a_usuario_id']);
-            if ($usuario) {
-                $dieta->setAsignadoAUsuario($usuario);
-                // NO asignar creador (dejar NULL) para que aparezca en "Mis Dietas Creadas"
-                // El creador_id NULL indica que la dieta fue creada por el propio usuario
+
+        if ($usuarioActual instanceof Entrenador) {
+            // Entrenador creando una dieta: para su propio catálogo, o asignada a un cliente suyo
+            $dieta->setCreador($usuarioActual);
+            if (isset($data['asignado_a_usuario_id'])) {
+                $cliente = $entityManager->getRepository(Usuario::class)->find($data['asignado_a_usuario_id']);
+                if (!$cliente || $cliente->getEntrenadorAsignado()?->getId() !== $usuarioActual->getId()) {
+                    return $this->json(['success' => false, 'error' => 'Este cliente no está asignado a tu cuenta de entrenador'], Response::HTTP_FORBIDDEN);
+                }
+                $dieta->setAsignadoAUsuario($cliente);
             }
         } else {
-            // Si no hay usuario asignado, es una dieta general creada por entrenador
-            $entrenador = $entityManager->getRepository(Entrenador::class)->findOneBy([]);
-
-            if (!$entrenador) {
-                return $this->json([
-                    'success' => false,
-                    'error' => 'No se puede crear la dieta: Sistema requiere un Entrenador registrado.'
-                ], Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-            $dieta->setCreador($entrenador);
+            // Usuario Premium creando su propia dieta
+            // NO asignar creador (dejar NULL) para que aparezca en "Mis Dietas Creadas"
+            $dieta->setAsignadoAUsuario($usuarioActual);
         }
 
         // Procesar el plan de comidas con el nuevo sistema DietaPlato
@@ -179,6 +179,17 @@ class DietaController extends AbstractController
                 'success' => false,
                 'error' => 'Dieta no encontrada'
             ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Las dietas no públicas solo las ve su dueño, su creador o un admin
+        if (!$dieta->isEsPublica()) {
+            $actual = $this->getUser();
+            $esDueno = $actual instanceof Usuario
+                && ($dieta->getAsignadoAUsuario()?->getId() === $actual->getId() || $actual->getRol() === 'admin');
+            $esCreador = $actual instanceof Entrenador && $dieta->getCreador()?->getId() === $actual->getId();
+            if (!$esDueno && !$esCreador) {
+                return $this->json(['success' => false, 'error' => 'Dieta no encontrada'], Response::HTTP_NOT_FOUND);
+            }
         }
 
         // Obtener día específico del query param (por defecto 'lunes')
@@ -579,8 +590,13 @@ class DietaController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $entrenadorActual = $this->getUser();
+        if (!$entrenadorActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'Solo un entrenador puede asignar dietas'], Response::HTTP_FORBIDDEN);
+        }
+
         $data = json_decode($request->getContent(), true);
-        
+
         if (!isset($data['usuario_id'])) {
             return $this->json([
                 'success' => false,
@@ -589,7 +605,7 @@ class DietaController extends AbstractController
         }
 
         $dieta = $entityManager->getRepository(Dieta::class)->find($id);
-        if (!$dieta) {
+        if (!$dieta || $dieta->getCreador()?->getId() !== $entrenadorActual->getId()) {
             return $this->json([
                 'success' => false,
                 'error' => 'Dieta no encontrada'
@@ -597,7 +613,7 @@ class DietaController extends AbstractController
         }
 
         $usuario = $entityManager->getRepository(Usuario::class)->find($data['usuario_id']);
-        if (!$usuario) {
+        if (!$usuario || $usuario->getEntrenadorAsignado()?->getId() !== $entrenadorActual->getId()) {
             return $this->json([
                 'success' => false,
                 'error' => 'Usuario no encontrado'

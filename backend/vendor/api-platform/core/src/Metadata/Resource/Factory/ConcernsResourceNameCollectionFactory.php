@@ -47,14 +47,10 @@ final class ConcernsResourceNameCollectionFactory implements ResourceNameCollect
         }
 
         foreach (ReflectionClassRecursiveIterator::getReflectionClassesFromDirectories($this->paths) as $className => $reflectionClass) {
-            if (!$reflectionClass->hasMethod('apiResource')) {
-                continue;
-            }
-
-            $m = $reflectionClass->getMethod('apiResource');
-
             if (
-                $m->isPublic()
+                $reflectionClass->hasMethod('apiResource')
+                && ($m = $reflectionClass->getMethod('apiResource'))
+                && $m->isPublic()
                 && $m->isStatic()
             ) {
                 $classes[$className] = true;

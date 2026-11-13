@@ -53,12 +53,12 @@ function MisDietasEntrenador() {
       const response = await api.delete(`/entrenador/dieta/${dietaId}`);
 
       if (response.data.success) {
-        toast.success('✅ Dieta eliminada exitosamente');
+        toast.success('Dieta eliminada exitosamente');
         fetchDietas();
       }
     } catch (error) {
       console.error('Error al eliminar dieta:', error);
-      toast.error('❌ Error al eliminar dieta');
+      toast.error('Error al eliminar dieta');
     }
   };
 
@@ -72,7 +72,7 @@ function MisDietasEntrenador() {
       }
     } catch (error) {
       console.error('Error al cargar usuarios:', error);
-      toast.error('❌ Error al cargar usuarios asignados');
+      toast.error('Error al cargar usuarios asignados');
     }
   };
 

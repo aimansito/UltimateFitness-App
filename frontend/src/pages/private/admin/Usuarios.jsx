@@ -78,9 +78,9 @@ function Usuarios() {
               <div className="flex justify-between">
                 <span className="font-medium text-gray-700">Premium:</span>
                 {usuario.esPremium ? (
-                  <span className="text-green-600 font-semibold">✅ Sí</span>
+                  <span className="text-green-600 font-semibold">Sí</span>
                 ) : (
-                  <span className="text-gray-400">❌ No</span>
+                  <span className="text-gray-400">No</span>
                 )}
               </div>
               

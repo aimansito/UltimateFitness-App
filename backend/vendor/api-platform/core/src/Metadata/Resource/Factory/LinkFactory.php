@@ -26,11 +26,6 @@ use Symfony\Component\PropertyInfo\Type;
  */
 final class LinkFactory implements LinkFactoryInterface, PropertyLinkFactoryInterface
 {
-    /**
-     * @var array<class-string, string[]>
-     */
-    private $localIdentifiersPerResourceClassCache = [];
-
     public function __construct(private readonly PropertyNameCollectionFactoryInterface $propertyNameCollectionFactory, private readonly PropertyMetadataFactoryInterface $propertyMetadataFactory, private readonly ResourceClassResolverInterface $resourceClassResolver)
     {
     }
@@ -143,17 +138,8 @@ final class LinkFactory implements LinkFactoryInterface, PropertyLinkFactoryInte
         return $link;
     }
 
-    /**
-     * @param class-string $resourceClass
-     *
-     * @return string[]
-     */
     private function getIdentifiersFromResourceClass(string $resourceClass): array
     {
-        if (isset($this->localIdentifiersPerResourceClassCache[$resourceClass])) {
-            return $this->localIdentifiersPerResourceClassCache[$resourceClass];
-        }
-
         $hasIdProperty = false;
         $identifiers = [];
         foreach ($this->propertyNameCollectionFactory->create($resourceClass) as $property) {
@@ -169,14 +155,14 @@ final class LinkFactory implements LinkFactoryInterface, PropertyLinkFactoryInte
         }
 
         if ($hasIdProperty && !$identifiers) {
-            return $this->localIdentifiersPerResourceClassCache[$resourceClass] = ['id'];
+            return ['id'];
         }
 
         if (!$hasIdProperty && !$identifiers && enum_exists($resourceClass)) {
-            return $this->localIdentifiersPerResourceClassCache[$resourceClass] = ['value'];
+            return ['value'];
         }
 
-        return $this->localIdentifiersPerResourceClassCache[$resourceClass] = $identifiers;
+        return $identifiers;
     }
 
     /**

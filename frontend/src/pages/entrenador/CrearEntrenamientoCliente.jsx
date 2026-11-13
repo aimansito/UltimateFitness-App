@@ -79,7 +79,7 @@ function CrearEntrenamientoCliente() {
       // ✅ La respuesta es directamente un array
       if (Array.isArray(response.data)) {
         setEjerciciosDisponibles(response.data);
-        console.log(`✅ Cargados ${response.data.length} ejercicios`);
+        console.log(`Cargados ${response.data.length} ejercicios`);
       } else if (response.data.ejercicios && Array.isArray(response.data.ejercicios)) {
         setEjerciciosDisponibles(response.data.ejercicios);
       } else {
@@ -184,7 +184,6 @@ function CrearEntrenamientoCliente() {
       tipo,
       duracion_minutos: parseInt(duracionMinutos),
       nivel_dificultad: nivelDificultad,
-      creador_id: entrenador.id,
       cliente_id: parseInt(clienteId),
       plan_semanal: dias
     };
@@ -194,7 +193,7 @@ function CrearEntrenamientoCliente() {
       const response = await api.post('/entrenador/crear-entrenamiento', payload);
 
       if (response.data.success) {
-        toast.success(`¡Entrenamiento creado!\n\n💪 ${nombre}\n👤 ${cliente.nombre} ${cliente.apellidos}`);
+        toast.success(`¡Entrenamiento creado!\n\n${nombre}\n${cliente.nombre} ${cliente.apellidos}`);
         navigate('/entrenador/dashboard');
       } else {
         toast.error('Error: ' + response.data.error);
@@ -259,7 +258,7 @@ function CrearEntrenamientoCliente() {
         {/* Debug info */}
         {ejerciciosDisponibles.length === 0 && (
           <div className="bg-yellow-900/20 border border-yellow-500 rounded-lg p-4 mb-6">
-            <p className="text-yellow-300">⚠️ No se cargaron ejercicios. Verifica la consola del navegador (F12).</p>
+            <p className="text-yellow-300">No se cargaron ejercicios. Verifica la consola del navegador (F12).</p>
           </div>
         )}
 
@@ -327,7 +326,7 @@ function CrearEntrenamientoCliente() {
         {/* Validación visual */}
         <div className={`mb-6 p-4 rounded-lg border-2 ${diasActivosCount >= 5 ? 'bg-green-900/20 border-green-500' : 'bg-red-900/20 border-red-500'}`}>
           <p className="text-white font-bold text-center">
-            📅 Días activos: {diasActivosCount}/7 {diasActivosCount >= 5 ? '✅' : '⚠️ (Mínimo 5 requeridos)'}
+            Días activos: {diasActivosCount}/7 {diasActivosCount >= 5 ? '' : '(Mínimo 5 requeridos)'}
           </p>
         </div>
 

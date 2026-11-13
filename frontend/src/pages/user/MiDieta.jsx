@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 function MiDieta() {
-  const { user, isPremium } = useAuth();
+  const { user, accesoCompleto: isPremium } = useAuth();
   const [dieta, setDieta] = useState(null);
   const [loading, setLoading] = useState(true);
   const [diaSeleccionado, setDiaSeleccionado] = useState("lunes");

@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import CalculadoraNutricional from '../../components/dieta/CalculadoraNutricional';
 import SeccionComida from '../../components/dieta/SeccionComida';
+import { Apple, Coffee, Moon, Sunrise, UtensilsCrossed } from 'lucide-react';
 
 function CrearDieta() {
   const navigate = useNavigate();
@@ -26,30 +27,24 @@ function CrearDieta() {
   });
 
   const momentos = [
-    { key: 'desayuno', nombre: 'Desayuno', icon: '🌅' },
-    { key: 'media_mañana', nombre: 'Media Mañana', icon: '☕' },
-    { key: 'comida', nombre: 'Comida', icon: '🍽️' },
-    { key: 'merienda', nombre: 'Merienda', icon: '🍎' },
-    { key: 'cena', nombre: 'Cena', icon: '🌙' }
+    { key: 'desayuno', nombre: 'Desayuno', icon: Sunrise },
+    { key: 'media_mañana', nombre: 'Media Mañana', icon: Coffee },
+    { key: 'comida', nombre: 'Comida', icon: UtensilsCrossed },
+    { key: 'merienda', nombre: 'Merienda', icon: Apple },
+    { key: 'cena', nombre: 'Cena', icon: Moon }
   ];
 
   // ===============================
-  // RESTRICCIÓN PREMIUM
+  // REQUIERE SESIÓN INICIADA
   // ===============================
   useEffect(() => {
     if (!user) {
-      toast.warning("⚠️ Debes iniciar sesión para crear dietas");
+      toast.warning("Debes iniciar sesión para crear dietas");
       navigate("/login");
-      return;
-    }
-
-    if (!user.es_premium) {
-      toast.warning("⚠️ Esta función es exclusiva para usuarios Premium");
-      navigate("/upgrade-premium");
     }
   }, [user, navigate]);
 
-  if (!user || !user.es_premium) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
@@ -109,7 +104,7 @@ function CrearDieta() {
     );
 
     if (platoYaExiste) {
-      toast.warning(`⚠️ El plato "${plato.nombre}" ya está añadido`);
+      toast.warning(`El plato "${plato.nombre}" ya está añadido`);
       return;
     }
 
@@ -145,12 +140,12 @@ function CrearDieta() {
   // ===============================
   const handleGuardarDieta = async () => {
     if (!nombreDieta.trim()) {
-      toast.warning("⚠️ Pon un nombre a la dieta");
+      toast.warning("Pon un nombre a la dieta");
       return;
     }
 
     if (Object.values(planComidas).flat().length === 0) {
-      toast.warning("⚠️ La dieta está vacía");
+      toast.warning("La dieta está vacía");
       return;
     }
 
@@ -203,12 +198,12 @@ function CrearDieta() {
         toast.success(`¡Dieta guardada exitosamente!\n\nNombre: ${response.data.dieta.nombre}`);
         navigate("/mis-dietas");
       } else {
-        toast.error("❌ No se pudo guardar la dieta");
+        toast.error("No se pudo guardar la dieta");
       }
 
     } catch (e) {
       console.error("Error al guardar dieta:", e);
-      toast.error("❌ Error al guardar la dieta");
+      toast.error("Error al guardar la dieta");
     } finally {
       setGuardando(false);
     }
@@ -217,13 +212,6 @@ function CrearDieta() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black py-12">
       <div className="container mx-auto px-4">
-
-        {/* BADGE PREMIUM */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 bg-uf-gold text-black px-6 py-2 rounded-full font-bold text-sm">
-            ⭐ FUNCIÓN PREMIUM
-          </div>
-        </div>
 
         {/* HEADER */}
         <div className="text-center mb-12">

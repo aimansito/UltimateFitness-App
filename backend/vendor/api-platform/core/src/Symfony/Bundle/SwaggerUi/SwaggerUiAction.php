@@ -26,7 +26,7 @@ use Twig\Environment as TwigEnvironment;
 /**
  * Displays the swaggerui interface.
  *
- * @deprecated use ApiPlatform\Symfony\Action\DocumentationAction instead
+ * @deprecated use ApiPlatform\Symfony\Bundle\SwaggerUi\Processor instead
  *
  * @author Antoine Bluchet <soyuka@gmail.com>
  */
@@ -79,7 +79,6 @@ final class SwaggerUiAction
                 'pkce' => $this->oauthPkce,
             ],
             'extraConfiguration' => $this->swaggerUiContext->getExtraConfiguration(),
-            'persistAuthorization' => $this->openApiOptions->hasPersistAuthorization(),
         ];
 
         $originalRouteParams = $request->attributes->get('_api_original_route_params') ?? [];

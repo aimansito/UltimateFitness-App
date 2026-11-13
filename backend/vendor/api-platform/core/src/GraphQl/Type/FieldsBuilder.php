@@ -13,16 +13,15 @@ declare(strict_types=1);
 
 namespace ApiPlatform\GraphQl\Type;
 
-use ApiPlatform\GraphQl\Exception\InvalidTypeException;
+use ApiPlatform\Doctrine\Odm\State\Options as ODMOptions;
+use ApiPlatform\Doctrine\Orm\State\Options;
 use ApiPlatform\GraphQl\Resolver\Factory\ResolverFactoryInterface;
 use ApiPlatform\GraphQl\Type\Definition\TypeInterface;
-use ApiPlatform\Metadata\FilterInterface;
 use ApiPlatform\Metadata\GraphQl\Mutation;
 use ApiPlatform\Metadata\GraphQl\Operation;
 use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\Subscription;
 use ApiPlatform\Metadata\InflectorInterface;
-use ApiPlatform\Metadata\OpenApiParameterFilterInterface;
 use ApiPlatform\Metadata\Property\Factory\PropertyMetadataFactoryInterface;
 use ApiPlatform\Metadata\Property\Factory\PropertyNameCollectionFactoryInterface;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
@@ -36,6 +35,7 @@ use GraphQL\Type\Definition\NullableType;
 use GraphQL\Type\Definition\Type as GraphQLType;
 use GraphQL\Type\Definition\WrappingType;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 use Symfony\Component\PropertyInfo\Type;
 use Symfony\Component\Serializer\NameConverter\AdvancedNameConverterInterface;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
@@ -285,6 +285,41 @@ final class FieldsBuilder implements FieldsBuilderEnumInterface
             $args[$id]['type'] = $this->typeConverter->resolveType($arg['type']);
         }
 
+        /*
+         * This is @experimental, read the comment on the parameterToObjectType function as additional information.
+         */
+        foreach ($operation->getParameters() ?? [] as $parameter) {
+            $key = $parameter->getKey();
+
+            if (str_contains($key, ':property')) {
+                if (!($filterId = $parameter->getFilter()) || !$this->filterLocator->has($filterId)) {
+                    continue;
+                }
+
+                $parsedKey = explode('[:property]', $key);
+                $flattenFields = [];
+                foreach ($this->filterLocator->get($filterId)->getDescription($operation->getClass()) as $key => $value) {
+                    $values = [];
+                    parse_str($key, $values);
+                    if (isset($values[$parsedKey[0]])) {
+                        $values = $values[$parsedKey[0]];
+                    }
+
+                    $name = key($values);
+                    $flattenFields[] = ['name' => $name, 'required' => $value['required'] ?? null, 'description' => $value['description'] ?? null, 'leafs' => $values[$name], 'type' => $value['type'] ?? 'string'];
+                }
+
+                $args[$parsedKey[0]] = $this->parameterToObjectType($flattenFields, $parsedKey[0]);
+                continue;
+            }
+
+            $args[$key] = ['type' => GraphQLType::string()];
+
+            if ($parameter->getRequired()) {
+                $args[$key]['type'] = GraphQLType::nonNull($args[$key]['type']);
+            }
+        }
+
         return $args;
     }
 
@@ -406,23 +441,12 @@ final class FieldsBuilder implements FieldsBuilderEnumInterface
 
             $args = [];
 
-            if (!$input && !$rootOperation instanceof Mutation && !$rootOperation instanceof Subscription && !$isStandardGraphqlType) {
-                if ($isCollectionType) {
-                    if (!$this->isEnumClass($resourceClass) && $this->pagination->isGraphQlEnabled($resourceOperation)) {
-                        $args = $this->getGraphQlPaginationArgs($resourceOperation);
-                    }
-
-                    $args = $this->getFilterArgs($args, $resourceClass, $rootResource, $resourceOperation, $rootOperation, $property, $depth);
-
-                    // Also register parameter args in the types container
-                    // Note: This is a workaround, for more information read the comment on the parameterToObjectType function.
-                    foreach ($this->getParameterArgs($rootOperation) as $key => $arg) {
-                        if ($arg instanceof InputObjectType || (\is_array($arg) && isset($arg['name']))) {
-                            $this->typesContainer->set(\is_array($arg) ? $arg['name'] : $arg->name(), $arg);
-                        }
-                        $args[$key] = $arg;
-                    }
+            if (!$input && !$rootOperation instanceof Mutation && !$rootOperation instanceof Subscription && !$isStandardGraphqlType && $isCollectionType) {
+                if (!$this->isEnumClass($resourceClass) && $this->pagination->isGraphQlEnabled($resourceOperation)) {
+                    $args = $this->getGraphQlPaginationArgs($resourceOperation);
                 }
+
+                $args = $this->getFilterArgs($args, $resourceClass, $rootResource, $resourceOperation, $rootOperation, $property, $depth);
             }
 
             if ($isStandardGraphqlType || $input) {
@@ -443,67 +467,6 @@ final class FieldsBuilder implements FieldsBuilderEnumInterface
         }
 
         return null;
-    }
-
-    /*
-     * This function is @experimental, read the comment on the parameterToObjectType function for additional information.
-     * @experimental
-     */
-    private function getParameterArgs(Operation $operation, array $args = []): array
-    {
-        foreach ($operation->getParameters() ?? [] as $parameter) {
-            $key = $parameter->getKey();
-
-            if (!str_contains($key, ':property')) {
-                $args[$key] = ['type' => GraphQLType::string()];
-
-                if ($parameter->getRequired()) {
-                    $args[$key]['type'] = GraphQLType::nonNull($args[$key]['type']);
-                }
-
-                continue;
-            }
-
-            if (!($filterId = $parameter->getFilter()) || !$this->filterLocator->has($filterId)) {
-                continue;
-            }
-
-            $filter = $this->filterLocator->get($filterId);
-            $parsedKey = explode('[:property]', $key);
-            $flattenFields = [];
-
-            if ($filter instanceof FilterInterface) {
-                foreach ($filter->getDescription($operation->getClass()) as $name => $value) {
-                    $values = [];
-                    parse_str($name, $values);
-                    if (isset($values[$parsedKey[0]])) {
-                        $values = $values[$parsedKey[0]];
-                    }
-
-                    $name = key($values);
-                    $flattenFields[] = ['name' => $name, 'required' => $value['required'] ?? null, 'description' => $value['description'] ?? null, 'leafs' => $values[$name], 'type' => $value['type'] ?? 'string'];
-                }
-
-                $args[$parsedKey[0]] = $this->parameterToObjectType($flattenFields, $parsedKey[0]);
-            }
-
-            if ($filter instanceof OpenApiParameterFilterInterface) {
-                foreach ($filter->getOpenApiParameters($parameter) as $value) {
-                    $values = [];
-                    parse_str($value->getName(), $values);
-                    if (isset($values[$parsedKey[0]])) {
-                        $values = $values[$parsedKey[0]];
-                    }
-
-                    $name = key($values);
-                    $flattenFields[] = ['name' => $name, 'required' => $value->getRequired(), 'description' => $value->getDescription(), 'leafs' => $values[$name], 'type' => $value->getSchema()['type'] ?? 'string'];
-                }
-
-                $args[$parsedKey[0]] = $this->parameterToObjectType($flattenFields, $parsedKey[0].$operation->getShortName().$operation->getName());
-            }
-        }
-
-        return $args;
     }
 
     private function getGraphQlPaginationArgs(Operation $queryOperation): array
@@ -561,7 +524,18 @@ final class FieldsBuilder implements FieldsBuilderEnumInterface
                 continue;
             }
 
-            foreach ($this->filterLocator->get($filterId)->getDescription($resourceClass) as $key => $description) {
+            $entityClass = $resourceClass;
+            if ($options = $resourceOperation->getStateOptions()) {
+                if (class_exists(Options::class) && $options instanceof Options && $options->getEntityClass()) {
+                    $entityClass = $options->getEntityClass();
+                }
+
+                if (class_exists(ODMOptions::class) && $options instanceof ODMOptions && $options->getDocumentClass()) {
+                    $entityClass = $options->getDocumentClass();
+                }
+            }
+
+            foreach ($this->filterLocator->get($filterId)->getDescription($entityClass) as $key => $description) {
                 $nullable = isset($description['required']) ? !$description['required'] : true;
                 $filterType = \in_array($description['type'], Type::$builtinTypes, true) ? new Type($description['type'], $nullable) : new Type('object', $nullable, $description['type']);
                 $graphqlFilterType = $this->convertType($filterType, false, $resourceOperation, $rootOperation, $resourceClass, $rootResource, $property, $depth);

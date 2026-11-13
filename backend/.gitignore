@@ -1,0 +1,13 @@
+
+# Fotos de perfil subidas en desarrollo
+/public/uploads/avatars/
+/public/uploads/entrenos/
+
+# Secretos y claves: nunca en el repositorio
+/.env.local
+/.env.*.local
+/config/jwt/*.pem
+
+# Caché y logs de Symfony
+/var/cache/
+/var/log/

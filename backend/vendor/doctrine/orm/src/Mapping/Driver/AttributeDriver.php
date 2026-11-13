@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\Builder\EntityListenerBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\Persistence\Mapping\ClassMetadata as PersistenceClassMetadata;
+use Doctrine\Persistence\Mapping\Driver\ClassLocator;
 use Doctrine\Persistence\Mapping\Driver\ColocatedMappingDriver;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 use InvalidArgumentException;
@@ -35,10 +36,10 @@ class AttributeDriver implements MappingDriver
     private readonly AttributeReader $reader;
 
     /**
-     * @param array<string> $paths
-     * @param true          $reportFieldsWhereDeclared no-op, to be removed in 4.0
+     * @param string[]|ClassLocator $paths                     a ClassLocator, or an array of directories.
+     * @param true                  $reportFieldsWhereDeclared no-op, to be removed in 4.0
      */
-    public function __construct(array $paths, bool $reportFieldsWhereDeclared = true)
+    public function __construct(array|ClassLocator $paths, bool $reportFieldsWhereDeclared = true)
     {
         if (! $reportFieldsWhereDeclared) {
             throw new InvalidArgumentException(sprintf(
@@ -48,7 +49,12 @@ class AttributeDriver implements MappingDriver
         }
 
         $this->reader = new AttributeReader();
-        $this->addPaths($paths);
+
+        if ($paths instanceof ClassLocator) {
+            $this->classLocator = $paths;
+        } else {
+            $this->addPaths($paths);
+        }
     }
 
     public function isTransient(string $className): bool
@@ -312,8 +318,10 @@ class AttributeDriver implements MappingDriver
             if ($columnAttribute !== null) {
                 $mapping = $this->columnToArray($property->name, $columnAttribute);
 
-                if ($this->reader->getPropertyAttribute($property, Mapping\Id::class)) {
-                    $mapping['id'] = true;
+                $idAttribute = $this->reader->getPropertyAttribute($property, Mapping\Id::class);
+                if ($idAttribute !== null) {
+                    $mapping['id']         = true;
+                    $mapping['idPosition'] = $idAttribute->position;
                 }
 
                 $generatedValueAttribute = $this->reader->getPropertyAttribute($property, Mapping\GeneratedValue::class);
@@ -352,8 +360,10 @@ class AttributeDriver implements MappingDriver
                     throw MappingException::invalidAttributeOnEmbeddable($metadata->name, Mapping\OneToOne::class);
                 }
 
-                if ($this->reader->getPropertyAttribute($property, Mapping\Id::class)) {
-                    $mapping['id'] = true;
+                $idAttribute = $this->reader->getPropertyAttribute($property, Mapping\Id::class);
+                if ($idAttribute !== null) {
+                    $mapping['id']         = true;
+                    $mapping['idPosition'] = $idAttribute->position;
                 }
 
                 $mapping['targetEntity']  = $oneToOneAttribute->targetEntity;
@@ -391,7 +401,8 @@ class AttributeDriver implements MappingDriver
                 $idAttribute = $this->reader->getPropertyAttribute($property, Mapping\Id::class);
 
                 if ($idAttribute !== null) {
-                    $mapping['id'] = true;
+                    $mapping['id']         = true;
+                    $mapping['idPosition'] = $idAttribute->position;
                 }
 
                 $mapping['joinColumns']  = $joinColumns;
@@ -416,6 +427,14 @@ class AttributeDriver implements MappingDriver
 
                     if ($joinTableAttribute->options) {
                         $joinTable['options'] = $joinTableAttribute->options;
+                    }
+
+                    if ($joinTableAttribute->foreignKeyName !== null) {
+                        $joinTable['foreignKeyName'] = $joinTableAttribute->foreignKeyName;
+                    }
+
+                    if ($joinTableAttribute->inverseForeignKeyName !== null) {
+                        $joinTable['inverseForeignKeyName'] = $joinTableAttribute->inverseForeignKeyName;
                     }
 
                     foreach ($joinTableAttribute->joinColumns as $joinColumn) {
@@ -677,6 +696,7 @@ class AttributeDriver implements MappingDriver
      *                   onDelete: mixed,
      *                   columnDefinition: string|null,
      *                   referencedColumnName: string,
+     *                   foreignKeyName: string|null,
      *                   options?: array<string, mixed>
      *               }
      */
@@ -690,6 +710,7 @@ class AttributeDriver implements MappingDriver
             'onDelete' => $joinColumn->onDelete,
             'columnDefinition' => $joinColumn->columnDefinition,
             'referencedColumnName' => $joinColumn->referencedColumnName,
+            'foreignKeyName' => $joinColumn->foreignKeyName,
         ];
 
         if ($joinColumn->options) {

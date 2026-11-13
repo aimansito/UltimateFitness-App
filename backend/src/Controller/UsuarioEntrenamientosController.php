@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Entrenador;
+use App\Entity\Entrenamiento;
+use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -108,6 +111,26 @@ class UsuarioEntrenamientosController extends AbstractController
         int $entrenamientoId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario && !$usuarioActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $entrenamientoCheck = $entityManager->getRepository(Entrenamiento::class)->find($entrenamientoId);
+        if (!$entrenamientoCheck) {
+            return $this->json(['success' => false, 'error' => 'Entrenamiento no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+        if ($usuarioActual instanceof Usuario) {
+            $esPropietario = $entrenamientoCheck->getCreadorUsuario()?->getId() === $usuarioActual->getId()
+                || $entrenamientoCheck->getAsignadoAUsuario()?->getId() === $usuarioActual->getId()
+                || $entrenamientoCheck->isEsPublico();
+        } else {
+            $esPropietario = $entrenamientoCheck->getCreador()?->getId() === $usuarioActual->getId();
+        }
+        if (!$esPropietario) {
+            return $this->json(['success' => false, 'error' => 'Entrenamiento no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+
         try {
             $conn = $entityManager->getConnection();
 
@@ -228,6 +251,11 @@ class UsuarioEntrenamientosController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
         try {
             $data = json_decode($request->getContent(), true);
 
@@ -290,7 +318,7 @@ class UsuarioEntrenamientosController extends AbstractController
                     'nombre' => $data['nombre'],
                     'descripcion' => $data['descripcion'] ?? '',
                     'tipo' => $data['tipo'] ?? 'gym',
-                    'creador_usuario_id' => $data['creador_usuario_id'] ?? null,
+                    'creador_usuario_id' => $usuarioActual->getId(),
                     'duracion' => $data['duracionMinutos'] ?? 60,
                     'nivel' => $data['nivelDificultad'] ?? 'intermedio',
                     'es_publico' => isset($data['esPublico']) ? ($data['esPublico'] ? 1 : 0) : 0

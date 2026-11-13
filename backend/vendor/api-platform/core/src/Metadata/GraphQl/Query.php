@@ -73,8 +73,6 @@ class Query extends Operation
         ?OptionsInterface $stateOptions = null,
         array|Parameters|null $parameters = null,
         ?bool $queryParameterValidationEnabled = null,
-        mixed $rules = null,
-        ?string $policy = null,
         array $extraProperties = [],
 
         protected ?bool $nested = null,
@@ -132,8 +130,6 @@ class Query extends Operation
             stateOptions: $stateOptions,
             parameters: $parameters,
             queryParameterValidationEnabled: $queryParameterValidationEnabled,
-            policy: $policy,
-            rules: $rules,
             extraProperties: $extraProperties
         );
     }

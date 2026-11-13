@@ -4,6 +4,8 @@
 // ============================================
 import { useState } from 'react';
 import { useToast } from '../../context/ToastContext';
+import Icono from '../common/Icono';
+import { BicepsFlexed, Scale, Target, TrendingDown } from 'lucide-react';
 
 function CalculadoraNutricional({ onCalcular }) {
   const toast = useToast();
@@ -27,10 +29,10 @@ function CalculadoraNutricional({ onCalcular }) {
   };
 
   const objetivos = {
-    perder_peso: { nombre: 'Perder Peso', ajuste: -500, icon: '📉' },
-    mantener: { nombre: 'Mantener Peso', ajuste: 0, icon: '⚖️' },
-    ganar_masa: { nombre: 'Ganar Masa Muscular', ajuste: 500, icon: '💪' },
-    tonificar: { nombre: 'Tonificar', ajuste: -200, icon: '🎯' }
+    perder_peso: { nombre: 'Perder Peso', ajuste: -500, icon: TrendingDown },
+    mantener: { nombre: 'Mantener Peso', ajuste: 0, icon: Scale },
+    ganar_masa: { nombre: 'Ganar Masa Muscular', ajuste: 500, icon: BicepsFlexed },
+    tonificar: { nombre: 'Tonificar', ajuste: -200, icon: Target }
   };
 
   const handleChange = (e) => {
@@ -177,7 +179,7 @@ function CalculadoraNutricional({ onCalcular }) {
                     ? 'bg-uf-gold text-black border-uf-gold'
                     : 'bg-gray-800 text-white border-gray-700 hover:border-gray-600'
                 }`}>
-                  👨 Hombre
+                  Hombre
                 </div>
               </label>
               <label className="flex-1">
@@ -194,7 +196,7 @@ function CalculadoraNutricional({ onCalcular }) {
                     ? 'bg-uf-gold text-black border-uf-gold'
                     : 'bg-gray-800 text-white border-gray-700 hover:border-gray-600'
                 }`}>
-                  👩 Mujer
+                  Mujer
                 </div>
               </label>
             </div>
@@ -246,7 +248,7 @@ function CalculadoraNutricional({ onCalcular }) {
                       ? 'bg-uf-gold text-black border-uf-gold'
                       : 'bg-gray-800 text-white border-gray-700 hover:border-gray-600'
                   }`}>
-                    <div className="text-2xl mb-1">{obj.icon}</div>
+                    <div className="text-2xl mb-1"><Icono de={obj.icon} className="w-6 h-6 inline-block" /></div>
                     <div className="font-bold text-sm">{obj.nombre}</div>
                   </div>
                 </label>

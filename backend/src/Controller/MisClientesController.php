@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Entrenador;
 use App\Repository\UsuarioRepository;
 use App\Repository\SuscripcionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/entrenador')]
@@ -29,6 +31,13 @@ class MisClientesController extends AbstractController
     #[Route('/mis-clientes/{entrenadorId}', name: 'api_entrenador_mis_clientes', methods: ['GET'])]
     public function getMisClientes(int $entrenadorId): JsonResponse
     {
+        $entrenadorActual = $this->getUser();
+        if (!$entrenadorActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+        // El id de la URL no es de fiar: se usa siempre el entrenador autenticado.
+        $entrenadorId = $entrenadorActual->getId();
+
         try {
             // Query SQL directa para obtener clientes PREMIUM del entrenador
             // Ya no usamos la tabla servicios - consultamos directamente usuarios
@@ -93,6 +102,16 @@ class MisClientesController extends AbstractController
     #[Route('/cliente/{usuarioId}/dietas', name: 'api_entrenador_cliente_dietas', methods: ['GET'])]
     public function getDietasCliente(int $usuarioId): JsonResponse
     {
+        $entrenadorActual = $this->getUser();
+        if (!$entrenadorActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $cliente = $this->usuarioRepository->find($usuarioId);
+        if (!$cliente || $cliente->getEntrenadorAsignado()?->getId() !== $entrenadorActual->getId()) {
+            return $this->json(['success' => false, 'error' => 'Cliente no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+
         try {
             $sql = "
                 SELECT 
@@ -129,6 +148,16 @@ class MisClientesController extends AbstractController
     #[Route('/cliente/{usuarioId}/entrenamientos', name: 'api_entrenador_cliente_entrenamientos', methods: ['GET'])]
     public function getEntrenamientosCliente(int $usuarioId): JsonResponse
     {
+        $entrenadorActual = $this->getUser();
+        if (!$entrenadorActual instanceof Entrenador) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $cliente = $this->usuarioRepository->find($usuarioId);
+        if (!$cliente || $cliente->getEntrenadorAsignado()?->getId() !== $entrenadorActual->getId()) {
+            return $this->json(['success' => false, 'error' => 'Cliente no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+
         try {
             $sql = "
                 SELECT 

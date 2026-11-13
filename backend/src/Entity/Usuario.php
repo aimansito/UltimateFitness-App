@@ -25,6 +25,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Index(name: 'idx_nivel_actividad', columns: ['nivel_actividad'])]
 class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use PerfilSocialTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -50,6 +52,16 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 25, options: ['default' => 'cuidar_alimentacion'])]
     private string $objetivo = 'cuidar_alimentacion';
+
+    // ============================================
+    // CAMPOS - PERFIL PÚBLICO
+    // ============================================
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $fotoUrl = null;
+
+    #[ORM\Column(length: 280, nullable: true)]
+    private ?string $bioCorta = null;
 
     // ============================================
     // CAMPOS - DATOS FÍSICOS
@@ -245,6 +257,32 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     public function setObjetivo(string $objetivo): static
     {
         $this->objetivo = $objetivo;
+        return $this;
+    }
+
+    // ============================================
+    // GETTERS Y SETTERS - PERFIL PÚBLICO
+    // ============================================
+
+    public function getFotoUrl(): ?string
+    {
+        return $this->fotoUrl;
+    }
+
+    public function setFotoUrl(?string $fotoUrl): static
+    {
+        $this->fotoUrl = $fotoUrl;
+        return $this;
+    }
+
+    public function getBioCorta(): ?string
+    {
+        return $this->bioCorta;
+    }
+
+    public function setBioCorta(?string $bioCorta): static
+    {
+        $this->bioCorta = $bioCorta;
         return $this;
     }
 

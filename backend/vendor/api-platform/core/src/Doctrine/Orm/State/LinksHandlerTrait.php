@@ -17,7 +17,6 @@ use ApiPlatform\Doctrine\Common\State\LinksHandlerTrait as CommonLinksHandlerTra
 use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Operation;
-use ApiPlatform\State\Util\StateOptionsTrait;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -28,7 +27,6 @@ use Doctrine\Persistence\ManagerRegistry;
 trait LinksHandlerTrait
 {
     use CommonLinksHandlerTrait;
-    use StateOptionsTrait;
 
     private ManagerRegistry $managerRegistry;
 
@@ -161,12 +159,25 @@ trait LinksHandlerTrait
     private function getLinkFromClass(Link $link, Operation $operation): string
     {
         $fromClass = $link->getFromClass();
-        if ($fromClass === $operation->getClass() && $entityClass = $this->getStateOptionsClass($operation, $operation->getClass(), Options::class)) {
+        if ($fromClass === $operation->getClass() && $entityClass = $this->getStateOptionsEntityClass($operation)) {
             return $entityClass;
         }
 
         $operation = $this->resourceMetadataCollectionFactory->create($fromClass)->getOperation();
 
-        return $this->getStateOptionsClass($operation, $operation->getClass(), Options::class);
+        if ($entityClass = $this->getStateOptionsEntityClass($operation)) {
+            return $entityClass;
+        }
+
+        throw new \Exception('Can not found a doctrine class for this link.');
+    }
+
+    private function getStateOptionsEntityClass(Operation $operation): ?string
+    {
+        if (($options = $operation->getStateOptions()) && $options instanceof Options && $entityClass = $options->getEntityClass()) {
+            return $entityClass;
+        }
+
+        return null;
     }
 }

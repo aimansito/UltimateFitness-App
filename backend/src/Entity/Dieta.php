@@ -18,6 +18,20 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_dieta_asignado', columns: ['asignado_a_usuario_id'])]
 class Dieta
 {
+    #[ORM\Column(name: 'clonado_de_id', nullable: true)]
+    private ?int $clonadoDeId = null;
+
+    public function getClonadoDeId(): ?int
+    {
+        return $this->clonadoDeId;
+    }
+
+    public function setClonadoDeId(?int $clonadoDeId): static
+    {
+        $this->clonadoDeId = $clonadoDeId;
+        return $this;
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

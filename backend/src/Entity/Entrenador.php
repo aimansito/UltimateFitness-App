@@ -20,6 +20,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Index(name: 'idx_anos_experiencia', columns: ['anos_experiencia'])]
 class Entrenador implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use PerfilSocialTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

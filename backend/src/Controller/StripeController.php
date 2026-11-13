@@ -11,17 +11,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Usuario;
+use App\Entity\Suscripcion;
+use App\Entity\HistorialPago;
 
+/**
+ * Suscripción Premium real vía Stripe Checkout (un solo plan).
+ * La fuente de verdad del pago es el webhook, no el redirect del navegador.
+ */
 class StripeController extends AbstractController
 {
+    private const PREMIUM_PRICE = 19.99;
+
     private string $stripeSecret;
     private string $webhookSecret;
     private EntityManagerInterface $em;
 
     public function __construct(EntityManagerInterface $em)
     {
-        $this->stripeSecret = $_ENV['STRIPE_SECRET_KEY'] ?? 'sk_test_mock';
-        $this->webhookSecret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? 'whsec_mock';
+        $this->stripeSecret = $_ENV['STRIPE_SECRET_KEY'] ?? '';
+        $this->webhookSecret = $_ENV['STRIPE_WEBHOOK_SECRET'] ?? '';
         $this->em = $em;
     }
 
@@ -29,27 +37,16 @@ class StripeController extends AbstractController
     public function createCheckoutSession(Request $request): JsonResponse
     {
         $user = $this->getUser();
-        if (!$user) {
+        if (!$user instanceof Usuario) {
             return new JsonResponse(['success' => false, 'error' => 'Usuario no autenticado'], 401);
         }
 
-        $data = json_decode($request->getContent(), true);
-        $planId = $data['planId'] ?? 'premium';
-
-        $priceId = '';
-        if ($planId === 'premium') {
-            $priceId = $_ENV['STRIPE_PRICE_PREMIUM'] ?? 'price_1PXXX_mock_premium';
-        } else if ($planId === 'elite') {
-            $priceId = $_ENV['STRIPE_PRICE_ELITE'] ?? 'price_1PXXX_mock_elite';
+        if ($user->isEsPremium()) {
+            return new JsonResponse(['success' => false, 'error' => 'Ya tienes una suscripción Premium activa'], 400);
         }
 
-        // Dummy check for mock environment to bypass real Stripe API call if keys are missing
-        if (str_starts_with($this->stripeSecret, 'sk_test_mock')) {
-            return new JsonResponse([
-                'success' => true,
-                'checkoutUrl' => 'https://checkout.stripe.com/pay/cs_test_mock_123',
-                'mock' => true
-            ]);
+        if (!$this->stripeSecret || !($_ENV['STRIPE_PRICE_PREMIUM'] ?? null)) {
+            return new JsonResponse(['success' => false, 'error' => 'El cobro con Stripe no está configurado todavía (faltan STRIPE_SECRET_KEY / STRIPE_PRICE_PREMIUM)'], 500);
         }
 
         Stripe::setApiKey($this->stripeSecret);
@@ -61,7 +58,7 @@ class StripeController extends AbstractController
                 'payment_method_types' => ['card'],
                 'line_items' => [
                     [
-                        'price' => $priceId,
+                        'price' => $_ENV['STRIPE_PRICE_PREMIUM'],
                         'quantity' => 1,
                     ]
                 ],
@@ -84,12 +81,10 @@ class StripeController extends AbstractController
         $payload = $request->getContent();
         $sigHeader = $request->headers->get('stripe-signature');
 
-        $event = null;
-
         try {
             $event = Webhook::constructEvent(
                 $payload,
-                rtrim($sigHeader),
+                rtrim((string) $sigHeader),
                 $this->webhookSecret
             );
         } catch (\UnexpectedValueException $e) {
@@ -98,31 +93,79 @@ class StripeController extends AbstractController
             return new JsonResponse(['error' => 'Firma inválida'], 400);
         }
 
-        // Manejar el evento de Stripe
         switch ($event->type) {
             case 'checkout.session.completed':
-                $session = $event->data->object;
-
-                $userId = $session->client_reference_id;
-
-                if ($userId) {
-                    $usuario = $this->em->getRepository(Usuario::class)->find($userId);
-                    if ($usuario) {
-                        $usuario->setEsPremium(true);
-                        $usuario->setFechaPremium(new \DateTime());
-                        // NOTA: Para un sistema más completo, guarda el $session->customer y $session->subscription
-                        $this->em->flush();
-                    }
-                }
+                $this->procesarCheckoutCompletado($event->data->object);
                 break;
+
             case 'customer.subscription.deleted':
-                $subscription = $event->data->object;
-                // Lógica de cancelación aquí. Ejemplo: buscar por customer y setEsPremium(false)
+                $this->procesarSuscripcionCancelada($event->data->object);
                 break;
+
             default:
                 break;
         }
 
         return new JsonResponse(['success' => true]);
+    }
+
+    private function procesarCheckoutCompletado(\Stripe\Checkout\Session $session): void
+    {
+        $userId = $session->client_reference_id;
+        if (!$userId) {
+            return;
+        }
+
+        $usuario = $this->em->getRepository(Usuario::class)->find($userId);
+        if (!$usuario) {
+            return;
+        }
+
+        $usuario->setEsPremium(true);
+        $usuario->setFechaPremium(new \DateTime());
+
+        $suscripcion = new Suscripcion();
+        $suscripcion->setUsuario($usuario);
+        $suscripcion->setFechaInicio(new \DateTime());
+        $suscripcion->setPrecioMensual((string) self::PREMIUM_PRICE);
+        $suscripcion->setEstado('activo');
+        $suscripcion->setAutoRenovacion(true);
+        $suscripcion->setActiva(true);
+        $suscripcion->setStripeCustomerId((string) $session->customer);
+        $suscripcion->setStripeSubscriptionId((string) $session->subscription);
+        $this->em->persist($suscripcion);
+
+        $historialPago = new HistorialPago();
+        $historialPago->setUsuario($usuario);
+        $historialPago->setSuscripcion($suscripcion);
+        $historialPago->setMonto((string) self::PREMIUM_PRICE);
+        $historialPago->setMetodoPago('stripe');
+        $historialPago->setIdTransaccionExterna((string) $session->id);
+        $historialPago->setEstado('completado');
+        $historialPago->setDescripcion('Suscripción Ultimate Premium');
+        $this->em->persist($historialPago);
+
+        $this->em->flush();
+    }
+
+    private function procesarSuscripcionCancelada(\Stripe\Subscription $stripeSubscription): void
+    {
+        $suscripcion = $this->em->getRepository(Suscripcion::class)
+            ->findOneBy(['stripeSubscriptionId' => $stripeSubscription->id]);
+
+        if (!$suscripcion) {
+            return;
+        }
+
+        $suscripcion->setActiva(false);
+        $suscripcion->setEstado('cancelado');
+        $suscripcion->setAutoRenovacion(false);
+
+        $usuario = $suscripcion->getUsuario();
+        if ($usuario) {
+            $usuario->setEsPremium(false);
+        }
+
+        $this->em->flush();
     }
 }

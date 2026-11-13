@@ -1,4 +1,5 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
+import { ENTRENADORES, PAGOS } from "./config/funciones";
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import { ProtectedRoute } from "./components/common";
@@ -29,6 +30,7 @@ import TerminosCondiciones from "./pages/public/TerminosCondiciones";
 import PoliticaCookies from "./pages/public/PoliticaCookies";
 import RecuperarPassword from "./pages/public/RecuperarPassword";
 import RestablecerPassword from "./pages/public/RestablecerPassword";
+import PerfilPublico from "./pages/public/PerfilPublico";
 import CookieBanner from "./components/common/CookieBanner";
 
 // Dashboard Router
@@ -45,13 +47,16 @@ import Usuarios from "./pages/private/admin/Usuarios";
 // Páginas privadas - Usuario
 import PlanificadorSemanal from "./pages/private/PlanificadorSemanal";
 import MisDatosPersonales from "./pages/user/MisDatosPersonales";
+import GestionarCuenta from "./pages/user/GestionarCuenta";
 import MisEntrenamientos from "./pages/user/MisEntrenamientos";
 import CrearEntrenamiento from "./pages/user/CrearEntrenamiento";
 import MisDietas from "./pages/user/MisDietas";
 import MisPlatos from "./pages/user/MisPlatos";
+import CrearPlatoUsuario from "./pages/user/CrearPlato";
 import DetalleDieta from "./pages/user/DetalleDieta";
 import DetalleEntrenamiento from "./pages/user/DetalleEntrenamiento";
 import MiSuscripcion from "./pages/user/MiSuscripcion";
+import DescubrirEntrenadores from "./pages/user/DescubrirEntrenadores";
 
 import CrearDietaCliente from "./pages/entrenador/CrearDietaCliente";
 import CrearEntrenamientoCliente from "./pages/entrenador/CrearEntrenamientoCliente";
@@ -79,9 +84,12 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/recuperar-password" element={<RecuperarPassword />} />
             <Route path="/restablecer-password" element={<RestablecerPassword />} />
-            <Route path="/entrenador/login" element={<LoginEntrenador />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/upgrade-premium" element={<UpgradePremium />} />
+            {PAGOS ? (
+              <Route path="/upgrade-premium" element={<UpgradePremium />} />
+            ) : (
+              <Route path="/upgrade-premium" element={<Navigate to="/dashboard" replace />} />
+            )}
             <Route path="/servicios" element={<Servicios />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/gym" element={<Gym />} />
@@ -97,92 +105,101 @@ function App() {
             <Route path="/aviso-legal" element={<AvisoLegal />} />
             <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
             <Route path="/politica-cookies" element={<PoliticaCookies />} />
+            <Route path="/perfil/:tipo/:id" element={<PerfilPublico />} />
 
-            {/* Crear contenido del entrenador para clientes */}
-            <Route
-              path="/entrenador/cliente/:clienteId/crear-dieta"
-              element={
-                <ProtectedRouteEntrenador>
-                  <CrearDietaCliente />
-                </ProtectedRouteEntrenador>
-              }
-            />
-            <Route
-              path="/entrenador/cliente/:clienteId/crear-entrenamiento"
-              element={
-                <ProtectedRouteEntrenador>
-                  <CrearEntrenamientoCliente />
-                </ProtectedRouteEntrenador>
-              }
-            />
+            {/* Entrenadores: ocultos hasta su lanzamiento (config/funciones.js) */}
+            {ENTRENADORES ? (
+              <>
+              <Route path="/entrenador/login" element={<LoginEntrenador />} />
+              {/* Crear contenido del entrenador para clientes */}
+              <Route
+                path="/entrenador/cliente/:clienteId/crear-dieta"
+                element={
+                  <ProtectedRouteEntrenador>
+                    <CrearDietaCliente />
+                  </ProtectedRouteEntrenador>
+                }
+              />
+              <Route
+                path="/entrenador/cliente/:clienteId/crear-entrenamiento"
+                element={
+                  <ProtectedRouteEntrenador>
+                    <CrearEntrenamientoCliente />
+                  </ProtectedRouteEntrenador>
+                }
+              />
 
-            {/* --------------------------- */}
-            {/* RUTAS ENTRENADOR */}
-            {/* --------------------------- */}
-            <Route
-              path="/entrenador/dashboard"
-              element={
-                <ProtectedRouteEntrenador>
-                  <DashboardEntrenador />
-                </ProtectedRouteEntrenador>
-              }
-            />
+              {/* --------------------------- */}
+              {/* RUTAS ENTRENADOR */}
+              {/* --------------------------- */}
+              <Route
+                path="/entrenador/dashboard"
+                element={
+                  <ProtectedRouteEntrenador>
+                    <DashboardEntrenador />
+                  </ProtectedRouteEntrenador>
+                }
+              />
 
-            <Route
-              path="/entrenador/mis-platos"
-              element={
-                <ProtectedRouteEntrenador>
-                  <MisPlatosEntrenador />
-                </ProtectedRouteEntrenador>
-              }
-            />
+              <Route
+                path="/entrenador/mis-platos"
+                element={
+                  <ProtectedRouteEntrenador>
+                    <MisPlatosEntrenador />
+                  </ProtectedRouteEntrenador>
+                }
+              />
 
-            <Route
-              path="/entrenador/mis-entrenamientos"
-              element={
-                <ProtectedRouteEntrenador>
-                  {/* @ts-ignore */}
-                  <MisEntrenamientosEntrenador />
-                </ProtectedRouteEntrenador>
-              }
-            />
+              <Route
+                path="/entrenador/mis-entrenamientos"
+                element={
+                  <ProtectedRouteEntrenador>
+                    {/* @ts-ignore */}
+                    <MisEntrenamientosEntrenador />
+                  </ProtectedRouteEntrenador>
+                }
+              />
 
-            <Route
-              path="/entrenador/mis-dietas"
-              element={
-                <ProtectedRouteEntrenador>
-                  <MisDietasEntrenador />
-                </ProtectedRouteEntrenador>
-              }
-            />
+              <Route
+                path="/entrenador/mis-dietas"
+                element={
+                  <ProtectedRouteEntrenador>
+                    <MisDietasEntrenador />
+                  </ProtectedRouteEntrenador>
+                }
+              />
 
-            <Route
-              path="/entrenador/dieta/:dietaId"
-              element={
-                <ProtectedRouteEntrenador>
-                  <DetalleDietaEntrenador />
-                </ProtectedRouteEntrenador>
-              }
-            />
+              <Route
+                path="/entrenador/dieta/:dietaId"
+                element={
+                  <ProtectedRouteEntrenador>
+                    <DetalleDietaEntrenador />
+                  </ProtectedRouteEntrenador>
+                }
+              />
 
-            <Route
-              path="/entrenamiento/:entrenamientoId"
-              element={
-                <ProtectedRouteEntrenador>
-                  {/* @ts-ignore */}
-                  <DetalleEntrenamiento />
-                </ProtectedRouteEntrenador>
-              }
-            />
+              <Route
+                path="/entrenamiento/:entrenamientoId"
+                element={
+                  <ProtectedRouteEntrenador>
+                    {/* @ts-ignore */}
+                    <DetalleEntrenamiento />
+                  </ProtectedRouteEntrenador>
+                }
+              />
 
-            <Route
-              path="/crear-plato"
-              element={
-                <ProtectedRouteEntrenador>
-                  <CrearPlato />
-                </ProtectedRouteEntrenador>
-              }
-            />
+              <Route
+                path="/crear-plato"
+                element={
+                  <ProtectedRouteEntrenador>
+                    <CrearPlato />
+                  </ProtectedRouteEntrenador>
+                }
+              />
+              </>
+            ) : (
+              <Route path="/entrenador/*" element={<Navigate to="/" replace />} />
+            )}
 
             {/* --------------------------- */}
             {/* RUTA GENERAL DE DASHBOARD */}
@@ -237,6 +254,15 @@ function App() {
               element={
                 <ProtectedRoute requireAuth={true}>
                   <PlanificadorSemanal />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/cuenta"
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <GestionarCuenta />
                 </ProtectedRoute>
               }
             />
@@ -305,13 +331,39 @@ function App() {
             />
 
             <Route
-              path="/mi-suscripcion"
+              path="/mis-platos/crear"
               element={
                 <ProtectedRoute requireAuth={true}>
-                  <MiSuscripcion />
+                  <CrearPlatoUsuario />
                 </ProtectedRoute>
               }
             />
+
+            {PAGOS ? (
+              <Route
+                path="/mi-suscripcion"
+                element={
+                  <ProtectedRoute requireAuth={true}>
+                    <MiSuscripcion />
+                  </ProtectedRoute>
+                }
+              />
+            ) : (
+              <Route path="/mi-suscripcion" element={<Navigate to="/dashboard" replace />} />
+            )}
+
+            {ENTRENADORES ? (
+              <Route
+                path="/user/descubrir"
+                element={
+                  <ProtectedRoute requireAuth={true}>
+                    <DescubrirEntrenadores />
+                  </ProtectedRoute>
+                }
+              />
+            ) : (
+              <Route path="/user/descubrir" element={<Navigate to="/dashboard" replace />} />
+            )}
 
             {/* --------------------------- */}
             {/* 404 */}

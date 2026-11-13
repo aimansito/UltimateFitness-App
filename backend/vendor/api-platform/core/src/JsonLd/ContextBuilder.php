@@ -115,24 +115,14 @@ final class ContextBuilder implements AnonymousContextBuilderInterface
     public function getAnonymousResourceContext(object $object, array $context = [], int $referenceType = UrlGeneratorInterface::ABS_PATH): array
     {
         $outputClass = $this->getObjectClass($object);
-        $operation = $context['operation'] ?? new Get(
-            shortName: (new \ReflectionClass($outputClass))->getShortName(),
-            normalizationContext: [
-                self::HYDRA_CONTEXT_HAS_PREFIX => $context[self::HYDRA_CONTEXT_HAS_PREFIX] ?? $this->defaultContext[self::HYDRA_CONTEXT_HAS_PREFIX] ?? true,
-                'groups' => [],
-            ],
-            denormalizationContext: [
-                'groups' => [],
-            ]
-        );
+        $operation = $context['operation'] ?? new Get(shortName: (new \ReflectionClass($outputClass))->getShortName());
         $shortName = $operation->getShortName();
 
         $jsonLdContext = [
             '@context' => $this->getResourceContextWithShortname(
                 $outputClass,
                 $referenceType,
-                $shortName,
-                $operation
+                $shortName
             ),
             '@type' => $shortName,
         ];
@@ -192,6 +182,10 @@ final class ContextBuilder implements AnonymousContextBuilderInterface
                     '@id' => $id,
                 ];
             }
+        }
+
+        if (false === ($this->defaultContext[self::HYDRA_CONTEXT_HAS_PREFIX] ?? true)) {
+            return ['http://www.w3.org/ns/hydra/context.jsonld', $context];
         }
 
         return $context;

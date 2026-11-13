@@ -61,7 +61,7 @@ final class SchemaFactory implements SchemaFactoryInterface, SchemaFactoryAwareI
             $inputOrOutputClass = $className;
             $serializerContext ??= [];
         } else {
-            $operation = $this->findOperation($className, $type, $operation, $serializerContext, $format);
+            $operation = $this->findOperation($className, $type, $operation, $serializerContext);
             $inputOrOutputClass = $this->findOutputClass($className, $type, $operation, $serializerContext);
             $serializerContext ??= $this->getSerializerContext($operation, $type);
         }
@@ -74,6 +74,7 @@ final class SchemaFactory implements SchemaFactoryInterface, SchemaFactoryAwareI
         $validationGroups = $operation ? $this->getValidationGroups($operation) : [];
         $version = $schema->getVersion();
         $definitionName = $this->definitionNameFactory->create($className, $format, $inputOrOutputClass, $operation, $serializerContext);
+
         $method = $operation instanceof HttpOperation ? $operation->getMethod() : 'GET';
         if (!$operation) {
             $method = Schema::TYPE_INPUT === $type ? 'POST' : 'GET';
@@ -178,8 +179,7 @@ final class SchemaFactory implements SchemaFactoryInterface, SchemaFactoryAwareI
         $propertySchemaType = $propertySchema['type'] ?? false;
 
         $isUnknown = Schema::UNKNOWN_TYPE === $propertySchemaType
-            || ('array' === $propertySchemaType && Schema::UNKNOWN_TYPE === ($propertySchema['items']['type'] ?? null))
-            || ('object' === $propertySchemaType && Schema::UNKNOWN_TYPE === ($propertySchema['additionalProperties']['type'] ?? null));
+            || ('array' === $propertySchemaType && Schema::UNKNOWN_TYPE === ($propertySchema['items']['type'] ?? null));
 
         if (
             !$isUnknown && (
@@ -222,18 +222,9 @@ final class SchemaFactory implements SchemaFactoryInterface, SchemaFactoryAwareI
                 continue;
             }
 
-            if (false === $propertyMetadata->getGenId()) {
-                $subDefinitionName = $this->definitionNameFactory->create($className, $format, $className, null, $serializerContext);
-
-                if (isset($subSchema->getDefinitions()[$subDefinitionName])) {
-                    unset($subSchema->getDefinitions()[$subDefinitionName]['properties']['@id']);
-                }
-            }
-
             if ($isCollection) {
-                $key = ($propertySchema['type'] ?? null) === 'object' ? 'additionalProperties' : 'items';
-                $propertySchema[$key]['$ref'] = $subSchema['$ref'];
-                unset($propertySchema[$key]['type']);
+                $propertySchema['items']['$ref'] = $subSchema['$ref'];
+                unset($propertySchema['items']['type']);
                 break;
             }
 
@@ -288,10 +279,6 @@ final class SchemaFactory implements SchemaFactoryInterface, SchemaFactoryAwareI
 
         if ($validationGroups) {
             $options['validation_groups'] = $validationGroups;
-        }
-
-        if ($operation && ($ignoredAttributes = $operation->getNormalizationContext()['ignored_attributes'] ?? null)) {
-            $options['ignored_attributes'] = $ignoredAttributes;
         }
 
         return $options;

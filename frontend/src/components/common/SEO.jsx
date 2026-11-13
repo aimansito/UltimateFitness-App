@@ -5,8 +5,8 @@ const SITE_URL = 'https://ultimatefitness.es';
 function SEO({ title, description, keywords, image, url, type = 'website', noindex = false, jsonLd }) {
   const siteName = "Ultimate Fitness";
   const defaultTitle = "Ultimate Fitness | Transforma tu físico y tu vida";
-  const defaultDescription = "Plataforma integral de fitness: rutinas de gimnasio, calistenia, dietas personalizadas y entrenadores profesionales. Empieza tu cambio hoy.";
-  const defaultKeywords = "fitness, gimnasio, calistenia, dietas, entrenamiento online, entrenador personal, rutinas, ganar músculo, perder peso, nutrición deportiva";
+  const defaultDescription = "Plataforma integral de fitness: rutinas de gimnasio, calistenia, dietas personalizadas y una comunidad para compartir tu progreso. Empieza tu cambio hoy.";
+  const defaultKeywords = "fitness, gimnasio, calistenia, dietas, entrenamiento online, rutinas, ganar músculo, perder peso, nutrición deportiva";
 
   const seo = {
     title: title ? `${title} | ${siteName}` : defaultTitle,
@@ -26,7 +26,7 @@ function SEO({ title, description, keywords, image, url, type = 'website', noind
     "description": defaultDescription,
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+34633714372",
+      "email": "utfitness2025@gmail.com",
       "contactType": "customer service",
       "availableLanguage": "Spanish"
     },

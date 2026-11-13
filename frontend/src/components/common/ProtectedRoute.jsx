@@ -29,13 +29,13 @@ function ProtectedRoute({ children, requiredRole, requireAuth = true }) {
 
     // Si requiere autenticación y no está autenticado → redirigir a login
     if (requireAuth && !isAuthenticated) {
-        console.log('⛔ Usuario no autenticado, redirigiendo a /login');
+        console.log('Usuario no autenticado, redirigiendo a /login');
         return <Navigate to="/login" replace />;
     }
 
     // Si requiere un rol específico y no lo tiene → mostrar acceso denegado
     if (requiredRole && !hasRole(requiredRole)) {
-        console.log(`⛔ Usuario no tiene el rol requerido: ${requiredRole}. Rol actual: ${user?.rol || 'ninguno'}`);
+        console.log(`Usuario no tiene el rol requerido: ${requiredRole}. Rol actual: ${user?.rol || 'ninguno'}`);
 
         return (
             <div className="min-h-screen bg-gradient-to-br from-uf-darker via-gray-900 to-black flex items-center justify-center px-4">
@@ -61,7 +61,7 @@ function ProtectedRoute({ children, requiredRole, requireAuth = true }) {
     }
 
     // Si pasa todas las validaciones, renderizar el componente hijo
-    console.log(`✅ Acceso permitido a ruta protegida${requiredRole ? ` (rol: ${requiredRole})` : ''}`);
+    console.log(`Acceso permitido a ruta protegida${requiredRole ? ` (rol: ${requiredRole})` : ''}`);
     return children;
 }
 

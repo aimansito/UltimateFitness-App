@@ -14,9 +14,10 @@ declare(strict_types=1);
 namespace ApiPlatform\Laravel\Controller;
 
 use ApiPlatform\Metadata\HttpOperation;
-use ApiPlatform\Metadata\Operation\Factory\OperationMetadataFactoryInterface;
+use ApiPlatform\Metadata\Operation\Factory\OperationMetadataFactory;
 use ApiPlatform\State\ProcessorInterface;
 use ApiPlatform\State\ProviderInterface;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,9 +29,10 @@ class ApiPlatformController extends Controller
      * @param ProcessorInterface<iterable<object>|object|null, Response> $processor
      */
     public function __construct(
-        protected OperationMetadataFactoryInterface $operationMetadataFactory,
+        protected OperationMetadataFactory $operationMetadataFactory,
         protected ProviderInterface $provider,
         protected ProcessorInterface $processor,
+        protected Application $app,
     ) {
     }
 
@@ -67,11 +69,11 @@ class ApiPlatformController extends Controller
         }
 
         if (null === $operation->canRead()) {
-            $operation = $operation->withRead($operation->getUriVariables() || $request->isMethodSafe());
+            $operation = $operation->withRead($operation->getUriVariables() || $request->isMethodSafe()); // @phpstan-ignore-line
         }
 
         if (null === $operation->canDeserialize()) {
-            $operation = $operation->withDeserialize(\in_array($operation->getMethod(), ['POST', 'PUT', 'PATCH'], true));
+            $operation = $operation->withDeserialize(\in_array($operation->getMethod(), ['POST', 'PUT', 'PATCH'], true)); // @phpstan-ignore-line
         }
 
         $body = $this->provider->provide($operation, $uriVariables, $context);

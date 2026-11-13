@@ -7,6 +7,7 @@ import {
     Users, Activity, Utensils, Apple, Dumbbell, FileText, LayoutDashboard,
     Search, Trash2, Crown, Edit, Plus, Star, Award, Loader, Save, X, Eye, Calendar
 } from 'lucide-react';
+import { CalendarDays, Mail } from 'lucide-react';
 
 function DashboardAdmin() {
     const { user } = useAuth();
@@ -129,11 +130,11 @@ function DashboardAdmin() {
             const endpoint = `/${type}/${id}`;
             const response = await api.delete(`/admin${endpoint}`);
             if (response.data.success) {
-                toast.success('✅ Eliminado exitosamente');
+                toast.success('Eliminado exitosamente');
                 loadData();
             }
         } catch (error) {
-            toast.error('❌ No se pudo eliminar');
+            toast.error('No se pudo eliminar');
         }
     };
 
@@ -145,12 +146,12 @@ function DashboardAdmin() {
             const response = await api[method](endpoint, formData);
 
             if (response.data.success) {
-                toast.success(modalMode === 'edit' ? '✅ Actualizado exitosamente' : '✅ Creado exitosamente');
+                toast.success(modalMode === 'edit' ? 'Actualizado exitosamente' : 'Creado exitosamente');
                 setModalOpen(false);
                 loadData();
             }
         } catch (error) {
-            toast.error('❌ No se pudo guardar. Intenta de nuevo');
+            toast.error('No se pudo guardar. Intenta de nuevo');
         }
     };
 
@@ -158,11 +159,11 @@ function DashboardAdmin() {
         try {
             const response = await api.put(`/admin/usuarios/${usuarioId}`, updates);
             if (response.data.success) {
-                toast.success('✅ Usuario actualizado exitosamente');
+                toast.success('Usuario actualizado exitosamente');
                 loadData();
             }
         } catch (error) {
-            toast.error('❌ Error al actualizar usuario');
+            toast.error('Error al actualizar usuario');
         }
     };
 
@@ -176,7 +177,7 @@ function DashboardAdmin() {
                 setDietaDetalleOpen(true);
             }
         } catch (error) {
-            toast.error('❌ Error al cargar dieta');
+            toast.error('Error al cargar dieta');
         }
     };
 
@@ -262,7 +263,7 @@ function DashboardAdmin() {
                     </label>
                     <label className="flex items-center gap-2 text-white">
                         <input type="checkbox" checked={formData.es_admin || false} onChange={(e) => setFormData({ ...formData, es_admin: e.target.checked })} className="w-5 h-5" />
-                        <span>🔐 Es Administrador</span>
+                        <span>Es Administrador</span>
                     </label>
                 </div>
             );
@@ -472,7 +473,7 @@ function DashboardAdmin() {
                                                         {u.rol === 'admin' && <span className="px-2 py-1 bg-red-600 text-white text-xs font-bold rounded uppercase">ADMIN</span>}
                                                         {u.rol === 'entrenador' && <span className="px-2 py-1 bg-purple-600 text-white text-xs font-bold rounded uppercase">ENTRENADOR</span>}
                                                     </div>
-                                                    <p className="text-gray-400 text-sm mt-2">📧 {u.email}</p>
+                                                    <p className="text-gray-400 text-sm mt-2"><Mail className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{u.email}</p>
                                                 </div>
                                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
                                                     <button
@@ -517,7 +518,7 @@ function DashboardAdmin() {
                                                         <h3 className="text-white font-bold">{e.nombre_completo || e.nombre}</h3>
                                                         <span className="px-2 py-1 text-xs font-bold rounded uppercase bg-purple-600 text-white">{e.especialidad}</span>
                                                     </div>
-                                                    <p className="text-gray-400 text-sm mt-2">📧 {e.email} • {e.anos_experiencia} años de experiencia</p>
+                                                    <p className="text-gray-400 text-sm mt-2"><Mail className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{e.email} • {e.anos_experiencia} años de experiencia</p>
                                                 </div>
                                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
                                                     <button onClick={() => handleEdit('entrenadores', e)} className="p-2 text-blue-400 hover:bg-blue-500/10 rounded"><Edit className="w-5 h-5" /></button>
@@ -547,7 +548,7 @@ function DashboardAdmin() {
                                                     <p className="text-gray-400 text-sm mt-2">
                                                         {d.calorias_totales} kcal •
                                                         {d.creador_nombre && ` Creada por ${d.creador_nombre} ${d.creador_apellidos || ''}`}
-                                                        {d.valoracion_promedio > 0 && ` • ⭐ ${d.valoracion_promedio.toFixed(1)}`}
+                                                        {d.valoracion_promedio > 0 && ` • ${d.valoracion_promedio.toFixed(1)}`}
                                                     </p>
                                                 </div>
                                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
@@ -651,7 +652,7 @@ function DashboardAdmin() {
                                                         <span className="px-2 py-1 bg-gray-700 text-white text-xs font-bold rounded uppercase">{post.categoria}</span>
                                                     </div>
                                                     <p className="text-gray-400 text-sm mt-2">{post.extracto?.substring(0, 100)}...</p>
-                                                    <p className="text-gray-500 text-xs mt-1">📅 {post.fecha_publicacion || 'No publicado'}</p>
+                                                    <p className="text-gray-500 text-xs mt-1"><CalendarDays className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{post.fecha_publicacion || 'No publicado'}</p>
                                                 </div>
                                                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all">
                                                     <button onClick={() => handleEdit('blog', post)} className="p-2 text-blue-400 hover:bg-blue-500/10 rounded"><Edit className="w-5 h-5" /></button>
@@ -693,11 +694,11 @@ function DashboardAdmin() {
                             </div>
                             <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
                                 <p className="text-gray-400 text-sm">Valoración</p>
-                                <p className="text-2xl font-bold text-white">⭐ {dietaActual.valoracion_promedio?.toFixed(1) || 'N/A'}</p>
+                                <p className="text-2xl font-bold text-white"><Star className="inline-block w-4 h-4 mr-1 -mt-0.5 text-uf-gold fill-uf-gold" aria-hidden="true" />{dietaActual.valoracion_promedio?.toFixed(1) || 'N/A'}</p>
                             </div>
                             <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
                                 <p className="text-gray-400 text-sm">Visibilidad</p>
-                                <p className="text-lg font-bold text-white">{dietaActual.es_publica ? '🌐 Pública' : '🔒 Privada'}</p>
+                                <p className="text-lg font-bold text-white">{dietaActual.es_publica ? 'Pública' : 'Privada'}</p>
                             </div>
                         </div>
 

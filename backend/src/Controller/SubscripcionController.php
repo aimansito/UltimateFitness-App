@@ -7,7 +7,6 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -15,10 +14,13 @@ use Symfony\Component\Routing\Annotation\Route;
  * CONTROLADOR DE SUSCRIPCIONES PREMIUM
  *
  * RUTAS:
- *  - POST /api/suscripciones/activar-premium
  *  - GET  /api/suscripciones/info
  *  - GET  /api/suscripciones/mi-suscripcion
  *  - GET  /api/suscripciones/mi-entrenador
+ *  - POST /api/suscripciones/cancelar
+ *
+ * La activación real de Premium ocurre vía Stripe: ver StripeController
+ * (POST /api/stripe/create-checkout-session + webhook).
  */
 #[Route('/api/suscripciones', name: 'api_suscripciones_')]
 class SubscripcionController extends AbstractController
@@ -37,82 +39,6 @@ class SubscripcionController extends AbstractController
 
     public function __construct(private EntityManagerInterface $entityManager)
     {
-    }
-
-    /* ============================================================
-     *  POST /api/suscripciones/activar-premium
-     *  PROTEGIDO POR JWT
-     * ============================================================ */
-    #[Route('/activar-premium', name: 'activar_premium', methods: ['POST'])]
-    public function activarPremium(Request $request, Connection $connection): JsonResponse
-    {
-        $usuario = $this->getUser();
-
-        if (!$usuario instanceof Usuario) {
-            return $this->json(['success' => false, 'error' => 'Usuario no autenticado'], 401);
-        }
-
-        if ($usuario->isEsPremium()) {
-            return $this->json(['success' => false, 'error' => 'El usuario ya es premium'], 400);
-        }
-
-        $data = json_decode($request->getContent(), true) ?? [];
-        $metodo = $data['metodo_pago'] ?? 'tarjeta';
-        $referencia = $data['referencia'] ?? 'UPGRADE_' . time();
-
-        try {
-            // Ajustado a las columnas actuales de historial_pagos
-            $sql = "
-                INSERT INTO historial_pagos (
-                    usuario_id,
-                    suscripcion_id,
-                    monto,
-                    moneda,
-                    metodo_pago,
-                    id_transaccion_externa,
-                    estado,
-                    descripcion,
-                    fecha_pago,
-                    fecha_actualizacion
-                ) VALUES (?, NULL, ?, 'EUR', ?, ?, 'completado', 'Upgrade premium', NOW(), NOW())
-            ";
-
-            $connection->prepare($sql)->executeStatement([
-                $usuario->getId(),
-                self::PREMIUM_PRICE,
-                $metodo,
-                $referencia
-            ]);
-
-            // Marcar al usuario como premium
-            $usuario->setEsPremium(true);
-            $usuario->setFechaPremium(new \DateTime());
-
-            // Asignar entrenador aleatorio activo si no tiene
-            if (!$usuario->getEntrenadorAsignado()) {
-                $entrenadorId = $connection->fetchOne("SELECT id FROM entrenadores WHERE activo = 1 ORDER BY RAND() LIMIT 1");
-                if ($entrenadorId) {
-                    $entrenador = $this->entityManager->getRepository(\App\Entity\Entrenador::class)->find($entrenadorId);
-                    if ($entrenador) {
-                        $usuario->setEntrenadorAsignado($entrenador);
-                    }
-                }
-            }
-
-            $this->entityManager->flush();
-
-            return $this->json([
-                'success' => true,
-                'message' => '¡Pago completado! Tu cuenta Premium se activará al volver a iniciar sesión.',
-                'force_logout' => true
-            ]);
-
-        } catch (\Exception $e) {
-            return $this->json([
-                'success' => false,
-                'error' => 'Error al procesar el pago: ' . $e->getMessage()
-            ], 500);
-        }
     }
 
     /* ============================================================
@@ -241,9 +167,13 @@ class SubscripcionController extends AbstractController
         }
 
         try {
-            // Desactivar suscripción activa
-            $sql = "UPDATE suscripciones 
-                    SET activa = 0, auto_renovacion = 0 
+            // NOTA: esto solo desactiva el flag local. Mientras el usuario tenga una
+            // suscripción de Stripe real activa (stripe_subscription_id en la tabla
+            // suscripciones), Stripe seguirá cobrando cada mes hasta que también se
+            // cancele allí (\Stripe\Subscription::update(..., ['cancel_at_period_end' => true])).
+            // Pendiente de implementar cuando haya suscripciones reales que cancelar.
+            $sql = "UPDATE suscripciones
+                    SET activa = 0, auto_renovacion = 0
                     WHERE usuario_id = ? AND activa = 1";
             
             $connection->executeStatement($sql, [$usuario->getId()]);

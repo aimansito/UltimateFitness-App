@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { EDAD_MINIMA } from "../../config/legal";
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
@@ -35,7 +36,8 @@ function Register() {
         notas_salud: '',
 
         // Aceptación de políticas
-        aceptaPoliticas: false
+        aceptaPoliticas: false,
+        consienteSalud: false
     });
 
     const handleChange = (e) => {
@@ -52,8 +54,8 @@ function Register() {
             setError('Por favor completa todos los campos obligatorios');
             return false;
         }
-        if (formData.password.length < 6) {
-            setError('La contraseña debe tener al menos 6 caracteres');
+        if (formData.password.length < 8) {
+            setError('La contraseña debe tener al menos 8 caracteres');
             return false;
         }
         if (formData.password !== formData.passwordConfirm) {
@@ -73,8 +75,8 @@ function Register() {
             setError('Por favor completa todos los campos de datos físicos');
             return false;
         }
-        if (formData.edad < 12 || formData.edad > 120) {
-            setError('Edad inválida');
+        if (formData.edad < EDAD_MINIMA || formData.edad > 120) {
+            setError(`Debes tener al menos ${EDAD_MINIMA} años para registrarte`);
             return false;
         }
         if (formData.peso_actual < 30 || formData.peso_actual > 300) {
@@ -94,7 +96,11 @@ function Register() {
             return false;
         }
         if (!formData.aceptaPoliticas) {
-            setError('Debes aceptar la Política de Privacidad y Cookies para continuar');
+            setError('Debes aceptar los Términos y condiciones y la Política de privacidad para continuar');
+            return false;
+        }
+        if (!formData.consienteSalud) {
+            setError('Necesitamos tu consentimiento para usar tus datos físicos y de salud en tus planes');
             return false;
         }
         return true;
@@ -143,7 +149,8 @@ function Register() {
                 objetivo: formData.objetivo,
                 nivel_actividad: formData.nivel_actividad,
                 notas_salud: formData.notas_salud || null,
-                quiere_premium: false
+                acepta_terminos: formData.aceptaPoliticas,
+                consiente_salud: formData.consienteSalud
             };
 
             const response = await api.post('/register', registerData);
@@ -182,7 +189,7 @@ function Register() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-uf-darker to-black px-4 py-12">
             <SEO
                 title="Crear Cuenta"
-                description="Regístrate gratis en Ultimate Fitness. Accede a rutinas de gimnasio, planes de dieta y entrenadores profesionales."
+                description="Regístrate gratis en Ultimate Fitness. Accede a rutinas de gimnasio, planes de dieta y a la comunidad."
                 keywords="registro fitness, crear cuenta fitness, entrenamiento online gratis"
             />
             <div className="w-full max-w-3xl">
@@ -247,7 +254,7 @@ function Register() {
                                         <option value="femenino">Femenino</option>
                                     </select>
 
-                                    <input type="number" name="edad" value={formData.edad} onChange={handleChange} placeholder="Edad *" min="12" max="120" className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-uf-gold focus:outline-none" required />
+                                    <input type="number" name="edad" value={formData.edad} onChange={handleChange} placeholder="Edad *" min={EDAD_MINIMA} max="120" className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-uf-gold focus:outline-none" required />
 
                                     <input type="number" step="0.1" name="peso_actual" value={formData.peso_actual} onChange={handleChange} placeholder="Peso Actual (kg) *" min="30" max="300" className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-uf-gold focus:outline-none" required />
 
@@ -293,26 +300,40 @@ function Register() {
                                     <textarea name="notas_salud" value={formData.notas_salud} onChange={handleChange} rows="3" placeholder="Alergias, condiciones médicas, restricciones alimentarias..." className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-uf-gold focus:outline-none"></textarea>
                                 </div>
 
-                                {/* Aceptación de Políticas */}
-                                <div className="bg-gray-900 border-2 border-uf-gold/30 rounded-lg p-4 mt-4">
+                                {/* Consentimientos: separados y sin marcar por defecto (RGPD art. 7 y 9.2.a) */}
+                                <div className="bg-gray-900 border-2 border-uf-gold/30 rounded-lg p-4 mt-4 space-y-4">
                                     <label className="flex items-start gap-3 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             name="aceptaPoliticas"
                                             checked={formData.aceptaPoliticas}
                                             onChange={handleChange}
-                                            className="mt-1 w-5 h-5 accent-uf-gold cursor-pointer"
+                                            className="mt-1 w-5 h-5 shrink-0 accent-uf-gold cursor-pointer"
                                         />
                                         <span className="text-gray-300 text-sm leading-relaxed">
-                                            Acepto la{' '}
-                                            <Link
-                                                to="/politica-privacidad"
-                                                target="_blank"
-                                                className="text-uf-gold hover:text-uf-blue font-bold underline"
-                                            >
-                                                Política de Privacidad y Cookies
+                                            Acepto los{' '}
+                                            <Link to="/terminos-condiciones" target="_blank" className="text-uf-gold hover:text-uf-blue font-bold underline">
+                                                Términos y condiciones
+                                            </Link>{' '}
+                                            y he leído la{' '}
+                                            <Link to="/politica-privacidad" target="_blank" className="text-uf-gold hover:text-uf-blue font-bold underline">
+                                                Política de privacidad
                                             </Link>
-                                            {' '}de Ultimate Fitness *
+                                            . Tengo al menos {EDAD_MINIMA} años. *
+                                        </span>
+                                    </label>
+                                    <label className="flex items-start gap-3 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            name="consienteSalud"
+                                            checked={formData.consienteSalud}
+                                            onChange={handleChange}
+                                            className="mt-1 w-5 h-5 shrink-0 accent-uf-gold cursor-pointer"
+                                        />
+                                        <span className="text-gray-300 text-sm leading-relaxed">
+                                            Consiento de forma explícita que se usen mis datos físicos y de salud (peso, altura, IMC y notas de salud)
+                                            para crear y adaptar mis planes. No se muestran en mi perfil público y puedo retirar este consentimiento
+                                            borrándolos desde Mis datos. *
                                         </span>
                                     </label>
                                 </div>

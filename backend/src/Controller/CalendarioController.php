@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,8 +25,14 @@ class CalendarioController extends AbstractController
         int $usuarioId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+        $usuarioId = $usuarioActual->getId();
+
         $connection = $entityManager->getConnection();
-        
+
         $sql = 'SELECT cu.*, d.nombre as dieta_nombre, d.descripcion as dieta_descripcion,
                        d.valoracion_promedio, d.total_valoraciones
                 FROM calendario_usuario cu
@@ -52,16 +59,21 @@ class CalendarioController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $data = json_decode($request->getContent(), true);
-        
-        if (!isset($data['usuario_id']) || !isset($data['plan'])) {
+
+        if (!isset($data['plan'])) {
             return $this->json([
                 'success' => false,
-                'error' => 'Faltan parámetros: usuario_id, plan'
+                'error' => 'Falta el parámetro: plan'
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $usuarioId = $data['usuario_id'];
+        $usuarioId = $usuarioActual->getId();
         $plan = $data['plan'];
         $connection = $entityManager->getConnection();
 
@@ -118,13 +130,21 @@ class CalendarioController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $data = json_decode($request->getContent(), true);
         $completado = $data['completado'] ?? false;
 
         $connection = $entityManager->getConnection();
         $connection->executeStatement(
-            'UPDATE calendario_usuario SET completado = :completado WHERE id = :id',
-            ['completado' => $completado ? 1 : 0, 'id' => $id]
+            'UPDATE calendario_usuario SET completado = :completado,
+                fecha_completado = IF(:completado = 1, NOW(), NULL),
+                compartido_en_feed = IF(:completado = 1, compartido_en_feed, 0)
+             WHERE id = :id AND usuario_id = :usuarioId',
+            ['completado' => $completado ? 1 : 0, 'id' => $id, 'usuarioId' => $usuarioActual->getId()]
         );
 
         return $this->json([
@@ -142,13 +162,18 @@ class CalendarioController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
         $data = json_decode($request->getContent(), true);
         $notas = $data['notas'] ?? '';
 
         $connection = $entityManager->getConnection();
         $connection->executeStatement(
-            'UPDATE calendario_usuario SET notas = :notas WHERE id = :id',
-            ['notas' => $notas, 'id' => $id]
+            'UPDATE calendario_usuario SET notas = :notas WHERE id = :id AND usuario_id = :usuarioId',
+            ['notas' => $notas, 'id' => $id, 'usuarioId' => $usuarioActual->getId()]
         );
 
         return $this->json([
@@ -165,8 +190,14 @@ class CalendarioController extends AbstractController
         int $usuarioId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+        $usuarioId = $usuarioActual->getId();
+
         $connection = $entityManager->getConnection();
-        
+
         $sql = 'SELECT 
                     COUNT(*) as dias_planificados,
                     SUM(completado) as dias_completados,

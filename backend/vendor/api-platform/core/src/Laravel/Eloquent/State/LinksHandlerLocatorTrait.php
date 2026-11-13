@@ -26,7 +26,7 @@ trait LinksHandlerLocatorTrait
 
     private function getLinksHandler(Operation $operation): ?callable
     {
-        if (!($options = $operation->getStateOptions()) || !$options instanceof Options || !$options->getHandleLinks()) {
+        if (!($options = $operation->getStateOptions()) || !$options instanceof Options) {
             return null;
         }
 

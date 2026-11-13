@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Entrenador;
+use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,6 +24,11 @@ class GuardarDietaController extends AbstractController
     public function crearDieta(Request $request): JsonResponse
     {
         try {
+            $entrenadorActual = $this->getUser();
+            if (!$entrenadorActual instanceof Entrenador) {
+                return $this->json(['success' => false, 'error' => 'No autenticado'], 401);
+            }
+
             $data = json_decode($request->getContent(), true);
 
             // Validaciones
@@ -31,6 +38,11 @@ class GuardarDietaController extends AbstractController
 
             if (!isset($data['cliente_id']) || empty($data['cliente_id'])) {
                 return $this->json(['success' => false, 'error' => 'El ID del cliente es obligatorio'], 400);
+            }
+
+            $cliente = $this->entityManager->getRepository(Usuario::class)->find($data['cliente_id']);
+            if (!$cliente || $cliente->getEntrenadorAsignado()?->getId() !== $entrenadorActual->getId()) {
+                return $this->json(['success' => false, 'error' => 'Este cliente no está asignado a tu cuenta de entrenador'], 403);
             }
 
             if (!isset($data['plan_semanal']) || empty($data['plan_semanal'])) {
@@ -88,7 +100,7 @@ class GuardarDietaController extends AbstractController
                 $stmt->executeStatement([
                     'nombre' => $data['nombre'],
                     'descripcion' => $data['descripcion'] ?? null,
-                    'creador_id' => $data['creador_id'],
+                    'creador_id' => $entrenadorActual->getId(),
                     'cliente_id' => $data['cliente_id'],
                     'calorias' => $data['calorias_totales'] ?? 0
                 ]);
@@ -187,7 +199,7 @@ class GuardarDietaController extends AbstractController
                                     'proteinas' => $item['proteinas'] ?? 0,
                                     'carbohidratos' => $item['carbohidratos'] ?? 0,
                                     'grasas' => $item['grasas'] ?? 0,
-                                    'creador_id' => $data['creador_id']
+                                    'creador_id' => $entrenadorActual->getId()
                                 ]);
                                 
                                 $platoId = $conn->lastInsertId();

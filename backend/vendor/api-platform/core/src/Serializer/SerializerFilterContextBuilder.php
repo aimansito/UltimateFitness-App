@@ -17,7 +17,6 @@ use ApiPlatform\Metadata\Exception\RuntimeException;
 use ApiPlatform\Metadata\Resource\Factory\ResourceMetadataCollectionFactoryInterface;
 use ApiPlatform\Metadata\Util\AttributesExtractor;
 use ApiPlatform\Serializer\Filter\FilterInterface;
-use ApiPlatform\State\SerializerContextBuilderInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 

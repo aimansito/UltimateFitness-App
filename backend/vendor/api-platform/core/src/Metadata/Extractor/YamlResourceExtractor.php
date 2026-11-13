@@ -192,13 +192,13 @@ final class YamlResourceExtractor extends AbstractResourceExtractor
                 unset($data[0], $data[1]);
             }
             if (isset($data['fromClass'])) {
-                $uriVariables[$parameterName]['from_class'] = $this->resolve($data['fromClass']);
+                $uriVariables[$parameterName]['from_class'] = $data['fromClass'];
             }
             if (isset($data['fromProperty'])) {
                 $uriVariables[$parameterName]['from_property'] = $data['fromProperty'];
             }
             if (isset($data['toClass'])) {
-                $uriVariables[$parameterName]['to_class'] = $this->resolve($data['toClass']);
+                $uriVariables[$parameterName]['to_class'] = $data['toClass'];
             }
             if (isset($data['toProperty'])) {
                 $uriVariables[$parameterName]['to_property'] = $data['toProperty'];
@@ -208,9 +208,6 @@ final class YamlResourceExtractor extends AbstractResourceExtractor
             }
             if (isset($data['compositeIdentifier'])) {
                 $uriVariables[$parameterName]['composite_identifier'] = $data['compositeIdentifier'];
-            }
-            if (isset($data['security'])) {
-                $uriVariables[$parameterName]['security'] = $data['security'];
             }
         }
 
@@ -341,8 +338,6 @@ final class YamlResourceExtractor extends AbstractResourceExtractor
                 'write' => $this->phpize($operation, 'write', 'bool'),
                 'serialize' => $this->phpize($operation, 'serialize', 'bool'),
                 'queryParameterValidate' => $this->phpize($operation, 'queryParameterValidate', 'bool'),
-                'strictQueryParameterValidation' => $this->phpize($operation, 'strictQueryParameterValidation', 'bool'),
-                'hideHydraOperation' => $this->phpize($resource, 'hideHydraOperation', 'bool'),
                 'priority' => $this->phpize($operation, 'priority', 'integer'),
                 'name' => $this->phpize($operation, 'name', 'string'),
                 'class' => (string) $class,
@@ -475,7 +470,7 @@ final class YamlResourceExtractor extends AbstractResourceExtractor
             $parameters[$key] = new $cl(
                 key: $key,
                 required: $this->phpize($parameter, 'required', 'bool'),
-                schema: $parameter['schema'] ?? null,
+                schema: $parameter['schema'],
                 openApi: ($parameter['openapi'] ?? null) ? new Parameter(
                     name: $parameter['openapi']['name'],
                     in: $parameter['in'] ?? 'query',

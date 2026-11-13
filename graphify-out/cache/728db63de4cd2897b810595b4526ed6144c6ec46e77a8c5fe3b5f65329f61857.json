@@ -1,0 +1,1 @@
+{"nodes": [{"id": "frontend_check_exact_js", "label": "check_exact.js", "file_type": "code", "source_file": "frontend\\check_exact.js", "source_location": "L1"}], "edges": [{"source": "frontend_check_exact_js", "target": "fs", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "frontend\\check_exact.js", "source_location": "L1", "weight": 1.0}]}

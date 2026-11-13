@@ -1,8 +1,10 @@
 // ============================================
 // SERVICIOS - Página de servicios y planes
 // ============================================
+import { PAGOS } from "../../config/funciones";
 import { Link } from 'react-router-dom';
 import SEO from '../../components/common/SEO';
+import PageHeader from '../../components/common/PageHeader';
 
 function Servicios() {
 
@@ -17,13 +19,11 @@ function Servicios() {
                     <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                 </svg>
             ),
-            titulo: 'ASESORAMIENTO PREMIUM',
-            descripcion: 'Seguimiento personalizado 24/7 con tu entrenador profesional dedicado',
+            titulo: 'SEGUIMIENTO DE PROGRESO',
+            descripcion: 'Seguimiento personalizado de tu progreso con ajustes constantes a tu plan',
             caracteristicas: [
-                'Entrenador personal exclusivo',
-                'Chat directo sin límites',
+                'Seguimiento de progreso 24/7',
                 'Ajustes semanales garantizados',
-                'Videollamadas mensuales incluidas',
                 'Análisis de progreso detallado'
             ],
             color: 'from-uf-gold to-yellow-700'
@@ -68,17 +68,17 @@ function Servicios() {
             id: 4,
             icono: (
                 <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                 </svg>
             ),
-            titulo: 'COACHING PRESENCIAL',
-            descripcion: 'Sesiones privadas en instalaciones premium con equipamiento de élite',
+            titulo: 'CALENDARIO INTELIGENTE',
+            descripcion: 'Organiza tus entrenamientos y comidas con un calendario personal y seguimiento diario',
             caracteristicas: [
-                'Sesiones 1-a-1 exclusivas',
-                'Corrección técnica profesional',
-                'Motivación personalizada constante',
-                'Instalaciones VIP premium',
-                'Fotografía de progreso incluida'
+                'Calendario personal de entrenamientos',
+                'Registro de comidas y dietas',
+                'Notas y seguimiento diario',
+                'Historial de progreso',
+                'Sincronización automática con tu plan'
             ],
             color: 'from-purple-600 to-pink-700'
         }
@@ -101,11 +101,9 @@ function Servicios() {
                 { texto: 'Comunidad online activa', incluido: true },
                 { texto: 'Entrenamientos personalizados', incluido: false },
                 { texto: 'Planes de dieta customizados', incluido: false },
-                { texto: 'Chat directo con entrenador', incluido: false },
                 { texto: 'Videos premium 4K', incluido: false },
                 { texto: 'Seguimiento semanal profesional', incluido: false },
-                { texto: 'Análisis de progreso', incluido: false },
-                { texto: 'Videollamadas con entrenador', incluido: false }
+                { texto: 'Análisis de progreso', incluido: false }
             ],
             buttonText: 'COMENZAR GRATIS',
             buttonColor: 'bg-gray-700 hover:bg-gray-800 border-gray-600',
@@ -114,7 +112,8 @@ function Servicios() {
         {
             id: 'premium',
             nombre: 'ULTIMATE PREMIUM',
-            precio: 19,
+            precio: 0,
+            precioOriginal: 19,
             badge: 'MÁS POPULAR',
             descripcion: 'Acceso total a todo nuestro ecosistema fitness',
             destacado: true,
@@ -122,13 +121,11 @@ function Servicios() {
                 { texto: 'Todo lo del plan gratuito', incluido: true },
                 { texto: 'Entrenamientos personalizados', incluido: true },
                 { texto: 'Planes de dieta customizados', incluido: true },
-                { texto: 'Chat directo 24/7 con entrenador', incluido: true },
                 { texto: 'Videos premium 4K ilimitados', incluido: true },
                 { texto: 'Seguimiento semanal profesional', incluido: true },
                 { texto: 'Calendario interactivo avanzado', incluido: true },
                 { texto: 'Ajustes ilimitados de rutinas', incluido: true },
                 { texto: 'Análisis de progreso detallado', incluido: true },
-                { texto: 'Videollamadas mensuales', incluido: true },
                 { texto: 'Acceso anticipado a contenido nuevo', incluido: true }
             ],
             buttonText: 'HACERSE PREMIUM',
@@ -138,27 +135,19 @@ function Servicios() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black">
+        <div className="min-h-screen bg-uf-darker">
             <SEO 
-                title="Planes y Servicios Premium" 
-                description="Descubre nuestros planes gratuitos y premium. Entrenamientos personalizados, dietas a medida y chat directo con profesionales."
-                keywords="planes gimnasio, entrenador personal online, dietas personalizadas, precios fitness, premium"
+                title={PAGOS ? "Planes y Servicios Premium" : "Servicios"} 
+                description="Entrenamientos, dietas, calendario y seguimiento de tu progreso. Crea tu cuenta gratis."
+                keywords="planes gimnasio, seguimiento fitness online, dietas personalizadas, precios fitness, premium"
             />
 
-            {/* ============================================ */}
-            {/* HERO SECTION */}
-            {/* ============================================ */}
-            <div className="relative bg-gradient-to-b from-uf-darker to-black py-20 border-b-2 border-uf-gold/20">
-                <div className="container mx-auto px-4 text-center">
-                    <h1 className="text-5xl md:text-6xl font-anton font-bold text-white mb-6 uppercase tracking-wider">
-                        Nuestros <span className="text-uf-gold">Servicios</span>
-                    </h1>
-                    <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-                        Ofrecemos una experiencia completa de entrenamiento y nutrición diseñada para transformar tu vida.
-                        Cada servicio está respaldado por profesionales certificados y tecnología de vanguardia.
-                    </p>
-                </div>
-            </div>
+            <PageHeader
+                eyebrow="Planes y servicios"
+                title="Nuestros"
+                highlight="Servicios"
+                subtitle="Una experiencia completa de entrenamiento y nutrición, respaldada por contenido de calidad y tecnología de vanguardia."
+            />
 
             {/* ============================================ */}
             {/* SERVICIOS DETALLADOS - GRID */}
@@ -169,7 +158,7 @@ function Servicios() {
                     {servicios.map((servicio) => (
                         <div
                             key={servicio.id}
-                            className="group relative bg-gradient-to-br from-uf-dark to-black border-2 border-uf-gold/30 rounded-2xl p-8 hover:border-uf-gold transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-uf-gold/20"
+                            className="uf-card uf-card-hover group p-8"
                         >
                             {/* Icono con fondo dorado */}
                             <div className="inline-flex items-center justify-center bg-uf-gold text-black rounded-2xl p-5 mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -206,6 +195,8 @@ function Servicios() {
                 </div>
             </div>
 
+            {PAGOS && (
+            <>
             {/* ============================================ */}
             {/* SECCIÓN DE PLANES */}
             {/* ============================================ */}
@@ -268,12 +259,28 @@ function Servicios() {
 
                                     {/* Precio */}
                                     <div className="mb-6">
-                                        <span className="text-5xl font-bold text-uf-gold">
-                                            {plan.precio}€
-                                        </span>
-                                        <span className="text-gray-400 text-lg ml-2">
-                                            {plan.precio === 0 ? 'siempre gratis' : '/mes'}
-                                        </span>
+                                        {plan.precioOriginal ? (
+                                            <>
+                                                <span className="text-2xl font-bold text-gray-500 line-through mr-3">
+                                                    {plan.precioOriginal}€
+                                                </span>
+                                                <span className="text-5xl font-bold text-uf-gold">
+                                                    GRATIS
+                                                </span>
+                                                <p className="text-uf-gold text-xs font-bold uppercase tracking-wider mt-2">
+                                                    Oferta de lanzamiento
+                                                </p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className="text-5xl font-bold text-uf-gold">
+                                                    {plan.precio}€
+                                                </span>
+                                                <span className="text-gray-400 text-lg ml-2">
+                                                    {plan.precio === 0 ? 'siempre gratis' : '/mes'}
+                                                </span>
+                                            </>
+                                        )}
                                     </div>
 
                                     {/* Descripción */}
@@ -325,12 +332,14 @@ function Servicios() {
                     </div>
                 </div>
             </div>
+            </>
+            )}
 
             {/* ============================================ */}
             {/* CTA FINAL */}
             {/* ============================================ */}
             <div className="container mx-auto px-4 py-20">
-                <div className="bg-gradient-to-r from-uf-gold/10 to-transparent border-2 border-uf-gold/50 rounded-2xl p-12 text-center">
+                <div className="uf-card border-uf-gold/50 p-12 text-center">
                     <h3 className="text-3xl md:text-4xl font-anton font-bold text-white mb-4 uppercase">
                         ¿Necesitas más <span className="text-uf-gold">información</span>?
                     </h3>
@@ -339,7 +348,7 @@ function Servicios() {
                     </p>
                     <Link
                         to="/contacto"
-                        className="inline-flex items-center gap-2 bg-uf-blue hover:bg-uf-gold text-white hover:text-black font-bold px-10 py-4 rounded-xl uppercase tracking-wider transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        className="uf-btn uf-btn-primary"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

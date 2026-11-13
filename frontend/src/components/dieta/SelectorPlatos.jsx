@@ -4,6 +4,7 @@
 // ============================================
 import { useState, useEffect } from "react";
 import api from "../../services/api";
+import { Clock, Star } from 'lucide-react';
 
 function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
   const [platos, setPlatos] = useState([]);
@@ -11,9 +12,9 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
   const [cargando, setCargando] = useState(true);
 
   const iconosDificultad = {
-    facil: { icon: "🟢", text: "Fácil" },
-    media: { icon: "🟡", text: "Media" },
-    dificil: { icon: "🔴", text: "Difícil" },
+    facil: { icon: "bg-green-500", text: "Fácil" },
+    media: { icon: "bg-yellow-400", text: "Media" },
+    dificil: { icon: "bg-red-500", text: "Difícil" },
   };
 
   useEffect(() => {
@@ -25,7 +26,7 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
       const response = await api.get("/platos");
       const data = response.data;
 
-      console.log("📥 Platos cargados:", data);
+      console.log("Platos cargados:", data);
 
       if (data.success) {
         // Filtrar por tipo de comida si es necesario
@@ -44,7 +45,7 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
       const response = await api.get(`/platos/${platoId}`);
       const data = response.data;
 
-      console.log("📥 Detalle del plato:", data);
+      console.log("Detalle del plato:", data);
 
       if (data.success) {
         setPlatoSeleccionado(data.plato);
@@ -80,7 +81,7 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
         esPersonalizado: false,
       };
 
-      console.log('✅ Plato preparado para dieta:', platoParaDieta);
+      console.log('Plato preparado para dieta:', platoParaDieta);
       onSeleccionar(platoParaDieta);
     }
   };
@@ -156,14 +157,14 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
 
                       <div className="flex flex-wrap gap-2 mb-3">
                         <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">
-                          🕐 {plato.tiempo_preparacion} min
+                          <Clock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{plato.tiempo_preparacion} min
                         </span>
                         <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">
-                          {iconosDificultad[plato.dificultad]?.icon}{" "}
+                          <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${iconosDificultad[plato.dificultad]?.icon}`} aria-hidden="true" />
                           {iconosDificultad[plato.dificultad]?.text}
                         </span>
                         <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">
-                          ⭐ {plato.valoracion_promedio}
+                          <Star className="inline-block w-4 h-4 mr-1 -mt-0.5 text-uf-gold fill-uf-gold" aria-hidden="true" />{plato.valoracion_promedio}
                         </span>
                       </div>
 
@@ -226,14 +227,14 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
 
                   <div className="flex flex-wrap gap-3 mb-4">
                     <span className="bg-gray-700 text-white px-3 py-1 rounded-lg">
-                      🕐 {platoSeleccionado.tiempo_preparacion} minutos
+                      <Clock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{platoSeleccionado.tiempo_preparacion} minutos
                     </span>
                     <span className="bg-gray-700 text-white px-3 py-1 rounded-lg">
-                      {iconosDificultad[platoSeleccionado.dificultad]?.icon}{" "}
+                      <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${iconosDificultad[platoSeleccionado.dificultad]?.icon}`} aria-hidden="true" />
                       {iconosDificultad[platoSeleccionado.dificultad]?.text}
                     </span>
                     <span className="bg-gray-700 text-white px-3 py-1 rounded-lg">
-                      ⭐ {platoSeleccionado.valoracion_promedio} (
+                      <Star className="inline-block w-4 h-4 mr-1 -mt-0.5 text-uf-gold fill-uf-gold" aria-hidden="true" />{platoSeleccionado.valoracion_promedio} (
                       {platoSeleccionado.total_valoraciones})
                     </span>
                   </div>

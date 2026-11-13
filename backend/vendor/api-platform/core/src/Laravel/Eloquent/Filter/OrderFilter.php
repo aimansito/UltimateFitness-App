@@ -54,10 +54,7 @@ final class OrderFilter implements FilterInterface, JsonSchemaFilterInterface, O
         return ['type' => 'string', 'enum' => ['asc', 'desc']];
     }
 
-    /**
-     * @return OpenApiParameter[]|null
-     */
-    public function getOpenApiParameters(Parameter $parameter): ?array
+    public function getOpenApiParameters(Parameter $parameter): OpenApiParameter|array|null
     {
         if (str_contains($parameter->getKey(), ':property')) {
             $parameters = [];

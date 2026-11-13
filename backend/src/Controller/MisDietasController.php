@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Dieta;
+use App\Entity\Usuario;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/usuario')]
@@ -25,6 +28,11 @@ class MisDietasController extends AbstractController
     #[Route('/mis-dietas/{usuarioId}', name: 'api_usuario_mis_dietas', methods: ['GET'])]
     public function getMisDietas(int $usuarioId): JsonResponse
     {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || $usuarioActual->getId() !== $usuarioId) {
+            return $this->json(['success' => false, 'error' => 'Acceso denegado'], Response::HTTP_FORBIDDEN);
+        }
+
         $conn = $this->entityManager->getConnection();
 
         // ✅ Dietas ASIGNADAS (creadas por entrenador)
@@ -89,6 +97,21 @@ class MisDietasController extends AbstractController
     #[Route('/dieta/{dietaId}/detalle', name: 'api_usuario_detalle_dieta', methods: ['GET'])]
     public function getDetalleDieta(int $dietaId): JsonResponse
     {
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $dietaCheck = $this->entityManager->getRepository(Dieta::class)->find($dietaId);
+        if (!$dietaCheck) {
+            return $this->json(['success' => false, 'error' => 'Dieta no encontrada'], Response::HTTP_NOT_FOUND);
+        }
+        $esPropietario = $dietaCheck->getAsignadoAUsuario()?->getId() === $usuarioActual->getId()
+            || $dietaCheck->isEsPublica();
+        if (!$esPropietario) {
+            return $this->json(['success' => false, 'error' => 'Dieta no encontrada'], Response::HTTP_NOT_FOUND);
+        }
+
         $conn = $this->entityManager->getConnection();
 
         // 1️⃣ Información básica de la dieta

@@ -2,6 +2,8 @@
 // FOOTER - Pie de página
 // ============================================
 import { Link } from 'react-router-dom';
+import { Heart } from 'lucide-react';
+import { abrirAjustesCookies } from '../../utils/consentimiento';
 
 function Footer() {
   return (
@@ -33,7 +35,7 @@ function Footer() {
 
             {/* Descripción */}
             <p className="text-gray-400 text-sm text-center md:text-left leading-relaxed">
-              Tu plataforma definitiva de entrenamiento y nutrición online. Alcanza tus objetivos con los mejores profesionales del sector.
+              Tu plataforma definitiva de entrenamiento y nutrición online. Crea tus rutinas y dietas, sigue tu progreso y compártelo con la comunidad.
             </p>
           </div>
 
@@ -89,12 +91,6 @@ function Footer() {
               </li>
               <li className="flex items-center justify-center md:justify-start gap-2 text-gray-400">
                 <svg className="w-4 h-4 text-uf-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                <span>+34 633714372</span>
-              </li>
-              <li className="flex items-center justify-center md:justify-start gap-2 text-gray-400">
-                <svg className="w-4 h-4 text-uf-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
@@ -130,6 +126,11 @@ function Footer() {
                 <Link to="/aviso-legal" className="text-gray-400 hover:text-uf-gold transition-colors text-sm">
                   Aviso Legal
                 </Link>
+              </li>
+              <li>
+                <button type="button" onClick={abrirAjustesCookies} className="text-gray-400 hover:text-uf-gold transition-colors text-sm">
+                  Configurar cookies
+                </button>
               </li>
             </ul>
           </div>
@@ -193,7 +194,7 @@ function Footer() {
             © {new Date().getFullYear()} <span className="text-uf-gold font-semibold">ULTIMATE FITNESS</span>. Todos los derechos reservados.
           </p>
           <p className="text-gray-600 text-xs mt-1">
-            Diseñado con ❤️ para transformar vidas
+            Diseñado con <Heart className="inline-block w-4 h-4 mx-1 -mt-0.5 text-uf-red fill-uf-red" aria-hidden="true" />para transformar vidas
           </p>
         </div>
 

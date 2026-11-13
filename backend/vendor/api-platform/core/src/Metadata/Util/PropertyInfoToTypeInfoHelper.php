@@ -17,7 +17,6 @@ use Symfony\Component\PropertyInfo\Type as LegacyType;
 use Symfony\Component\TypeInfo\Exception\InvalidArgumentException;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\TypeInfo\Type\BuiltinType;
-use Symfony\Component\TypeInfo\Type\NullableType;
 use Symfony\Component\TypeInfo\Type\UnionType;
 use Symfony\Component\TypeInfo\TypeIdentifier;
 
@@ -127,16 +126,11 @@ final class PropertyInfoToTypeInfoHelper
 
     public static function unwrapNullableType(Type $type): Type
     {
-        // BC layer for "symfony/type-info" < 7.2
-        if (method_exists($type, 'asNonNullable')) {
-            return (!$type instanceof UnionType) ? $type : $type->asNonNullable();
-        }
-
-        if (!$type instanceof NullableType) {
+        if (!$type instanceof UnionType) {
             return $type;
         }
 
-        return $type->getWrappedType();
+        return $type->asNonNullable();
     }
 
     /**

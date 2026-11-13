@@ -21,6 +21,11 @@ class EntrenadorEntrenamientoDetalleController extends AbstractController
         EntityManagerInterface $entityManager
     ): JsonResponse {
         try {
+            $entrenadorActual = $this->getUser();
+            if (!$entrenadorActual instanceof \App\Entity\Entrenador) {
+                return $this->json(['success' => false, 'error' => 'Acceso denegado'], Response::HTTP_FORBIDDEN);
+            }
+
             $conn = $entityManager->getConnection();
 
             // Datos básicos del entrenamiento
@@ -50,6 +55,10 @@ class EntrenadorEntrenamientoDetalleController extends AbstractController
                     'success' => false,
                     'error' => 'Entrenamiento no encontrado'
                 ], Response::HTTP_NOT_FOUND);
+            }
+
+            if ((int) $entrenamiento['creador_id'] !== $entrenadorActual->getId()) {
+                return $this->json(['success' => false, 'error' => 'Acceso denegado'], Response::HTTP_FORBIDDEN);
             }
 
             // Si está asignado, obtener datos del usuario

@@ -2,12 +2,13 @@
 // MODAL RECETA - Vista detallada del plato
 // ============================================
 import { useEffect } from 'react';
+import { Clock, Star } from 'lucide-react';
 
 function ModalReceta({ plato, onClose }) {
   const iconosDificultad = {
-    'facil': { icon: '🟢', text: 'Fácil', color: 'green' },
-    'media': { icon: '🟡', text: 'Media', color: 'yellow' },
-    'dificil': { icon: '🔴', text: 'Difícil', color: 'red' }
+    'facil': { icon: 'bg-green-500', text: 'Fácil', color: 'green' },
+    'media': { icon: 'bg-yellow-400', text: 'Media', color: 'yellow' },
+    'dificil': { icon: 'bg-red-500', text: 'Difícil', color: 'red' }
   };
 
   const dificultad = iconosDificultad[plato.dificultad] || iconosDificultad.media;
@@ -50,13 +51,13 @@ function ModalReceta({ plato, onClose }) {
               </p>
               <div className="flex flex-wrap gap-3">
                 <span className="bg-black/20 text-black px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
-                  🕐 {plato.tiempo_preparacion} minutos
+                  <Clock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{plato.tiempo_preparacion} minutos
                 </span>
                 <span className={`bg-black/20 text-black px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1`}>
-                  {dificultad.icon} {dificultad.text}
+                  <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${dificultad.icon}`} aria-hidden="true" />{dificultad.text}
                 </span>
                 <span className="bg-black/20 text-black px-3 py-1 rounded-full text-sm font-bold flex items-center gap-1">
-                  ⭐ {plato.valoracion_promedio} ({plato.total_valoraciones} valoraciones)
+                  <Star className="inline-block w-4 h-4 mr-1 -mt-0.5 text-uf-gold fill-uf-gold" aria-hidden="true" />{plato.valoracion_promedio} ({plato.total_valoraciones} valoraciones)
                 </span>
               </div>
             </div>

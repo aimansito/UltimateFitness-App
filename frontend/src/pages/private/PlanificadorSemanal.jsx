@@ -144,10 +144,10 @@ function PlanificadorSemanal() {
       //   body: JSON.stringify({ usuario_id: user.id, plan: planData })
       // });
 
-      toast.success('✅ Plan semanal guardado exitosamente');
+      toast.success('Plan semanal guardado exitosamente');
     } catch (error) {
       console.error('Error guardando plan:', error);
-      toast.error('❌ Error al guardar el plan semanal');
+      toast.error('Error al guardar el plan semanal');
     } finally {
       setGuardando(false);
     }

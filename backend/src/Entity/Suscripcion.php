@@ -49,6 +49,12 @@ class Suscripcion
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $fechaCreacion = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeCustomerId = null;
+
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    private ?string $stripeSubscriptionId = null;
+
     public function __construct()
     {
         $this->fechaCreacion = new \DateTime();
@@ -155,6 +161,28 @@ class Suscripcion
     public function setFechaCreacion(\DateTimeInterface $fechaCreacion): static
     {
         $this->fechaCreacion = $fechaCreacion;
+        return $this;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): static
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
+        return $this;
+    }
+
+    public function getStripeSubscriptionId(): ?string
+    {
+        return $this->stripeSubscriptionId;
+    }
+
+    public function setStripeSubscriptionId(?string $stripeSubscriptionId): static
+    {
+        $this->stripeSubscriptionId = $stripeSubscriptionId;
         return $this;
     }
 }

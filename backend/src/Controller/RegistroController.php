@@ -4,7 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Usuario;
 use App\Repository\UsuarioRepository;
-use App\Repository\EntrenadorRepository;
+use App\Service\CorreosCuenta;
+use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,18 +19,17 @@ class RegistroController extends AbstractController
     private EntityManagerInterface $entityManager;
     private UserPasswordHasherInterface $passwordHasher;
     private UsuarioRepository $usuarioRepository;
-    private EntrenadorRepository $entrenadorRepository;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
         UsuarioRepository $usuarioRepository,
-        EntrenadorRepository $entrenadorRepository
+        private CorreosCuenta $correos,
+        private LoggerInterface $logger
     ) {
         $this->entityManager = $entityManager;
         $this->passwordHasher = $passwordHasher;
         $this->usuarioRepository = $usuarioRepository;
-        $this->entrenadorRepository = $entrenadorRepository;
     }
 
     /**
@@ -48,6 +48,26 @@ class RegistroController extends AbstractController
                     'success' => false,
                     'error' => 'Faltan datos obligatorios'
                 ], Response::HTTP_BAD_REQUEST);
+            }
+
+            if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL) || strlen($data['email']) > 255) {
+                return $this->json(['success' => false, 'error' => 'El email no es válido'], Response::HTTP_BAD_REQUEST);
+            }
+            if (!is_string($data['password']) || strlen($data['password']) < 8) {
+                return $this->json(['success' => false, 'error' => 'La contraseña debe tener al menos 8 caracteres'], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Consentimientos (RGPD art. 7 y 9.2.a): deben llegar marcados explícitamente
+            if (($data['acepta_terminos'] ?? false) !== true) {
+                return $this->json(['success' => false, 'error' => 'Debes aceptar los Términos y condiciones y la Política de privacidad'], Response::HTTP_BAD_REQUEST);
+            }
+            $traeDatosSalud = !empty($data['peso_actual']) || !empty($data['altura']) || !empty($data['peso_objetivo']) || !empty($data['notas_salud']);
+            if ($traeDatosSalud && ($data['consiente_salud'] ?? false) !== true) {
+                return $this->json(['success' => false, 'error' => 'Falta el consentimiento para tratar los datos de salud'], Response::HTTP_BAD_REQUEST);
+            }
+            // Edad mínima sin consentimiento parental (LOPDGDD art. 7)
+            if (isset($data['edad']) && $data['edad'] !== null && (int) $data['edad'] < 14) {
+                return $this->json(['success' => false, 'error' => 'Debes tener al menos 14 años para registrarte'], Response::HTTP_BAD_REQUEST);
             }
 
             // Email duplicado
@@ -91,61 +111,35 @@ class RegistroController extends AbstractController
                 $usuario->setImc((string)round($imc, 2));
             }
 
-            // Premium opcional en registro
-            $isPremium = isset($data['quiere_premium']) && $data['quiere_premium'];
+            // El registro siempre crea una cuenta gratuita: premium nunca se concede desde el cliente.
 
-            if ($isPremium) {
-                $usuario->setEsPremium(true);
-                $usuario->setFechaPremium(new \DateTime());
-
-                // Asignar entrenador automáticamente
-                $entrenador = $this->asignarEntrenadorAleatorio();
-                if ($entrenador) {
-                    $usuario->setEntrenadorAsignado($entrenador);
-                }
-            }
+            // Privacidad por defecto (RGPD art. 25.2): el perfil empieza privado y la persona decide publicarlo
+            $usuario->setPerfilPublico(false);
 
             // Guardar
             $this->entityManager->persist($usuario);
             $this->entityManager->flush();
 
+            // Correo de bienvenida: si falla no se interrumpe el registro (queda en el log)
+            $this->correos->bienvenida($usuario);
+
             return $this->json([
                 'success' => true,
-                'message' => $isPremium
-                    ? 'Usuario registrado con plan Premium y entrenador asignado'
-                    : 'Usuario registrado correctamente',
+                'message' => 'Usuario registrado correctamente',
                 'usuario' => [
                     'id' => $usuario->getId(),
                     'nombre_completo' => $usuario->getNombreCompleto(),
                     'email' => $usuario->getEmail(),
-                    'es_premium' => $usuario->isEsPremium(),
-                    'entrenador' => $usuario->getEntrenadorAsignado()
-                        ? [
-                            'id' => $usuario->getEntrenadorAsignado()->getId(),
-                            'nombre' => $usuario->getEntrenadorAsignado()->getNombreCompleto(),
-                            'especialidad' => $usuario->getEntrenadorAsignado()->getEspecialidad()
-                        ]
-                        : null
+                    'es_premium' => false,
                 ]
             ], Response::HTTP_CREATED);
 
         } catch (\Exception $e) {
+            $this->logger->error('Error en el registro', ['error' => $e->getMessage()]);
             return $this->json([
                 'success' => false,
-                'error' => 'Error al registrar usuario: ' . $e->getMessage()
+                'error' => 'No se pudo completar el registro. Inténtalo de nuevo.'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    /**
-     * Asignar un entrenador aleatorio activo
-     */
-    private function asignarEntrenadorAleatorio()
-    {
-        $conn = $this->entityManager->getConnection();
-        $sql = "SELECT id FROM entrenadores WHERE activo = 1 ORDER BY RAND() LIMIT 1";
-        $result = $conn->executeQuery($sql)->fetchAssociative();
-
-        return $result ? $this->entrenadorRepository->find($result['id']) : null;
     }
 }

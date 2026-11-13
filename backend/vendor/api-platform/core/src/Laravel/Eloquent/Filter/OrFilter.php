@@ -49,7 +49,7 @@ final readonly class OrFilter implements FilterInterface, JsonSchemaFilterInterf
         return ['type' => 'array', 'items' => $schema];
     }
 
-    public function getOpenApiParameters(Parameter $parameter): OpenApiParameter
+    public function getOpenApiParameters(Parameter $parameter): OpenApiParameter|array|null
     {
         return new OpenApiParameter(name: $parameter->getKey().'[]', in: 'query', style: 'deepObject', explode: true);
     }

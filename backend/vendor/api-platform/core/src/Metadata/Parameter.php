@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ApiPlatform\Metadata;
 
+use ApiPlatform\OpenApi;
 use ApiPlatform\OpenApi\Model\Parameter as OpenApiParameter;
 use ApiPlatform\State\ParameterNotFound;
 use ApiPlatform\State\ParameterProviderInterface;
@@ -26,7 +27,6 @@ abstract class Parameter
      * @param (array<string, mixed>&array{type?: string, default?: string})|null $schema
      * @param array<string, mixed>                                               $extraProperties
      * @param ParameterProviderInterface|callable|string|null                    $provider
-     * @param list<string>                                                       $properties      a list of properties this parameter applies to (works with the :property placeholder)
      * @param FilterInterface|string|null                                        $filter
      * @param mixed                                                              $constraints     an array of Symfony constraints, or an array of Laravel rules
      */
@@ -38,7 +38,6 @@ abstract class Parameter
         protected mixed $filter = null,
         protected ?string $property = null,
         protected ?string $description = null,
-        protected ?array $properties = null,
         protected ?bool $required = null,
         protected ?int $priority = null,
         protected ?false $hydra = null,
@@ -46,7 +45,7 @@ abstract class Parameter
         protected string|\Stringable|null $security = null,
         protected ?string $securityMessage = null,
         protected ?array $extraProperties = [],
-        protected array|string|null $filterContext = null,
+        protected ?array $filterContext = null,
     ) {
     }
 
@@ -64,7 +63,7 @@ abstract class Parameter
     }
 
     /**
-     * @return OpenApiParameter[]|OpenApiParameter|bool|null
+     * @return OpenApi\Model\Parameter[]|OpenApi\Model\Parameter|bool|null
      */
     public function getOpenApi(): OpenApiParameter|array|bool|null
     {
@@ -123,17 +122,12 @@ abstract class Parameter
 
     /**
      * The computed value of this parameter, located into extraProperties['_api_values'].
+     *
+     * @readonly
      */
-    public function getValue(mixed $default = new ParameterNotFound()): mixed
+    public function getValue(): mixed
     {
-        return $this->extraProperties['_api_values'] ?? $default;
-    }
-
-    public function setValue(mixed $value): static
-    {
-        $this->extraProperties['_api_values'] = $value;
-
-        return $this;
+        return $this->extraProperties['_api_values'] ?? new ParameterNotFound();
     }
 
     /**
@@ -144,7 +138,7 @@ abstract class Parameter
         return $this->extraProperties;
     }
 
-    public function getFilterContext(): array|string|null
+    public function getFilterContext(): ?array
     {
         return $this->filterContext;
     }
@@ -177,7 +171,7 @@ abstract class Parameter
     }
 
     /**
-     * @param OpenApiParameter[]|OpenApiParameter|bool $openApi
+     * @param OpenApi\Model\Parameter[]|OpenApi\Model\Parameter|bool $openApi
      */
     public function withOpenApi(OpenApiParameter|array|bool $openApi): static
     {
@@ -205,14 +199,6 @@ abstract class Parameter
     {
         $self = clone $this;
         $self->filter = $filter;
-
-        return $self;
-    }
-
-    public function withFilterContext(array|string $filterContext): static
-    {
-        $self = clone $this;
-        $self->filterContext = $filterContext;
 
         return $self;
     }
@@ -257,7 +243,7 @@ abstract class Parameter
         return $self;
     }
 
-    public function withSecurity(string|\Stringable|null $security): static
+    public function withSecurity(string|\Stringable|null $security): self
     {
         $self = clone $this;
         $self->security = $security;
@@ -265,7 +251,7 @@ abstract class Parameter
         return $self;
     }
 
-    public function withSecurityMessage(?string $securityMessage): static
+    public function withSecurityMessage(?string $securityMessage): self
     {
         $self = clone $this;
         $self->securityMessage = $securityMessage;
@@ -280,19 +266,6 @@ abstract class Parameter
     {
         $self = clone $this;
         $self->extraProperties = $extraProperties;
-
-        return $self;
-    }
-
-    public function getProperties(): ?array
-    {
-        return $this->properties;
-    }
-
-    public function withProperties(?array $properties): self
-    {
-        $self = clone $this;
-        $self->properties = $properties;
 
         return $self;
     }

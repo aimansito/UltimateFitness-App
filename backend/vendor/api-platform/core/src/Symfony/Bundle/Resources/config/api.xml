@@ -13,6 +13,7 @@
         <service id="api_platform.property_accessor" alias="property_accessor" public="false" />
         <service id="api_platform.property_info" alias="property_info" public="false" />
         <service id="api_platform.negotiator" class="Negotiation\Negotiator" public="false" />
+        <service id="api_platform.action.error_page" class="ApiPlatform\Symfony\Action\ErrorPageAction" public="true" />
 
         <service id="api_platform.resource_class_resolver" class="ApiPlatform\Metadata\ResourceClassResolver" public="false">
             <argument type="service" id="api_platform.metadata.resource.name_collection_factory" />
@@ -37,7 +38,7 @@
             <argument type="service" id="api_platform.filter_locator" />
             <tag name="api_platform.parameter_provider" key="api_platform.serializer.filter_parameter_provider" priority="-895" />
         </service>
-        <service id="ApiPlatform\State\SerializerContextBuilderInterface" alias="api_platform.serializer.context_builder" />
+        <service id="ApiPlatform\Serializer\SerializerContextBuilderInterface" alias="api_platform.serializer.context_builder" />
 
         <service id="api_platform.serializer.context_builder.filter" class="ApiPlatform\Serializer\SerializerFilterContextBuilder" decorates="api_platform.serializer.context_builder" public="false">
             <argument type="service" id="api_platform.metadata.resource.metadata_collection_factory" />
@@ -84,8 +85,8 @@
         </service>
 
         <!-- Resources Operations path resolver -->
-        <service id="api_platform.path_segment_name_generator.underscore" class="ApiPlatform\Metadata\Operation\UnderscorePathSegmentNameGenerator" public="false" />
-        <service id="api_platform.path_segment_name_generator.dash" class="ApiPlatform\Metadata\Operation\DashPathSegmentNameGenerator" public="false" />
+        <service id="api_platform.path_segment_name_generator.underscore" class="ApiPlatform\Operation\UnderscorePathSegmentNameGenerator" public="false" />
+        <service id="api_platform.path_segment_name_generator.dash" class="ApiPlatform\Operation\DashPathSegmentNameGenerator" public="false" />
 
         <service id="api_platform.metadata.path_segment_name_generator.underscore" class="ApiPlatform\Metadata\Operation\UnderscorePathSegmentNameGenerator" public="false">
             <argument type="service" id="api_platform.inflector" on-invalid="null" />
@@ -165,7 +166,6 @@
         <service id="api_platform.state.error_provider" class="ApiPlatform\State\ErrorProvider">
             <argument key="$debug">%kernel.debug%</argument>
             <argument type="service" key="$resourceClassResolver" id="api_platform.resource_class_resolver" />
-            <argument type="service" key="$resourceMetadataCollectionFactory" id="api_platform.metadata.resource.metadata_collection_factory" />
             <tag name="api_platform.state_provider" key="api_platform.state.error_provider" />
         </service>
 
@@ -174,10 +174,6 @@
             <argument type="service" id="api_platform.name_converter" on-invalid="ignore" />
 
             <tag name="serializer.normalizer" priority="-780" />
-        </service>
-
-        <service id="api_platform.serializer.property_metadata_loader" class="ApiPlatform\Serializer\Mapping\Loader\PropertyMetadataLoader" public="false">
-            <argument type="service" id="api_platform.metadata.property.name_collection_factory" />
         </service>
     </services>
 </container>

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import useAuthEntrenador from '../../context/AuthContextEntrenador';
 import api from '../../services/api';
 import { ArrowLeft, Calendar } from 'lucide-react';
+import { BicepsFlexed, CalendarDays, Flame, Nut, UtensilsCrossed, Wheat } from 'lucide-react';
 
 function DetalleDietaEntrenador() {
   const { dietaId } = useParams();
@@ -32,14 +33,14 @@ function DetalleDietaEntrenador() {
   const fetchDetalleDieta = async () => {
     try {
       const response = await api.get(`/usuario/dieta/${dietaId}`);
-      console.log('✅ Detalle dieta (entrenador):', response.data);
+      console.log('Detalle dieta (entrenador):', response.data);
 
       if (response.data.success) {
         setDieta(response.data.dieta);
         setPlanSemanal(response.data.plan_semanal);
       }
     } catch (error) {
-      console.error('❌ Error al cargar dieta:', error);
+      console.error('Error al cargar dieta:', error);
       console.error('Detalle del error:', error.response?.data);
     } finally {
       setLoading(false);
@@ -140,7 +141,7 @@ function DetalleDietaEntrenador() {
 
           <div className="bg-gradient-to-r from-purple-600 to-purple-700 py-6 px-8 rounded-lg">
             <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-              🍽️ {dieta.nombre}
+              <UtensilsCrossed className="inline-block w-6 h-6" aria-hidden="true" />{dieta.nombre}
             </h1>
             <p className="text-purple-100">{dieta.descripcion || 'Plan nutricional personalizado'}</p>
           </div>
@@ -169,19 +170,19 @@ function DetalleDietaEntrenador() {
           {/* Macros objetivo */}
           <div className="grid grid-cols-3 gap-4 mt-6">
             <div className="bg-blue-900/30 border-2 border-blue-500 rounded-lg p-4 text-center">
-              <div className="text-blue-400 mb-2">💪</div>
+              <div className="text-blue-400 mb-2"><BicepsFlexed className="inline-block w-6 h-6" aria-hidden="true" /></div>
               <p className="text-blue-400 text-sm font-semibold">PROTEÍNAS</p>
               <p className="text-2xl font-bold text-white">{Math.round(dieta.proteinas_totales || 0)}g</p>
             </div>
 
             <div className="bg-green-900/30 border-2 border-green-500 rounded-lg p-4 text-center">
-              <div className="text-green-400 mb-2">🌾</div>
+              <div className="text-green-400 mb-2"><Wheat className="inline-block w-6 h-6" aria-hidden="true" /></div>
               <p className="text-green-400 text-sm font-semibold">CARBOHIDRATOS</p>
               <p className="text-2xl font-bold text-white">{Math.round(dieta.carbohidratos_totales || 0)}g</p>
             </div>
 
             <div className="bg-yellow-900/30 border-2 border-yellow-500 rounded-lg p-4 text-center">
-              <div className="text-yellow-400 mb-2">🥑</div>
+              <div className="text-yellow-400 mb-2"><Nut className="inline-block w-6 h-6" aria-hidden="true" /></div>
               <p className="text-yellow-400 text-sm font-semibold">GRASAS</p>
               <p className="text-2xl font-bold text-white">{Math.round(dieta.grasas_totales || 0)}g</p>
             </div>
@@ -191,7 +192,7 @@ function DetalleDietaEntrenador() {
         {/* Selección día */}
         <div className="bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-gray-700 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            📅 Selecciona un día
+            <CalendarDays className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />Selecciona un día
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
             {diasSemana.map((dia) => (
@@ -212,26 +213,26 @@ function DetalleDietaEntrenador() {
         {/* Resumen del día */}
         <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 border-2 border-purple-700 rounded-lg p-6 mb-6">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            ⏱️ Resumen del día
+            Resumen del día
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-gray-900 rounded-lg p-4 text-center">
-              <div className="text-orange-400 mb-2">🔥</div>
+              <div className="text-orange-400 mb-2"><Flame className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" /></div>
               <p className="text-gray-400 text-sm">Calorías</p>
               <p className="text-2xl font-bold text-white">{Math.round(totalesDia.calorias)}</p>
             </div>
             <div className="bg-gray-900 rounded-lg p-4 text-center">
-              <div className="text-blue-400 mb-2">💪</div>
+              <div className="text-blue-400 mb-2"><BicepsFlexed className="inline-block w-6 h-6" aria-hidden="true" /></div>
               <p className="text-gray-400 text-sm">Proteínas</p>
               <p className="text-2xl font-bold text-white">{Math.round(totalesDia.proteinas)}g</p>
             </div>
             <div className="bg-gray-900 rounded-lg p-4 text-center">
-              <div className="text-green-400 mb-2">🌾</div>
+              <div className="text-green-400 mb-2"><Wheat className="inline-block w-6 h-6" aria-hidden="true" /></div>
               <p className="text-gray-400 text-sm">Carbohidratos</p>
               <p className="text-2xl font-bold text-white">{Math.round(totalesDia.carbohidratos)}g</p>
             </div>
             <div className="bg-gray-900 rounded-lg p-4 text-center">
-              <div className="text-yellow-400 mb-2">🥑</div>
+              <div className="text-yellow-400 mb-2"><Nut className="inline-block w-6 h-6" aria-hidden="true" /></div>
               <p className="text-gray-400 text-sm">Grasas</p>
               <p className="text-2xl font-bold text-white">{Math.round(totalesDia.grasas)}g</p>
             </div>
@@ -262,7 +263,7 @@ function DetalleDietaEntrenador() {
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <div className="flex items-center gap-3 mb-2">
-                            <div className="text-3xl">🍽️</div>
+                            <div className="text-3xl"><UtensilsCrossed className="inline-block w-6 h-6" aria-hidden="true" /></div>
                             <div>
                               <h4 className="text-xl font-bold text-white capitalize">
                                 {momento.replace('_', ' ')}
@@ -292,7 +293,7 @@ function DetalleDietaEntrenador() {
                                 <span className="text-purple-400 font-bold">{ingrediente.cantidad_gramos}g</span>
                               </div>
                               <div className="flex gap-3 text-xs">
-                                <span className="text-orange-400">🔥 {Math.round((ingrediente.calorias * ingrediente.cantidad_gramos) / 100)} kcal</span>
+                                <span className="text-orange-400"><Flame className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{Math.round((ingrediente.calorias * ingrediente.cantidad_gramos) / 100)} kcal</span>
                                 <span className="text-blue-400">P: {Math.round((ingrediente.proteinas * ingrediente.cantidad_gramos) / 100)}g</span>
                                 <span className="text-green-400">C: {Math.round((ingrediente.carbohidratos * ingrediente.cantidad_gramos) / 100)}g</span>
                                 <span className="text-yellow-400">G: {Math.round((ingrediente.grasas * ingrediente.cantidad_gramos) / 100)}g</span>

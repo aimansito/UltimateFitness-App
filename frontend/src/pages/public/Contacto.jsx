@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import SEO from '../../components/common/SEO';
+import { Facebook, Instagram, Twitter } from 'lucide-react';
+import PageHeader from '../../components/common/PageHeader';
 
 function Contacto() {
   // ============================================
@@ -65,16 +67,6 @@ function Contacto() {
     {
       icono: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-        </svg>
-      ),
-      titulo: 'TELÉFONO',
-      valor: '+34 633 71 43 72',
-      link: 'tel:+34900123456'
-    },
-    {
-      icono: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
@@ -86,29 +78,26 @@ function Contacto() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-uf-darker to-black py-20">
+    <div className="min-h-screen bg-uf-darker pb-20">
       <SEO
         title="Contacto"
-        description="Ponte en contacto con Ultimate Fitness. Resolvemos tus dudas sobre planes premium, entrenadores personales y servicios de fitness online."
-        keywords="contacto ultimate fitness, soporte fitness, entrenador personal online contacto"
+        description="Ponte en contacto con Ultimate Fitness. Resolvemos tus dudas sobre la plataforma, tu cuenta y tus entrenamientos."
+        keywords="contacto ultimate fitness, soporte fitness"
       />
 
-      {/* HEADER */}
-      <div className="container mx-auto px-4 mb-16 text-center">
-        <h1 className="text-5xl md:text-6xl font-anton font-bold text-white mb-6 uppercase tracking-wider">
-          Ponte en <span className="text-uf-gold">Contacto</span>
-        </h1>
-        <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto">
-          ¿Tienes alguna pregunta? Nuestro equipo está aquí para ayudarte.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Estamos aquí"
+        title="Ponte en"
+        highlight="Contacto"
+        subtitle="¿Tienes alguna pregunta? Nuestro equipo está aquí para ayudarte."
+      />
 
       {/* CONTENEDOR PRINCIPAL */}
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="container mx-auto max-w-6xl px-4 pt-12">
         <div className="grid md:grid-cols-2 gap-8">
 
           {/* FORMULARIO */}
-          <div className="bg-gradient-to-br from-uf-dark to-black border-2 border-uf-gold/30 rounded-2xl p-8">
+          <div className="uf-card p-8">
             <h2 className="text-2xl font-anton font-bold text-uf-gold mb-2 uppercase">
               Envíanos un mensaje
             </h2>
@@ -138,7 +127,7 @@ function Contacto() {
                   value={formData.nombre}
                   onChange={handleChange}
                   required
-                  className="w-full bg-black/50 border-2 border-gray-700 rounded-lg px-4 py-3 text-white"
+                  className="w-full rounded-xl border border-uf-line bg-black/50 px-4 py-3 text-white transition focus:border-uf-gold focus:outline-none"
                 />
               </div>
 
@@ -153,7 +142,7 @@ function Contacto() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full bg-black/50 border-2 border-gray-700 rounded-lg px-4 py-3 text-white"
+                  className="w-full rounded-xl border border-uf-line bg-black/50 px-4 py-3 text-white transition focus:border-uf-gold focus:outline-none"
                 />
               </div>
 
@@ -166,11 +155,9 @@ function Contacto() {
                   name="tipoConsulta"
                   value={formData.tipoConsulta}
                   onChange={handleChange}
-                  className="w-full bg-black/50 border-2 border-gray-700 rounded-lg px-4 py-3 text-white"
+                  className="w-full rounded-xl border border-uf-line bg-black/50 px-4 py-3 text-white transition focus:border-uf-gold focus:outline-none"
                 >
                   <option value="informacion">Información General</option>
-                  <option value="premium">Plan Premium</option>
-                  <option value="entrenador">Entrenador Personal</option>
                   <option value="tecnico">Soporte Técnico</option>
                   <option value="otro">Otro</option>
                 </select>
@@ -186,7 +173,7 @@ function Contacto() {
                   name="asunto"
                   value={formData.asunto}
                   onChange={handleChange}
-                  className="w-full bg-black/50 border-2 border-gray-700 rounded-lg px-4 py-3 text-white"
+                  className="w-full rounded-xl border border-uf-line bg-black/50 px-4 py-3 text-white transition focus:border-uf-gold focus:outline-none"
                 />
               </div>
 
@@ -200,7 +187,7 @@ function Contacto() {
                   value={formData.mensaje}
                   onChange={handleChange}
                   rows="5"
-                  className="w-full bg-black/50 border-2 border-gray-700 rounded-lg px-4 py-3 text-white"
+                  className="w-full rounded-xl border border-uf-line bg-black/50 px-4 py-3 text-white transition focus:border-uf-gold focus:outline-none"
                 ></textarea>
               </div>
 
@@ -208,7 +195,7 @@ function Contacto() {
               <button
                 type="submit"
                 disabled={enviando}
-                className="w-full bg-uf-gold text-black font-bold py-4 rounded-lg uppercase tracking-wider hover:bg-uf-blue hover:text-white transition-all"
+                className="uf-btn uf-btn-primary w-full"
               >
                 {enviando ? "Enviando..." : "Enviar mensaje"}
               </button>
@@ -219,7 +206,7 @@ function Contacto() {
           <div className="space-y-6">
 
             {contactInfo.map((info, i) => (
-              <div key={i} className="bg-gradient-to-br from-uf-dark to-black border-2 border-uf-gold/30 rounded-2xl p-6">
+              <div key={i} className="uf-card p-6">
 
                 <div className="flex items-center gap-4">
                   <div className="bg-uf-gold text-black p-4 rounded-xl">
@@ -248,49 +235,79 @@ function Contacto() {
             ))}
 
             {/* Redes sociales */}
-            <div className="bg-gradient-to-br from-uf-dark to-black border-2 border-uf-gold/30 rounded-2xl p-6">
+            <div className="uf-card p-6">
               <h3 className="text-white font-bold mb-4 uppercase">Síguenos</h3>
               <div className="flex gap-4">
 
                 <a
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/ultimatefitness.uf/"
+                  aria-label="Instagram"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-uf-gold text-black p-3 rounded-lg hover:bg-uf-blue hover:text-white transition transform hover:scale-110"
                 >
-                  {/* ICONO IG */}
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204..."></path>
-                  </svg>
+                  <Instagram className="h-6 w-6" aria-hidden="true" />
                 </a>
 
                 <a
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/people/Aiman-Harrar/pfbid02RhkRkwtijJkrGWtLsztyCMbsJM9H4cGnV1K4LyTNoVbpPbWfT6usT3LmsZPiGk7Wl/"
+                  aria-label="Facebook"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-uf-gold text-black p-3 rounded-lg hover:bg-uf-blue hover:text-white transition transform hover:scale-110"
                 >
-                  {/* ICONO FB */}
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627..."></path>
-                  </svg>
+                  <Facebook className="h-6 w-6" aria-hidden="true" />
                 </a>
 
                 <a
-                  href="https://twitter.com"
+                  href="https://x.com/UltimateFts"
+                  aria-label="X (Twitter)"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-uf-gold text-black p-3 rounded-lg hover:bg-uf-blue hover:text-white transition transform hover:scale-110"
                 >
-                  {/* ICONO TW */}
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M23.953 4.57a10 10..."></path>
-                  </svg>
+                  <Twitter className="h-6 w-6" aria-hidden="true" />
                 </a>
 
               </div>
             </div>
 
+          </div>
+        </div>
+
+        {/* ============================================ */}
+        {/* LEAD MAGNET (Captura de Email) */}
+        {/* ============================================ */}
+        <div className="mt-8 bg-gradient-to-r from-gray-900 to-black border border-uf-gold/30 rounded-2xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8">
+          <div className="flex-1 text-center md:text-left">
+            <h3 className="text-3xl font-anton font-bold text-white mb-2 uppercase">
+              Descarga nuestra <span className="text-uf-gold">Guía Gratuita </span>
+            </h3>
+            <p className="text-gray-400 mb-6 font-medium">
+              Aprende a estructurar tus macros y entrenamientos con nuestra guía de 7 días. ¡Totalmente gratis!
+            </p>
+            <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => { e.preventDefault(); alert('¡Gracias! Revisa tu correo en unos minutos.'); }}>
+              <input
+                type="email"
+                placeholder="Tu mejor email..."
+                required
+                className="flex-1 bg-gray-800 border border-gray-600 focus:border-uf-gold text-white px-4 py-3 rounded-lg focus:outline-none transition"
+              />
+              <button
+                type="submit"
+                className="bg-uf-gold hover:bg-yellow-500 text-black font-bold px-8 py-3 rounded-lg uppercase tracking-wider transition transform hover:scale-105"
+              >
+                Quiero la guía
+              </button>
+            </form>
+            <p className="text-xs text-gray-500 mt-3">Al descargar aceptas recibir tips semanales. Cero spam.</p>
+          </div>
+          <div className="hidden md:flex flex-1 justify-center relative">
+            <div className="absolute w-40 h-40 bg-uf-gold/20 rounded-full blur-3xl"></div>
+            <div className="relative border-4 border-uf-darker rounded-xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-all duration-300">
+              <img src="/images/dieta.jpg" alt="Guía Nutricional Ultimate Fitness" className="w-64 h-auto object-cover opacity-80" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" }} />
+              <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-center py-2 border-t border-uf-gold font-bold text-sm text-uf-gold">PDF GRATUITO</div>
+            </div>
           </div>
         </div>
       </div>

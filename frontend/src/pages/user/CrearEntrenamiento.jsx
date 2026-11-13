@@ -49,13 +49,13 @@ function CrearEntrenamiento() {
         const fetchEjercicios = async () => {
             try {
                 // Endpoint correcto según backend: /api/custom/ejercicios
-                const response = await api.get("/custom/ejercicios");
+                const response = await api.get("/custom/ejercicios?limit=100");
 
-                // DATA HANDLING FIX:
-                // El custom controller devuelve un array directo, NO un objeto con hydra:member
                 let ejerciciosData = [];
                 if (Array.isArray(response.data)) {
                     ejerciciosData = response.data;
+                } else if (response.data && Array.isArray(response.data.ejercicios)) {
+                    ejerciciosData = response.data.ejercicios;
                 } else if (response.data && response.data.member) {
                     ejerciciosData = response.data.member;
                 } else if (response.data && response.data['hydra:member']) {

@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
+import { PAGOS } from "../config/funciones";
 
 export const AuthContext = createContext();
 
@@ -93,6 +94,11 @@ export function AuthProvider({ children }) {
   // ================================
   // CONTEXTO
   // ================================
+  const isPremium =
+    user?.es_premium === true ||
+    user?.es_premium === 1 ||
+    user?.es_premium === "1";
+
   const value = {
     user,
     login,
@@ -100,10 +106,9 @@ export function AuthProvider({ children }) {
     refreshUser,
     updateUser,
     isAuthenticated: !!user,
-    isPremium:
-      user?.es_premium === true ||
-      user?.es_premium === 1 ||
-      user?.es_premium === "1",
+    isPremium,
+    // Acceso a todo el contenido: sin pagos activos basta con tener cuenta
+    accesoCompleto: PAGOS ? isPremium : !!user,
     isAdmin,
     isTrainer,
     isUser,

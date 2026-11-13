@@ -18,11 +18,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\Exception\PropertyNotFoundException;
 use ApiPlatform\Metadata\Property\Factory\PropertyMetadataFactoryInterface;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 use Symfony\Component\PropertyInfo\Type;
 
@@ -46,14 +42,14 @@ final class EloquentPropertyMetadataFactory implements PropertyMetadataFactoryIn
      */
     public function create(string $resourceClass, string $property, array $options = []): ApiProperty
     {
-        if (!is_a($resourceClass, Model::class, true)) {
-            return $this->decorated?->create($resourceClass, $property, $options) ?? new ApiProperty();
-        }
-
         try {
             $refl = new \ReflectionClass($resourceClass);
             $model = $refl->newInstanceWithoutConstructor();
         } catch (\ReflectionException) {
+            return $this->decorated?->create($resourceClass, $property, $options) ?? new ApiProperty();
+        }
+
+        if (!$model instanceof Model) {
             return $this->decorated?->create($resourceClass, $property, $options) ?? new ApiProperty();
         }
 
@@ -75,20 +71,18 @@ final class EloquentPropertyMetadataFactory implements PropertyMetadataFactoryIn
             // see https://laravel.com/docs/11.x/eloquent-mutators#attribute-casting
             $builtinType = $p['cast'] ?? $p['type'];
             $type = match ($builtinType) {
-                'integer' => new Type(Type::BUILTIN_TYPE_INT, $p['nullable']),
                 'double', 'real' => new Type(Type::BUILTIN_TYPE_FLOAT, $p['nullable']),
-                'boolean', 'bool' => new Type(Type::BUILTIN_TYPE_BOOL, $p['nullable']),
                 'datetime', 'date', 'timestamp' => new Type(Type::BUILTIN_TYPE_OBJECT, $p['nullable'], \DateTime::class),
                 'immutable_datetime', 'immutable_date' => new Type(Type::BUILTIN_TYPE_OBJECT, $p['nullable'], \DateTimeImmutable::class),
                 'collection', 'encrypted:collection' => new Type(Type::BUILTIN_TYPE_ITERABLE, $p['nullable'], Collection::class, true),
                 'encrypted:array' => new Type(Type::BUILTIN_TYPE_ARRAY, $p['nullable']),
                 'encrypted:object' => new Type(Type::BUILTIN_TYPE_OBJECT, $p['nullable']),
-                default => new Type(\in_array($builtinType, Type::$builtinTypes, true) ? $builtinType : Type::BUILTIN_TYPE_STRING, $p['nullable'] ?? true),
+                default => new Type(\in_array($builtinType, Type::$builtinTypes, true) ? $builtinType : Type::BUILTIN_TYPE_STRING, $p['nullable']),
             };
 
             return $propertyMetadata
                 ->withBuiltinTypes([$type])
-                ->withWritable($propertyMetadata->isWritable() ?? true === $p['fillable'])
+                ->withWritable($propertyMetadata->isWritable() ?? true)
                 ->withReadable($propertyMetadata->isReadable() ?? false === $p['hidden']);
         }
 
@@ -97,14 +91,10 @@ final class EloquentPropertyMetadataFactory implements PropertyMetadataFactoryIn
                 continue;
             }
 
-            $collection = match ($relation['type']) {
-                HasMany::class,
-                HasManyThrough::class,
-                BelongsToMany::class,
-                MorphMany::class,
-                MorphToMany::class => true,
-                default => false,
-            };
+            $collection = false;
+            if (HasMany::class === $relation['type']) {
+                $collection = true;
+            }
 
             $type = new Type($collection ? Type::BUILTIN_TYPE_ITERABLE : Type::BUILTIN_TYPE_OBJECT, false, $relation['related'], $collection, collectionValueType: new Type(Type::BUILTIN_TYPE_OBJECT, false, $relation['related']));
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { ENTRENADORES } from "../../config/funciones";
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
@@ -20,13 +21,13 @@ import {
 } from 'lucide-react';
 
 function MisEntrenamientos() {
-  const { user, isPremium } = useAuth();
+  const { user, accesoCompleto: isPremium } = useAuth();
   const navigate = useNavigate();
   const [entrenamientosCreados, setEntrenamientosCreados] = useState([]);
   const [entrenamientosAsignados, setEntrenamientosAsignados] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEntrenamiento, setSelectedEntrenamiento] = useState(null);
-  const [activeTab, setActiveTab] = useState('asignados'); // 'asignados' | 'creados'
+  const [activeTab, setActiveTab] = useState(ENTRENADORES ? 'asignados' : 'creados'); // 'asignados' | 'creados'
 
   // ============================================
   // CARGAR ENTRENAMIENTOS DEL USUARIO
@@ -34,13 +35,13 @@ function MisEntrenamientos() {
   useEffect(() => {
     const fetchEntrenamientos = async () => {
       try {
-        console.log('✅ Cargando entrenamientos...');
+        console.log('Cargando entrenamientos...');
 
         // ✅ USAR api SERVICE QUE YA INCLUYE EL TOKEN AUTOMÁTICAMENTE
         const response = await api.get('/custom/mis-entrenamientos');
 
         if (response.data.success) {
-          console.log('✅ Entrenamientos cargados:', response.data);
+          console.log('Entrenamientos cargados:', response.data);
           setEntrenamientosCreados(response.data.creados);
           setEntrenamientosAsignados(response.data.asignados);
 
@@ -50,7 +51,7 @@ function MisEntrenamientos() {
           }
         }
       } catch (error) {
-        console.error('❌ Error al cargar entrenamientos:', error);
+        console.error('Error al cargar entrenamientos:', error);
         if (error.response?.status === 401) {
           console.error('Token inválido o expirado');
         }
@@ -151,7 +152,7 @@ function MisEntrenamientos() {
               <Dumbbell className="w-8 h-8 text-uf-gold" />
               Mis Entrenamientos
             </h1>
-            <p className="text-gray-400 mt-1">Gestiona tus rutinas y entrenamientos asignados</p>
+            <p className="text-gray-400 mt-1">{ENTRENADORES ? "Gestiona tus rutinas y entrenamientos asignados" : "Gestiona tus rutinas"}</p>
           </div>
           <button
             onClick={() => navigate('/crear-entrenamiento')}
@@ -164,6 +165,7 @@ function MisEntrenamientos() {
 
         {/* Tabs */}
         <div className="flex gap-4 mb-6 border-b border-gray-700 pb-1">
+          {ENTRENADORES && (
           <button
             onClick={() => setActiveTab('asignados')}
             className={`pb-3 px-4 font-bold flex items-center gap-2 transition-all ${activeTab === 'asignados'
@@ -177,6 +179,7 @@ function MisEntrenamientos() {
               {entrenamientosAsignados.length}
             </span>
           </button>
+          )}
           <button
             onClick={() => setActiveTab('creados')}
             className={`pb-3 px-4 font-bold flex items-center gap-2 transition-all ${activeTab === 'creados'
@@ -251,7 +254,7 @@ function MisEntrenamientos() {
                           <Calendar className="w-3 h-3 inline mr-1" />
                           {new Date(entrenamiento.fechaCreacion).toLocaleDateString('es-ES')}
                         </span>
-                        {entrenamiento.creador && (
+                        {ENTRENADORES && entrenamiento.creador && (
                           <span className="px-3 py-1 rounded-full text-xs font-bold bg-orange-500/20 text-orange-400 border border-orange-500">
                             <UserCheck className="w-3 h-3 inline mr-1" />
                             Entrenador: {entrenamiento.creador.nombre}

@@ -11,7 +11,7 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
 # 3. Habilitar mod_rewrite de Apache (necesario para Symfony)
-RUN a2enmod rewrite
+RUN a2enmod rewrite headers
 
 # 4. Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -34,6 +34,6 @@ RUN rm -rf /var/www/html/var/cache/* /var/www/html/var/log/*
 # 8. Script de arranque
 # Generamos las llaves JWT al inicio (FORZADO), arreglamos permisos y arrancamos
 # Eliminamos claves viejas por si acaso y generamos nuevas
-CMD rm -rf config/jwt/*.pem && php bin/console lexik:jwt:generate-keypair --overwrite && chown -R www-data:www-data config/jwt && composer run-script post-install-cmd && apache2-foreground
+CMD rm -rf config/jwt/*.pem && php bin/console lexik:jwt:generate-keypair --overwrite && chown -R www-data:www-data config/jwt && composer run-script post-install-cmd && chown -R www-data:www-data var && apache2-foreground
 
 EXPOSE 80

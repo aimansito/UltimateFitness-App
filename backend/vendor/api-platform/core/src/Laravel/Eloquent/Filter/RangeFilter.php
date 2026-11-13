@@ -52,10 +52,7 @@ final class RangeFilter implements FilterInterface, JsonSchemaFilterInterface, O
         return ['type' => 'number'];
     }
 
-    /**
-     * @return OpenApiParameter[]
-     */
-    public function getOpenApiParameters(Parameter $parameter): array
+    public function getOpenApiParameters(Parameter $parameter): OpenApiParameter|array|null
     {
         $in = $parameter instanceof QueryParameter ? 'query' : 'header';
         $key = $parameter->getKey();
