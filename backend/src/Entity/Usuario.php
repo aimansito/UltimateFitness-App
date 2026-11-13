@@ -137,6 +137,52 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeInterface $resetTokenExpires = null;
 
     // ============================================
+    // CAMPOS - VERIFICACIÓN DE EMAIL
+    // Los tokens se guardan como hash SHA-256: una copia de la base de datos no sirve para usarlos.
+    // ============================================
+
+    #[ORM\Column(name: 'email_verificado', options: ['default' => false])]
+    private bool $emailVerificado = false;
+
+    #[ORM\Column(name: 'token_verificacion', length: 64, nullable: true)]
+    private ?string $tokenVerificacion = null;
+
+    #[ORM\Column(name: 'token_verificacion_expira', type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $tokenVerificacionExpira = null;
+
+    public function isEmailVerificado(): bool
+    {
+        return $this->emailVerificado;
+    }
+
+    public function setEmailVerificado(bool $verificado): static
+    {
+        $this->emailVerificado = $verificado;
+        if ($verificado) {
+            $this->tokenVerificacion = null;
+            $this->tokenVerificacionExpira = null;
+        }
+        return $this;
+    }
+
+    public function getTokenVerificacion(): ?string
+    {
+        return $this->tokenVerificacion;
+    }
+
+    public function setTokenVerificacion(?string $hash, ?\DateTimeInterface $expira): static
+    {
+        $this->tokenVerificacion = $hash;
+        $this->tokenVerificacionExpira = $expira;
+        return $this;
+    }
+
+    public function getTokenVerificacionExpira(): ?\DateTimeInterface
+    {
+        return $this->tokenVerificacionExpira;
+    }
+
+    // ============================================
     // RELACIONES
     // ============================================
 

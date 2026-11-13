@@ -46,6 +46,38 @@ class CorreosCuenta
         return $this->correo->enviar((string) $usuario->getEmail(), 'Bienvenido a Ultimate Fitness', $html, $texto);
     }
 
+    public function verificacion(Usuario $usuario, string $token): bool
+    {
+        $nombre = (string) $usuario->getNombre();
+        $enlace = $this->web . '/verificar-email?token=' . urlencode($token);
+        $nota = 'El enlace caduca en 48 horas. Si no te has registrado tú, ignora este correo y no se activará ninguna cuenta.';
+
+        $texto = "Hola $nombre:\n\nConfirma tu email para activar tu cuenta de Ultimate Fitness:\n$enlace\n\n$nota\n\nUltimate Fitness";
+        $html = $this->plantilla(
+            'Confirma tu email',
+            '<p>Hola ' . $this->e($nombre) . ':</p><p>Gracias por registrarte. Confirma tu email para activar tu cuenta.</p>',
+            'Confirmar mi email',
+            $enlace,
+            $nota
+        );
+
+        return $this->correo->enviar((string) $usuario->getEmail(), 'Confirma tu email en Ultimate Fitness', $html, $texto);
+    }
+
+    /** Mensaje del formulario de contacto, dirigido al titular. Responder contesta a quien escribió. */
+    public function contacto(string $destino, string $nombre, string $email, string $asunto, string $mensaje): bool
+    {
+        $texto = "Nuevo mensaje desde el formulario de contacto\n\n"
+            . "Nombre: $nombre\nEmail: $email\nAsunto: $asunto\n\n$mensaje\n";
+        $html = '<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.6;color:#111">'
+            . '<p><strong>Nuevo mensaje desde el formulario de contacto</strong></p>'
+            . '<p><strong>Nombre:</strong> ' . $this->e($nombre) . '<br><strong>Email:</strong> ' . $this->e($email)
+            . '<br><strong>Asunto:</strong> ' . $this->e($asunto) . '</p>'
+            . '<p style="white-space:pre-wrap;border-left:3px solid #CC941A;padding-left:12px">' . $this->e($mensaje) . '</p></div>';
+
+        return $this->correo->enviar($destino, '[Contacto] ' . mb_substr($asunto, 0, 120), $html, $texto, $email);
+    }
+
     public function recuperacion(Usuario $usuario, string $token): bool
     {
         $nombre = (string) $usuario->getNombre();

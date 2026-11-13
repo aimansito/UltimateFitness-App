@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Usuario;
 use App\Repository\UsuarioRepository;
-use App\Service\CorreosCuenta;
+use App\Service\VerificacionEmail;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +24,7 @@ class RegistroController extends AbstractController
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
         UsuarioRepository $usuarioRepository,
-        private CorreosCuenta $correos,
+        private VerificacionEmail $verificacion,
         private LoggerInterface $logger
     ) {
         $this->entityManager = $entityManager;
@@ -120,12 +120,13 @@ class RegistroController extends AbstractController
             $this->entityManager->persist($usuario);
             $this->entityManager->flush();
 
-            // Correo de bienvenida: si falla no se interrumpe el registro (queda en el log)
-            $this->correos->bienvenida($usuario);
+            // Enlace para confirmar el email. Si el correo falla, el registro sigue y se puede pedir otro enlace.
+            $this->verificacion->enviar($usuario);
 
             return $this->json([
                 'success' => true,
-                'message' => 'Usuario registrado correctamente',
+                'verificacion_pendiente' => true,
+                'message' => 'Te hemos enviado un correo para confirmar tu email. Revisa también la carpeta de spam.',
                 'usuario' => [
                     'id' => $usuario->getId(),
                     'nombre_completo' => $usuario->getNombreCompleto(),

@@ -31,6 +31,13 @@ export default {
       // Limpiar localStorage en caso de error
       localStorage.removeItem("token");
       localStorage.removeItem("usuario");
+      const datos = error?.response?.data;
+      if (datos?.code === "email_no_verificado") {
+        return { success: false, code: datos.code, error: datos.message };
+      }
+      if (error?.response?.status === 429) {
+        return { success: false, error: datos?.error || "Demasiados intentos. Espera unos minutos." };
+      }
       return { success: false, error: "Credenciales inválidas" };
     }
   },

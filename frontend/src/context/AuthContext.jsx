@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
         return data;
       }
 
-      return { success: false, error: data?.error || "Credenciales inválidas" };
+      return { success: false, code: data?.code, error: data?.error || "Credenciales inválidas" };
     } catch (error) {
       console.error("Error en login:", error);
       return { success: false, error: "Error de servidor" };

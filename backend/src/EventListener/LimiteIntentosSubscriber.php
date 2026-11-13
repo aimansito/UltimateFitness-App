@@ -29,6 +29,9 @@ class LimiteIntentosSubscriber
         '/api/forgot-password' => [5, 900],
         '/api/reset-password' => [10, 900],
         '/api/register' => [5, 3600],
+        '/api/verificar-email' => [20, 900],
+        '/api/reenviar-verificacion' => [5, 900],
+        '/api/contacto' => [5, 3600],
         // Piden la contraseña: se limitan para que no sirvan para adivinarla
         '/api/cuenta/password' => [10, 900],
         '/api/cuenta/eliminar' => [10, 900],

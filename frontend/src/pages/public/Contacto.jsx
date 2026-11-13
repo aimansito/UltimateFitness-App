@@ -1,7 +1,14 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../../services/api';
+
 import SEO from '../../components/common/SEO';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
 import PageHeader from '../../components/common/PageHeader';
+
+// No hay ninguna guía descargable todavía: el bloque queda oculto hasta que exista y se envíe de verdad
+const GUIA_DISPONIBLE = false;
+
 
 function Contacto() {
   // ============================================
@@ -17,6 +24,9 @@ function Contacto() {
 
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
+  const [errorEnvio, setErrorEnvio] = useState('');
+  // Campo trampa para bots: oculto a las personas
+  const [web, setWeb] = useState('');
 
   // ============================================
   // FUNCIONES
@@ -29,25 +39,20 @@ function Contacto() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setEnviando(true);
-
-    // Simular envío
-    setTimeout(() => {
-      setEnviando(false);
+    setErrorEnvio('');
+    try {
+      await api.post('/contacto', { ...formData, web });
       setEnviado(true);
-
-      setFormData({
-        nombre: '',
-        email: '',
-        tipoConsulta: 'informacion',
-        asunto: '',
-        mensaje: ''
-      });
-
-      setTimeout(() => setEnviado(false), 5000);
-    }, 1500);
+      setFormData({ nombre: '', email: '', tipoConsulta: 'informacion', asunto: '', mensaje: '' });
+      setTimeout(() => setEnviado(false), 8000);
+    } catch (err) {
+      setErrorEnvio(err?.response?.data?.error || 'No se pudo enviar el mensaje. Inténtalo de nuevo en unos minutos.');
+    } finally {
+      setEnviando(false);
+    }
   };
 
   // ============================================
@@ -158,7 +163,9 @@ function Contacto() {
                   className="w-full rounded-xl border border-uf-line bg-black/50 px-4 py-3 text-white transition focus:border-uf-gold focus:outline-none"
                 >
                   <option value="informacion">Información General</option>
+                  <option value="cuenta">Mi cuenta</option>
                   <option value="tecnico">Soporte Técnico</option>
+                  <option value="privacidad">Privacidad y datos personales</option>
                   <option value="otro">Otro</option>
                 </select>
               </div>
@@ -191,14 +198,32 @@ function Contacto() {
                 ></textarea>
               </div>
 
+              {/* Campo trampa: los bots lo rellenan, las personas no lo ven */}
+              <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+                <label>
+                  No rellenes este campo
+                  <input type="text" name="web" tabIndex={-1} autoComplete="off" value={web} onChange={(e) => setWeb(e.target.value)} />
+                </label>
+              </div>
+
+              {errorEnvio && (
+                <p role="alert" className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                  {errorEnvio}
+                </p>
+              )}
+
               {/* Botón enviar */}
               <button
                 type="submit"
                 disabled={enviando}
-                className="uf-btn uf-btn-primary w-full"
+                className="uf-btn uf-btn-primary w-full disabled:opacity-50"
               >
                 {enviando ? "Enviando..." : "Enviar mensaje"}
               </button>
+              <p className="text-xs leading-relaxed text-uf-muted">
+                Usaremos tus datos solo para responder a tu mensaje. No los guardamos en ninguna lista ni los usamos para publicidad.{' '}
+                <Link to="/politica-privacidad" className="text-uf-gold hover:underline">Política de privacidad</Link>.
+              </p>
             </form>
           </div>
 
@@ -278,6 +303,7 @@ function Contacto() {
         {/* ============================================ */}
         {/* LEAD MAGNET (Captura de Email) */}
         {/* ============================================ */}
+        {GUIA_DISPONIBLE && (
         <div className="mt-8 bg-gradient-to-r from-gray-900 to-black border border-uf-gold/30 rounded-2xl p-8 md:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8">
           <div className="flex-1 text-center md:text-left">
             <h3 className="text-3xl font-anton font-bold text-white mb-2 uppercase">
@@ -310,6 +336,7 @@ function Contacto() {
             </div>
           </div>
         </div>
+        )}
       </div>
 
     </div>

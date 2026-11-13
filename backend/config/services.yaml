@@ -3,6 +3,8 @@ parameters:
     # Debe ir a la par con PAGOS en frontend/src/config/funciones.js
     env(PAGOS_ACTIVOS): '0'
     app.pagos_activos: '%env(bool:PAGOS_ACTIVOS)%'
+    # Buzón que recibe el formulario de contacto (se puede cambiar con CONTACTO_EMAIL)
+    app.contacto_por_defecto: 'utfitness2025@gmail.com'
 
 services:
     _defaults:

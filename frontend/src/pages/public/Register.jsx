@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { EDAD_MINIMA } from "../../config/legal";
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import { ChevronLeft, ChevronRight, Check, User, Activity, Target } from 'lucide-react';
 import SEO from '../../components/common/SEO';
 
 function Register() {
     const navigate = useNavigate();
-    const { login } = useAuth();
 
     const [step, setStep] = useState(1);
     const [error, setError] = useState('');
@@ -156,24 +154,12 @@ function Register() {
             const response = await api.post('/register', registerData);
 
             if (response.data.success) {
-                console.log("Registro exitoso. Iniciando auto-login...");
-                // Auto-login después del registro
-                try {
-                    const loginResult = await login(formData.email, formData.password);
-                    console.log("Resultado auto-login:", loginResult);
-
-                    if (loginResult && loginResult.success) {
-                        console.log("Auto-login exitoso. Redirigiendo a dashboard...");
-                        navigate('/dashboard');
-                    } else {
-                        console.error("Auto-login falló:", loginResult);
-                        // Si falla el auto-login, redirigir a login
-                        navigate('/login');
-                    }
-                } catch (loginError) {
-                    console.error("Excepción en auto-login:", loginError);
-                    navigate('/login');
-                }
+                // La cuenta queda pendiente hasta confirmar el email: no se inicia sesión todavía
+                navigate('/login', {
+                    state: {
+                        aviso: `Cuenta creada. Te hemos enviado un enlace a ${formData.email} para confirmar tu email. Revisa también la carpeta de spam.`,
+                    },
+                });
             } else {
                 setError(response.data.error || 'Error al registrar usuario');
             }

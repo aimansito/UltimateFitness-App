@@ -30,6 +30,7 @@ import TerminosCondiciones from "./pages/public/TerminosCondiciones";
 import PoliticaCookies from "./pages/public/PoliticaCookies";
 import RecuperarPassword from "./pages/public/RecuperarPassword";
 import RestablecerPassword from "./pages/public/RestablecerPassword";
+import VerificarEmail from "./pages/public/VerificarEmail";
 import PerfilPublico from "./pages/public/PerfilPublico";
 import CookieBanner from "./components/common/CookieBanner";
 
@@ -84,6 +85,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/recuperar-password" element={<RecuperarPassword />} />
             <Route path="/restablecer-password" element={<RestablecerPassword />} />
+            <Route path="/verificar-email" element={<VerificarEmail />} />
             <Route path="/register" element={<Register />} />
             {PAGOS ? (
               <Route path="/upgrade-premium" element={<UpgradePremium />} />

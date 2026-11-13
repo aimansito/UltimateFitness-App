@@ -43,3 +43,8 @@ docker-compose.override.yml
 *.swp
 .env.backup
 
+
+# Dependencias y archivos locales que no deben versionarse
+.claude.zip
+backend/vendor/
+backend/.env.supabase

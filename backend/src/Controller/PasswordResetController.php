@@ -49,7 +49,8 @@ class PasswordResetController extends AbstractController
 
         // Generar token
         $token = bin2hex(random_bytes(32));
-        $usuario->setResetToken($token);
+        // Solo se guarda el hash: una copia de la base de datos no permite usar el enlace
+        $usuario->setResetToken(hash('sha256', $token));
         // Expira en 1 hora
         $usuario->setResetTokenExpires(new \DateTime('+1 hour'));
 
@@ -82,7 +83,7 @@ class PasswordResetController extends AbstractController
             return new JsonResponse(['error' => 'La contraseña debe tener al menos 8 caracteres'], 400);
         }
 
-        $usuario = $this->entityManager->getRepository(Usuario::class)->findOneBy(['resetToken' => $token]);
+        $usuario = $this->entityManager->getRepository(Usuario::class)->findOneBy(['resetToken' => hash('sha256', $token)]);
 
         if (!$usuario) {
             return new JsonResponse(['error' => 'Token inválido'], 400);
@@ -95,6 +96,8 @@ class PasswordResetController extends AbstractController
         // Actualizar contraseña
         $hashedPassword = $this->passwordHasher->hashPassword($usuario, $newPassword);
         $usuario->setPasswordHash($hashedPassword);
+        // Abrir el enlace recibido por email demuestra que el email es suyo
+        $usuario->setEmailVerificado(true);
         
         // Limpiar token
         $usuario->setResetToken(null);

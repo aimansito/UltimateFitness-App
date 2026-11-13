@@ -29,12 +29,14 @@ security:
             pattern: ^/api/login$
             stateless: true
             provider: usuario_provider
+            # El email debe estar confirmado (se comprueba tras validar la contraseña)
+            user_checker: App\Security\VerificacionEmailChecker
             json_login:
                 check_path: /api/login
                 username_path: email
                 password_path: password
                 success_handler: App\Security\UsuarioLoginSuccessHandler
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+                failure_handler: App\Security\LoginFailureHandler
 
         login_trainer:
             pattern: ^/api/entrenador/login$
@@ -63,6 +65,9 @@ security:
         - { path: ^/api/health$, roles: PUBLIC_ACCESS }
         - { path: ^/api/forgot-password$, roles: PUBLIC_ACCESS }
         - { path: ^/api/reset-password$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/verificar-email$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/reenviar-verificacion$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/contacto$, roles: PUBLIC_ACCESS }
         - { path: ^/api/stripe/webhook$, roles: PUBLIC_ACCESS }
         # Capa social: lectura pública (el controlador filtra según quién mira)
         - { path: ^/api/perfil/publico/, roles: PUBLIC_ACCESS, methods: [GET] }

@@ -33,7 +33,7 @@ class Correo
     }
 
     /** Devuelve true si el servidor aceptó el mensaje. */
-    public function enviar(string $para, string $asunto, string $html, string $texto): bool
+    public function enviar(string $para, string $asunto, string $html, string $texto, ?string $responderA = null): bool
     {
         if (!filter_var($para, FILTER_VALIDATE_EMAIL)) {
             $this->logger->warning('Correo no enviado: destinatario no válido');
@@ -49,9 +49,12 @@ class Correo
             $email = (new Email())
                 ->from($this->remitente())
                 ->to($para)
-                ->subject($asunto)
+                ->subject(str_replace(["\r", "\n"], ' ', $asunto))
                 ->text($texto)
                 ->html($html);
+            if ($responderA !== null && filter_var($responderA, FILTER_VALIDATE_EMAIL)) {
+                $email->replyTo($responderA);
+            }
 
             $this->mailer->send($email);
             $this->logger->info('Correo enviado', ['para' => $para, 'asunto' => $asunto]);

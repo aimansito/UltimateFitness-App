@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ENTRENADORES } from "../../config/funciones";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { Input, Button } from "../../components/common";
 import SEO from "../../components/common/SEO";
@@ -10,6 +11,10 @@ function Login() {
   // HOOKS Y ESTADO
   // ============================================
   const navigate = useNavigate();
+  const location = useLocation();
+  const [aviso, setAviso] = useState(location.state?.aviso || "");
+  const [pendiente, setPendiente] = useState(Boolean(location.state?.aviso));
+  const [reenviando, setReenviando] = useState(false);
   const { login } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -53,6 +58,8 @@ function Login() {
       if (result.success) {
         navigate("/dashboard");
       } else {
+        setPendiente(result.code === "email_no_verificado");
+        setAviso("");
         setError(result.error || "Error al iniciar sesión");
       }
     } catch (err) {
@@ -83,10 +90,38 @@ function Login() {
             </h1>
           </div>
 
+          {aviso && (
+            <div role="status" className="mb-6 rounded-xl border border-uf-gold/40 bg-uf-gold/10 px-4 py-3 text-sm text-gray-100">
+              {aviso}
+            </div>
+          )}
+
           {error && (
             <div role="alert" className="mb-6 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
               {error}
             </div>
+          )}
+
+          {pendiente && (
+            <button
+              type="button"
+              disabled={reenviando || !formData.email}
+              onClick={async () => {
+                setReenviando(true);
+                try {
+                  const r = await api.post("/reenviar-verificacion", { email: formData.email });
+                  setError("");
+                  setAviso(r.data.message);
+                } catch (err) {
+                  setError(err?.response?.data?.error || "No se pudo reenviar. Inténtalo en unos minutos.");
+                } finally {
+                  setReenviando(false);
+                }
+              }}
+              className="uf-btn uf-btn-ghost mb-6 w-full disabled:opacity-50"
+            >
+              {reenviando ? "Enviando..." : "Reenviar correo de confirmación"}
+            </button>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
