@@ -30,6 +30,18 @@ class PerfilController extends AbstractController
     // ============================================
     // PERFIL PÚBLICO (accesible sin sesión)
     // ============================================
+    /** Perfil de la cuenta oficial (rutinas y dietas de Ultimate Fitness). Su id cambia entre entornos. */
+    #[Route('/publico/oficial', name: 'perfil_publico_oficial', methods: ['GET'])]
+    public function oficial(EntityManagerInterface $em): JsonResponse
+    {
+        $cuenta = $em->getRepository(Usuario::class)->findOneBy(['email' => \App\Command\CargarContenidoCommand::EMAIL_OFICIAL]);
+        if (!$cuenta) {
+            return $this->json(['success' => false, 'error' => 'Perfil no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+
+        return $this->publico('usuario', $cuenta->getId());
+    }
+
     #[Route('/publico/{tipo}/{id}', name: 'perfil_publico', requirements: ['tipo' => 'usuario|entrenador', 'id' => '\d+'], methods: ['GET'])]
     public function publico(string $tipo, int $id): JsonResponse
     {

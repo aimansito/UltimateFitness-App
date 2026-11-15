@@ -1,6 +1,7 @@
 // ============================================
 // GYM - Biblioteca de ejercicios de gimnasio
 // ============================================
+import RutinasOficiales from '../../components/social/RutinasOficiales';
 import BibliotecaEjercicios from '../../components/gym/BibliotecaEjercicios';
 
 const EJERCICIOS_MUESTRA = [
@@ -84,6 +85,7 @@ const RUTINA_EJEMPLO = [
 
 function Gym() {
   return (
+    <>
     <BibliotecaEjercicios
       seo={{
         title: 'Gimnasio y Ejercicios',
@@ -99,6 +101,8 @@ function Gym() {
       ejerciciosMuestra={EJERCICIOS_MUESTRA}
       rutinaEjemplo={RUTINA_EJEMPLO}
     />
+    <RutinasOficiales />
+    </>
   );
 }
 

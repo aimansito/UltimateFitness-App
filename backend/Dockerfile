@@ -34,6 +34,8 @@ RUN rm -rf /var/www/html/var/cache/* /var/www/html/var/log/*
 # 8. Script de arranque
 # Generamos las llaves JWT al inicio (FORZADO), arreglamos permisos y arrancamos
 # Eliminamos claves viejas por si acaso y generamos nuevas
-CMD rm -rf config/jwt/*.pem && php bin/console lexik:jwt:generate-keypair --overwrite && chown -R www-data:www-data config/jwt && composer run-script post-install-cmd && chown -R www-data:www-data var && apache2-foreground
+# Al arrancar: claves JWT nuevas, caché, migraciones pendientes (si fallan, no arranca y Render
+# mantiene la versión anterior) y, solo si CARGAR_CONTENIDO=1, el contenido inicial.
+CMD rm -rf config/jwt/*.pem && php bin/console lexik:jwt:generate-keypair --overwrite && chown -R www-data:www-data config/jwt && composer run-script post-install-cmd && php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration && if [ "$CARGAR_CONTENIDO" = "1" ]; then php bin/console app:cargar-contenido; fi && chown -R www-data:www-data var && apache2-foreground
 
 EXPOSE 80

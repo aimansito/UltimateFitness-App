@@ -22,6 +22,7 @@ const datos = (promesa) => promesa.then((r) => r.data);
 const socialService = {
   // Perfil
   perfilPublico: (tipo, id) => datos(api.get(`/perfil/publico/${tipo}/${id}`)),
+  perfilOficial: () => datos(api.get('/perfil/publico/oficial')),
   miPerfil: () => datos(api.get('/perfil/mio')),
   guardarPrivacidad: (cambios) => datos(api.patch('/perfil/privacidad', cambios)),
   subirAvatar: (archivo) => {
