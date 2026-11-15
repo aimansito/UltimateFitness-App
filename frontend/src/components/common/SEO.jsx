@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-const SITE_URL = 'https://ultimatefitnessuf.com';
+const SITE_URL = 'https://www.ultimatefitnessuf.com';
 
 function SEO({ title, description, keywords, image, url, type = 'website', noindex = false, jsonLd }) {
   const siteName = "Ultimate Fitness";

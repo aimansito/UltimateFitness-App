@@ -250,10 +250,10 @@ function BlogPost() {
             "@type": "BlogPosting",
             "headline": post.titulo,
             "description": post.extracto,
-            "image": post.imagen_portada ? `https://ultimatefitnessuf.com${post.imagen_portada}` : undefined,
+            "image": post.imagen_portada ? `https://www.ultimatefitnessuf.com${post.imagen_portada}` : undefined,
             "datePublished": post.fecha_publicacion,
             "author": { "@type": "Organization", "name": "Ultimate Fitness" },
-            "publisher": { "@type": "Organization", "name": "Ultimate Fitness", "logo": { "@type": "ImageObject", "url": "https://ultimatefitnessuf.com/logos/logo.png" } }
+            "publisher": { "@type": "Organization", "name": "Ultimate Fitness", "logo": { "@type": "ImageObject", "url": "https://www.ultimatefitnessuf.com/logos/logo.png" } }
           }}
         />
       )}

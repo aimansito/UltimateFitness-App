@@ -8,4 +8,4 @@ Disallow: /mi-*
 Disallow: /crear-*
 Disallow: /entrenador/
 
-Sitemap: https://ultimatefitnessuf.com/sitemap.xml
+Sitemap: https://www.ultimatefitnessuf.com/sitemap.xml
