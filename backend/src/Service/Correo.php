@@ -24,6 +24,8 @@ class Correo
         private LoggerInterface $logger,
         #[Autowire('%env(default::MAILER_DSN)%')] private ?string $dsn = null,
         #[Autowire('%env(default::MAILER_FROM)%')] private ?string $remitente = null,
+        // Si se envía desde una dirección "no-reply", las respuestas llegan a este buzón
+        #[Autowire('%env(default:app.contacto_por_defecto:CONTACTO_EMAIL)%')] private ?string $responderPorDefecto = null,
     ) {
     }
 
@@ -52,8 +54,9 @@ class Correo
                 ->subject(str_replace(["\r", "\n"], ' ', $asunto))
                 ->text($texto)
                 ->html($html);
-            if ($responderA !== null && filter_var($responderA, FILTER_VALIDATE_EMAIL)) {
-                $email->replyTo($responderA);
+            $responder = $responderA ?? $this->responderPorDefecto;
+            if ($responder !== null && filter_var($responder, FILTER_VALIDATE_EMAIL)) {
+                $email->replyTo($responder);
             }
 
             $this->mailer->send($email);

@@ -6,7 +6,7 @@ export const TITULAR = {
   nif: '09117700V', // DNI/NIF
   domicilio: 'C. Tórtola, 27, Beiro, 18014 Granada', // Dirección postal completa
   email: 'utfitness2025@gmail.com',
-  web: 'ultimatefitnessutf.com',
+  web: 'ultimatefitnessuf.com',
   marca: 'Ultimate Fitness',
 };
 
