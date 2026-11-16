@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { EDAD_MINIMA } from "../../config/legal";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { datosARegistro, leerPendiente } from '../../utils/calculoNutricional';
 import api from '../../services/api';
-import { ChevronLeft, ChevronRight, Check, User, Activity, Target } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, User, Activity, Target, Calculator } from 'lucide-react';
 import SEO from '../../components/common/SEO';
 
 function Register() {
     const navigate = useNavigate();
+    const location = useLocation();
+    // Quien calculó sus macros en el landing llega con esos datos: se rellenan los pasos 2 y 3
+    const [pendienteCalculadora] = useState(() => leerPendiente());
+    const desdeCalculadora = Boolean(location.state?.desdeCalculadora || pendienteCalculadora);
 
     const [step, setStep] = useState(1);
     const [error, setError] = useState('');
@@ -35,7 +40,8 @@ function Register() {
 
         // Aceptación de políticas
         aceptaPoliticas: false,
-        consienteSalud: false
+        consienteSalud: false,
+        ...(pendienteCalculadora ? datosARegistro(pendienteCalculadora) : {}),
     });
 
     const handleChange = (e) => {
@@ -201,6 +207,15 @@ function Register() {
 
                 {/* Form */}
                 <div className="bg-gray-800 rounded-b-lg shadow-2xl p-8">
+                    {desdeCalculadora && (
+                        <div role="status" className="mb-6 flex items-start gap-3 rounded-xl border border-uf-gold/40 bg-uf-gold/10 px-4 py-3 text-sm text-gray-100">
+                            <Calculator className="mt-0.5 h-5 w-5 shrink-0 text-uf-gold" aria-hidden="true" />
+                            <span>
+                                Crea tu cuenta gratis para ver tu resultado de calorías y macros. Tus datos de la calculadora ya están
+                                rellenos en los siguientes pasos y se guardarán en tu perfil.
+                            </span>
+                        </div>
+                    )}
                     <div>
                         {/* PASO 1: Datos Básicos */}
                         {step === 1 && (

@@ -17,7 +17,7 @@ class VisibilidadService
 {
     public const TIPOS = ['usuario', 'entrenador'];
     public const BLOQUES = ['entrenamientos', 'dietas', 'favoritos'];
-    public const ITEMS = ['entrenamiento', 'dieta', 'plato'];
+    public const ITEMS = ['entrenamiento', 'dieta', 'plato', 'ejercicio'];
 
     public function __construct(private Connection $conn)
     {
@@ -272,6 +272,20 @@ class VisibilidadService
                 'tipoComida' => $f['tipo_comida'],
                 'calorias' => $f['calorias_totales'] !== null ? (int) round((float) $f['calorias_totales']) : null,
             ];
+            $bloque = null;
+        } elseif ($itemTipo === 'ejercicio') {
+            $f = $this->conn->fetchAssociative(
+                'SELECT id, nombre, descripcion, grupo_muscular, nivel_dificultad, creador_usuario_id FROM ejercicios WHERE id = ?',
+                [$id]
+            );
+            if (!$f) {
+                return null;
+            }
+            // Del catálogo (sin creador) = público; creado por un usuario = solo suyo
+            $autor = null;
+            $esMio = $f['creador_usuario_id'] !== null && $this->esDueno($actor, 'usuario', (int) $f['creador_usuario_id']);
+            $publico = $f['creador_usuario_id'] === null;
+            $extra = ['grupoMuscular' => $f['grupo_muscular'], 'nivel' => $f['nivel_dificultad']];
             $bloque = null;
         } else {
             return null;

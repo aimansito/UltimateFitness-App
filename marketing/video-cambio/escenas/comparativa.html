@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Antes y ahora</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  body { background: #000; }
+  .mitad { position: absolute; left: 0; width: 1080px; height: 960px; overflow: hidden; }
+  .mitad img { width: 100%; height: 100%; object-fit: cover; }
+  #arriba { top: 0; }
+  #arriba img { filter: saturate(0.6) contrast(1.03); }
+  #abajo { top: 960px; }
+  .sombra { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0, rgba(0,0,0,0) 38%, rgba(0,0,0,0) 62%, rgba(0,0,0,0.6) 100%); }
+  .rotulo { position: absolute; left: 60px; font-size: 150px; text-shadow: 0 8px 30px rgba(0,0,0,0.8); -webkit-text-stroke: 10px #000; paint-order: stroke fill; }
+  #antes { top: 160px; animation: subir 0.5s 0.1s both; }
+  #ahora { top: 1440px; left: auto; right: 60px; color: var(--oro-vivo); animation: subir 0.5s 0.55s both; }
+  .costura { position: absolute; left: 0; top: 955px; width: 1080px; height: 10px; background: var(--oro); transform-origin: left; animation: trazar 0.6s 0.1s both; box-shadow: 0 0 40px rgba(204,148,26,0.8); }
+  @keyframes trazar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+</style>
+</head>
+<body>
+  <div class="mitad" id="arriba"><img id="imgAntes" alt=""><div class="sombra"></div></div>
+  <div class="mitad" id="abajo"><img id="imgAhora" alt=""><div class="sombra"></div></div>
+  <div class="costura anim"></div>
+  <p class="rotulo anton anim" id="antes">Antes</p>
+  <p class="rotulo anton anim" id="ahora">Ahora</p>
+  <script src="comun.js"></script>
+  <script>
+    // datos: { antes, ahora, posAntes, posAhora, dur }
+    window.iniciar = async (datos) => {
+      const antes = document.getElementById('imgAntes');
+      const ahora = document.getElementById('imgAhora');
+      antes.src = datos.antes;
+      ahora.src = datos.ahora;
+      antes.style.objectPosition = datos.posAntes || '50% 70%';
+      ahora.style.objectPosition = datos.posAhora || '50% 55%';
+      antes.style.animation = `acercar ${datos.dur + 1}s linear both`;
+      ahora.style.animation = `acercar ${datos.dur + 1}s linear both`;
+      await window.esperarRecursos();
+    };
+  </script>
+</body>
+</html>

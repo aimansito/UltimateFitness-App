@@ -5,6 +5,7 @@ import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { Input, Button } from "../../components/common";
 import SEO from "../../components/common/SEO";
+import { leerPendiente } from "../../utils/calculoNutricional";
 
 function Login() {
   // ============================================
@@ -56,7 +57,8 @@ function Login() {
       const result = await login(formData.email, formData.password);
 
       if (result.success) {
-        navigate("/dashboard");
+        // Si calculó sus macros en el landing antes de registrarse, va directo a su resultado
+        navigate(leerPendiente() ? "/calculadora" : "/dashboard");
       } else {
         setPendiente(result.code === "email_no_verificado");
         setAviso("");
@@ -128,14 +130,15 @@ function Login() {
             {/* Email */}
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">
-                Email <span className="text-red-500">*</span>
+                Email o nombre de usuario <span className="text-red-500">*</span>
               </label>
               <input
-                type="email"
+                type="text"
                 name="email"
+                autoComplete="username"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="tu@email.com"
+                placeholder="tu@email.com o tu nombre"
                 required
                 className="w-full rounded-xl border border-uf-line bg-black/50 px-4 py-3 text-white placeholder-gray-600 transition focus:border-uf-gold focus:outline-none"
               />

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Cierre</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  #escena { position: absolute; inset: 0; animation: acercar 6s linear both; }
+  .centro { position: absolute; left: 60px; right: 60px; top: 400px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  #logo { width: 520px; height: auto; animation: golpe 0.6s 0.1s both; filter: drop-shadow(0 0 50px rgba(204,148,26,0.4)); }
+  .previa { margin-top: 80px; font-size: 62px; color: #fff; animation: subir 0.5s 0.25s both; }
+  h1 { margin-top: 18px; font-size: 300px; color: var(--oro); animation: golpe 0.5s 2.15s both; text-shadow: 0 0 90px rgba(204,148,26,0.45); }
+  h2 { margin-top: 26px; font-size: 76px; animation: subir 0.5s 2.5s both; }
+  .usuario {
+    margin-top: 70px; padding: 22px 46px; border-radius: 999px; border: 3px solid var(--oro);
+    font-size: 46px; font-weight: 800; letter-spacing: 0.02em; background: rgba(204,148,26,0.12);
+    animation: subir 0.5s 2.8s both;
+  }
+  .web { margin-top: 30px; font-family: 'Audiowide', sans-serif; font-size: 28px; letter-spacing: 0.2em; color: var(--apagado); animation: aparecer 0.5s 3.05s both; }
+</style>
+</head>
+<body class="marca">
+  <div id="escena">
+    <div class="blob" style="width:900px;height:900px;left:90px;top:420px;opacity:0.2"></div>
+    <div class="blob" style="width:620px;height:620px;left:-280px;top:-220px;opacity:0.1"></div>
+    <div class="centro">
+      <img id="logo" class="anim" src="../assets/logo.png" alt="">
+      <p class="previa anton anim">Si tú también quieres dar el salto</p>
+      <h1 class="anton anim">Sígueme</h1>
+      <h2 class="anton anim">y no te pierdas el cambio</h2>
+      <p class="usuario anim" id="usuario"></p>
+      <p class="web anim" id="web"></p>
+    </div>
+  </div>
+  <script src="comun.js"></script>
+  <script>
+    window.iniciar = async (datos) => {
+      document.getElementById('usuario').textContent = datos.usuario;
+      document.getElementById('web').textContent = datos.web;
+      await window.esperarRecursos();
+    };
+  </script>
+</body>
+</html>

@@ -21,6 +21,12 @@ services:
         value: /var/www/html/config/jwt/public.pem
       - key: JWT_PASSPHRASE
         sync: false  # secreto: se configura en el panel de Render, nunca en git
+      # Par de claves JWT en base64 (ver backend/docker/generar-claves-jwt.sh). Fijas para que
+      # las sesiones no caduquen cada vez que Render reinicia el servidor.
+      - key: JWT_PRIVATE_KEY_B64
+        sync: false
+      - key: JWT_PUBLIC_KEY_B64
+        sync: false
       # Supabase Storage Configuration
       - key: SUPABASE_STORAGE_URL
         value: https://ozdmncejywgylyjbboip.supabase.co/storage/v1/s3

@@ -48,3 +48,7 @@ docker-compose.override.yml
 .claude.zip
 backend/vendor/
 backend/.env.supabase
+
+# Vídeos de marketing: intermedios y resultado final (se regeneran con montar.mjs)
+marketing/*/build/
+marketing/*/salida/

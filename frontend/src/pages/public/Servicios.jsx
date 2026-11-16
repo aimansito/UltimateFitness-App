@@ -92,21 +92,22 @@ function Servicios() {
             id: 'free',
             nombre: 'PLAN GRATUITO',
             precio: 0,
-            badge: null,
-            descripcion: 'Perfecto para comenzar tu transformación',
+            badge: PAGOS ? null : 'DISPONIBLE AHORA',
+            descripcion: PAGOS ? 'Perfecto para comenzar tu transformación' : 'Durante el lanzamiento, todo incluido sin pagar nada',
+            destacado: !PAGOS,
             caracteristicas: [
-                { texto: 'Acceso a ejercicios básicos', incluido: true },
-                { texto: 'Rutinas predefinidas públicas', incluido: true },
-                { texto: 'Lectura completa del blog', incluido: true },
-                { texto: 'Comunidad online activa', incluido: true },
-                { texto: 'Entrenamientos personalizados', incluido: false },
-                { texto: 'Planes de dieta customizados', incluido: false },
-                { texto: 'Videos premium 4K', incluido: false },
-                { texto: 'Seguimiento semanal profesional', incluido: false },
-                { texto: 'Análisis de progreso', incluido: false }
+                { texto: 'Biblioteca completa de ejercicios', incluido: true },
+                { texto: 'Crea tus rutinas y tus dietas', incluido: true },
+                { texto: 'Rutinas y dietas listas del equipo', incluido: true },
+                { texto: 'Calculadora de calorías y macros', incluido: true },
+                { texto: 'Calendario y registro de entrenos', incluido: true },
+                { texto: 'Blog y comunidad', incluido: true },
+                { texto: 'Entrenador personal asignado', incluido: false },
+                { texto: 'Rutinas y dietas a tu medida', incluido: false },
+                { texto: 'Seguimiento semanal profesional', incluido: false }
             ],
             buttonText: 'COMENZAR GRATIS',
-            buttonColor: 'bg-gray-700 hover:bg-gray-800 border-gray-600',
+            buttonColor: PAGOS ? 'bg-gray-700 hover:bg-gray-800 border-gray-600 text-white' : 'bg-uf-gold hover:bg-yellow-400 text-black border-uf-gold',
             useLogo: false
         },
         {
@@ -114,16 +115,16 @@ function Servicios() {
             nombre: 'ULTIMATE PREMIUM',
             precio: 0,
             precioOriginal: 19,
-            badge: 'MÁS POPULAR',
-            descripcion: 'Acceso total a todo nuestro ecosistema fitness',
-            destacado: true,
+            badge: PAGOS ? 'MÁS POPULAR' : 'PRÓXIMAMENTE',
+            descripcion: PAGOS ? 'Acceso total a todo nuestro ecosistema fitness' : 'Seguimiento profesional. Te avisaremos cuando esté disponible',
+            destacado: PAGOS,
+            proximamente: !PAGOS,
             caracteristicas: [
                 { texto: 'Todo lo del plan gratuito', incluido: true },
-                { texto: 'Entrenamientos personalizados', incluido: true },
-                { texto: 'Planes de dieta customizados', incluido: true },
-                { texto: 'Videos premium 4K ilimitados', incluido: true },
+                { texto: 'Entrenador personal asignado', incluido: true },
+                { texto: 'Rutinas y dietas a tu medida', incluido: true },
+                { texto: 'Videos de técnica en HD', incluido: true },
                 { texto: 'Seguimiento semanal profesional', incluido: true },
-                { texto: 'Calendario interactivo avanzado', incluido: true },
                 { texto: 'Ajustes ilimitados de rutinas', incluido: true },
                 { texto: 'Análisis de progreso detallado', incluido: true },
                 { texto: 'Acceso anticipado a contenido nuevo', incluido: true }
@@ -195,8 +196,6 @@ function Servicios() {
                 </div>
             </div>
 
-            {PAGOS && (
-            <>
             {/* ============================================ */}
             {/* SECCIÓN DE PLANES */}
             {/* ============================================ */}
@@ -219,7 +218,9 @@ function Servicios() {
                         ELIGE TU <span className="text-uf-gold">PLAN</span>
                     </h3>
                     <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-                        Invierte en ti mismo. Cada plan está diseñado para maximizar tus resultados.
+                        {PAGOS
+                            ? 'Invierte en ti mismo. Cada plan está diseñado para maximizar tus resultados.'
+                            : 'Empieza gratis con todo lo que necesitas. El plan Premium, con seguimiento profesional, llegará más adelante.'}
                     </p>
                 </div>
 
@@ -252,19 +253,36 @@ function Servicios() {
                                 {/* Contenido del plan */}
                                 <div className="p-8">
 
-                                    {/* Nombre del plan */}
-                                    <h4 className="text-2xl font-anton font-bold text-white mb-2 uppercase tracking-wider">
-                                        {plan.nombre}
-                                    </h4>
+                                    {/* Nombre del plan (Premium con su logo) */}
+                                    {plan.useLogo ? (
+                                        <img
+                                            src="/logos/logo-premium.png"
+                                            alt="Ultimate Fitness Premium"
+                                            className="h-20 w-auto mb-3"
+                                        />
+                                    ) : (
+                                        <h4 className="text-2xl font-anton text-white mb-2 uppercase tracking-wider">
+                                            {plan.nombre}
+                                        </h4>
+                                    )}
 
                                     {/* Precio */}
                                     <div className="mb-6">
-                                        {plan.precioOriginal ? (
+                                        {plan.proximamente ? (
+                                            <>
+                                                <span className="font-anton text-4xl text-gray-400 uppercase">
+                                                    Próximamente
+                                                </span>
+                                                <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mt-2">
+                                                    Precio por anunciar
+                                                </p>
+                                            </>
+                                        ) : plan.precioOriginal ? (
                                             <>
                                                 <span className="text-2xl font-bold text-gray-500 line-through mr-3">
                                                     {plan.precioOriginal}€
                                                 </span>
-                                                <span className="text-5xl font-bold text-uf-gold">
+                                                <span className="font-anton text-5xl text-uf-gold">
                                                     GRATIS
                                                 </span>
                                                 <p className="text-uf-gold text-xs font-bold uppercase tracking-wider mt-2">
@@ -273,7 +291,7 @@ function Servicios() {
                                             </>
                                         ) : (
                                             <>
-                                                <span className="text-5xl font-bold text-uf-gold">
+                                                <span className="font-anton text-5xl text-uf-gold">
                                                     {plan.precio}€
                                                 </span>
                                                 <span className="text-gray-400 text-lg ml-2">
@@ -309,6 +327,14 @@ function Servicios() {
                                     </div>
 
                                     {/* Botón CTA con icono */}
+                                    {plan.proximamente ? (
+                                    <span
+                                        aria-disabled="true"
+                                        className="flex items-center justify-center gap-2 w-full text-center font-bold py-4 rounded-xl uppercase tracking-wider border-2 border-gray-700 text-gray-400 cursor-default"
+                                    >
+                                        DISPONIBLE PRONTO
+                                    </span>
+                                    ) : (
                                     <Link
                                         to={plan.id === 'free' ? '/register' : '/upgrade-premium'}
                                         className={`
@@ -325,6 +351,7 @@ function Servicios() {
                                         )}
                                         {plan.buttonText}
                                     </Link>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -332,8 +359,6 @@ function Servicios() {
                     </div>
                 </div>
             </div>
-            </>
-            )}
 
             {/* ============================================ */}
             {/* CTA FINAL */}

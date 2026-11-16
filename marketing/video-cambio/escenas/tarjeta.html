@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Tarjeta de entreno</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  .velos {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,0.7) 0, rgba(0,0,0,0) 520px),
+      linear-gradient(to top, rgba(0,0,0,0.97) 0, rgba(0,0,0,0.93) 420px, rgba(0,0,0,0.72) 760px, rgba(0,0,0,0) 1150px);
+  }
+  .sello { position: absolute; left: 60px; top: 150px; display: flex; align-items: center; gap: 22px; animation: aparecer 0.4s 0.05s both; }
+  .sello img { width: 84px; height: 84px; object-fit: contain; flex-shrink: 0; }
+  .sello span { font-family: 'Audiowide', sans-serif; font-size: 27px; letter-spacing: 0.26em; text-shadow: 0 2px 12px rgba(0,0,0,0.9); }
+
+  #bloque { position: absolute; left: 64px; right: 64px; bottom: 350px; animation: subir 0.6s 0.15s both; }
+  .fila { display: flex; align-items: flex-end; gap: 30px; }
+  .texto { flex: 1; min-width: 0; }
+  .texto .eyebrow { font-size: 27px; letter-spacing: 0.24em; }
+  .texto h1 { margin-top: 18px; font-size: 118px; line-height: 1.0; }
+  .texto h1 span { display: block; }
+  #figura { flex-shrink: 0; width: 400px; height: 440px; display: flex; gap: 10px; filter: drop-shadow(0 0 26px rgba(204,148,26,0.35)); }
+  #figura svg { flex: 1 1 0; min-width: 0; height: 100%; }
+
+  .datos { margin-top: 34px; padding-top: 28px; border-top: 2px solid rgba(255,255,255,0.18); display: grid; grid-template-columns: 1.4fr 1fr; gap: 30px; }
+  .datos dt { font-size: 25px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #a8a8a8; }
+  .datos dd { margin-top: 6px; font-size: 104px; }
+  .datos dd small { font-size: 54px; color: var(--oro); margin-left: 10px; }
+
+  @keyframes encender { from { fill: #3a3a3a; } to { fill: #cc941a; } }
+</style>
+</head>
+<body>
+  <div class="velos"></div>
+  <div class="sello anim"><img src="../assets/logo-small.png" alt=""><span>ENTRENO COMPLETADO</span></div>
+  <div id="bloque" class="anim">
+    <div class="fila">
+      <div class="texto">
+        <p class="eyebrow">Hoy he entrenado</p>
+        <h1 class="anton" id="grupos"></h1>
+      </div>
+      <div id="figura"></div>
+    </div>
+    <dl class="datos">
+      <div><dt>Duración</dt><dd class="anton"><span id="minutos">0</span><small>MIN</small></dd></div>
+      <div><dt>Grupos</dt><dd class="anton" id="numGrupos"></dd></div>
+    </dl>
+  </div>
+  <script src="comun.js"></script>
+  <script>
+    // Capa transparente: va sobre un vídeo del grupo muscular.
+    // datos: { grupos: [..], minutos: número | null, svgs: [anterior, posterior], dur }
+    window.iniciar = async (datos) => {
+      document.getElementById('grupos').innerHTML = datos.grupos.map((g) => `<span>${g}</span>`).join('');
+      document.getElementById('numGrupos').textContent = datos.grupos.length;
+
+      // Figura: los músculos trabajados se van encendiendo uno a uno
+      const figura = document.getElementById('figura');
+      figura.innerHTML = datos.svgs.join('');
+      let orden = 0;
+      for (const poligono of figura.querySelectorAll('polygon')) {
+        const color = getComputedStyle(poligono).fill.replace(/\s/g, '');
+        if (color === 'rgb(204,148,26)') {
+          poligono.style.animation = `encender 0.3s ${(0.55 + orden * 0.07).toFixed(2)}s both`;
+          orden++;
+        }
+      }
+
+      // Duración: cuenta hacia arriba hasta el dato real (o «??» si aún no se ha indicado)
+      const minutos = document.getElementById('minutos');
+      if (datos.minutos == null) {
+        minutos.textContent = '??';
+      } else {
+        window.alTiempo = (t) => {
+          minutos.textContent = Math.round(datos.minutos * window.progreso(t, 0.5, 1.5));
+        };
+      }
+      await window.esperarRecursos();
+    };
+  </script>
+</body>
+</html>

@@ -18,6 +18,7 @@ import {
   Award,
   CreditCard,
   Target,
+  Calculator,
   Activity,
   Zap,
   Star,
@@ -334,6 +335,8 @@ function DashboardUsuario() {
           <div className="grid md:grid-cols-3 gap-6">
             <Quick to="/mis-entrenamientos" icon={<Dumbbell className="w-8 h-8 text-blue-400 mb-3" />} title="Rutinas" hoverColor="hover:border-blue-500/50 hover:shadow-blue-500/10" />
             <Quick to="/mis-dietas" icon={<Utensils className="w-8 h-8 text-green-400 mb-3" />} title="Mi Dieta" hoverColor="hover:border-green-500/50 hover:shadow-green-500/10" />
+            <Quick to="/progreso" icon={<TrendingUp className="w-8 h-8 text-blue-400 mb-3" />} title="Mi progreso" hoverColor="hover:border-blue-500/50 hover:shadow-blue-500/10" />
+            <Quick to="/calculadora" icon={<Calculator className="w-8 h-8 text-uf-gold mb-3" />} title="Calculadora" hoverColor="hover:border-uf-gold/50 hover:shadow-uf-gold/10" />
             {PAGOS ? (
               <Quick to="/mi-suscripcion" icon={<CreditCard className="w-8 h-8 text-uf-gold mb-3" />} title="Facturación" hoverColor="hover:border-uf-gold/50 hover:shadow-uf-gold/10" />
             ) : (

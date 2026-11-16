@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Funcionalidad de la app</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  .cabecera { position: absolute; left: 70px; right: 70px; top: 150px; text-align: center; }
+  .cabecera .fila { display: flex; align-items: center; justify-content: center; gap: 20px; animation: subir 0.5s 0.05s both; }
+  .cabecera img { width: 58px; height: 58px; object-fit: contain; flex-shrink: 0; }
+  .cabecera .eyebrow { font-size: 29px; letter-spacing: 0.22em; color: #fff; }
+  .cabecera h1 { margin-top: 16px; font-size: 138px; color: var(--oro); animation: golpe 0.55s 0.2s both; }
+
+  /* Móvil con la captura real de la app */
+  #movil {
+    position: absolute; left: 50%; top: 400px; width: 640px; height: 1385px; margin-left: -320px;
+    border-radius: 78px; background: #000; border: 12px solid #1d1d1d;
+    box-shadow: 0 0 0 2px #333, 0 50px 140px rgba(0,0,0,0.9), 0 0 120px rgba(204,148,26,0.22);
+    overflow: hidden; animation: entrar 0.7s 0.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes entrar { from { opacity: 0; transform: translateY(260px) scale(0.94); } to { opacity: 1; transform: none; } }
+  #pantalla { position: absolute; inset: 0; border-radius: 66px; overflow: hidden; background: #0a0a0a; }
+  #pantalla img { position: absolute; left: 0; top: 0; width: 100%; height: auto; display: block; }
+  .muesca { position: absolute; left: 50%; top: 16px; width: 170px; height: 34px; margin-left: -85px; border-radius: 20px; background: #000; z-index: 5; }
+
+  /* Toque del dedo antes de cada cambio de pantalla */
+  .toque {
+    position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%;
+    background: rgba(240,179,35,0.45); border: 3px solid var(--oro-vivo); z-index: 4;
+    animation: toque 0.42s both ease-out;
+  }
+  @keyframes toque { 0% { opacity: 0; transform: scale(0.3); } 35% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.7); } }
+
+  /* Velo inferior: deja sitio a los subtítulos */
+  .velo { position: absolute; left: 0; right: 0; bottom: 0; height: 700px; background: linear-gradient(to top, rgba(10,10,10,1) 0, rgba(10,10,10,0.92) 300px, rgba(10,10,10,0) 100%); }
+</style>
+</head>
+<body class="marca">
+  <div class="blob" style="width:760px;height:760px;left:-300px;top:-240px;opacity:0.14"></div>
+  <div class="blob" style="width:820px;height:820px;right:-320px;top:700px;opacity:0.12"></div>
+  <div class="cabecera">
+    <div class="fila anim"><img src="../assets/logo-small.png" alt=""><span class="eyebrow" id="antetitulo"></span></div>
+    <h1 class="anton" id="titulo"></h1>
+  </div>
+  <div id="movil"><div class="muesca"></div><div id="pantalla"></div></div>
+  <div class="velo"></div>
+  <script src="comun.js"></script>
+  <script>
+    // datos: { antetitulo, titulo, dur, pantallas: [{ src, en, toque: [x, y] }], desplazar: { src, de, a } }
+    window.iniciar = async (datos) => {
+      document.getElementById('antetitulo').textContent = datos.antetitulo;
+      document.getElementById('titulo').textContent = datos.titulo;
+      const pantalla = document.getElementById('pantalla');
+
+      // Varias capturas que se van sucediendo (como si se fuera tocando la app)
+      for (const p of datos.pantallas || []) {
+        const img = window.crear('img', 'anim');
+        img.src = p.src;
+        if (p.en > 0) { img.style.animation = `aparecer 0.16s ${p.en}s both`; }
+        pantalla.appendChild(img);
+        if (p.toque) {
+          const toque = window.crear('div', 'toque', '', { left: `${p.toque[0] * 100}%`, top: `${p.toque[1] * 100}%`, animationDelay: `${Math.max(0, p.en - 0.3)}s` });
+          pantalla.appendChild(toque);
+        }
+      }
+
+      // Una captura larga que se desplaza hacia arriba (como al hacer scroll)
+      if (datos.desplazar) {
+        const img = window.crear('img');
+        img.src = datos.desplazar.src;
+        img.id = 'larga';
+        pantalla.appendChild(img);
+        window.alTiempo = (t) => {
+          const p = window.progreso(t, datos.desplazar.desde ?? 0.9, datos.desplazar.hasta ?? datos.dur);
+          img.style.transform = `translateY(${-p * datos.desplazar.px}px)`;
+        };
+      }
+      await window.esperarRecursos();
+    };
+  </script>
+</body>
+</html>

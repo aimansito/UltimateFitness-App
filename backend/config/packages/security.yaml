@@ -6,10 +6,9 @@ security:
             algorithm: auto
 
     providers:
+        # Busca por email o por nombre de usuario (ver App\Security\UsuarioProvider)
         usuario_provider:
-            entity:
-                class: App\Entity\Usuario
-                property: email
+            id: App\Security\UsuarioProvider
 
         entrenador_provider:
             entity:
@@ -69,6 +68,8 @@ security:
         - { path: ^/api/reenviar-verificacion$, roles: PUBLIC_ACCESS }
         - { path: ^/api/contacto$, roles: PUBLIC_ACCESS }
         - { path: ^/api/stripe/webhook$, roles: PUBLIC_ACCESS }
+        # Catálogo de ejercicios visible sin cuenta (la técnica completa pide registrarse)
+        - { path: ^/api/custom/ejercicios$, roles: PUBLIC_ACCESS, methods: [GET] }
         # Capa social: lectura pública (el controlador filtra según quién mira)
         - { path: ^/api/perfil/publico/, roles: PUBLIC_ACCESS, methods: [GET] }
         - { path: ^/api/social/(seguidores|seguidos)/, roles: PUBLIC_ACCESS, methods: [GET] }

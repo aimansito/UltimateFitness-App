@@ -32,6 +32,7 @@ class LimiteIntentosSubscriber
         '/api/verificar-email' => [20, 900],
         '/api/reenviar-verificacion' => [5, 900],
         '/api/contacto' => [5, 3600],
+        '/api/custom/ejercicios' => [30, 3600], // solo cuenta el POST (crear ejercicio propio)
         // Piden la contraseña: se limitan para que no sirvan para adivinarla
         '/api/cuenta/password' => [10, 900],
         '/api/cuenta/eliminar' => [10, 900],

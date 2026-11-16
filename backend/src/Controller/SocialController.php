@@ -20,7 +20,7 @@ class SocialController extends AbstractController
 {
     private const POR_PAGINA = 20;
     private const REQ_CUENTA = ['tipo' => 'usuario|entrenador', 'id' => '\d+'];
-    private const REQ_ITEM = ['itemTipo' => 'entrenamiento|dieta|plato', 'id' => '\d+'];
+    private const REQ_ITEM = ['itemTipo' => 'entrenamiento|dieta|plato|ejercicio', 'id' => '\d+'];
     private const DIAS = [1 => 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
     public function __construct(

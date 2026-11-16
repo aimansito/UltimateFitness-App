@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom";
 import { ENTRENADORES, PAGOS } from "./config/funciones";
 import Navbar from "./components/layout/Navbar";
@@ -9,63 +10,76 @@ import { ToastProvider } from "./context/ToastContext";
 
 // Páginas públicas
 import Login from "./pages/public/Login";
-import LoginEntrenador from "./pages/entrenador/LoginEntrenador";
+const LoginEntrenador = lazy(() => import("./pages/entrenador/LoginEntrenador"));
 import Register from "./pages/public/Register";
-import UpgradePremium from "./pages/public/UpgradePremium";
+const UpgradePremium = lazy(() => import("./pages/public/UpgradePremium"));
 import Home from "./pages/public/Home";
-import Servicios from "./pages/public/Servicios";
-import Contacto from "./pages/public/Contacto";
-import Gym from "./pages/public/Gym";
-import Workout from "./pages/public/Workout";
-import Alimentacion from "./pages/public/Alimentacion";
-import DetalleDietaPublica from "./pages/public/DetalleDieta";
-import CrearDieta from "./pages/public/CrearDieta";
-import Suplementos from "./pages/public/Suplementos";
-import Blog from "./pages/public/Blog";
-import BlogPost from "./pages/public/BlogPost";
-import DetallePlato from "./pages/public/DetallePlato";
-import PoliticaPrivacidad from "./pages/public/PoliticaPrivacidad";
-import AvisoLegal from "./pages/public/AvisoLegal";
-import TerminosCondiciones from "./pages/public/TerminosCondiciones";
-import PoliticaCookies from "./pages/public/PoliticaCookies";
-import RecuperarPassword from "./pages/public/RecuperarPassword";
-import RestablecerPassword from "./pages/public/RestablecerPassword";
-import VerificarEmail from "./pages/public/VerificarEmail";
-import PerfilPublico from "./pages/public/PerfilPublico";
+const Servicios = lazy(() => import("./pages/public/Servicios"));
+const Contacto = lazy(() => import("./pages/public/Contacto"));
+const Gym = lazy(() => import("./pages/public/Gym"));
+const Workout = lazy(() => import("./pages/public/Workout"));
+const Alimentacion = lazy(() => import("./pages/public/Alimentacion"));
+const DetalleDietaPublica = lazy(() => import("./pages/public/DetalleDieta"));
+const CrearDieta = lazy(() => import("./pages/public/CrearDieta"));
+const Suplementos = lazy(() => import("./pages/public/Suplementos"));
+const Blog = lazy(() => import("./pages/public/Blog"));
+const BlogPost = lazy(() => import("./pages/public/BlogPost"));
+const DetallePlato = lazy(() => import("./pages/public/DetallePlato"));
+const PoliticaPrivacidad = lazy(() => import("./pages/public/PoliticaPrivacidad"));
+const AvisoLegal = lazy(() => import("./pages/public/AvisoLegal"));
+const TerminosCondiciones = lazy(() => import("./pages/public/TerminosCondiciones"));
+const PoliticaCookies = lazy(() => import("./pages/public/PoliticaCookies"));
+const RecuperarPassword = lazy(() => import("./pages/public/RecuperarPassword"));
+const RestablecerPassword = lazy(() => import("./pages/public/RestablecerPassword"));
+const VerificarEmail = lazy(() => import("./pages/public/VerificarEmail"));
+const PerfilPublico = lazy(() => import("./pages/public/PerfilPublico"));
 import CookieBanner from "./components/common/CookieBanner";
 
 // Dashboard Router
-import DashboardRouter from "./pages/DashboardRouter";
+const DashboardRouter = lazy(() => import("./pages/DashboardRouter"));
 
 // Dashboards por rol
-import DashboardUsuario from "./pages/user/DashboardUsuario";
-import DashboardAdmin from "./pages/admin/DashboardAdmin";
-import DashboardEntrenador from "./pages/entrenador/DashboardEntrenador";
+const DashboardUsuario = lazy(() => import("./pages/user/DashboardUsuario"));
+const DashboardAdmin = lazy(() => import("./pages/admin/DashboardAdmin"));
+const DashboardEntrenador = lazy(() => import("./pages/entrenador/DashboardEntrenador"));
 
 // Páginas privadas - Admin
-import Usuarios from "./pages/private/admin/Usuarios";
+const Usuarios = lazy(() => import("./pages/private/admin/Usuarios"));
 
 // Páginas privadas - Usuario
-import PlanificadorSemanal from "./pages/private/PlanificadorSemanal";
-import MisDatosPersonales from "./pages/user/MisDatosPersonales";
-import GestionarCuenta from "./pages/user/GestionarCuenta";
-import MisEntrenamientos from "./pages/user/MisEntrenamientos";
-import CrearEntrenamiento from "./pages/user/CrearEntrenamiento";
-import MisDietas from "./pages/user/MisDietas";
-import MisPlatos from "./pages/user/MisPlatos";
-import CrearPlatoUsuario from "./pages/user/CrearPlato";
-import DetalleDieta from "./pages/user/DetalleDieta";
-import DetalleEntrenamiento from "./pages/user/DetalleEntrenamiento";
-import MiSuscripcion from "./pages/user/MiSuscripcion";
-import DescubrirEntrenadores from "./pages/user/DescubrirEntrenadores";
+const PlanificadorSemanal = lazy(() => import("./pages/private/PlanificadorSemanal"));
+const MisDatosPersonales = lazy(() => import("./pages/user/MisDatosPersonales"));
+const GestionarCuenta = lazy(() => import("./pages/user/GestionarCuenta"));
+const MisEntrenamientos = lazy(() => import("./pages/user/MisEntrenamientos"));
+const CrearEntrenamiento = lazy(() => import("./pages/user/CrearEntrenamiento"));
+const Calculadora = lazy(() => import("./pages/user/Calculadora"));
+const MiProgreso = lazy(() => import("./pages/user/MiProgreso"));
+const MisDietas = lazy(() => import("./pages/user/MisDietas"));
+const MisPlatos = lazy(() => import("./pages/user/MisPlatos"));
+const CrearPlatoUsuario = lazy(() => import("./pages/user/CrearPlato"));
+const DetalleDieta = lazy(() => import("./pages/user/DetalleDieta"));
+const DetalleEntrenamiento = lazy(() => import("./pages/user/DetalleEntrenamiento"));
+const MiSuscripcion = lazy(() => import("./pages/user/MiSuscripcion"));
+const DescubrirEntrenadores = lazy(() => import("./pages/user/DescubrirEntrenadores"));
 
-import CrearDietaCliente from "./pages/entrenador/CrearDietaCliente";
-import CrearEntrenamientoCliente from "./pages/entrenador/CrearEntrenamientoCliente";
-import MisPlatosEntrenador from "./pages/entrenador/MisPlatosEntrenador";
-import MisDietasEntrenador from "./pages/entrenador/MisDietasEntrenador";
-import DetalleDietaEntrenador from "./pages/entrenador/DetalleDietaEntrenador";
-import CrearPlato from "./pages/entrenador/CrearPlato";
-import MisEntrenamientosEntrenador from "./pages/entrenador/MisEntrenamientosEntrenador";
+const CrearDietaCliente = lazy(() => import("./pages/entrenador/CrearDietaCliente"));
+const CrearEntrenamientoCliente = lazy(() => import("./pages/entrenador/CrearEntrenamientoCliente"));
+const MisPlatosEntrenador = lazy(() => import("./pages/entrenador/MisPlatosEntrenador"));
+const MisDietasEntrenador = lazy(() => import("./pages/entrenador/MisDietasEntrenador"));
+const DetalleDietaEntrenador = lazy(() => import("./pages/entrenador/DetalleDietaEntrenador"));
+const CrearPlato = lazy(() => import("./pages/entrenador/CrearPlato"));
+const MisEntrenamientosEntrenador = lazy(() => import("./pages/entrenador/MisEntrenamientosEntrenador"));
+
+// Las páginas se cargan bajo demanda: la portada, el login y el registro van en el paquete inicial;
+// el resto se descarga al entrar (menos JavaScript en la primera visita).
+function Cargando() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-live="polite">
+      <div className="h-12 w-12 animate-spin rounded-full border-b-4 border-t-4 border-uf-gold" />
+      <span className="sr-only">Cargando...</span>
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -76,6 +90,7 @@ function App() {
         <Navbar />
 
         <main className="flex-grow">
+          <Suspense fallback={<Cargando />}>
           <Routes>
 
             {/* --------------------------- */}
@@ -297,6 +312,24 @@ function App() {
             />
 
             <Route
+              path="/progreso"
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <MiProgreso />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/calculadora"
+              element={
+                <ProtectedRoute requireAuth={true}>
+                  <Calculadora />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/mis-entrenamientos/:entrenamientoId"
               element={
                 <ProtectedRoute requireAuth={true}>
@@ -399,6 +432,7 @@ function App() {
               }
             />
           </Routes>
+          </Suspense>
         </main>
 
         <Footer />

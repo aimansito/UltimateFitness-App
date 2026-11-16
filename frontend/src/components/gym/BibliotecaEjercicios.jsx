@@ -3,7 +3,7 @@
 // ============================================
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ArrowRight, Lock, Moon, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Lock, Sparkles, X, Zap } from 'lucide-react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import SEO from '../common/SEO';
@@ -26,7 +26,7 @@ const GRUPOS_MUSCULARES = [
   { id: 'gluteos', nombre: 'Glúteos' },
 ];
 
-function BibliotecaEjercicios({ seo, eyebrow, title, highlight, subtitle, ejerciciosMuestra, rutinaEjemplo }) {
+function BibliotecaEjercicios({ seo, eyebrow, title, highlight, subtitle, ejerciciosMuestra }) {
   const { accesoCompleto: isPremium, isAuthenticated } = useAuth();
   const [searchParams] = useSearchParams();
   const grupoInicial = GRUPOS_MUSCULARES.find((g) => g.id === normalizarGrupo(searchParams.get('grupo')))?.id || 'TODOS';
@@ -37,22 +37,19 @@ function BibliotecaEjercicios({ seo, eyebrow, title, highlight, subtitle, ejerci
   const [ejercicioSeleccionado, setEjercicioSeleccionado] = useState(null);
   const [musculoSeleccionado, setMusculoSeleccionado] = useState(grupoInicial);
   const [nivelSeleccionado, setNivelSeleccionado] = useState('');
+  const [pedirCuenta, setPedirCuenta] = useState(null);
 
   const cargarEjercicios = async () => {
     try {
       setCargando(true);
       setError(null);
 
-      if (!isAuthenticated) {
-        setEjercicios(ejerciciosMuestra);
-        return;
-      }
-
       const response = await api.get('/custom/ejercicios?limit=300');
       setEjercicios(response.data?.ejercicios ?? []);
     } catch (err) {
-      console.error('Error cargando ejercicios:', err);
-      setError(err.message);
+      // Sin conexión con la API: se enseña la muestra para que la página no quede vacía
+      if (!isAuthenticated && ejerciciosMuestra?.length) setEjercicios(ejerciciosMuestra);
+      else setError(err.message);
     } finally {
       setCargando(false);
     }
@@ -91,9 +88,9 @@ function BibliotecaEjercicios({ seo, eyebrow, title, highlight, subtitle, ejerci
               <Lock className="h-5 w-5" />
             </span>
             <div className="flex-1">
-              <h2 className="font-anton text-xl uppercase text-white">Estás viendo una muestra</h2>
+              <h2 className="font-anton text-xl uppercase text-white">Explora todos los ejercicios</h2>
               <p className="mt-1 text-sm text-uf-muted">
-                Regístrate gratis para acceder a la biblioteca completa con más de 140 ejercicios.
+                Crea tu cuenta gratis para ver la técnica de cada uno, guardarlos en favoritos y montar tu rutina.
               </p>
             </div>
             <div className="flex shrink-0 gap-3">
@@ -159,7 +156,7 @@ function BibliotecaEjercicios({ seo, eyebrow, title, highlight, subtitle, ejerci
                 key={ejercicio.id}
                 ejercicio={ejercicio}
                 isPremium={isPremium}
-                onClick={() => setEjercicioSeleccionado(ejercicio)}
+                onClick={() => (isAuthenticated ? setEjercicioSeleccionado(ejercicio) : setPedirCuenta(ejercicio))}
               />
             ))}
           </div>
@@ -171,39 +168,10 @@ function BibliotecaEjercicios({ seo, eyebrow, title, highlight, subtitle, ejerci
           </div>
         )}
 
-        {/* Rutina semanal de ejemplo (solo visitantes) */}
-        {!isAuthenticated && !cargando && rutinaEjemplo && (
+        {/* Llamada a crear rutina (solo visitantes) */}
+        {!isAuthenticated && !cargando && (
           <section className="mt-24">
-            <Reveal className="mb-10 text-center">
-              <span className="uf-eyebrow justify-center">Planificación</span>
-              <h2 className="mt-4 font-anton text-4xl uppercase text-white md:text-5xl">
-                Ejemplo de <span className="uf-text-gold">Rutina Semanal</span>
-              </h2>
-              <p className="mt-3 text-uf-muted">Así se vería una semana de entrenamiento dividida por grupo muscular</p>
-            </Reveal>
-
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
-              {rutinaEjemplo.map((d, i) => (
-                <Reveal key={d.dia} delay={i * 50}>
-                  <div className={`uf-card flex h-full flex-col items-center p-4 text-center ${d.grupo ? '' : 'opacity-60'}`}>
-                    <p className="font-audiowide text-[10px] uppercase tracking-widest text-uf-muted">{d.dia}</p>
-                    {d.grupo ? (
-                      <MuscleMap grupo={d.grupo} className="my-3 h-28" />
-                    ) : (
-                      <span className="my-3 flex h-28 items-center justify-center">
-                        <Moon className="h-9 w-9 text-gray-600" />
-                      </span>
-                    )}
-                    <p className={`font-anton text-lg uppercase ${d.grupo ? 'text-uf-gold' : 'text-gray-500'}`}>
-                      {d.titulo}
-                    </p>
-                    <p className="mt-1 text-xs text-uf-muted">{d.ejercicio || 'Recuperación'}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-            <Reveal className="mt-8">
+            <Reveal>
               <div className="relative isolate overflow-hidden rounded-[1.5rem] border border-uf-gold/50 bg-uf-card px-6 py-12 text-center">
                 <div className="uf-glow -z-10 left-1/2 top-0 h-56 w-[30rem] -translate-x-1/2" aria-hidden="true" />
                 <h3 className="font-anton text-3xl uppercase text-white md:text-4xl">¿Quieres tu propia rutina a medida?</h3>
@@ -220,6 +188,39 @@ function BibliotecaEjercicios({ seo, eyebrow, title, highlight, subtitle, ejerci
           </section>
         )}
       </div>
+
+      {pedirCuenta && (
+        <div
+          className="animate-fadeIn fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          onClick={() => setPedirCuenta(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="titulo-pedir-cuenta"
+        >
+          <div className="uf-card animate-scaleIn relative w-full max-w-md p-8 text-center" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setPedirCuenta(null)}
+              aria-label="Cerrar"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-uf-line text-gray-400 hover:border-uf-gold hover:text-white"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <MuscleMap grupo={pedirCuenta.grupoMuscular} vista="ambas" className="mx-auto h-36" />
+            <h2 id="titulo-pedir-cuenta" className="mt-5 font-anton text-3xl uppercase text-white">{pedirCuenta.nombre}</h2>
+            <p className="mt-3 text-gray-300">
+              Crea tu cuenta gratis para ver la técnica de este ejercicio, guardarlo en favoritos y añadirlo a tu rutina.
+            </p>
+            <div className="mt-7 flex flex-col gap-3">
+              <Link to="/register" className="uf-btn uf-btn-primary w-full">
+                <Zap className="h-4 w-4" />
+                Crear cuenta gratis
+              </Link>
+              <Link to="/login" className="uf-btn uf-btn-ghost w-full">Ya tengo cuenta</Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {ejercicioSeleccionado && (
         <ModalEjercicio

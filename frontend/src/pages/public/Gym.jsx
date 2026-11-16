@@ -73,16 +73,6 @@ const EJERCICIOS_MUESTRA = [
   },
 ];
 
-const RUTINA_EJEMPLO = [
-  { dia: 'Lunes', grupo: 'pecho', titulo: 'Pecho', ejercicio: 'Press de Banca' },
-  { dia: 'Martes', grupo: 'espalda', titulo: 'Espalda', ejercicio: 'Dominadas' },
-  { dia: 'Miércoles', grupo: 'piernas', titulo: 'Piernas', ejercicio: 'Sentadillas' },
-  { dia: 'Jueves', grupo: null, titulo: 'Descanso', ejercicio: null },
-  { dia: 'Viernes', grupo: 'hombros', titulo: 'Hombros', ejercicio: 'Press Militar' },
-  { dia: 'Sábado', grupo: 'brazos', titulo: 'Brazos', ejercicio: 'Curl de Bíceps' },
-  { dia: 'Domingo', grupo: null, titulo: 'Descanso', ejercicio: null },
-];
-
 function Gym() {
   return (
     <>
@@ -99,7 +89,6 @@ function Gym() {
       highlight="Ejercicios"
       subtitle="Explora los ejercicios por grupo muscular y nivel, con la zona trabajada marcada en cada uno."
       ejerciciosMuestra={EJERCICIOS_MUESTRA}
-      rutinaEjemplo={RUTINA_EJEMPLO}
     />
     <RutinasOficiales />
     </>

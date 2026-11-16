@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Logo</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  #escena { position: absolute; inset: 0; animation: acercar 4s linear both; }
+  .centro { position: absolute; left: 0; right: 0; top: 520px; display: flex; flex-direction: column; align-items: center; }
+  .anillo {
+    position: absolute; top: 60px; width: 520px; height: 520px; border-radius: 50%;
+    border: 3px solid var(--oro); animation: onda 1.1s 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  @keyframes onda { from { opacity: 0.9; transform: scale(0.3); } to { opacity: 0; transform: scale(2.4); } }
+  #logo { width: 760px; height: auto; animation: golpe 0.7s 0.25s both; filter: drop-shadow(0 0 60px rgba(204,148,26,0.45)); }
+  .linea { margin-top: 60px; height: 3px; width: 420px; background: var(--oro); transform-origin: center; animation: abrir 0.5s 0.85s both; }
+  @keyframes abrir { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .eyebrow { margin-top: 46px; font-size: 40px; animation: subir 0.55s 1s both; }
+</style>
+</head>
+<body class="marca">
+  <div id="escena">
+    <div class="blob" style="width:900px;height:900px;left:90px;top:360px;opacity:0.2"></div>
+    <div class="blob" style="width:620px;height:620px;right:-260px;bottom:-200px;opacity:0.1"></div>
+    <div class="centro">
+      <div class="anillo"></div>
+      <img id="logo" src="../assets/logo.png" alt="">
+      <div class="linea anim"></div>
+      <p class="eyebrow anim">El siguiente nivel</p>
+    </div>
+  </div>
+  <script src="comun.js"></script>
+  <script>
+    window.iniciar = async () => { await window.esperarRecursos(); };
+  </script>
+</body>
+</html>

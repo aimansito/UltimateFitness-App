@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import MuscleMap from '../common/MuscleMap';
-import { formatoSeries, gruposDe, statsDe } from '../../utils/imagenEntreno';
+import { formatoSeries, gruposDe, nombresGrupos, statsDe } from '../../utils/imagenEntreno';
 
 const fechaCorta = (d = new Date()) =>
   d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }).replace('.', '');
@@ -54,8 +54,11 @@ const TarjetaEntreno = forwardRef(function TarjetaEntreno(
             )}
           </div>
           {grupos.length > 0 && (
-            <div ref={mapaRef} className={`shrink-0 ${compacta ? 'h-28 w-20' : 'h-36 w-28 sm:h-44 sm:w-32'}`}>
-              <MuscleMap grupos={grupos} vista="ambas" className="h-full w-full" bodyColor="#3a3a3a" />
+            <div className={`shrink-0 text-center ${compacta ? 'w-20' : 'w-28 sm:w-32'}`}>
+              <div ref={mapaRef} className={compacta ? 'h-28' : 'h-36 sm:h-44'}>
+                <MuscleMap grupos={grupos} vista="ambas" className="h-full w-full" bodyColor="#3a3a3a" />
+              </div>
+              <p className="mt-1 line-clamp-2 font-anton text-[11px] uppercase leading-tight text-uf-gold sm:text-xs">{nombresGrupos(ejercicios)}</p>
             </div>
           )}
         </div>

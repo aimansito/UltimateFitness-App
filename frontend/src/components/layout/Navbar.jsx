@@ -21,6 +21,7 @@ import {
   Shield,
   LogOut,
   Search,
+  TrendingUp,
 } from "lucide-react";
 
 function Navbar() {
@@ -117,6 +118,7 @@ function Navbar() {
       { label: "Mi Panel", path: "/dashboard", icon: Activity },
       ...(ENTRENADORES && isPremium ? [{ label: "Buscar Entrenador", path: "/user/descubrir", icon: Search }] : []),
       ...(accesoCompleto ? [{ label: "Mis Entrenamientos", path: "/mis-entrenamientos", icon: Dumbbell }] : []),
+      { label: "Mi Progreso", path: "/progreso", icon: TrendingUp },
       { label: "Mis Dietas", path: "/mis-dietas", icon: Utensils },
       ...(PAGOS && isPremium ? [{ label: "Mi Suscripción", path: "/mi-suscripcion", icon: CreditCard }] : []),
       ...(PAGOS && !isPremium ? [{ label: "Hazte Premium", path: "/upgrade-premium", icon: Star }] : []),

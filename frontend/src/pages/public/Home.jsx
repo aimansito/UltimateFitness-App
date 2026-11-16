@@ -1,9 +1,12 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PAGOS } from "../../config/funciones";
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import CalculadoraNutricional from '../../components/dieta/CalculadoraNutricional';
+import { guardarPendiente } from '../../utils/calculoNutricional';
 import {
   Salad, Dumbbell, Star, Zap, ArrowRight, ArrowUpRight, Check,
-  CalendarDays, BookOpen, Layers, Flame, Quote, Mail, Sparkles,
+  CalendarDays, BookOpen, Layers, Flame, Quote, Mail, Sparkles, Clock,
 } from 'lucide-react';
 import SEO from '../../components/common/SEO';
 import MuscleMap from '../../components/common/MuscleMap';
@@ -58,7 +61,7 @@ const SERVICIOS = [
 const STATS = [
   { value: '140+', label: 'Ejercicios' },
   { value: '8', label: 'Grupos musculares' },
-  { value: '25+', label: 'Platos y recetas' },
+  { value: '35+', label: 'Platos y recetas' },
   { value: '24/7', label: 'Acceso a tu plan' },
 ];
 
@@ -107,14 +110,21 @@ const TESTIMONIOS = [
   },
 ];
 
-const PLAN_GRATIS = ['Acceso a ejercicios básicos', 'Rutinas predefinidas', 'Blog completo', 'Comunidad online'];
+const PLAN_GRATIS = [
+  'Biblioteca completa de ejercicios',
+  'Crea tus rutinas y tus dietas',
+  'Rutinas y dietas listas del equipo',
+  'Calculadora de calorías y macros',
+  'Calendario y registro de entrenos',
+  'Blog y comunidad',
+];
 const PLAN_PREMIUM = [
   'Todo lo del plan gratuito',
-  'Entrenamientos personalizados',
-  'Dietas a medida',
-  'Videos premium 4K',
-  'Calendario interactivo',
+  'Entrenador personal asignado',
+  'Rutinas y dietas a tu medida',
+  'Videos de técnica en HD',
   'Seguimiento semanal',
+  'Acceso anticipado a novedades',
 ];
 
 function SectionHeader({ eyebrow, title, highlight, subtitle, link, linkLabel, center = false }) {
@@ -141,8 +151,20 @@ function SectionHeader({ eyebrow, title, highlight, subtitle, link, linkLabel, c
 }
 
 function Home() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [grupoHero, setGrupoHero] = useState(0);
   const [pausado, setPausado] = useState(false);
+
+  // La calculadora es gratis, pero el resultado se ve con cuenta: así queda guardado en su perfil
+  const alCalcular = (_resultado, datos) => {
+    if (isAuthenticated) {
+      navigate('/calculadora', { state: { datos } });
+    } else {
+      guardarPendiente(datos);
+      navigate('/register', { state: { desdeCalculadora: true } });
+    }
+  };
 
   useEffect(() => {
     if (pausado) return undefined;
@@ -430,8 +452,6 @@ function Home() {
       </>
       )}
 
-      {PAGOS && (
-      <>
       {/* ============================================ */}
       {/* 7. PLANES */}
       {/* ============================================ */}
@@ -441,14 +461,18 @@ function Home() {
             eyebrow="Planes"
             title="Elige tu"
             highlight="Plan"
-            subtitle="Comienza gratis y pasa a Premium cuando quieras."
+            subtitle={PAGOS ? 'Comienza gratis y pasa a Premium cuando quieras.' : 'Durante el lanzamiento, todo está incluido en el plan gratuito.'}
             center
           />
         </Reveal>
 
         <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-2">
           <Reveal>
-            <div className="uf-card flex h-full flex-col p-8">
+            <div className="uf-card relative flex h-full flex-col border-uf-gold/70 p-8 shadow-[0_30px_80px_-30px_rgba(204,148,26,0.45)]">
+              <span className="absolute -top-3 right-6 inline-flex items-center gap-1.5 rounded-full bg-uf-gold px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black">
+                <Star className="h-3.5 w-3.5 fill-black" />
+                Disponible ahora
+              </span>
               <h3 className="font-anton text-2xl uppercase text-white">Plan Gratuito</h3>
               <p className="mt-4 flex items-baseline gap-2">
                 <span className="font-anton text-6xl text-white">0€</span>
@@ -456,48 +480,85 @@ function Home() {
               </p>
               <ul className="mt-8 flex-1 space-y-3">
                 {PLAN_GRATIS.map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm text-gray-300">
-                    <Check className="h-4 w-4 shrink-0 text-uf-gold" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/register" className="uf-btn uf-btn-ghost mt-8 w-full">
-                Comenzar gratis
-              </Link>
-            </div>
-          </Reveal>
-
-          <Reveal delay={100}>
-            <div className="uf-card relative flex h-full flex-col border-uf-gold/70 p-8 shadow-[0_30px_80px_-30px_rgba(204,148,26,0.45)]">
-              <span className="absolute -top-3 right-6 inline-flex items-center gap-1.5 rounded-full bg-uf-gold px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-black">
-                <Star className="h-3.5 w-3.5 fill-black" />
-                Más popular
-              </span>
-              <h3 className="font-anton text-2xl uppercase text-white">Ultimate Premium</h3>
-              <p className="mt-4 flex items-baseline gap-3">
-                <span className="text-2xl font-bold text-gray-600 line-through">19€</span>
-                <span className="uf-text-gold font-anton text-6xl">Gratis</span>
-              </p>
-              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-uf-gold">Oferta de lanzamiento</p>
-              <ul className="mt-6 flex-1 space-y-3">
-                {PLAN_PREMIUM.map((item) => (
                   <li key={item} className="flex items-center gap-3 text-sm text-white">
                     <Check className="h-4 w-4 shrink-0 text-uf-gold" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <Link to="/upgrade-premium" className="uf-btn uf-btn-primary mt-8 w-full">
-                <Star className="h-4 w-4" />
-                Hacerse Premium
+              <Link to="/register" className="uf-btn uf-btn-primary mt-8 w-full">
+                <Zap className="h-4 w-4" />
+                Crear cuenta gratis
               </Link>
+            </div>
+          </Reveal>
+
+          <Reveal delay={100}>
+            <div className="uf-card relative flex h-full flex-col p-8">
+              <span className="absolute -top-3 right-6 inline-flex items-center gap-1.5 rounded-full border border-uf-line bg-uf-darker px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest text-gray-300">
+                <Clock className="h-3.5 w-3.5" />
+                {PAGOS ? 'Más popular' : 'Próximamente'}
+              </span>
+              <h3 className="sr-only">Ultimate Premium</h3>
+              <img src="/logos/logo-premium.png" alt="Ultimate Fitness Premium" className="h-20 w-auto self-start" />
+              {PAGOS ? (
+                <p className="mt-4 flex items-baseline gap-3">
+                  <span className="text-2xl font-bold text-gray-600 line-through">19€</span>
+                  <span className="uf-text-gold font-anton text-6xl">Gratis</span>
+                </p>
+              ) : (
+                <p className="mt-4 font-anton text-4xl uppercase text-gray-400">Próximamente</p>
+              )}
+              <p className="mt-2 text-xs font-bold uppercase tracking-widest text-uf-muted">
+                {PAGOS ? 'Oferta de lanzamiento' : 'Te avisaremos cuando esté disponible'}
+              </p>
+              <ul className="mt-6 flex-1 space-y-3">
+                {PLAN_PREMIUM.map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm text-gray-300">
+                    <Check className="h-4 w-4 shrink-0 text-uf-gold/70" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              {PAGOS ? (
+                <Link to="/upgrade-premium" className="uf-btn uf-btn-primary mt-8 w-full">
+                  <Star className="h-4 w-4" />
+                  Hacerse Premium
+                </Link>
+              ) : (
+                <span className="uf-btn uf-btn-ghost mt-8 w-full cursor-default opacity-60" aria-disabled="true">
+                  Disponible pronto
+                </span>
+              )}
             </div>
           </Reveal>
         </div>
       </section>
-      </>
-      )}
+
+      {/* ============================================ */}
+      {/* 7b. CALCULADORA NUTRICIONAL */}
+      {/* ============================================ */}
+      <section id="calculadora" className="border-y border-uf-line bg-uf-card/60 py-24">
+        <div className="container mx-auto px-4">
+          <Reveal>
+            <SectionHeader
+              eyebrow="Gratis y sin tarjeta"
+              title="Calcula tus"
+              highlight="Calorías"
+              subtitle="Rellena tus datos y te decimos cuántas calorías y macros necesitas al día. El resultado se guarda en tu cuenta gratuita."
+              center
+            />
+          </Reveal>
+          <Reveal className="mx-auto max-w-4xl">
+            <CalculadoraNutricional
+              mostrarResultado={false}
+              onCalcular={alCalcular}
+              titulo="Calculadora nutricional"
+              textoBoton={isAuthenticated ? 'Ver mi resultado' : 'Ver mi resultado con mi cuenta gratis'}
+            />
+          </Reveal>
+        </div>
+      </section>
 
       {/* ============================================ */}
       {/* 8. CTA FINAL */}

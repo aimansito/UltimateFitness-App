@@ -1,0 +1,43 @@
+/* Base de todas las escenas: lienzo 1080x1920 y marca (colores y tipografías de la web) */
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Audiowide&family=Inter:wght@400;600;700;800&display=swap');
+
+:root {
+  --oro: #cc941a;
+  --oro-vivo: #f0b323;
+  --fondo: #0a0a0a;
+  --tarjeta: #131313;
+  --borde: #2a2a2a;
+  --gris: #c7c7c7;
+  --apagado: #8a8a8a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 1080px;
+  height: 1920px;
+  overflow: hidden;
+  background: transparent;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.marca { background: var(--fondo); }
+
+.anton { font-family: 'Anton', sans-serif; text-transform: uppercase; font-weight: 400; line-height: 0.98; }
+.eyebrow { font-family: 'Audiowide', sans-serif; text-transform: uppercase; letter-spacing: 0.32em; color: var(--oro); }
+.oro { color: var(--oro); }
+
+/* Resplandores de fondo (guía de marca): círculos grandes, muy tenues, fuera del borde */
+.blob { position: absolute; border-radius: 50%; background: var(--oro); filter: blur(120px); opacity: 0.16; }
+
+.capa { position: absolute; inset: 0; }
+
+/* Todas las animaciones conservan su estado final y se controlan desde fijarTiempo() */
+.anim { animation-fill-mode: both; animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+@keyframes subir { from { opacity: 0; transform: translateY(70px); } to { opacity: 1; transform: none; } }
+@keyframes golpe { 0% { opacity: 0; transform: scale(0.55); } 60% { opacity: 1; transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes acercar { from { transform: scale(1); } to { transform: scale(1.09); } }

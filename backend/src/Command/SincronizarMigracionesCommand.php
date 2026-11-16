@@ -32,6 +32,8 @@ class SincronizarMigracionesCommand extends Command
         '20261111100000' => ['seguimientos', 'guardados', 'usuarios.perfil_publico', 'calendario_usuario.compartido_en_feed', 'entrenamientos.clonado_de_id'],
         '20261112100000' => ['calendario_usuario.foto_url', 'calendario_usuario.ejercicios_hechos'],
         '20261113100000' => ['usuarios.email_verificado', 'usuarios.token_verificacion'],
+        '20261115100000' => ['ejercicios.creador_usuario_id'],
+        '20261116100000' => ['registros_series'],
     ];
 
     public function __construct(private Connection $conn)

@@ -720,15 +720,17 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
         $altura = $this->altura;
         $edad = $this->edad;
 
-        // Usamos la fórmula general (promedio) sin distinción de sexo
-        $tmb = 447.593 + (9.247 * $peso) + (3.098 * $altura) - (4.330 * $edad);
+        // Mifflin-St Jeor, la misma fórmula que la calculadora del frontend
+        $tmb = (10 * $peso) + (6.25 * $altura) - (5 * $edad) + ($this->sexo === 'femenino' ? -161 : 5);
 
         $multiplicadores = [
             'sedentario' => 1.2,
             'ligero' => 1.375,
             'moderado' => 1.55,
             'activo' => 1.725,
-            'muy_activo' => 1.9
+            'intenso' => 1.725,
+            'muy_activo' => 1.9,
+            'muy_intenso' => 1.9,
         ];
 
         $multiplicador = $multiplicadores[$this->nivelActividad] ?? 1.375;

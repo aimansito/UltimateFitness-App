@@ -111,6 +111,7 @@ class CuentaController extends AbstractController
                 [Connection::PARAM_INT_ARRAY]
             ),
             'calendario' => $q('SELECT * FROM calendario_usuario WHERE usuario_id = ?', [$id]),
+            'progreso_series' => $q('SELECT ejercicio_id, entrenamiento_id, fecha, serie, repeticiones, peso_kg FROM registros_series WHERE usuario_id = ? ORDER BY fecha, ejercicio_id, serie', [$id]),
             'sigues_a' => $q("SELECT seguido_tipo, seguido_id, fecha_creacion FROM seguimientos WHERE seguidor_tipo = 'usuario' AND seguidor_id = ?", [$id]),
             'te_siguen' => $q("SELECT seguidor_tipo, seguidor_id, fecha_creacion FROM seguimientos WHERE seguido_tipo = 'usuario' AND seguido_id = ?", [$id]),
             'favoritos' => $q("SELECT item_tipo, item_id, fecha_creacion FROM guardados WHERE propietario_tipo = 'usuario' AND propietario_id = ?", [$id]),

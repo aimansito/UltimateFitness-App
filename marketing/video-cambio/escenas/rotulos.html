@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Rótulos</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  /* Degradados arriba y abajo para que el sello y los subtítulos se lean sobre cualquier clip */
+  #degradado {
+    position: absolute; inset: 0; display: none;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,0.62) 0, rgba(0,0,0,0) 420px),
+      linear-gradient(to top, rgba(0,0,0,0.78) 0, rgba(0,0,0,0.35) 520px, rgba(0,0,0,0) 900px);
+  }
+  /* Sello de marca: monograma arriba a la izquierda + capítulo */
+  #sello { position: absolute; left: 60px; top: 150px; display: none; align-items: center; gap: 22px; }
+  #sello img { width: 84px; height: 84px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 4px 14px rgba(0,0,0,0.6)); }
+  #etiqueta { font-family: 'Audiowide', sans-serif; font-size: 27px; letter-spacing: 0.26em; color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,0.9); }
+
+  #sub { position: absolute; left: 0; right: 0; padding: 0 70px; text-align: center; transform: translateY(-50%); }
+  #sub .linea { display: block; }
+  #sub .palabra {
+    font-family: 'Anton', sans-serif; font-size: 100px; line-height: 1.16; text-transform: uppercase; color: #fff;
+    -webkit-text-stroke: 16px #000; paint-order: stroke fill;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.75);
+    display: inline-block; margin: 0 13px;
+  }
+  #sub .palabra.activa { color: var(--oro-vivo); transform: scale(1.06); }
+  #sub.grande .palabra { font-size: 132px; -webkit-text-stroke-width: 20px; margin: 0 16px; }
+</style>
+</head>
+<body>
+  <div id="degradado"></div>
+  <div id="sello"><img src="../assets/logo-small.png" alt=""><span id="etiqueta"></span></div>
+  <div id="sub"></div>
+  <script src="comun.js"></script>
+  <script>
+    window.iniciar = async () => { await window.esperarRecursos(); };
+
+    // estado: { sello: texto | '' | null, degradado, y, grande, lineas: [[{ t, a }]] }
+    window.pintar = (estado) => {
+      document.getElementById('degradado').style.display = estado.degradado ? 'block' : 'none';
+      document.getElementById('sello').style.display = estado.sello === null ? 'none' : 'flex';
+      document.getElementById('etiqueta').textContent = estado.sello || '';
+      const sub = document.getElementById('sub');
+      sub.className = estado.grande ? 'grande' : '';
+      sub.style.top = `${estado.y ?? 1330}px`;
+      sub.innerHTML = '';
+      for (const linea of estado.lineas) {
+        const span = window.crear('span', 'linea');
+        for (const palabra of linea) span.appendChild(window.crear('span', `palabra${palabra.a ? ' activa' : ''}`, palabra.t));
+        sub.appendChild(span);
+      }
+    };
+  </script>
+</body>
+</html>

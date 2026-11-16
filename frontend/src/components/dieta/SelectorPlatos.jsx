@@ -26,8 +26,6 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
       const response = await api.get("/platos");
       const data = response.data;
 
-      console.log("Platos cargados:", data);
-
       if (data.success) {
         // Filtrar por tipo de comida si es necesario
         const platosFiltrados = data.platos;
@@ -44,8 +42,6 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
     try {
       const response = await api.get(`/platos/${platoId}`);
       const data = response.data;
-
-      console.log("Detalle del plato:", data);
 
       if (data.success) {
         setPlatoSeleccionado(data.plato);
@@ -81,7 +77,6 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
         esPersonalizado: false,
       };
 
-      console.log('Plato preparado para dieta:', platoParaDieta);
       onSeleccionar(platoParaDieta);
     }
   };
@@ -156,9 +151,11 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
                       </div>
 
                       <div className="flex flex-wrap gap-2 mb-3">
-                        <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">
-                          <Clock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{plato.tiempo_preparacion} min
-                        </span>
+                        {plato.tiempo_preparacion > 0 && (
+                          <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">
+                            <Clock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{plato.tiempo_preparacion} min
+                          </span>
+                        )}
                         <span className="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">
                           <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${iconosDificultad[plato.dificultad]?.icon}`} aria-hidden="true" />
                           {iconosDificultad[plato.dificultad]?.text}
@@ -226,9 +223,11 @@ function SelectorPlatos({ tipoComida, onSeleccionar, onCerrar }) {
                   </p>
 
                   <div className="flex flex-wrap gap-3 mb-4">
-                    <span className="bg-gray-700 text-white px-3 py-1 rounded-lg">
-                      <Clock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{platoSeleccionado.tiempo_preparacion} minutos
-                    </span>
+                    {platoSeleccionado.tiempo_preparacion > 0 && (
+                      <span className="bg-gray-700 text-white px-3 py-1 rounded-lg">
+                        <Clock className="inline-block w-4 h-4 mr-1 -mt-0.5" aria-hidden="true" />{platoSeleccionado.tiempo_preparacion} minutos
+                      </span>
+                    )}
                     <span className="bg-gray-700 text-white px-3 py-1 rounded-lg">
                       <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${iconosDificultad[platoSeleccionado.dificultad]?.icon}`} aria-hidden="true" />
                       {iconosDificultad[platoSeleccionado.dificultad]?.text}

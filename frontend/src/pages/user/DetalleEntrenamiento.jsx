@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import useAuthEntrenador from '../../context/AuthContextEntrenador';
 import api from '../../services/api';
-import { ArrowLeft, Calendar, Dumbbell, Target, Clock, Zap, Flame, Trophy, Star, Moon, Palmtree } from 'lucide-react';
+import { ArrowLeft, Calendar, Dumbbell, Target, Clock, Zap, Flame, Trophy, Star, Moon, Palmtree, TrendingUp } from 'lucide-react';
+import RegistroSeries from '../../components/progreso/RegistroSeries';
 
 const DIAS_SEMANA_NOMBRES = {
     1: { nombre: 'Lunes', icon: Dumbbell },
@@ -23,6 +24,7 @@ function DetalleEntrenamiento() {
     const [entrenamiento, setEntrenamiento] = useState(null);
     const [diaSeleccionado, setDiaSeleccionado] = useState(1); // por defecto Lunes
     const [loading, setLoading] = useState(true);
+    const [registrando, setRegistrando] = useState(null);
 
     const isEntrenador = !!entrenador;
 
@@ -269,6 +271,17 @@ function DetalleEntrenamiento() {
                                                     <p className="text-white text-sm">{ejercicio.notas}</p>
                                                 </div>
                                             )}
+
+                                            {user && ejercicio.ejercicio_id && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setRegistrando(ejercicio)}
+                                                    className="uf-btn uf-btn-primary mt-4 w-full !py-2.5 text-xs sm:w-auto"
+                                                >
+                                                    <TrendingUp className="h-4 w-4" />
+                                                    Registrar series
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -282,6 +295,19 @@ function DetalleEntrenamiento() {
                     )}
                 </div>
             </div>
+
+            {registrando && (
+                <RegistroSeries
+                    ejercicio={{
+                        id: registrando.ejercicio_id,
+                        nombre: registrando.ejercicio_nombre,
+                        grupoMuscular: registrando.grupo_muscular,
+                    }}
+                    plan={{ series: registrando.series, repeticiones: registrando.repeticiones }}
+                    entrenamientoId={Number(entrenamientoId)}
+                    onClose={() => setRegistrando(null)}
+                />
+            )}
         </div>
     );
 }

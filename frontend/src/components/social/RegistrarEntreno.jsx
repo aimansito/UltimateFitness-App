@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Camera, CheckCircle2, Download, ImageOff, Loader2, Share2, X } from 'lucide-react';
+import { Camera, CheckCircle2, Clock, Download, ImageOff, Images, Loader2, Share2, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import socialService, { mensajeError, urlFoto } from '../../services/socialService';
-import { descargarBlob, formatoSeries, generarTarjetaPng, prepararFoto, statsDe } from '../../utils/imagenEntreno';
+import { descargarBlob, formatoSeries, generarTarjetaPng, nombresGrupos, prepararFoto, statsDe } from '../../utils/imagenEntreno';
 import TarjetaEntreno from './TarjetaEntreno';
 
 /**
@@ -29,9 +29,20 @@ function RegistrarEntreno({ entrenamientoId, registro = null, compartirInicial =
   const [compartirGuardado, setCompartirGuardado] = useState(registro ? registro.compartido : null);
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState('');
+  const [minutos, setMinutos] = useState(registro?.entrenamiento.duracionMinutos ?? '');
   const mapaRef = useRef(null);
   const inputRef = useRef(null);
+  const camaraRef = useRef(null);
   const cerrarRef = useRef(null);
+
+  // El móvil puede mandar la imagen directamente a Instagram, TikTok, WhatsApp...
+  const puedeCompartir = (() => {
+    try {
+      return Boolean(navigator.canShare?.({ files: [new File([''], 'entreno.png', { type: 'image/png' })] }));
+    } catch {
+      return false;
+    }
+  })();
 
   // Plan de la rutina (solo al registrar uno nuevo)
   useEffect(() => {
@@ -42,6 +53,7 @@ function RegistrarEntreno({ entrenamientoId, registro = null, compartirInicial =
       .then((r) => {
         if (!vigente) return;
         setPlan(r);
+        if (r.rutina?.duracionMinutos) setMinutos((m) => (m === '' ? r.rutina.duracionMinutos : m));
         const dia = r.dias.find((d) => d.id === r.diaSugerido) || r.dias[0];
         setDiaId(dia?.id ?? null);
         setMarcados(new Set((dia?.ejercicios || []).map((e) => e.id)));
@@ -64,7 +76,8 @@ function RegistrarEntreno({ entrenamientoId, registro = null, compartirInicial =
   const dia = plan?.dias.find((d) => d.id === diaId) || null;
   const ejercicios = registro ? registro.ejercicios : (dia?.ejercicios || []).filter((e) => marcados.has(e.id));
   const rutinaNombre = registro ? registro.entrenamiento.nombre : plan?.rutina.nombre || '';
-  const duracion = registro ? registro.entrenamiento.duracionMinutos : plan?.rutina.duracionMinutos;
+  // Tiempo real que ha durado; se propone el de la rutina y se puede cambiar
+  const duracion = parseInt(minutos, 10) > 0 ? parseInt(minutos, 10) : null;
   const diaNombre = registro ? registro.diaHecho : dia?.nombre;
   const fotoSrc = foto?.url || fotoGuardada;
 
@@ -155,6 +168,7 @@ function RegistrarEntreno({ entrenamientoId, registro = null, compartirInicial =
     setError('');
     try {
       const blob = await generarTarjetaPng({
+        grupos: nombresGrupos(ejercicios),
         fotoSrc,
         nombre,
         rutina: rutinaNombre,
@@ -164,7 +178,18 @@ function RegistrarEntreno({ entrenamientoId, registro = null, compartirInicial =
         ejercicios,
         mapaSvgs: mapaRef.current ? [...mapaRef.current.querySelectorAll('svg')] : [],
       });
-      descargarBlob(blob, `entreno-${new Date().toISOString().slice(0, 10)}.png`);
+      const nombreArchivo = `entreno-${new Date().toISOString().slice(0, 10)}.png`;
+      if (puedeCompartir) {
+        const archivo = new File([blob], nombreArchivo, { type: 'image/png' });
+        try {
+          await navigator.share({ files: [archivo], title: rutinaNombre, text: 'Entreno completado con Ultimate Fitness' });
+        } catch (e) {
+          // Cancelar el menú de compartir no es un error
+          if (e?.name !== 'AbortError') descargarBlob(blob, nombreArchivo);
+        }
+      } else {
+        descargarBlob(blob, nombreArchivo);
+      }
     } catch {
       setError('No se pudo crear la imagen. Inténtalo de nuevo.');
     } finally {
@@ -282,10 +307,16 @@ function RegistrarEntreno({ entrenamientoId, registro = null, compartirInicial =
             <div>
               <span className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-300">Foto</span>
               <input ref={inputRef} type="file" accept="image/*" onChange={elegirFoto} className="hidden" />
+              {/* En el móvil abre la cámara directamente */}
+              <input ref={camaraRef} type="file" accept="image/*" capture="user" onChange={elegirFoto} className="hidden" />
               <div className="flex flex-wrap gap-2">
-                <button type="button" onClick={() => inputRef.current?.click()} disabled={ocupado} className="uf-btn uf-btn-ghost !px-4 !py-2.5">
+                <button type="button" onClick={() => camaraRef.current?.click()} disabled={ocupado} className="uf-btn uf-btn-primary !px-4 !py-2.5">
                   <Camera className="h-4 w-4" aria-hidden="true" />
-                  {fotoSrc ? 'Cambiar foto' : 'Añadir foto'}
+                  Hacer foto
+                </button>
+                <button type="button" onClick={() => inputRef.current?.click()} disabled={ocupado} className="uf-btn uf-btn-ghost !px-4 !py-2.5">
+                  <Images className="h-4 w-4" aria-hidden="true" />
+                  Galería
                 </button>
                 {fotoSrc && (
                   <button type="button" onClick={quitarFoto} disabled={ocupado} className="uf-btn uf-btn-ghost !px-4 !py-2.5">
@@ -296,6 +327,27 @@ function RegistrarEntreno({ entrenamientoId, registro = null, compartirInicial =
               </div>
               <p className="mt-1.5 text-xs text-uf-muted">Quitamos la ubicación y los datos del móvil antes de guardarla.</p>
             </div>
+
+            <label className="flex items-center justify-between gap-3 rounded-xl border border-uf-line bg-black/30 px-4 py-3 text-sm text-gray-200">
+              <span className="inline-flex items-center gap-2">
+                <Clock className="h-4 w-4 text-uf-gold" aria-hidden="true" />
+                Tiempo de entreno
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  max="600"
+                  value={minutos}
+                  onChange={(e) => setMinutos(e.target.value)}
+                  placeholder="60"
+                  className="w-20 rounded-lg border border-uf-line bg-black/50 px-2 py-1.5 text-center text-white focus:border-uf-gold focus:outline-none"
+                  aria-label="Minutos de entreno"
+                />
+                <span className="text-uf-muted">min</span>
+              </span>
+            </label>
 
             <label className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-uf-line bg-black/30 px-4 py-3 text-sm text-gray-200">
               <span className="inline-flex items-center gap-2">
@@ -325,8 +377,8 @@ function RegistrarEntreno({ entrenamientoId, registro = null, compartirInicial =
                 </button>
               )}
               <button type="button" onClick={descargar} disabled={ocupado || (!plan && !registro)} className="uf-btn uf-btn-ghost w-full disabled:opacity-50">
-                <Download className="h-4 w-4" aria-hidden="true" />
-                Descargar imagen para redes
+                {puedeCompartir ? <Share2 className="h-4 w-4" aria-hidden="true" /> : <Download className="h-4 w-4" aria-hidden="true" />}
+                {puedeCompartir ? 'Compartir imagen en redes' : 'Descargar imagen para redes'}
               </button>
               {yaGuardado && !hayCambios && (
                 <button type="button" onClick={onCerrar} className="uf-btn uf-btn-ghost w-full">

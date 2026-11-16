@@ -12,6 +12,16 @@ export const formatoSeries = (e) => {
 /** Grupos musculares (sin repetir) de una lista de ejercicios */
 export const gruposDe = (ejercicios = []) => [...new Set(ejercicios.map((e) => e.grupo).filter(Boolean))];
 
+const NOMBRES_GRUPO = {
+  pecho: 'Pecho', espalda: 'Espalda', piernas: 'Piernas', hombros: 'Hombros', biceps: 'Bíceps', triceps: 'Tríceps',
+  brazos: 'Brazos', core: 'Core', gluteos: 'Glúteos', cadera: 'Cadera', fullbody: 'Full body', cardio: 'Cardio', agarre: 'Agarre',
+};
+const clave = (g) => (g || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[\s_-]/g, '');
+
+/** "Pecho · Espalda": grupos trabajados, para mostrar bajo la figura */
+export const nombresGrupos = (ejercicios = []) =>
+  [...new Set(gruposDe(ejercicios).map((g) => NOMBRES_GRUPO[clave(g)] || g))].join(' · ');
+
 /** Estadísticas de la tarjeta: ejercicios, series totales y duración */
 export const statsDe = (ejercicios = [], duracionMinutos = null) => {
   const series = ejercicios.reduce((total, e) => total + (e.series || 0), 0);
@@ -76,7 +86,7 @@ function textoAjustado(ctx, texto, maxAncho) {
  * Genera la tarjeta del entreno como PNG 1080x1350 (formato vertical de Instagram).
  * mapaSvgs: elementos <svg> del mapa muscular ya pintado en pantalla.
  */
-export async function generarTarjetaPng({ fotoSrc, nombre, rutina, dia, fecha, stats, ejercicios, mapaSvgs }) {
+export async function generarTarjetaPng({ fotoSrc, nombre, rutina, dia, fecha, stats, ejercicios, mapaSvgs, grupos = '' }) {
   const W = 1080;
   const H = 1350;
   const canvas = document.createElement('canvas');
@@ -140,6 +150,14 @@ export async function generarTarjetaPng({ fotoSrc, nombre, rutina, dia, fecha, s
       const datos = new XMLSerializer().serializeToString(svg);
       const img = await cargarImagen(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(datos)}`);
       ctx.drawImage(img, W - M - anchoMapa + i * hueco + (hueco - w) / 2, yMapa, w, h);
+    }
+    // Grupos trabajados bajo la figura
+    if (grupos) {
+      ctx.fillStyle = ORO;
+      ctx.font = '400 30px Anton, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(textoAjustado(ctx, grupos.toUpperCase(), anchoMapa + 20), W - M - anchoMapa / 2, yMapa + altoMapa + 14);
+      ctx.textAlign = 'left';
     }
   }
 

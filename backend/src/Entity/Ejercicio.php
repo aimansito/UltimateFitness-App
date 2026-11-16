@@ -52,6 +52,11 @@ class Ejercicio
     #[ORM\OneToMany(targetEntity: EntrenamientoEjercicio::class, mappedBy: 'ejercicio')]
     private Collection $entrenamientoEjercicios;
 
+    /** Null = ejercicio del catálogo (visible para todos). Con valor = ejercicio privado de ese usuario. */
+    #[ORM\ManyToOne(targetEntity: Usuario::class)]
+    #[ORM\JoinColumn(name: 'creador_usuario_id', nullable: true, onDelete: 'CASCADE')]
+    private ?Usuario $creadorUsuario = null;
+
     public function __construct()
     {
         $this->entrenamientoEjercicios = new ArrayCollection();
@@ -140,6 +145,15 @@ class Ejercicio
     public function setTotalValoraciones(int $totalValoraciones): static
     {
         $this->totalValoraciones = $totalValoraciones;
+        return $this;
+    }
+    public function getCreadorUsuario(): ?Usuario
+    {
+        return $this->creadorUsuario;
+    }
+    public function setCreadorUsuario(?Usuario $creadorUsuario): static
+    {
+        $this->creadorUsuario = $creadorUsuario;
         return $this;
     }
     public function getEntrenamientoEjercicios(): Collection

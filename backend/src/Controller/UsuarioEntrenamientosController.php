@@ -273,10 +273,10 @@ class UsuarioEntrenamientosController extends AbstractController
                 return $this->json(['success' => false, 'error' => 'Debe incluir exactamente 7 días de la semana'], 400);
             }
 
-            // Validar que haya al menos 5 días activos
-            $diasActivos = array_filter($data['dias'], fn($dia) => !$dia['esDescanso']);
-            if (count($diasActivos) < 5) {
-                return $this->json(['success' => false, 'error' => 'Debes tener al menos 5 días activos (no de descanso)'], 400);
+            // Al menos un día de entrenamiento
+            $diasActivos = array_filter($data['dias'], fn($dia) => empty($dia['esDescanso']));
+            if (count($diasActivos) < 1) {
+                return $this->json(['success' => false, 'error' => 'Marca al menos un día de entrenamiento'], 400);
             }
 
             // Validar que días activos tengan ejercicios
