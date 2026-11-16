@@ -27,8 +27,15 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/entrenamientos', name: 'usuarios_entrenamientos', methods: ['GET'])]
     public function entrenamientos(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        // Solo el propio usuario (o un admin) puede ver estos datos
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || ($usuarioActual->getId() !== $id && !$roleChecker->isAdmin($usuarioActual))) {
+            return $roleChecker->denyAccess();
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
         
         if (!$usuario) {
@@ -72,8 +79,15 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/dietas', name: 'usuarios_dietas', methods: ['GET'])]
     public function dietas(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        // Solo el propio usuario (o un admin) puede ver estos datos
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || ($usuarioActual->getId() !== $id && !$roleChecker->isAdmin($usuarioActual))) {
+            return $roleChecker->denyAccess();
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
         
         if (!$usuario) {
@@ -114,8 +128,15 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/progreso', name: 'usuarios_progreso', methods: ['GET'])]
     public function progreso(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        // Solo el propio usuario (o un admin) puede ver estos datos
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || ($usuarioActual->getId() !== $id && !$roleChecker->isAdmin($usuarioActual))) {
+            return $roleChecker->denyAccess();
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
         
         if (!$usuario) {
@@ -299,8 +320,15 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/estadisticas', name: 'usuarios_estadisticas', methods: ['GET'])]
     public function estadisticas(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        // Solo el propio usuario (o un admin) puede ver estos datos
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || ($usuarioActual->getId() !== $id && !$roleChecker->isAdmin($usuarioActual))) {
+            return $roleChecker->denyAccess();
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
         
         if (!$usuario) {
@@ -339,8 +367,15 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/es-premium', name: 'usuarios_check_premium', methods: ['GET'])]
     public function esPremium(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        // Solo el propio usuario (o un admin) puede ver estos datos
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || ($usuarioActual->getId() !== $id && !$roleChecker->isAdmin($usuarioActual))) {
+            return $roleChecker->denyAccess();
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
 
         if (!$usuario) {
@@ -364,8 +399,15 @@ class UsuarioController extends AbstractController
     #[Route('/usuarios/{id}/info-premium', name: 'usuarios_premium_info', methods: ['GET'])]
     public function infoPremium(
         int $id,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        RoleChecker $roleChecker
     ): JsonResponse {
+        // Solo el propio usuario (o un admin) puede ver estos datos
+        $usuarioActual = $this->getUser();
+        if (!$usuarioActual instanceof Usuario || ($usuarioActual->getId() !== $id && !$roleChecker->isAdmin($usuarioActual))) {
+            return $roleChecker->denyAccess();
+        }
+
         $usuario = $entityManager->getRepository(Usuario::class)->find($id);
 
         if (!$usuario) {

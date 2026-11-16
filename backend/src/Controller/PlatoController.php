@@ -415,8 +415,11 @@ public function crear(
         EntityManagerInterface $entityManager
     ): JsonResponse {
         try {
+            // Los platos privados de un entrenador solo los ve él mismo
+            $actual = $this->getUser();
+            $esElMismo = $actual instanceof Entrenador && $actual->getId() === $entrenadorId;
             $platos = $entityManager->getRepository(Plato::class)
-                ->findBy(['creadorId' => $entrenadorId], ['fechaCreacion' => 'DESC']);
+                ->findBy($esElMismo ? ['creadorId' => $entrenadorId] : ['creadorId' => $entrenadorId, 'esPublico' => true], ['fechaCreacion' => 'DESC']);
 
             $platosData = array_map(function($plato) {
                 return $this->serializePlato($plato, false);
@@ -443,6 +446,17 @@ public function crear(
         int $usuarioId,
         EntityManagerInterface $entityManager
     ): JsonResponse {
+        // Las dietas asignadas son privadas: solo las ve el propio usuario, su entrenador o un admin
+        $actual = $this->getUser();
+        $cliente = $entityManager->getRepository(Usuario::class)->find($usuarioId);
+        $permitido = $cliente !== null && (
+            ($actual instanceof Usuario && ($actual->getId() === $usuarioId || $actual->getRol() === 'admin'))
+            || ($actual instanceof Entrenador && $cliente->getEntrenadorAsignado()?->getId() === $actual->getId())
+        );
+        if (!$permitido) {
+            return $this->json(['success' => false, 'error' => 'Acceso denegado'], Response::HTTP_FORBIDDEN);
+        }
+
         try {
             $conn = $entityManager->getConnection();
 
