@@ -3,15 +3,18 @@ FROM php:8.2-apache
 # 1. Instalar dependencias del sistema y extensiones PHP
 RUN apt-get update && apt-get install -y \
     git unzip libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev openssl \
-    && docker-php-ext-install pdo_mysql zip gd mbstring opcache intl
+    && docker-php-ext-install pdo_mysql zip gd mbstring opcache intl \
+    && pecl install apcu && docker-php-ext-enable apcu
 
 # 2. Configurar Apache DocumentRoot para Symfony (carpeta /public)
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/000-default.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# 3. Habilitar mod_rewrite de Apache (necesario para Symfony)
-RUN a2enmod rewrite headers
+# 3. Módulos de Apache: reescritura (Symfony), cabeceras, compresión y caché del navegador
+RUN a2enmod rewrite headers deflate expires
+COPY docker/apache-rendimiento.conf /etc/apache2/conf-enabled/zz-rendimiento.conf
+COPY docker/php-rendimiento.ini /usr/local/etc/php/conf.d/zz-rendimiento.ini
 
 # 4. Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -22,7 +25,8 @@ WORKDIR /var/www/html
 COPY . .
 
 # 6. Instalar dependencias de PHP (Optimizadas para producción)
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+# Mapa de clases completo y autoritativo: sin él, cada clase provoca varias búsquedas en disco por petición
+RUN composer install --no-dev --optimize-autoloader --classmap-authoritative --no-scripts
 RUN echo "--- CONTENIDO DE BUNDLES.PHP ---" && cat config/bundles.php && echo "--- FIN CONTENIDO ---"
 
 # 7. Ajustar permisos para Apache

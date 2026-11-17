@@ -1,9 +1,13 @@
 security:
+    # bcrypt con coste 11: ~100 ms por login en el servidor (coste 13 tardaba ~400 ms y en Render más).
+    # Las contraseñas ya guardadas con otro coste siguen funcionando y se actualizan al iniciar sesión.
     password_hashers:
         App\Entity\Usuario:
             algorithm: auto
+            cost: 11
         App\Entity\Entrenador:
             algorithm: auto
+            cost: 11
 
     providers:
         # Busca por email o por nombre de usuario (ver App\Security\UsuarioProvider)
