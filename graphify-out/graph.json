@@ -9,7 +9,7 @@
       "source_file": "backend\\config\\bundles.php",
       "source_location": "L1",
       "id": "backend_config_bundles_php",
-      "community": 214,
+      "community": 216,
       "norm_label": "bundles.php"
     },
     {
@@ -18,7 +18,7 @@
       "source_file": "backend\\config\\preload.php",
       "source_location": "L1",
       "id": "backend_config_preload_php",
-      "community": 215,
+      "community": 217,
       "norm_label": "preload.php"
     },
     {
@@ -27,7 +27,7 @@
       "source_file": "backend\\datos\\contenido_inicial.php",
       "source_location": "L1",
       "id": "backend_datos_contenido_inicial_php",
-      "community": 216,
+      "community": 218,
       "norm_label": "contenido_inicial.php"
     },
     {
@@ -486,7 +486,7 @@
       "source_file": "backend\\public\\index.php",
       "source_location": "L1",
       "id": "backend_public_index_php",
-      "community": 217,
+      "community": 219,
       "norm_label": "index.php"
     },
     {
@@ -2689,7 +2689,7 @@
       "label": ".platosUsuario()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\PlatoController.php",
-      "source_location": "L441",
+      "source_location": "L444",
       "id": "platocontroller_platocontroller_platosusuario",
       "community": 37,
       "norm_label": ".platosusuario()"
@@ -3391,7 +3391,7 @@
       "label": ".dietas()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L72",
+      "source_location": "L79",
       "id": "usuariocontroller_usuariocontroller_dietas",
       "community": 18,
       "norm_label": ".dietas()"
@@ -3400,7 +3400,7 @@
       "label": ".progreso()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L114",
+      "source_location": "L128",
       "id": "usuariocontroller_usuariocontroller_progreso",
       "community": 18,
       "norm_label": ".progreso()"
@@ -3409,7 +3409,7 @@
       "label": ".actualizar()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L162",
+      "source_location": "L183",
       "id": "usuariocontroller_usuariocontroller_actualizar",
       "community": 18,
       "norm_label": ".actualizar()"
@@ -3418,7 +3418,7 @@
       "label": ".upgradePremium()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L250",
+      "source_location": "L271",
       "id": "usuariocontroller_usuariocontroller_upgradepremium",
       "community": 18,
       "norm_label": ".upgradepremium()"
@@ -3427,7 +3427,7 @@
       "label": ".estadisticas()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L299",
+      "source_location": "L320",
       "id": "usuariocontroller_usuariocontroller_estadisticas",
       "community": 18,
       "norm_label": ".estadisticas()"
@@ -3436,7 +3436,7 @@
       "label": ".esPremium()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L339",
+      "source_location": "L367",
       "id": "usuariocontroller_usuariocontroller_espremium",
       "community": 18,
       "norm_label": ".espremium()"
@@ -3445,7 +3445,7 @@
       "label": ".infoPremium()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L364",
+      "source_location": "L399",
       "id": "usuariocontroller_usuariocontroller_infopremium",
       "community": 18,
       "norm_label": ".infopremium()"
@@ -3454,7 +3454,7 @@
       "label": ".hacerPremium()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L404",
+      "source_location": "L446",
       "id": "usuariocontroller_usuariocontroller_hacerpremium",
       "community": 18,
       "norm_label": ".hacerpremium()"
@@ -3463,7 +3463,7 @@
       "label": ".quitarPremium()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L451",
+      "source_location": "L493",
       "id": "usuariocontroller_usuariocontroller_quitarpremium",
       "community": 18,
       "norm_label": ".quitarpremium()"
@@ -3472,7 +3472,7 @@
       "label": ".esAdmin()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L488",
+      "source_location": "L530",
       "id": "usuariocontroller_usuariocontroller_esadmin",
       "community": 18,
       "norm_label": ".esadmin()"
@@ -3481,7 +3481,7 @@
       "label": ".perfilCompleto()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L518",
+      "source_location": "L560",
       "id": "usuariocontroller_usuariocontroller_perfilcompleto",
       "community": 18,
       "norm_label": ".perfilcompleto()"
@@ -3490,7 +3490,7 @@
       "label": ".listarTodos()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L584",
+      "source_location": "L626",
       "id": "usuariocontroller_usuariocontroller_listartodos",
       "community": 18,
       "norm_label": ".listartodos()"
@@ -3499,7 +3499,7 @@
       "label": ".estadisticasGlobales()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L618",
+      "source_location": "L660",
       "id": "usuariocontroller_usuariocontroller_estadisticasglobales",
       "community": 18,
       "norm_label": ".estadisticasglobales()"
@@ -3508,7 +3508,7 @@
       "label": ".calcularDiasActivo()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L652",
+      "source_location": "L694",
       "id": "usuariocontroller_usuariocontroller_calculardiasactivo",
       "community": 18,
       "norm_label": ".calculardiasactivo()"
@@ -8514,7 +8514,7 @@
       "source_file": "backend\\src\\Enum\\Privacidad.php",
       "source_location": "L1",
       "id": "backend_src_enum_privacidad_php",
-      "community": 218,
+      "community": 220,
       "norm_label": "privacidad.php"
     },
     {
@@ -11385,7 +11385,7 @@
       "source_file": "frontend\\check_exact.js",
       "source_location": "L1",
       "id": "frontend_check_exact_js",
-      "community": 219,
+      "community": 221,
       "norm_label": "check_exact.js"
     },
     {
@@ -11412,7 +11412,7 @@
       "source_file": "frontend\\eslint.config.js",
       "source_location": "L1",
       "id": "frontend_eslint_config_js",
-      "community": 220,
+      "community": 222,
       "norm_label": "eslint.config.js"
     },
     {
@@ -11421,7 +11421,7 @@
       "source_file": "frontend\\postcss.config.js",
       "source_location": "L1",
       "id": "frontend_postcss_config_js",
-      "community": 221,
+      "community": 223,
       "norm_label": "postcss.config.js"
     },
     {
@@ -11448,7 +11448,7 @@
       "source_file": "frontend\\vite.config.js",
       "source_location": "L1",
       "id": "frontend_vite_config_js",
-      "community": 222,
+      "community": 224,
       "norm_label": "vite.config.js"
     },
     {
@@ -11484,7 +11484,7 @@
       "source_file": "frontend\\src\\main.jsx",
       "source_location": "L1",
       "id": "frontend_src_main_jsx",
-      "community": 223,
+      "community": 225,
       "norm_label": "main.jsx"
     },
     {
@@ -11673,7 +11673,7 @@
       "source_file": "frontend\\src\\components\\common\\index.js",
       "source_location": "L1",
       "id": "frontend_src_components_common_index_js",
-      "community": 224,
+      "community": 226,
       "norm_label": "index.js"
     },
     {
@@ -12510,7 +12510,7 @@
       "source_file": "frontend\\src\\config\\funciones.js",
       "source_location": "L1",
       "id": "frontend_src_config_funciones_js",
-      "community": 225,
+      "community": 227,
       "norm_label": "funciones.js"
     },
     {
@@ -12544,7 +12544,7 @@
       "label": "AuthProvider()",
       "file_type": "code",
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "id": "authcontext_authprovider",
       "community": 122,
       "norm_label": "authprovider()"
@@ -12553,7 +12553,7 @@
       "label": "useAuth()",
       "file_type": "code",
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
-      "source_location": "L134",
+      "source_location": "L141",
       "id": "authcontext_useauth",
       "community": 122,
       "norm_label": "useauth()"
@@ -12967,7 +12967,7 @@
       "label": "CrearDieta()",
       "file_type": "code",
       "source_file": "frontend\\src\\pages\\public\\CrearDieta.jsx",
-      "source_location": "L10",
+      "source_location": "L12",
       "id": "creardieta_creardieta",
       "community": 190,
       "norm_label": "creardieta()"
@@ -13698,7 +13698,7 @@
       "source_file": "frontend\\src\\services\\authServiceEntrenador.js",
       "source_location": "L1",
       "id": "frontend_src_services_authserviceentrenador_js",
-      "community": 226,
+      "community": 228,
       "norm_label": "authserviceentrenador.js"
     },
     {
@@ -13770,7 +13770,7 @@
       "source_file": "frontend\\src\\services\\solicitudesService.js",
       "source_location": "L1",
       "id": "frontend_src_services_solicitudesservice_js",
-      "community": 227,
+      "community": 229,
       "norm_label": "solicitudesservice.js"
     },
     {
@@ -13788,7 +13788,7 @@
       "source_file": "frontend\\src\\stories\\Button.stories.js",
       "source_location": "L1",
       "id": "frontend_src_stories_button_stories_js",
-      "community": 228,
+      "community": 230,
       "norm_label": "button.stories.js"
     },
     {
@@ -13815,7 +13815,7 @@
       "source_file": "frontend\\src\\stories\\Header.stories.js",
       "source_location": "L1",
       "id": "frontend_src_stories_header_stories_js",
-      "community": 229,
+      "community": 231,
       "norm_label": "header.stories.js"
     },
     {
@@ -13842,7 +13842,7 @@
       "source_file": "frontend\\src\\stories\\Page.stories.js",
       "source_location": "L1",
       "id": "frontend_src_stories_page_stories_js",
-      "community": 230,
+      "community": 232,
       "norm_label": "page.stories.js"
     },
     {
@@ -14096,6 +14096,42 @@
       "id": "imagenentreno_descargarblob",
       "community": 40,
       "norm_label": "descargarblob()"
+    },
+    {
+      "label": "voz.ps1",
+      "file_type": "code",
+      "source_file": "marketing\\contenido\\lib\\voz.ps1",
+      "source_location": "L1",
+      "id": "marketing_contenido_lib_voz_ps1",
+      "community": 214,
+      "norm_label": "voz.ps1"
+    },
+    {
+      "label": "Esperar()",
+      "file_type": "code",
+      "source_file": "marketing\\contenido\\lib\\voz.ps1",
+      "source_location": "L16",
+      "id": "voz_esperar",
+      "community": 214,
+      "norm_label": "esperar()"
+    },
+    {
+      "label": "comun.js",
+      "file_type": "code",
+      "source_file": "marketing\\video-cambio\\escenas\\comun.js",
+      "source_location": "L1",
+      "id": "marketing_video_cambio_escenas_comun_js",
+      "community": 215,
+      "norm_label": "comun.js"
+    },
+    {
+      "label": "facil()",
+      "file_type": "code",
+      "source_file": "marketing\\video-cambio\\escenas\\comun.js",
+      "source_location": "L37",
+      "id": "comun_facil",
+      "community": 215,
+      "norm_label": "facil()"
     }
   ],
   "links": [
@@ -18771,7 +18807,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\PlatoController.php",
-      "source_location": "L441",
+      "source_location": "L444",
       "weight": 1.0,
       "_src": "platocontroller_platocontroller",
       "_tgt": "platocontroller_platocontroller_platosusuario",
@@ -18855,7 +18891,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\PlatoController.php",
-      "source_location": "L422",
+      "source_location": "L425",
       "weight": 1.0,
       "_src": "platocontroller_platocontroller_platosentrenador",
       "_tgt": "platocontroller_platocontroller_serializeplato",
@@ -20175,7 +20211,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L72",
+      "source_location": "L79",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_dietas",
@@ -20187,7 +20223,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L114",
+      "source_location": "L128",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_progreso",
@@ -20199,7 +20235,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L162",
+      "source_location": "L183",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_actualizar",
@@ -20211,7 +20247,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L250",
+      "source_location": "L271",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_upgradepremium",
@@ -20223,7 +20259,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L299",
+      "source_location": "L320",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_estadisticas",
@@ -20235,7 +20271,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L339",
+      "source_location": "L367",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_espremium",
@@ -20247,7 +20283,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L364",
+      "source_location": "L399",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_infopremium",
@@ -20259,7 +20295,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L404",
+      "source_location": "L446",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_hacerpremium",
@@ -20271,7 +20307,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L451",
+      "source_location": "L493",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_quitarpremium",
@@ -20283,7 +20319,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L488",
+      "source_location": "L530",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_esadmin",
@@ -20295,7 +20331,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L518",
+      "source_location": "L560",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_perfilcompleto",
@@ -20307,7 +20343,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L584",
+      "source_location": "L626",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_listartodos",
@@ -20319,7 +20355,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L618",
+      "source_location": "L660",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_estadisticasglobales",
@@ -20331,7 +20367,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L652",
+      "source_location": "L694",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller",
       "_tgt": "usuariocontroller_usuariocontroller_calculardiasactivo",
@@ -20343,7 +20379,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L154",
+      "source_location": "L175",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller_progreso",
       "_tgt": "usuariocontroller_usuariocontroller_calculardiasactivo",
@@ -20355,7 +20391,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\UsuarioController.php",
-      "source_location": "L328",
+      "source_location": "L356",
       "weight": 1.0,
       "_src": "usuariocontroller_usuariocontroller_estadisticas",
       "_tgt": "usuariocontroller_usuariocontroller_calculardiasactivo",
@@ -31839,7 +31875,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
-      "source_location": "L8",
+      "source_location": "L9",
       "weight": 1.0,
       "_src": "frontend_src_context_authcontext_jsx",
       "_tgt": "authcontext_authprovider",
@@ -31851,7 +31887,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
-      "source_location": "L134",
+      "source_location": "L141",
       "weight": 1.0,
       "_src": "frontend_src_context_authcontext_jsx",
       "_tgt": "authcontext_useauth",
@@ -32151,7 +32187,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\pages\\public\\CrearDieta.jsx",
-      "source_location": "L10",
+      "source_location": "L12",
       "weight": 1.0,
       "_src": "frontend_src_pages_public_creardieta_jsx",
       "_tgt": "creardieta_creardieta",
@@ -33249,6 +33285,30 @@
       "_tgt": "imagenentreno_textoajustado",
       "source": "imagenentreno_textoajustado",
       "target": "imagenentreno_generartarjetapng",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "marketing\\contenido\\lib\\voz.ps1",
+      "source_location": "L16",
+      "weight": 1.0,
+      "_src": "marketing_contenido_lib_voz_ps1",
+      "_tgt": "voz_esperar",
+      "source": "marketing_contenido_lib_voz_ps1",
+      "target": "voz_esperar",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "marketing\\video-cambio\\escenas\\comun.js",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_src": "marketing_video_cambio_escenas_comun_js",
+      "_tgt": "comun_facil",
+      "source": "marketing_video_cambio_escenas_comun_js",
+      "target": "comun_facil",
       "confidence_score": 1.0
     }
   ],

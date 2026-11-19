@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Capa de rutina</title>
+<link rel="stylesheet" href="../../video-cambio/escenas/comun.css">
+<style>
+  :root { --azul: #00aeff; }
+  .capa { position: absolute; inset: 0; }
+  .oculto { display: none !important; }
+
+  /* ---------- Portada ---------- */
+  #portada .velo {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,0.55) 0, rgba(0,0,0,0) 520px),
+      linear-gradient(to top, rgba(0,0,0,0.92) 0, rgba(0,0,0,0.75) 520px, rgba(0,0,0,0) 1050px);
+  }
+  #portada .logo { position: absolute; top: 210px; left: 0; right: 0; display: flex; justify-content: center; }
+  #portada .logo img { width: 330px; filter: drop-shadow(0 6px 30px rgba(0,0,0,0.6)); }
+  #portadaTexto { position: absolute; left: 0; right: 0; bottom: 400px; text-align: center; }
+  #portadaTexto .eyebrow { font-size: 34px; letter-spacing: 0.5em; padding-left: 0.5em; color: #fff; text-shadow: 0 2px 18px rgba(0,0,0,0.9); }
+  #portadaTexto h1 { margin-top: 34px; font-size: 270px; line-height: 0.9; color: #fff; text-shadow: 0 10px 60px rgba(0,0,0,0.55); }
+  #portadaTexto .divisor { width: 120px; height: 4px; margin: 34px auto 0; background: linear-gradient(90deg, var(--oro) 50%, var(--azul) 50%); }
+  #portadaTexto .grupos { margin-top: 30px; font-size: 30px; font-weight: 700; letter-spacing: 0.34em; padding-left: 0.34em; color: #e6e6e6; text-transform: uppercase; }
+  #portadaTexto .duracion {
+    display: inline-flex; align-items: center; gap: 14px; margin-top: 30px; padding: 14px 30px;
+    border: 2px solid rgba(204,148,26,0.75); border-radius: 999px; background: rgba(0,0,0,0.35);
+    font-size: 28px; font-weight: 800; letter-spacing: 0.18em; color: #fff;
+  }
+  #portadaTexto .duracion i { width: 10px; height: 10px; border-radius: 50%; background: var(--oro); box-shadow: 0 0 12px var(--oro); }
+
+  /* ---------- Logo UF que crece y se parte en diagonal ---------- */
+  #uf img { position: absolute; left: 395px; top: 810px; width: 290px; height: 300px; transform-origin: 145px 150px; }
+
+  /* ---------- Rótulo del ejercicio ---------- */
+  #info .velo {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,0.5) 0, rgba(0,0,0,0) 400px),
+      linear-gradient(to top, rgba(0,0,0,0.9) 0, rgba(0,0,0,0.82) 420px, rgba(0,0,0,0.45) 700px, rgba(0,0,0,0) 900px);
+  }
+  #bloque { position: absolute; left: 56px; right: 170px; bottom: 420px; display: flex; align-items: flex-end; gap: 34px; }
+  #figura { flex-shrink: 0; width: 176px; height: 352px; filter: drop-shadow(0 0 22px rgba(204,148,26,0.35)); }
+  #figura svg { width: 100%; height: 100%; }
+  #texto { flex: 1; min-width: 0; }
+  #numero { font-size: 23px; font-weight: 800; letter-spacing: 0.24em; text-transform: uppercase; color: var(--oro); }
+  #numero b { color: #fff; font-weight: 400; }
+  #nombre { margin-top: 12px; font-size: 92px; line-height: 0.95; color: #fff; }
+  #detalle { margin-top: 12px; font-size: 30px; font-weight: 600; color: #d0d0d0; }
+  .datos { margin-top: 26px; display: flex; align-items: stretch; gap: 16px; }
+  .dato { padding: 12px 22px 14px; border-radius: 18px; background: rgba(20,20,20,0.72); border: 2px solid rgba(255,255,255,0.12); }
+  .dato.series { border-color: rgba(204,148,26,0.7); }
+  .dato small { display: block; font-size: 17px; font-weight: 800; letter-spacing: 0.18em; color: #9a9a9a; text-transform: uppercase; }
+  .dato strong { display: block; margin-top: 6px; }
+  .series strong { font-family: 'Anton', sans-serif; font-weight: 400; font-size: 54px; line-height: 1; color: var(--oro); }
+  .zona strong { font-size: 30px; font-weight: 800; line-height: 1.15; color: #fff; padding-top: 8px; }
+  .zona { min-width: 0; }
+
+  /* ---------- Barra superior: marca y progreso ---------- */
+  #barra { position: absolute; left: 56px; right: 56px; top: 214px; }
+  #barra .fila { display: flex; align-items: center; gap: 16px; }
+  #barra .fila img { height: 54px; }
+  #barra .fila span { font-family: 'Audiowide', sans-serif; font-size: 22px; letter-spacing: 0.3em; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+  #barra .fila em { margin-left: auto; font-style: normal; font-size: 22px; font-weight: 800; letter-spacing: 0.16em; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+  #segmentos { margin-top: 20px; display: flex; gap: 8px; }
+  #segmentos div { flex: 1; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.28); overflow: hidden; }
+  #segmentos div i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--oro), #f0b323); }
+
+  /* ---------- Cortes: fotograma congelado partido ---------- */
+  .pieza { position: absolute; inset: 0; will-change: transform; }
+  .pieza .recorte { position: absolute; inset: 0; }
+  .pieza .recorte img { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+  .pieza .recorte .velo { position: absolute; inset: 0; }
+  .filo { position: absolute; left: -210px; top: 957px; width: 1500px; height: 7px; transform-origin: 750px 3px; }
+  .linea { position: absolute; top: 0; width: 8px; height: 0; }
+  #lOro { background: var(--oro); box-shadow: 0 0 24px 4px rgba(204,148,26,0.75); }
+  #lAzul { background: var(--azul); box-shadow: 0 0 24px 4px rgba(0,174,255,0.7); }
+
+  /* ---------- Cierre con la app ---------- */
+  #cierre { background: var(--fondo); overflow: hidden; }
+  #cierre .blob { position: absolute; border-radius: 50%; filter: blur(130px); }
+  #cierreLogo { position: absolute; top: 150px; left: 0; right: 0; display: flex; justify-content: center; }
+  #cierreLogo img { width: 320px; }
+  #cierreTitulo { position: absolute; top: 395px; left: 0; right: 0; text-align: center; }
+  #cierreTitulo h2 { font-size: 80px; }
+  #cierreTitulo p { margin-top: 12px; font-size: 27px; font-weight: 700; letter-spacing: 0.22em; color: #bdbdbd; text-transform: uppercase; }
+  #movil {
+    position: absolute; left: 50%; top: 575px; width: 452px; height: 900px; margin-left: -226px;
+    border-radius: 58px; border: 11px solid #1b1b1b; outline: 2px solid #333; background: #0a0a0a; overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.7), 0 0 80px rgba(204,148,26,0.18);
+  }
+  #movil img { position: absolute; left: 0; top: 0; width: 100%; }
+  #cierreCta { position: absolute; top: 1515px; left: 0; right: 0; text-align: center; }
+  #cierreCta h3 { font-size: 60px; }
+  #cierreCta p { margin-top: 14px; font-family: 'Audiowide', sans-serif; font-size: 30px; letter-spacing: 0.14em; color: var(--oro); }
+</style>
+</head>
+<body>
+  <!-- Rótulo del ejercicio (se revela con la escena nueva en cada corte) -->
+  <div id="info" class="capa oculto">
+    <div class="velo"></div>
+    <div id="bloque">
+      <div id="figura"></div>
+      <div id="texto">
+        <p id="numero"></p>
+        <h2 id="nombre" class="anton"></h2>
+        <p id="detalle"></p>
+        <div class="datos">
+          <div class="dato series"><small>Series × reps</small><strong id="series"></strong></div>
+          <div class="dato zona"><small>Zona</small><strong id="zona"></strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cierre -->
+  <div id="cierre" class="capa oculto">
+    <div class="blob" style="width:900px;height:900px;left:-260px;top:300px;background:var(--oro);opacity:0.16"></div>
+    <div class="blob" style="width:760px;height:760px;right:-320px;top:1000px;background:var(--azul);opacity:0.12"></div>
+    <div id="cierreLogo"><img src="../assets/logo.png" alt=""></div>
+    <div id="cierreTitulo"><h2 class="anton" id="cierreNombre"></h2><p id="cierreDatos"></p></div>
+    <div id="movil"><img id="appImg" alt=""></div>
+    <div id="cierreCta"><h3 class="anton">Crea la tuya gratis</h3><p id="web"></p></div>
+  </div>
+
+  <!-- Portada -->
+  <div id="portada" class="capa">
+    <div class="velo"></div>
+    <div class="logo"><img src="../assets/logo.png" alt=""></div>
+    <div id="portadaTexto">
+      <p class="eyebrow">Rutina de</p>
+      <h1 class="anton" id="titulo"></h1>
+      <div class="divisor"></div>
+      <p class="grupos" id="grupos"></p>
+      <p class="duracion"><i></i><span id="duracion"></span></p>
+    </div>
+  </div>
+
+  <!-- Corte: dos trozos del último fotograma que se separan -->
+  <div id="corte" class="capa oculto">
+    <div class="pieza" id="pA"><div class="recorte"><img alt=""><div class="velo"></div></div><div class="filo" style="background:var(--oro);box-shadow:0 0 26px 4px rgba(204,148,26,0.8)"></div></div>
+    <div class="pieza" id="pB"><div class="recorte"><img alt=""><div class="velo"></div></div><div class="filo" style="background:var(--azul);box-shadow:0 0 26px 4px rgba(0,174,255,0.75)"></div></div>
+    <div class="linea" id="lOro"></div>
+    <div class="linea" id="lAzul"></div>
+  </div>
+
+  <div id="uf" class="capa oculto"><img id="ufU" src="../assets/logo-u.png" alt=""><img id="ufF" src="../assets/logo-f.png" alt=""></div>
+
+  <div id="barra" class="oculto">
+    <div class="fila"><img src="../assets/logo-small.png" alt=""><span id="barraTitulo"></span><em id="barraNum"></em></div>
+    <div id="segmentos"></div>
+  </div>
+
+  <script src="../../video-cambio/escenas/comun.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const lim = (x) => Math.min(1, Math.max(0, x));
+    const tramo = (t, a, b) => lim((t - a) / (b - a));
+    const salida = (x) => 1 - Math.pow(1 - x, 3);
+    const entradaSalida = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+    const mostrar = (id, si) => $(id).classList.toggle('oculto', !si);
+
+    const PRE = 0.24;   // las líneas se dibujan antes del corte
+    const POST = 0.44;  // y se separan después
+    const ANG = Math.atan2(-600, 1080); // diagonal de la portada: de (0,1260) a (1080,660)
+    const VELO_PORTADA = getComputedStyle(document.querySelector('#portada .velo')).backgroundImage;
+
+    let D = null;
+    let ejercicioPintado = -1;
+
+    window.iniciar = async (datos) => {
+      D = datos;
+      $('titulo').textContent = datos.titulo;
+      $('grupos').textContent = datos.grupos.join(' · ');
+      $('duracion').textContent = datos.duracion;
+      $('barraTitulo').textContent = datos.titulo.toUpperCase();
+      $('cierreNombre').textContent = `Rutina de ${datos.titulo}`;
+      $('cierreDatos').textContent = `${datos.grupos.join(' · ')} · ${datos.duracion}`;
+      $('web').textContent = datos.web;
+      $('appImg').src = datos.app;
+      const segmentos = $('segmentos');
+      for (let i = 0; i < datos.total; i++) segmentos.appendChild(crear('div', '', '<i></i>'));
+      // Precarga de los fotogramas congelados
+      await Promise.all(datos.cortes.map((c) => new Promise((ok) => { const im = new Image(); im.onload = im.onerror = ok; im.src = c.img; })));
+      await window.esperarRecursos();
+    };
+
+    function pintarEjercicio(i) {
+      const e = D.ejercicios[i];
+      $('numero').innerHTML = `Ejercicio <b>${String(e.num).padStart(2, '0')}</b> / ${String(D.total).padStart(2, '0')}`;
+      $('nombre').textContent = e.nombre;
+      $('detalle').textContent = e.detalle || '';
+      $('detalle').style.display = e.detalle ? '' : 'none';
+      $('series').textContent = e.series;
+      $('zona').textContent = e.zona;
+      $('figura').innerHTML = e.svg;
+      $('barraNum').textContent = `${String(e.num).padStart(2, '0')}/${String(D.total).padStart(2, '0')}`;
+      ejercicioPintado = i;
+    }
+
+    function animarInfo(t, e) {
+      // Entrada escalonada al empezar un ejercicio nuevo; en la variante solo cambia el detalle
+      const piezas = [['numero', 0.08], ['nombre', 0.14], ['detalle', 0.2], ['figura', 0.1], ['datosFila', 0.26]];
+      for (const [id, retardo] of piezas) {
+        const el = id === 'datosFila' ? document.querySelector('.datos') : $(id);
+        let p = salida(tramo(t, e.inicioBloque + retardo, e.inicioBloque + retardo + 0.4));
+        if (id === 'detalle' && e.continua) p = salida(tramo(t, e.ini + 0.1, e.ini + 0.45));
+        el.style.opacity = p;
+        el.style.transform = id === 'figura' ? `scale(${0.9 + 0.1 * p})` : `translateX(${(1 - p) * -36}px)`;
+      }
+    }
+
+    function pintarCorte(t) {
+      const c = D.cortes.find((k) => t >= k.t - (k.tipo === 'uf' ? 0 : PRE) && t < k.t + POST + (k.tipo === 'uf' ? 0.08 : 0));
+      mostrar('corte', !!c);
+      if (!c) return;
+      const pA = $('pA'), pB = $('pB');
+      for (const p of [pA, pB]) p.querySelector('img').src = c.img;
+      const velo = c.tipo === 'uf' ? VELO_PORTADA : 'none';
+      for (const p of [pA, pB]) p.querySelector('.velo').style.backgroundImage = velo;
+
+      if (c.tipo === 'uf') {
+        // La portada congelada se parte en diagonal: arriba-izquierda con la U, abajo-derecha con la F
+        const p = entradaSalida(tramo(t, c.t, c.t + POST + 0.08));
+        const dx = 420 * p, dy = 1500 * p;
+        pA.querySelector('.recorte').style.clipPath = 'polygon(0 0, 1080px 0, 1080px 660px, 0 1260px)';
+        pB.querySelector('.recorte').style.clipPath = 'polygon(0 1260px, 1080px 660px, 1080px 1920px, 0 1920px)';
+        for (const [pz, s] of [[pA, -1], [pB, 1]]) {
+          pz.style.transform = `translate(${s * dx}px, ${s * dy}px)`;
+          const filo = pz.querySelector('.filo');
+          filo.style.display = '';
+          filo.style.transform = `rotate(${ANG}rad) translateY(${s * 2}px)`;
+        }
+        mostrar('lOro', false); mostrar('lAzul', false);
+        return;
+      }
+
+      // Líneas: dorada desde arriba y azul desde abajo; en el corte se separan y revelan la escena nueva
+      for (const pz of [pA, pB]) pz.querySelector('.filo').style.display = 'none';
+      mostrar('lOro', true); mostrar('lAzul', true);
+      const crecer = salida(tramo(t, c.t - PRE, c.t));
+      const abrir = entradaSalida(tramo(t, c.t, c.t + POST));
+      const hueco = 8;
+      const xOro = 540 - hueco - 8 - 560 * abrir;
+      const xAzul = 540 + hueco + 560 * abrir;
+      Object.assign($('lOro').style, { left: `${xOro}px`, top: '0px', height: `${1920 * crecer}px` });
+      Object.assign($('lAzul').style, { left: `${xAzul}px`, top: `${1920 * (1 - crecer)}px`, height: `${1920 * crecer}px` });
+      const congelar = t >= c.t;
+      pA.style.display = pB.style.display = congelar ? '' : 'none';
+      pA.style.transform = pB.style.transform = 'none';
+      pA.querySelector('.recorte').style.clipPath = `inset(0 ${1080 - (xOro + 4)}px 0 0)`;
+      pB.querySelector('.recorte').style.clipPath = `inset(0 0 0 ${xAzul + 4}px)`;
+    }
+
+    window.alTiempo = (t) => {
+      if (!D) return;
+      const pf = D.portadaFin;
+      const enCierre = t >= D.fin;
+
+      // Portada
+      mostrar('portada', t < pf);
+      const fuera = tramo(t, pf - 0.62, pf - 0.4);
+      const textoPortada = document.querySelector('#portada .logo');
+      $('portadaTexto').style.opacity = 1 - fuera;
+      $('portadaTexto').style.transform = `scale(${1 + 0.04 * fuera})`;
+      textoPortada.style.opacity = 1 - fuera;
+      $('titulo').style.letterSpacing = `${0.03 * (1 - tramo(t, 0, pf - 0.62))}em`;
+
+      // Logo UF: crece en el centro y en el corte cada letra sale con su trozo de portada
+      const ufVisible = t >= pf - 0.52 && t < pf + POST + 0.08;
+      mostrar('uf', ufVisible);
+      if (ufVisible) {
+        const g = salida(tramo(t, pf - 0.52, pf - 0.02));
+        const p = entradaSalida(tramo(t, pf, pf + POST + 0.08));
+        const escala = 0.22 + 0.78 * g + 0.25 * p;
+        $('ufU').style.opacity = $('ufF').style.opacity = tramo(t, pf - 0.52, pf - 0.4);
+        $('ufU').style.transform = `translate(${-420 * p}px, ${-1500 * p}px) scale(${escala})`;
+        $('ufF').style.transform = `translate(${420 * p}px, ${1500 * p}px) scale(${escala})`;
+      }
+
+      // Ejercicio actual
+      let i = -1;
+      for (let k = 0; k < D.ejercicios.length; k++) if (t >= D.ejercicios[k].ini) i = k;
+      const conInfo = i >= 0 && !enCierre;
+      mostrar('info', conInfo);
+      mostrar('barra', i >= 0 && t < D.fin + 0.0);
+      if (i >= 0) {
+        if (ejercicioPintado !== i) pintarEjercicio(i);
+        const e = D.ejercicios[i];
+        animarInfo(t, e);
+        // Progreso: segmentos completos y el actual llenándose
+        const segs = $('segmentos').children;
+        for (let s = 0; s < segs.length; s++) {
+          let lleno = 0;
+          if (s < e.num - 1) lleno = 1;
+          else if (s === e.num - 1) lleno = tramo(t, e.inicioBloque, e.finBloque);
+          segs[s].firstChild.style.width = `${lleno * 100}%`;
+        }
+        $('barra').style.opacity = tramo(t, pf, pf + 0.3) * (1 - tramo(t, D.fin - 0.1, D.fin));
+      }
+
+      // Cierre
+      mostrar('cierre', enCierre);
+      if (enCierre) {
+        const u = t - D.fin;
+        const entra = (el, desde) => {
+          const p = salida(tramo(u, desde, desde + 0.5));
+          el.style.opacity = p;
+          el.style.transform = `translateY(${(1 - p) * 40}px)`;
+        };
+        entra($('cierreLogo'), 0.15);
+        entra($('cierreTitulo'), 0.28);
+        entra($('movil'), 0.4);
+        entra($('cierreCta'), 0.62);
+        // La captura de la app se desliza como si se hiciera scroll
+        const img = $('appImg');
+        const recorrido = Math.max(0, img.getBoundingClientRect().height - 900 + 22);
+        const desplazar = Math.min(recorrido, 1180);
+        img.style.transform = `translateY(${-desplazar * entradaSalida(tramo(u, 1.0, D.cierre - 0.3))}px)`;
+      }
+
+      pintarCorte(t);
+    };
+  </script>
+</body>
+</html>

@@ -103,11 +103,11 @@ function RegistroSeries({ ejercicio, plan, entrenamientoId, onClose, onGuardado 
 
   const sesiones = historial?.sesiones || [];
   const puntos = [...sesiones].reverse().map((s) => ({ etiqueta: fechaCorta(s.fecha), valor: s.pesoMax }));
-  const campo = 'w-full rounded-lg border border-uf-line bg-black/50 px-2 py-2 text-center text-white focus:border-uf-gold focus:outline-none';
+  const campo = 'w-full min-w-0 rounded-lg border border-uf-line bg-black/50 px-2 py-2 text-center text-white focus:border-uf-gold focus:outline-none';
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/80 p-0 backdrop-blur-sm sm:items-center sm:p-4" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="titulo-registro">
-      <div className="uf-card max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-b-none sm:rounded-b-[1.25rem]" onClick={(e) => e.stopPropagation()}>
+      <div className="uf-card max-h-[92vh] w-full max-w-2xl overflow-y-auto overflow-x-hidden rounded-b-none sm:rounded-b-[1.25rem]" onClick={(e) => e.stopPropagation()}>
         {/* Cabecera */}
         <div className="sticky top-0 z-10 flex items-center gap-4 border-b border-uf-line bg-uf-card/95 px-5 py-4 backdrop-blur">
           <MuscleMap grupo={ejercicio.grupoMuscular} className="h-14 w-9 shrink-0" />
@@ -134,9 +134,9 @@ function RegistroSeries({ ejercicio, plan, entrenamientoId, onClose, onGuardado 
           <div className="rounded-2xl border border-uf-line bg-black/30 p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <h3 className="font-anton text-lg uppercase text-white">Hoy he hecho</h3>
-              <input type="date" value={fecha} max={hoy()} onChange={(e) => setFecha(e.target.value)} className="rounded-lg border border-uf-line bg-black/50 px-3 py-1.5 text-sm text-white focus:border-uf-gold focus:outline-none" aria-label="Fecha" />
+              <input type="date" value={fecha} max={hoy()} onChange={(e) => setFecha(e.target.value)} className="min-w-0 max-w-[10.5rem] rounded-lg border border-uf-line bg-black/50 px-3 py-1.5 text-sm text-white focus:border-uf-gold focus:outline-none" aria-label="Fecha" />
             </div>
-            <div className="grid grid-cols-[2.5rem_1fr_1fr_2rem] items-center gap-2 px-1 pb-1 text-[10px] font-bold uppercase tracking-widest text-uf-muted">
+            <div className="grid grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1fr)_2rem] items-center gap-2 px-1 pb-1 text-[10px] font-bold uppercase tracking-widest text-uf-muted">
               <span>Serie</span>
               <span className="text-center">Reps</span>
               <span className="text-center">Peso (kg)</span>
@@ -144,7 +144,7 @@ function RegistroSeries({ ejercicio, plan, entrenamientoId, onClose, onGuardado 
             </div>
             <ul className="space-y-2">
               {series.map((s, i) => (
-                <li key={i} className="grid grid-cols-[2.5rem_1fr_1fr_2rem] items-center gap-2">
+                <li key={i} className="grid grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1fr)_2rem] items-center gap-2">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-uf-gold/15 font-anton text-uf-gold">{i + 1}</span>
                   <input type="number" inputMode="numeric" min="1" max="200" value={s.repeticiones} onChange={(e) => cambiar(i, 'repeticiones', e.target.value)} className={campo} aria-label={`Repeticiones serie ${i + 1}`} />
                   <input type="number" inputMode="decimal" min="0" max="1000" step="0.5" value={s.peso} placeholder="Sin peso" onChange={(e) => cambiar(i, 'peso', e.target.value)} className={campo} aria-label={`Peso serie ${i + 1}`} />
@@ -197,7 +197,7 @@ function RegistroSeries({ ejercicio, plan, entrenamientoId, onClose, onGuardado 
 
 function Dato({ titulo, valor, detalle, destacado }) {
   return (
-    <div className={`rounded-xl border p-3 text-center ${destacado ? 'border-uf-gold/50 bg-uf-gold/10' : 'border-uf-line bg-black/30'}`}>
+    <div className={`min-w-0 rounded-xl border p-3 text-center ${destacado ? 'border-uf-gold/50 bg-uf-gold/10' : 'border-uf-line bg-black/30'}`}>
       <div className="text-[10px] font-bold uppercase tracking-widest text-uf-muted">{titulo}</div>
       <div className={`mt-1 font-anton text-2xl ${destacado ? 'text-uf-gold' : 'text-white'}`}>{valor}</div>
       <div className="text-[11px] text-uf-muted">{detalle}</div>

@@ -83,6 +83,13 @@ JWT is handled by `lexik/jwt-authentication-bundle`. Login success handlers (`sr
 
 File uploads use `league/flysystem-bundle` with AWS S3 v3 adapter (configured for production). Local storage is used in development.
 
+### Local backend after PHP changes
+The local container runs with `opcache.revalidate_freq=60`. After editing PHP or config:
+```bash
+MSYS_NO_PATHCONV=1 docker exec ultimatefitness_backend sh -c "php bin/console cache:clear; chown -R www-data:www-data var; apache2ctl -k graceful"
+```
+`composer install` must keep the optimized, authoritative classmap (set in `composer.json`); without it every request takes seconds on the bind mount.
+
 ### Database Migrations
 
 ```bash

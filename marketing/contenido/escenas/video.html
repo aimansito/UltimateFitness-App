@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Vídeo de contenido</title>
+<link rel="stylesheet" href="../../video-cambio/escenas/comun.css">
+<style>
+  :root { --azul: #00aeff; --rojo: #ff4d4d; }
+  .plano { position: absolute; inset: 0; display: none; }
+  .velo {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.55) 0, rgba(10,10,10,0.1) 420px, rgba(10,10,10,0.1) 1150px, rgba(10,10,10,0.85) 1500px, rgba(10,10,10,0.95) 100%);
+  }
+  .sello { position: absolute; left: 64px; top: 200px; display: flex; align-items: center; gap: 16px; }
+  .sello img { width: 64px; height: 64px; object-fit: contain; }
+  .sello span { font-family: 'Audiowide', sans-serif; font-size: 22px; letter-spacing: 0.28em; color: #fff; }
+
+  /* Portada */
+  .portada { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 70px 520px; }
+  .portada img { width: 150px; height: 150px; object-fit: contain; margin-bottom: 46px; }
+  .portada .eyebrow { font-size: 32px; letter-spacing: 0.4em; padding-left: 0.4em; }
+  .portada h1 { margin-top: 26px; font-size: 158px; line-height: 0.95; }
+  .portada h1 span { display: block; }
+  .portada h1 span + span { color: var(--oro); }
+
+  /* App en un móvil */
+  .app .chip {
+    position: absolute; top: 300px; left: 50%; transform: translateX(-50%);
+    padding: 14px 34px; border-radius: 999px; border: 2px solid rgba(204,148,26,0.8); background: rgba(10,10,10,0.75);
+    font-family: 'Audiowide', sans-serif; font-size: 28px; letter-spacing: 0.3em; color: #fff; white-space: nowrap;
+  }
+  .movil {
+    position: absolute; left: 50%; top: 400px; width: 480px; height: 900px; margin-left: -240px;
+    border-radius: 56px; border: 11px solid #1b1b1b; outline: 2px solid #3a3a3a; background: #0a0a0a; overflow: hidden;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.75), 0 0 90px rgba(204,148,26,0.22);
+  }
+  .movil img { position: absolute; left: 0; top: 0; width: 100%; }
+
+  /* Dato grande */
+  .dato { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 80px 560px; }
+  .dato .eyebrow { font-size: 30px; letter-spacing: 0.36em; padding-left: 0.36em; }
+  .dato .valor { margin-top: 34px; font-family: 'Anton', sans-serif; line-height: 1; color: var(--oro); text-shadow: 0 0 60px rgba(204,148,26,0.35); }
+  .dato .unidad { margin-top: 12px; font-family: 'Anton', sans-serif; font-size: 70px; color: #fff; text-transform: uppercase; }
+  .dato .nota { margin-top: 30px; font-size: 40px; font-weight: 700; color: #d6d6d6; }
+
+  /* Punto numerado */
+  .punto { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 80px 560px; }
+  .punto .numero {
+    padding: 14px 40px; border-radius: 24px; background: rgba(204,148,26,0.14); border: 3px solid var(--oro);
+    font-family: 'Anton', sans-serif; font-size: 86px; line-height: 1; color: var(--oro); text-transform: uppercase;
+  }
+  .punto.negativo .numero { background: rgba(255,77,77,0.12); border-color: var(--rojo); color: var(--rojo); }
+  .punto h2 { margin-top: 44px; font-size: 128px; line-height: 0.95; }
+  .punto .nota { margin-top: 30px; font-size: 42px; font-weight: 700; color: #d6d6d6; }
+
+  /* Comparativa */
+  .versus { display: flex; align-items: center; justify-content: center; gap: 34px; padding: 0 60px 560px; }
+  .versus .lado { width: 450px; padding: 60px 30px; border-radius: 34px; text-align: center; background: rgba(19,19,19,0.85); border: 3px solid #2a2a2a; }
+  .versus .lado.activo { border-color: var(--oro); box-shadow: 0 0 70px rgba(204,148,26,0.3); }
+  .versus .lado h3 { font-size: 74px; line-height: 1; }
+  .versus .lado.activo h3 { color: var(--oro); }
+  .versus .lado p { margin-top: 22px; font-size: 36px; font-weight: 700; color: #cfcfcf; }
+  .versus .y { font-family: 'Anton', sans-serif; font-size: 70px; color: #fff; }
+
+  /* Cierre */
+  .cta { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 70px 520px; background: rgba(10,10,10,0.82); }
+  .cta .logo { width: 520px; }
+  .cta h2 { margin-top: 60px; font-size: 130px; line-height: 0.95; }
+  .cta h2 span { color: var(--oro); display: block; }
+  .cta .web { margin-top: 44px; font-family: 'Audiowide', sans-serif; font-size: 40px; letter-spacing: 0.08em; color: var(--oro); }
+  .cta .usuario { margin-top: 26px; padding: 18px 40px; border-radius: 999px; border: 3px solid rgba(255,255,255,0.25); font-size: 38px; font-weight: 800; }
+
+  /* Subtítulos */
+  #subtitulos {
+    position: absolute; left: 60px; right: 60px; top: 1330px; text-align: center;
+    font-size: 66px; font-weight: 800; line-height: 1.15; color: #fff; letter-spacing: -0.01em;
+    text-shadow: 0 4px 0 rgba(0,0,0,0.6), 0 0 28px rgba(0,0,0,0.9);
+  }
+  #subtitulos b { font-weight: 800; color: var(--oro); }
+</style>
+</head>
+<body>
+  <div class="velo"></div>
+  <div id="planos"></div>
+  <div class="sello" id="sello"><img src="../assets/logo-small.png" alt=""><span>ULTIMATE FITNESS</span></div>
+  <div id="subtitulos"></div>
+
+  <script src="../../video-cambio/escenas/comun.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const lim = (x) => Math.min(1, Math.max(0, x));
+    const tramo = (t, a, b) => lim((t - a) / (b - a));
+    const salida = (x) => 1 - Math.pow(1 - x, 3);
+    const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    let D = null;
+    let planos = [];
+
+    function construir(f) {
+      const el = crear('div', `plano ${f.tipo}`);
+      if (f.tipo === 'portada') {
+        el.innerHTML = `<img src="../assets/logo-small.png" alt="" class="pieza"><p class="eyebrow pieza">${esc(f.eyebrow)}</p>
+          <h1 class="anton pieza">${f.titulo.map((l) => `<span>${esc(l)}</span>`).join('')}</h1>`;
+      } else if (f.tipo === 'app') {
+        el.innerHTML = `<p class="chip pieza">${esc(f.etiqueta.toUpperCase())}</p><div class="movil pieza"><img src="${f.imagen}" alt=""></div>`;
+      } else if (f.tipo === 'dato') {
+        const tam = f.valor.length > 18 ? 84 : f.valor.length > 12 ? 112 : 170;
+        el.innerHTML = `<p class="eyebrow pieza">${esc(f.etiqueta)}</p><p class="valor pieza" style="font-size:${tam}px">${esc(f.valor)}</p>
+          ${f.unidad ? `<p class="unidad pieza">${esc(f.unidad)}</p>` : ''}<p class="nota pieza">${esc(f.nota)}</p>`;
+      } else if (f.tipo === 'punto') {
+        if (f.negativo) el.classList.add('negativo');
+        el.innerHTML = `<p class="numero pieza">${esc(f.numero)}</p><h2 class="anton pieza">${esc(f.titulo)}</h2><p class="nota pieza">${esc(f.nota)}</p>`;
+      } else if (f.tipo === 'versus') {
+        const lado = (l, k) => `<div class="lado pieza ${f.activo === k ? 'activo' : ''}"><h3 class="anton">${esc(l.titulo)}</h3><p>${esc(l.nota)}</p></div>`;
+        el.innerHTML = `${lado(f.izquierda, 'izquierda')}<span class="y pieza">+</span>${lado(f.derecha, 'derecha')}`;
+      } else if (f.tipo === 'cta') {
+        el.innerHTML = `<img class="logo pieza" src="../assets/logo.png" alt=""><h2 class="anton pieza">Pruébala<span>gratis</span></h2>
+          <p class="web pieza">${esc(D.web)}</p><p class="usuario pieza">${esc(D.usuario)}</p>`;
+      }
+      $('planos').appendChild(el);
+      return el;
+    }
+
+    window.iniciar = async (datos) => {
+      D = datos;
+      planos = datos.frases.map((f) => ({ f, el: construir(f) }));
+      await window.esperarRecursos();
+    };
+
+    function animarPlano({ f, el }, t) {
+      const visible = t >= f.ini && t < f.fin;
+      el.style.display = visible ? 'flex' : 'none';
+      if (f.tipo === 'app') el.style.display = visible ? 'block' : 'none';
+      if (!visible) return;
+      const u = t - f.ini;
+      const piezas = el.querySelectorAll('.pieza');
+      piezas.forEach((p, i) => {
+        const e = salida(tramo(u, 0.04 * i, 0.04 * i + 0.4));
+        const fuera = tramo(t, f.fin - 0.12, f.fin);
+        p.style.opacity = e * (1 - fuera);
+        const base = p.classList.contains('chip') ? 'translateX(-50%) ' : '';
+        p.style.transform = `${base}translateY(${(1 - e) * 50}px) scale(${1 - fuera * 0.04})`;
+      });
+      // La captura se desplaza poco a poco como si se hiciera scroll
+      if (f.tipo === 'app') {
+        const img = el.querySelector('.movil img');
+        const max = Math.max(0, img.getBoundingClientRect().height - 878);
+        const recorrido = Math.min(max, f.desplazar ?? 0);
+        img.style.transform = `translateY(${-recorrido * salida(tramo(u, 0.5, f.fin - f.ini))}px)`;
+      }
+    }
+
+    function pintarSubtitulos(t) {
+      const fragmento = D.fragmentos.find((c) => t >= c.ini && t < c.fin);
+      if (!fragmento) { $('subtitulos').innerHTML = ''; return; }
+      $('subtitulos').innerHTML = fragmento.palabras
+        .map((p, i) => {
+          const siguiente = fragmento.palabras[i + 1];
+          const activa = t >= p.t && (!siguiente || t < siguiente.t);
+          return activa ? `<b>${esc(p.w)}</b>` : esc(p.w);
+        })
+        .join(' ');
+      const e = salida(tramo(t, fragmento.ini, fragmento.ini + 0.12));
+      $('subtitulos').style.transform = `scale(${0.92 + 0.08 * e})`;
+    }
+
+    window.alTiempo = (t) => {
+      if (!D) return;
+      for (const p of planos) animarPlano(p, t);
+      const actual = planos.find((p) => t >= p.f.ini && t < p.f.fin);
+      $('sello').style.display = actual && ['portada', 'cta'].includes(actual.f.tipo) ? 'none' : 'flex';
+      // En el cierre los subtítulos sobran: el texto ya está en pantalla
+      if (actual && actual.f.tipo === 'cta') $('subtitulos').innerHTML = '';
+      else pintarSubtitulos(t);
+    };
+  </script>
+</body>
+</html>

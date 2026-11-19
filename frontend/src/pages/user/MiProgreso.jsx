@@ -78,13 +78,13 @@ function MiProgreso() {
                 </Link>
               </div>
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {ejercicios.map((e) => (
                   <button
                     key={e.ejercicioId}
                     type="button"
                     onClick={() => setAbierto(e)}
-                    className="uf-card uf-card-hover group flex flex-col p-5 text-left"
+                    className="uf-card uf-card-hover group flex min-w-0 flex-col p-5 text-left"
                   >
                     <div className="flex items-start gap-3">
                       <MuscleMap grupo={e.grupoMuscular} className="h-14 w-9 shrink-0" />

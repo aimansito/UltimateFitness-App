@@ -56,7 +56,8 @@ function CrearEntrenamiento() {
   const [creadoId, setCreadoId] = useState(null);
 
   const dia = dias.find((d) => d.diaSemana === diaActivo);
-  const diasEntreno = dias.filter((d) => !d.esDescanso);
+  // Un día cuenta como de entreno si tiene ejercicios; los demás se guardan como descanso
+  const diasEntreno = dias.filter((d) => !d.esDescanso && d.ejercicios.length > 0);
 
   useEffect(() => {
     if (error) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -119,13 +120,7 @@ function CrearEntrenamiento() {
       return;
     }
     if (diasEntreno.length === 0) {
-      setError('Marca al menos un día de entrenamiento');
-      return;
-    }
-    const vacio = diasEntreno.find((d) => d.ejercicios.length === 0);
-    if (vacio) {
-      setError(`${vacio.nombre} está marcado como día de entrenamiento pero no tiene ejercicios. Añádelos o márcalo como descanso.`);
-      seleccionarDia(vacio.diaSemana);
+      setError('Añade ejercicios al menos a un día');
       return;
     }
 
@@ -136,11 +131,13 @@ function CrearEntrenamiento() {
       nivelDificultad,
       duracionMinutos: parseInt(duracionMinutos, 10) || 60,
       esPublico: false,
-      dias: dias.map((d) => ({
+      dias: dias.map((d) => {
+        const descanso = d.esDescanso || d.ejercicios.length === 0;
+        return {
         diaSemana: d.diaSemana,
-        concepto: d.esDescanso ? '' : d.concepto.trim() || conceptoAutomatico(d.ejercicios) || 'Entrenamiento',
-        esDescanso: d.esDescanso,
-        ejercicios: d.esDescanso
+        concepto: descanso ? '' : d.concepto.trim() || conceptoAutomatico(d.ejercicios) || 'Entrenamiento',
+        esDescanso: descanso,
+        ejercicios: descanso
           ? []
           : d.ejercicios.map((e) => ({
               ejercicio_id: e.ejercicio_id,
@@ -149,7 +146,8 @@ function CrearEntrenamiento() {
               descanso: parseInt(e.descanso, 10) || 60,
               notas: e.notas,
             })),
-      })),
+        };
+      }),
     };
 
     try {
@@ -323,7 +321,7 @@ function CrearEntrenamiento() {
                     <div className="border-t border-uf-line p-4">
                       {d.ejercicios.length === 0 ? (
                         <p className="py-3 text-center text-sm text-uf-muted">
-                          {activo ? 'Pulsa un ejercicio de la biblioteca para añadirlo aquí.' : 'Sin ejercicios. Pulsa este día para añadirle ejercicios.'}
+                          {activo ? 'Pulsa un ejercicio de la biblioteca para añadirlo aquí.' : 'Sin ejercicios: se guardará como descanso. Pulsa este día para añadirle ejercicios.'}
                         </p>
                       ) : (
                         <ul className="space-y-2">

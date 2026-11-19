@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
+import api from "../services/api";
 import { PAGOS } from "../config/funciones";
 
 export const AuthContext = createContext();
@@ -13,6 +14,12 @@ export function AuthProvider({ children }) {
   // ================================
   // CARGAR USUARIO AL INICIAR LA APP
   // ================================
+  // Render (plan gratuito) apaga el servidor sin tráfico: se le da un toque al abrir la web
+  // para que, cuando la persona llegue al login, ya esté despierto.
+  useEffect(() => {
+    api.get("/health").catch(() => {});
+  }, []);
+
   useEffect(() => {
     try {
       const storedUser = authService.getUser();

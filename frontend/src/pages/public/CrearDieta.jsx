@@ -7,6 +7,8 @@ import CalculadoraNutricional from '../../components/dieta/CalculadoraNutriciona
 import SeccionComida from '../../components/dieta/SeccionComida';
 import { Apple, Coffee, Moon, Sunrise, UtensilsCrossed } from 'lucide-react';
 
+const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+
 function CrearDieta() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -163,15 +165,17 @@ function CrearDieta() {
       Object.entries(planComidas).forEach(([momento, items]) => {
         const momentoBackend = mapeoMomentos[momento] || momento;
 
-        // Filtrar solo platos (no alimentos sueltos) y convertir al formato backend
+        // Cada plato se guarda para los 7 días: la dieta es un plan diario que se repite toda la semana
         planBackend[momentoBackend] = items
           .filter(item => item.tipo === 'plato' || item.tipo === 'plato_personalizado')
-          .map(item => ({
-            tipo: 'plato',
-            id: item.id || item.plato_id,
-            dia_semana: 'lunes', // Por ahora solo un día
-            notas: item.nombre || null
-          }));
+          .flatMap(item =>
+            DIAS_SEMANA.map(dia => ({
+              tipo: 'plato',
+              id: item.id || item.plato_id,
+              dia_semana: dia,
+              notas: item.nombre || null
+            }))
+          );
       });
 
       const dietaData = {
@@ -185,8 +189,6 @@ function CrearDieta() {
         grasas_totales: Math.round(totalesActuales.grasas),
         plan: planBackend
       };
-
-      console.log("Enviando dieta al backend:", dietaData);
 
       // Enviar al backend
       const response = await api.post(

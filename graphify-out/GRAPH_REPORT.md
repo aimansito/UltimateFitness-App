@@ -1,11 +1,11 @@
-# Graph Report - .  (2026-11-16)
+# Graph Report - .  (2026-11-19)
 
 ## Corpus Check
-- 236 files · ~1,730,487 words
+- 238 files · ~2,170,028 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1566 nodes · 1596 edges · 231 communities detected
+- 1570 nodes · 1598 edges · 233 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -241,6 +241,8 @@
 - [[_COMMUNITY_Community 228|Community 228]]
 - [[_COMMUNITY_Community 229|Community 229]]
 - [[_COMMUNITY_Community 230|Community 230]]
+- [[_COMMUNITY_Community 231|Community 231]]
+- [[_COMMUNITY_Community 232|Community 232]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Usuario` - 89 edges
@@ -1183,6 +1185,14 @@ Nodes (0):
 Cohesion: 1.0
 Nodes (0): 
 
+### Community 231 - "Community 231"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 232 - "Community 232"
+Cohesion: 1.0
+Nodes (0): 
+
 ## Knowledge Gaps
 - **Thin community `Community 132`** (2 nodes): `walk()`, `check_links.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -1348,39 +1358,43 @@ Nodes (0):
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 213`** (2 nodes): `Page.jsx`, `Page()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 214`** (1 nodes): `bundles.php`
+- **Thin community `Community 214`** (2 nodes): `voz.ps1`, `Esperar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 215`** (1 nodes): `preload.php`
+- **Thin community `Community 215`** (2 nodes): `facil()`, `comun.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 216`** (1 nodes): `contenido_inicial.php`
+- **Thin community `Community 216`** (1 nodes): `bundles.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 217`** (1 nodes): `index.php`
+- **Thin community `Community 217`** (1 nodes): `preload.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 218`** (1 nodes): `Privacidad.php`
+- **Thin community `Community 218`** (1 nodes): `contenido_inicial.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 219`** (1 nodes): `check_exact.js`
+- **Thin community `Community 219`** (1 nodes): `index.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 220`** (1 nodes): `eslint.config.js`
+- **Thin community `Community 220`** (1 nodes): `Privacidad.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 221`** (1 nodes): `postcss.config.js`
+- **Thin community `Community 221`** (1 nodes): `check_exact.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 222`** (1 nodes): `vite.config.js`
+- **Thin community `Community 222`** (1 nodes): `eslint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 223`** (1 nodes): `main.jsx`
+- **Thin community `Community 223`** (1 nodes): `postcss.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 224`** (1 nodes): `index.js`
+- **Thin community `Community 224`** (1 nodes): `vite.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 225`** (1 nodes): `funciones.js`
+- **Thin community `Community 225`** (1 nodes): `main.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 226`** (1 nodes): `authServiceEntrenador.js`
+- **Thin community `Community 226`** (1 nodes): `index.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 227`** (1 nodes): `solicitudesService.js`
+- **Thin community `Community 227`** (1 nodes): `funciones.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 228`** (1 nodes): `Button.stories.js`
+- **Thin community `Community 228`** (1 nodes): `authServiceEntrenador.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 229`** (1 nodes): `Header.stories.js`
+- **Thin community `Community 229`** (1 nodes): `solicitudesService.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 230`** (1 nodes): `Page.stories.js`
+- **Thin community `Community 230`** (1 nodes): `Button.stories.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 231`** (1 nodes): `Header.stories.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 232`** (1 nodes): `Page.stories.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions

@@ -14,6 +14,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "axios": "^1.13.2",
     "dompurify": "^3.2.6",
     "lucide-react": "^0.554.0",

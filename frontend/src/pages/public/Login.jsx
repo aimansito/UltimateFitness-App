@@ -26,6 +26,7 @@ function Login() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [despertando, setDespertando] = useState(false); // el servidor tarda en responder (arranque en frío)
 
   // ============================================
   // FUNCIONES
@@ -54,7 +55,9 @@ function Login() {
         return;
       }
 
+      const avisoLento = setTimeout(() => setDespertando(true), 4000);
       const result = await login(formData.email, formData.password);
+      clearTimeout(avisoLento);
 
       if (result.success) {
         // Si calculó sus macros en el landing antes de registrarse, va directo a su resultado
@@ -69,6 +72,7 @@ function Login() {
       setError("Error de conexión. Intenta de nuevo.");
     } finally {
       setLoading(false);
+      setDespertando(false);
     }
   };
 
@@ -101,6 +105,12 @@ function Login() {
           {error && (
             <div role="alert" className="mb-6 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
               {error}
+            </div>
+          )}
+
+          {despertando && loading && (
+            <div role="status" className="mb-6 rounded-xl border border-uf-line bg-white/[0.03] px-4 py-3 text-sm text-gray-300">
+              El servidor se está despertando, puede tardar hasta un minuto. No cierres la página.
             </div>
           )}
 

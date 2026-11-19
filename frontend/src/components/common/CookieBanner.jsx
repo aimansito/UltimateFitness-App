@@ -45,11 +45,11 @@ function CookieBanner() {
       aria-describedby="cookies-texto"
       className="fixed bottom-0 left-0 right-0 z-[9999] p-4 animate-slideUp"
     >
-      <div className="mx-auto max-w-4xl rounded-2xl border border-uf-gold/40 bg-uf-card p-6 shadow-2xl shadow-black/50">
+      <div className="mx-auto max-w-4xl rounded-2xl border border-uf-gold/40 bg-uf-card p-5 sm:p-6 shadow-2xl shadow-black/50">
         <div className="flex flex-col items-start gap-4 md:flex-row md:items-center">
-          <div className="flex flex-1 items-start gap-3">
+          <div className="flex w-full min-w-0 flex-1 items-start gap-3">
             <Cookie className="mt-1 h-8 w-8 shrink-0 text-uf-gold" aria-hidden="true" />
-            <div>
+            <div className="min-w-0">
               <h2 id="cookies-titulo" className="mb-1 text-lg font-bold text-white">
                 Cookies de analítica
               </h2>
@@ -70,10 +70,10 @@ function CookieBanner() {
 
           {/* Mismo peso visual para aceptar y rechazar (Guía de cookies de la AEPD) */}
           <div className="flex w-full shrink-0 gap-3 md:w-auto">
-            <button type="button" onClick={() => decidir('rejected')} className="uf-btn uf-btn-ghost flex-1 !px-6 !py-2.5 md:flex-none">
+            <button type="button" onClick={() => decidir('rejected')} className="uf-btn uf-btn-ghost min-w-0 flex-1 !px-3 !py-2.5 md:flex-none md:!px-6">
               Rechazar
             </button>
-            <button type="button" onClick={() => decidir('accepted')} className="uf-btn uf-btn-primary flex-1 !px-6 !py-2.5 md:flex-none">
+            <button type="button" onClick={() => decidir('accepted')} className="uf-btn uf-btn-primary min-w-0 flex-1 !px-3 !py-2.5 md:flex-none md:!px-6">
               Aceptar
             </button>
           </div>
