@@ -1,24 +1,26 @@
 // ============================================
 // CREAR ENTRENAMIENTO - Rutina semanal
-// Izquierda: biblioteca con la figura muscular (pulsas grupo -> ejercicios -> clic para añadir).
-// Derecha: nombre del plan y los 7 días; nombras el día y pasas al siguiente.
+// Cada día se rellena tocando los músculos en la figura (SelectorMusculos) y marcando
+// ejercicios. La biblioteca completa (favoritos y ejercicios propios) sigue disponible aparte.
+// Estética de los vídeos: números en círculo dorado, Anton y Audiowide.
 // ============================================
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Calendar, CheckCircle, ChevronDown, Moon, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Calendar, CheckCircle, ChevronDown, Library, Minus, Moon, Plus, Save, Trash2, X } from 'lucide-react';
 import api from '../../services/api';
 import { useToast } from '../../context/ToastContext';
 import MuscleMap from '../../components/common/MuscleMap';
 import PanelEjercicios from '../../components/gym/PanelEjercicios';
+import SelectorMusculos from '../../components/gym/SelectorMusculos';
 
 const DIAS_SEMANA = [
-  { numero: 1, nombre: 'Lunes' },
-  { numero: 2, nombre: 'Martes' },
-  { numero: 3, nombre: 'Miércoles' },
-  { numero: 4, nombre: 'Jueves' },
-  { numero: 5, nombre: 'Viernes' },
-  { numero: 6, nombre: 'Sábado' },
-  { numero: 7, nombre: 'Domingo' },
+  { numero: 1, nombre: 'Lunes', corto: 'L' },
+  { numero: 2, nombre: 'Martes', corto: 'M' },
+  { numero: 3, nombre: 'Miércoles', corto: 'X' },
+  { numero: 4, nombre: 'Jueves', corto: 'J' },
+  { numero: 5, nombre: 'Viernes', corto: 'V' },
+  { numero: 6, nombre: 'Sábado', corto: 'S' },
+  { numero: 7, nombre: 'Domingo', corto: 'D' },
 ];
 
 const NOMBRE_GRUPO = {
@@ -26,6 +28,7 @@ const NOMBRE_GRUPO = {
   core: 'Core', gluteos: 'Glúteos', fullbody: 'Full body', cardio: 'Cardio', brazos: 'Brazos', cadera: 'Cadera',
 };
 const normalizar = (g) => (g || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[\s_-]/g, '');
+const dos = (n) => String(n).padStart(2, '0');
 
 // Título automático del día a partir de lo que se trabaja ("Pecho · Tríceps")
 const conceptoAutomatico = (ejercicios) =>
@@ -35,6 +38,37 @@ const conceptoAutomatico = (ejercicios) =>
     .join(' · ');
 
 let uid = 0;
+const nuevoEjercicio = (ej) => ({ uid: ++uid, ejercicio_id: ej.id, nombre: ej.nombre, grupoMuscular: ej.grupoMuscular, series: 3, repeticiones: 12, descanso: 60, notas: '' });
+
+/** Campo numérico con botones − / + (cómodo en el móvil) */
+function Paso({ etiqueta, valor, onCambiar, min, max, paso = 1, sufijo }) {
+  const n = parseInt(valor, 10) || 0;
+  const fijar = (v) => onCambiar(Math.min(max, Math.max(min, v)));
+  return (
+    <div className="min-w-0 rounded-xl border border-uf-line bg-black/40 px-1 py-1.5 text-center sm:px-2">
+      <span className="block text-[9px] font-bold uppercase tracking-widest text-uf-muted">{etiqueta}</span>
+      <div className="mt-0.5 flex items-center justify-between gap-0.5">
+        <button type="button" onClick={() => fijar(n - paso)} aria-label={`Menos ${etiqueta}`} className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-white/10 hover:text-white sm:h-7 sm:w-7">
+          <Minus className="h-3.5 w-3.5" />
+        </button>
+        <input
+          type="number"
+          min={min}
+          max={max}
+          step={paso}
+          value={valor}
+          onChange={(e) => onCambiar(e.target.value)}
+          aria-label={etiqueta}
+          className="w-full min-w-0 bg-transparent text-center font-anton text-xl text-white [appearance:textfield] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none"
+        />
+        <button type="button" onClick={() => fijar(n + paso)} aria-label={`Más ${etiqueta}`} className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-white/10 hover:text-white sm:h-7 sm:w-7">
+          <Plus className="h-3.5 w-3.5" />
+        </button>
+      </div>
+      {sufijo && <span className="sr-only">{sufijo}</span>}
+    </div>
+  );
+}
 
 function CrearEntrenamiento() {
   const navigate = useNavigate();
@@ -46,9 +80,11 @@ function CrearEntrenamiento() {
   const [nivelDificultad, setNivelDificultad] = useState('intermedio');
   const [duracionMinutos, setDuracionMinutos] = useState(60);
   const [masOpciones, setMasOpciones] = useState(false);
+  const [biblioteca, setBiblioteca] = useState(false);
+  const [selector, setSelector] = useState(null); // número de día con la figura abierta
 
   const [dias, setDias] = useState(
-    DIAS_SEMANA.map((d) => ({ diaSemana: d.numero, nombre: d.nombre, concepto: '', esDescanso: d.numero >= 6, ejercicios: [] }))
+    DIAS_SEMANA.map((d) => ({ diaSemana: d.numero, nombre: d.nombre, corto: d.corto, concepto: '', esDescanso: d.numero >= 6, ejercicios: [] }))
   );
   const [diaActivo, setDiaActivo] = useState(1);
   const [guardando, setGuardando] = useState(false);
@@ -71,6 +107,7 @@ function CrearEntrenamiento() {
     document.getElementById(`dia-${numero}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
 
+  // Desde la biblioteca completa: añade uno al día activo
   const anadirEjercicio = (ej) => {
     const destino = dias.find((d) => d.diaSemana === diaActivo);
     if (!destino) return;
@@ -78,14 +115,18 @@ function CrearEntrenamiento() {
       toast.info(`${ej.nombre} ya está en ${destino.nombre}`);
       return;
     }
-    cambiarDia(diaActivo, (d) => ({
-      esDescanso: false,
-      ejercicios: [
-        ...d.ejercicios,
-        { uid: ++uid, ejercicio_id: ej.id, nombre: ej.nombre, grupoMuscular: ej.grupoMuscular, series: 3, repeticiones: 12, descanso: 60, notas: '' },
-      ],
-    }));
+    cambiarDia(diaActivo, (d) => ({ esDescanso: false, ejercicios: [...d.ejercicios, nuevoEjercicio(ej)] }));
     toast.success(`${ej.nombre} añadido a ${destino.nombre}`);
+  };
+
+  // Desde la figura: el día queda exactamente con lo marcado (se conservan series/reps de los que ya estaban)
+  const aplicarSeleccion = (numero, seleccion) => {
+    cambiarDia(numero, (d) => ({
+      esDescanso: false,
+      ejercicios: seleccion.map((ej) => d.ejercicios.find((e) => e.ejercicio_id === ej.id) || nuevoEjercicio(ej)),
+    }));
+    setSelector(null);
+    setDiaActivo(numero);
   };
 
   const cambiarEjercicio = (numero, id, campo, valor) =>
@@ -101,17 +142,9 @@ function CrearEntrenamiento() {
     }
   };
 
-  const siguienteDia = (numero) => {
-    const despues = dias.filter((d) => d.diaSemana > numero);
-    const siguiente = despues.find((d) => !d.esDescanso) || despues[0];
-    if (siguiente) {
-      seleccionarDia(siguiente.diaSemana);
-      setTimeout(() => document.getElementById(`concepto-${siguiente.diaSemana}`)?.focus(), 350);
-    }
-  };
-
   const idsDiaActivo = useMemo(() => dia?.ejercicios.map((e) => e.ejercicio_id) || [], [dia]);
   const totalEjercicios = dias.reduce((n, d) => n + (d.esDescanso ? 0 : d.ejercicios.length), 0);
+  const totalSeries = dias.reduce((n, d) => n + (d.esDescanso ? 0 : d.ejercicios.reduce((s, e) => s + (parseInt(e.series, 10) || 0), 0)), 0);
 
   const guardar = async () => {
     setError(null);
@@ -134,18 +167,18 @@ function CrearEntrenamiento() {
       dias: dias.map((d) => {
         const descanso = d.esDescanso || d.ejercicios.length === 0;
         return {
-        diaSemana: d.diaSemana,
-        concepto: descanso ? '' : d.concepto.trim() || conceptoAutomatico(d.ejercicios) || 'Entrenamiento',
-        esDescanso: descanso,
-        ejercicios: descanso
-          ? []
-          : d.ejercicios.map((e) => ({
-              ejercicio_id: e.ejercicio_id,
-              series: parseInt(e.series, 10) || 3,
-              repeticiones: parseInt(e.repeticiones, 10) || 12,
-              descanso: parseInt(e.descanso, 10) || 60,
-              notas: e.notas,
-            })),
+          diaSemana: d.diaSemana,
+          concepto: descanso ? '' : d.concepto.trim() || conceptoAutomatico(d.ejercicios) || 'Entrenamiento',
+          esDescanso: descanso,
+          ejercicios: descanso
+            ? []
+            : d.ejercicios.map((e) => ({
+                ejercicio_id: e.ejercicio_id,
+                series: parseInt(e.series, 10) || 3,
+                repeticiones: parseInt(e.repeticiones, 10) || 12,
+                descanso: parseInt(e.descanso, 10) || 60,
+                notas: e.notas,
+              })),
         };
       }),
     };
@@ -163,10 +196,13 @@ function CrearEntrenamiento() {
   };
 
   const campo = 'w-full rounded-xl border border-uf-line bg-black/50 px-4 py-3 text-white placeholder-gray-600 transition focus:border-uf-gold focus:outline-none';
-  const campoMini = 'w-full rounded-lg border border-uf-line bg-black/50 px-2 py-1.5 text-center text-sm text-white focus:border-uf-gold focus:outline-none';
+  const diaSelector = dias.find((d) => d.diaSemana === selector);
 
   return (
     <div className="min-h-screen bg-uf-darker py-10">
+      {/* Selector con la figura */}
+      {diaSelector && <SelectorMusculos dia={diaSelector} onConfirmar={(sel) => aplicarSeleccion(diaSelector.diaSemana, sel)} onClose={() => setSelector(null)} />}
+
       {/* Plan creado */}
       {creadoId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="titulo-creado">
@@ -178,6 +214,7 @@ function CrearEntrenamiento() {
             <p className="mt-3 text-gray-300">
               <strong className="text-white">{nombre}</strong> ya está en tus entrenamientos: {diasEntreno.length} {diasEntreno.length === 1 ? 'día' : 'días'} y {totalEjercicios} ejercicios.
             </p>
+            <p className="mt-2 text-sm text-uf-muted">Ábrelo cuando entrenes y apunta tus pesos: verás tu progreso en tu perfil.</p>
             <div className="mt-7 space-y-3">
               <button type="button" onClick={() => navigate(`/mis-entrenamientos/${creadoId}`)} className="uf-btn uf-btn-primary w-full">
                 <Calendar className="h-4 w-4" />
@@ -191,19 +228,19 @@ function CrearEntrenamiento() {
         </div>
       )}
 
-      <div className={`container mx-auto px-4 ${creadoId ? 'blur-sm' : ''}`}>
+      <div className={`container mx-auto max-w-6xl px-4 ${creadoId ? 'blur-sm' : ''}`}>
         {/* Cabecera */}
         <div className="mb-8">
-          <button type="button" onClick={() => navigate('/mis-entrenamientos')} className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-uf-gold hover:text-white">
+          <button type="button" onClick={() => navigate('/mis-entrenamientos')} className="mb-4 flex w-fit items-center gap-2 text-sm font-semibold text-uf-gold hover:text-white">
             <ArrowLeft className="h-4 w-4" />
             Volver
           </button>
-          <span className="uf-eyebrow">Tu rutina</span>
-          <h1 className="mt-2 font-anton text-4xl uppercase text-white md:text-5xl">
-            Crear <span className="uf-text-gold">entrenamiento</span>
+          <span className="uf-eyebrow">Tu rutina semanal</span>
+          <h1 className="mt-2 font-anton text-5xl uppercase leading-none text-white md:text-6xl">
+            Crea tu <span className="uf-text-gold">rutina</span>
           </h1>
-          <p className="mt-2 max-w-2xl text-uf-muted">
-            Elige un grupo muscular en la figura, pulsa los ejercicios para añadirlos al día seleccionado, ponle nombre al día y pasa al siguiente.
+          <p className="mt-3 max-w-2xl text-uf-muted">
+            Elige los días que entrenas, pulsa <strong className="text-white">Añadir ejercicios</strong> y toca en la figura los músculos que quieres trabajar.
           </p>
         </div>
 
@@ -213,165 +250,203 @@ function CrearEntrenamiento() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:items-start">
-          {/* Biblioteca */}
-          <div className="min-w-0 lg:sticky lg:top-24">
-            <PanelEjercicios destino={dia} destinos={dias} onCambiarDestino={seleccionarDia} onAnadir={anadirEjercicio} idsAnadidos={idsDiaActivo} />
+        {/* Nombre y resumen */}
+        <div className="uf-card mb-6 p-5 md:p-7">
+          <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+            <label className="block">
+              <span className="mb-2 block font-audiowide text-[11px] uppercase tracking-[0.3em] text-gray-300">Nombre del plan</span>
+              <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Ej: Hipertrofia 4 días" maxLength={150} className={`${campo} font-anton text-2xl uppercase tracking-wide`} />
+            </label>
+            <dl className="grid grid-cols-3 gap-3 text-center">
+              {[
+                ['Días', diasEntreno.length],
+                ['Ejercicios', totalEjercicios],
+                ['Series', totalSeries],
+              ].map(([k, v]) => (
+                <div key={k} className="flex h-20 w-20 flex-col items-center justify-center rounded-full border-2 border-uf-gold/70 shadow-[0_0_24px_rgba(204,148,26,0.15)]">
+                  <dd className="font-anton text-2xl leading-none text-uf-gold">{v}</dd>
+                  <dt className="mt-1 text-[9px] font-bold uppercase tracking-widest text-uf-muted">{k}</dt>
+                </div>
+              ))}
+            </dl>
           </div>
 
-          {/* Plan */}
-          <div className="min-w-0 space-y-4">
-            <div className="uf-card p-5 md:p-6">
-              <label className="block">
-                <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Nombre del plan</span>
-                <input value={nombre} onChange={(e) => setNombre(e.target.value)} placeholder="Ej: Hipertrofia 4 días" maxLength={150} className={campo} />
-              </label>
-              <button type="button" onClick={() => setMasOpciones(!masOpciones)} aria-expanded={masOpciones} className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-uf-muted hover:text-white">
-                <ChevronDown className={`h-4 w-4 transition-transform ${masOpciones ? 'rotate-180' : ''}`} />
-                Más opciones
-              </button>
-              {masOpciones && (
-                <div className="mt-4 grid gap-4 sm:grid-cols-3">
-                  <label className="block">
-                    <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Tipo</span>
-                    <select value={tipo} onChange={(e) => setTipo(e.target.value)} className={campo}>
-                      <option value="gym">Gimnasio</option>
-                      <option value="casa">En casa</option>
-                      <option value="cardio">Cardio</option>
-                      <option value="flexibilidad">Flexibilidad</option>
-                    </select>
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Nivel</span>
-                    <select value={nivelDificultad} onChange={(e) => setNivelDificultad(e.target.value)} className={campo}>
-                      <option value="principiante">Principiante</option>
-                      <option value="intermedio">Intermedio</option>
-                      <option value="avanzado">Avanzado</option>
-                    </select>
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Minutos por sesión</span>
-                    <input type="number" min="10" max="300" value={duracionMinutos} onChange={(e) => setDuracionMinutos(e.target.value)} className={campo} />
-                  </label>
-                  <label className="block sm:col-span-3">
-                    <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Descripción</span>
-                    <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} rows={2} placeholder="Objetivo del plan (opcional)" className={campo} />
-                  </label>
-                </div>
-              )}
-            </div>
+          {/* Semana: qué días se entrena */}
+          <div className="mt-6 grid grid-cols-7 gap-1.5 sm:gap-2" role="group" aria-label="Días de la semana">
+            {dias.map((d) => {
+              const activo = d.diaSemana === diaActivo;
+              const entrena = !d.esDescanso;
+              return (
+                <button
+                  key={d.diaSemana}
+                  type="button"
+                  onClick={() => (entrena ? seleccionarDia(d.diaSemana) : toggleDescanso(d.diaSemana))}
+                  aria-pressed={entrena}
+                  aria-label={`${d.nombre}: ${entrena ? 'entreno' : 'descanso'}`}
+                  className={`flex flex-col items-center rounded-2xl border py-2.5 transition ${
+                    activo ? 'border-uf-gold bg-uf-gold text-black' : entrena ? 'border-uf-gold/50 bg-uf-gold/10 text-white' : 'border-uf-line bg-black/30 text-gray-500 hover:border-uf-gold/40'
+                  }`}
+                >
+                  <span className="font-anton text-xl leading-none">{d.corto}</span>
+                  <span className={`mt-1 text-[9px] font-bold uppercase tracking-wider ${activo ? 'text-black/70' : ''}`}>
+                    {entrena ? `${d.ejercicios.length} ej.` : 'Desc.'}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-            {/* Días */}
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+            <button type="button" onClick={() => setMasOpciones(!masOpciones)} aria-expanded={masOpciones} className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-uf-muted hover:text-white">
+              <ChevronDown className={`h-4 w-4 transition-transform ${masOpciones ? 'rotate-180' : ''}`} />
+              Más opciones
+            </button>
+            <button type="button" onClick={() => setBiblioteca(!biblioteca)} aria-expanded={biblioteca} className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-uf-muted hover:text-white">
+              {biblioteca ? <X className="h-4 w-4" /> : <Library className="h-4 w-4" />}
+              {biblioteca ? 'Cerrar biblioteca' : 'Biblioteca, favoritos y ejercicios propios'}
+            </button>
+          </div>
+          {masOpciones && (
+            <div className="mt-4 grid gap-4 sm:grid-cols-3">
+              <label className="block">
+                <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Tipo</span>
+                <select value={tipo} onChange={(e) => setTipo(e.target.value)} className={campo}>
+                  <option value="gym">Gimnasio</option>
+                  <option value="casa">En casa</option>
+                  <option value="cardio">Cardio</option>
+                  <option value="flexibilidad">Flexibilidad</option>
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Nivel</span>
+                <select value={nivelDificultad} onChange={(e) => setNivelDificultad(e.target.value)} className={campo}>
+                  <option value="principiante">Principiante</option>
+                  <option value="intermedio">Intermedio</option>
+                  <option value="avanzado">Avanzado</option>
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Minutos por sesión</span>
+                <input type="number" min="10" max="300" value={duracionMinutos} onChange={(e) => setDuracionMinutos(e.target.value)} className={campo} />
+              </label>
+              <label className="block sm:col-span-3">
+                <span className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Descripción</span>
+                <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} rows={2} placeholder="Objetivo del plan (opcional)" className={campo} />
+              </label>
+            </div>
+          )}
+        </div>
+
+        <div className={`grid grid-cols-1 gap-6 ${biblioteca ? 'lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)] lg:items-start' : ''}`}>
+          {biblioteca && (
+            <div className="min-w-0 lg:sticky lg:top-24">
+              <PanelEjercicios destino={dia} destinos={dias} onCambiarDestino={seleccionarDia} onAnadir={anadirEjercicio} idsAnadidos={idsDiaActivo} />
+            </div>
+          )}
+
+          {/* Días */}
+          <div className="min-w-0 space-y-4">
             {dias.map((d) => {
               const activo = d.diaSemana === diaActivo;
               const grupos = d.ejercicios.map((e) => e.grupoMuscular);
+              if (d.esDescanso) {
+                return (
+                  <section key={d.diaSemana} id={`dia-${d.diaSemana}`} aria-label={d.nombre} className="flex items-center gap-4 rounded-[1.25rem] border border-dashed border-uf-line px-5 py-3 opacity-70">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-uf-line text-gray-600">
+                      <Moon className="h-5 w-5" />
+                    </span>
+                    <p className="min-w-0 flex-1 font-anton text-lg uppercase text-gray-400">
+                      {d.nombre} <span className="ml-2 font-sans text-xs font-bold normal-case tracking-normal text-gray-600">Descanso</span>
+                    </p>
+                    <button type="button" onClick={() => toggleDescanso(d.diaSemana)} className="rounded-full border border-uf-line px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400 transition hover:border-uf-gold hover:text-white">
+                      Entrenar este día
+                    </button>
+                  </section>
+                );
+              }
               return (
                 <section
                   key={d.diaSemana}
                   id={`dia-${d.diaSemana}`}
                   aria-label={d.nombre}
-                  className={`uf-card overflow-hidden transition-colors ${activo ? 'border-uf-gold shadow-[0_0_0_1px_rgba(204,148,26,0.4)]' : d.esDescanso ? 'opacity-70' : ''}`}
+                  onClick={() => setDiaActivo(d.diaSemana)}
+                  className={`uf-card overflow-hidden transition-colors ${activo ? 'border-uf-gold shadow-[0_0_40px_rgba(204,148,26,0.15)]' : ''}`}
                 >
                   {/* Cabecera del día */}
-                  <div
-                    className={`flex cursor-pointer flex-wrap items-center gap-3 p-4 ${activo ? 'bg-uf-gold/10' : ''}`}
-                    onClick={() => !d.esDescanso && seleccionarDia(d.diaSemana)}
-                  >
-                    {d.esDescanso ? (
-                      <span className="flex h-16 w-12 shrink-0 items-center justify-center text-gray-600">
-                        <Moon className="h-7 w-7" />
-                      </span>
-                    ) : (
-                      <MuscleMap grupos={grupos.length ? grupos : ['fullbody']} className={`h-16 w-12 shrink-0 ${grupos.length ? '' : 'opacity-30'}`} />
-                    )}
+                  <div className="flex flex-wrap items-center gap-4 p-5">
+                    <span className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-[3px] font-anton text-2xl ${activo ? 'border-uf-gold bg-uf-gold text-black' : 'border-uf-gold text-uf-gold'}`}>
+                      {dos(d.diaSemana)}
+                    </span>
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h2 className="font-anton text-xl uppercase text-white">{d.nombre}</h2>
-                        {activo && <span className="uf-chip border-uf-gold/40 bg-uf-gold/10 text-[10px] text-uf-gold">Añadiendo aquí</span>}
-                      </div>
-                      {d.esDescanso ? (
-                        <p className="text-sm text-gray-500">Día de descanso</p>
-                      ) : (
-                        <input
-                          id={`concepto-${d.diaSemana}`}
-                          value={d.concepto}
-                          onChange={(e) => cambiarDia(d.diaSemana, { concepto: e.target.value })}
-                          onFocus={() => setDiaActivo(d.diaSemana)}
-                          onClick={(e) => e.stopPropagation()}
-                          placeholder={conceptoAutomatico(d.ejercicios) || 'Nombre del día, p. ej. Pecho y tríceps'}
-                          maxLength={100}
-                          className="mt-1 w-full border-0 border-b border-transparent bg-transparent py-1 text-sm text-uf-gold placeholder-gray-500 focus:border-uf-gold focus:outline-none"
-                          aria-label={`Nombre del entrenamiento de ${d.nombre}`}
-                        />
-                      )}
+                      <h2 className="font-anton text-3xl uppercase leading-none text-white">{d.nombre}</h2>
+                      <input
+                        id={`concepto-${d.diaSemana}`}
+                        value={d.concepto}
+                        onChange={(e) => cambiarDia(d.diaSemana, { concepto: e.target.value })}
+                        placeholder={conceptoAutomatico(d.ejercicios) || 'Nombre del día, p. ej. Pecho y tríceps'}
+                        maxLength={100}
+                        className="mt-1 w-full border-0 border-b border-transparent bg-transparent py-1 font-audiowide text-xs uppercase tracking-[0.2em] text-uf-gold placeholder-gray-600 focus:border-uf-gold focus:outline-none"
+                        aria-label={`Nombre del entrenamiento de ${d.nombre}`}
+                      />
                     </div>
+                    <MuscleMap grupos={grupos.length ? grupos : ['fullbody']} vista="ambas" className={`hidden h-16 w-20 shrink-0 sm:flex ${grupos.length ? '' : 'opacity-25'}`} />
                     <button
                       type="button"
                       onClick={(e) => { e.stopPropagation(); toggleDescanso(d.diaSemana); }}
-                      className={`rounded-full border px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition ${
-                        d.esDescanso ? 'border-uf-line text-gray-400 hover:border-uf-gold hover:text-white' : 'border-uf-gold/40 bg-uf-gold/10 text-uf-gold hover:bg-uf-gold hover:text-black'
-                      }`}
+                      aria-label={`Marcar ${d.nombre} como descanso`}
+                      title="Marcar como descanso"
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-uf-line text-gray-500 transition hover:border-uf-gold hover:text-white"
                     >
-                      {d.esDescanso ? 'Entrenar este día' : 'Descanso'}
+                      <Moon className="h-4 w-4" />
                     </button>
                   </div>
 
                   {/* Ejercicios del día */}
-                  {!d.esDescanso && (
-                    <div className="border-t border-uf-line p-4">
-                      {d.ejercicios.length === 0 ? (
-                        <p className="py-3 text-center text-sm text-uf-muted">
-                          {activo ? 'Pulsa un ejercicio de la biblioteca para añadirlo aquí.' : 'Sin ejercicios: se guardará como descanso. Pulsa este día para añadirle ejercicios.'}
-                        </p>
-                      ) : (
-                        <ul className="space-y-2">
-                          <li className="hidden grid-cols-[1fr_repeat(3,4.5rem)_2rem] gap-2 px-2 text-[10px] font-bold uppercase tracking-widest text-uf-muted sm:grid">
-                            <span>Ejercicio</span>
-                            <span className="text-center">Series</span>
-                            <span className="text-center">Reps</span>
-                            <span className="text-center">Desc. (s)</span>
-                            <span />
-                          </li>
-                          {d.ejercicios.map((e, i) => (
-                            <li key={e.uid} className="grid grid-cols-[1fr_auto] items-center gap-2 rounded-xl border border-uf-line bg-black/30 p-2 sm:grid-cols-[1fr_repeat(3,4.5rem)_2rem]">
-                              <div className="min-w-0 pl-1">
-                                <span className="block truncate text-sm font-bold text-white">
-                                  <span className="mr-2 text-uf-gold">{i + 1}.</span>
-                                  {e.nombre}
-                                </span>
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-uf-muted">{NOMBRE_GRUPO[normalizar(e.grupoMuscular)] || e.grupoMuscular}</span>
+                  <div className="border-t border-uf-line p-5">
+                    {d.ejercicios.length > 0 && (
+                      <ol className="mb-4 space-y-3">
+                        {d.ejercicios.map((e, i) => (
+                          <li key={e.uid} className="rounded-2xl border border-uf-line bg-black/30 p-3 sm:p-4">
+                            <div className="flex items-center gap-3">
+                              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-uf-gold font-anton text-lg text-uf-gold">{dos(i + 1)}</span>
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate font-anton text-lg uppercase leading-tight text-white">{e.nombre}</p>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-uf-muted">{NOMBRE_GRUPO[normalizar(e.grupoMuscular)] || e.grupoMuscular}</p>
                               </div>
-                              <button type="button" onClick={() => quitarEjercicio(d.diaSemana, e.uid)} aria-label={`Quitar ${e.nombre}`} className="justify-self-end text-gray-500 hover:text-red-400 sm:order-last sm:justify-self-center">
+                              <button type="button" onClick={() => quitarEjercicio(d.diaSemana, e.uid)} aria-label={`Quitar ${e.nombre}`} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-red-500/10 hover:text-red-400">
                                 <Trash2 className="h-4 w-4" />
                               </button>
-                              <div className="col-span-2 grid grid-cols-3 gap-2 sm:col-span-3 sm:contents">
-                                <input type="number" min="1" max="20" value={e.series} onChange={(ev) => cambiarEjercicio(d.diaSemana, e.uid, 'series', ev.target.value)} className={campoMini} aria-label="Series" />
-                                <input type="number" min="1" max="100" value={e.repeticiones} onChange={(ev) => cambiarEjercicio(d.diaSemana, e.uid, 'repeticiones', ev.target.value)} className={campoMini} aria-label="Repeticiones" />
-                                <input type="number" min="0" max="600" step="5" value={e.descanso} onChange={(ev) => cambiarEjercicio(d.diaSemana, e.uid, 'descanso', ev.target.value)} className={campoMini} aria-label="Descanso en segundos" />
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      {activo && d.diaSemana < 7 && (
-                        <div className="mt-3 flex justify-end">
-                          <button type="button" onClick={() => siguienteDia(d.diaSemana)} className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-uf-gold hover:text-white">
-                            Siguiente día
-                            <ArrowRight className="h-4 w-4" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                            </div>
+                            <div className="mt-3 grid grid-cols-3 gap-2">
+                              <Paso etiqueta="Series" valor={e.series} min={1} max={20} onCambiar={(v) => cambiarEjercicio(d.diaSemana, e.uid, 'series', v)} />
+                              <Paso etiqueta="Reps" valor={e.repeticiones} min={1} max={100} onCambiar={(v) => cambiarEjercicio(d.diaSemana, e.uid, 'repeticiones', v)} />
+                              <Paso etiqueta="Desc. (s)" valor={e.descanso} min={0} max={600} paso={15} onCambiar={(v) => cambiarEjercicio(d.diaSemana, e.uid, 'descanso', v)} />
+                            </div>
+                          </li>
+                        ))}
+                      </ol>
+                    )}
+                    <button
+                      type="button"
+                      onClick={(ev) => { ev.stopPropagation(); setSelector(d.diaSemana); }}
+                      className={`flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed py-4 font-anton text-lg uppercase tracking-wide transition ${
+                        d.ejercicios.length ? 'border-uf-line text-gray-400 hover:border-uf-gold hover:text-uf-gold' : 'border-uf-gold/60 bg-uf-gold/5 text-uf-gold hover:bg-uf-gold/10'
+                      }`}
+                    >
+                      <Plus className="h-5 w-5" />
+                      {d.ejercicios.length ? 'Añadir o quitar ejercicios' : 'Añadir ejercicios'}
+                    </button>
+                  </div>
                 </section>
               );
             })}
 
             {/* Guardar */}
-            <div className="uf-card flex flex-col items-center justify-between gap-4 p-5 sm:flex-row">
+            <div className="uf-card sticky bottom-3 z-10 flex flex-col items-center justify-between gap-4 border-uf-gold/40 p-4 sm:flex-row">
               <p className="text-sm text-uf-muted">
-                <strong className="text-white">{diasEntreno.length}</strong> {diasEntreno.length === 1 ? 'día' : 'días'} de entreno ·{' '}
-                <strong className="text-white">{totalEjercicios}</strong> ejercicios
+                <strong className="font-anton text-lg text-white">{diasEntreno.length}</strong> {diasEntreno.length === 1 ? 'día' : 'días'} ·{' '}
+                <strong className="font-anton text-lg text-white">{totalEjercicios}</strong> ejercicios ·{' '}
+                <strong className="font-anton text-lg text-white">{totalSeries}</strong> series a la semana
               </p>
               <button type="button" onClick={guardar} disabled={guardando} className="uf-btn uf-btn-primary w-full sm:w-auto disabled:opacity-50">
                 <Save className="h-4 w-4" />

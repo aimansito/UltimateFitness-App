@@ -7,6 +7,8 @@ const datos = (promesa) => promesa.then((r) => r.data);
 
 const progresoService = {
   resumen: () => datos(api.get('/progreso/resumen')),
+  rutinas: () => datos(api.get('/progreso/rutinas')),
+  rutina: (entrenamientoId) => datos(api.get('/progreso/rutina/' + entrenamientoId)),
   historial: (ejercicioId) => datos(api.get(`/progreso/ejercicio/${ejercicioId}`)),
   // series: [{ repeticiones, peso }] · fecha 'YYYY-MM-DD' (por defecto hoy)
   guardar: ({ ejercicioId, entrenamientoId, fecha, series }) =>

@@ -31,6 +31,13 @@ class CalendarioUsuario
     #[ORM\Column(name: 'ejercicios_hechos', type: 'json', nullable: true)]
     private ?array $ejerciciosHechos = null;
 
+    // Minutos reales del entreno (cronómetro de la sesión) y si foto_url ya es la tarjeta compuesta
+    #[ORM\Column(name: 'duracion_minutos', type: 'smallint', nullable: true)]
+    private ?int $duracionMinutos = null;
+
+    #[ORM\Column(name: 'foto_es_tarjeta', options: ['default' => false])]
+    private bool $fotoEsTarjeta = false;
+
     public function getFotoUrl(): ?string
     {
         return $this->fotoUrl;

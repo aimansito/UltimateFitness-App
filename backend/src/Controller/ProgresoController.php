@@ -206,6 +206,169 @@ class ProgresoController extends AbstractController
     }
 
     // ============================================
+    // RUTINAS DEL USUARIO CON SU ACTIVIDAD REGISTRADA
+    // ============================================
+    #[Route('/rutinas', name: 'progreso_rutinas', methods: ['GET'])]
+    public function rutinas(): JsonResponse
+    {
+        $usuario = $this->getUser();
+        if (!$usuario instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+        $uid = (int) $usuario->getId();
+
+        $filas = $this->conn->fetchAllAssociative(
+            'SELECT e.id, e.nombre,
+                    COUNT(DISTINCT r.fecha) AS sesiones,
+                    MAX(r.fecha) AS ultima,
+                    COALESCE(SUM(r.repeticiones * COALESCE(r.peso_kg, 0)), 0) AS volumen
+             FROM entrenamientos e
+             LEFT JOIN registros_series r ON r.entrenamiento_id = e.id AND r.usuario_id = ?
+             WHERE e.creador_usuario_id = ? OR e.asignado_ausuario_id = ?
+             GROUP BY e.id, e.nombre',
+            [$uid, $uid, $uid]
+        );
+
+        $lista = array_map(fn (array $f) => [
+            'id' => (int) $f['id'],
+            'nombre' => $f['nombre'],
+            'sesiones' => (int) $f['sesiones'],
+            'ultima' => $f['ultima'],
+            'volumen' => (int) round((float) $f['volumen']),
+        ], $filas);
+        // Primero las que tienen actividad reciente
+        usort($lista, fn ($a, $b) => strcmp((string) $b['ultima'], (string) $a['ultima']) ?: $b['id'] <=> $a['id']);
+
+        return $this->json(['success' => true, 'rutinas' => $lista]);
+    }
+
+    // ============================================
+    // PROGRESO DE UNA RUTINA: semanas, ejercicios y últimas series
+    // ============================================
+    #[Route('/rutina/{id}', name: 'progreso_rutina', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function rutina(int $id): JsonResponse
+    {
+        $usuario = $this->getUser();
+        if (!$usuario instanceof Usuario) {
+            return $this->json(['success' => false, 'error' => 'No autenticado'], Response::HTTP_UNAUTHORIZED);
+        }
+        $uid = (int) $usuario->getId();
+
+        $nombre = $this->conn->fetchOne(
+            'SELECT nombre FROM entrenamientos WHERE id = ? AND (creador_usuario_id = ? OR asignado_ausuario_id = ?)',
+            [$id, $uid, $uid]
+        );
+        if ($nombre === false) {
+            return $this->json(['success' => false, 'error' => 'Rutina no encontrada'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Ejercicios que forman la rutina (un ejercicio puede estar en varios días)
+        $plan = $this->conn->fetchAllAssociative(
+            'SELECT dej.ejercicio_id, ej.nombre, ej.grupo_muscular, de.dia_semana, de.concepto, dej.series, dej.repeticiones
+             FROM dias_entrenamiento de
+             JOIN dias_ejercicios dej ON dej.dia_entrenamiento_id = de.id
+             JOIN ejercicios ej ON ej.id = dej.ejercicio_id
+             WHERE de.entrenamiento_id = ? AND de.es_descanso = 0
+             ORDER BY de.dia_semana ASC, dej.orden ASC',
+            [$id]
+        );
+
+        $registros = $this->conn->fetchAllAssociative(
+            'SELECT ejercicio_id, fecha, serie, repeticiones, peso_kg FROM registros_series
+             WHERE usuario_id = ? AND entrenamiento_id = ? AND fecha >= ?
+             ORDER BY fecha ASC, serie ASC',
+            [$uid, $id, (new \DateTimeImmutable('today'))->modify('-1 year')->format('Y-m-d')]
+        );
+
+        // Sesiones por ejercicio y fecha
+        $sesiones = [];
+        $semanas = [];
+        $fechas = [];
+        $totalSeries = 0;
+        $totalVolumen = 0.0;
+        foreach ($registros as $r) {
+            $ej = (int) $r['ejercicio_id'];
+            $fecha = $r['fecha'];
+            $reps = (int) $r['repeticiones'];
+            $peso = $r['peso_kg'] !== null ? (float) $r['peso_kg'] : null;
+            $vol = $peso !== null ? $reps * $peso : 0;
+
+            $sesiones[$ej][$fecha] ??= ['fecha' => $fecha, 'series' => [], 'pesoMax' => null, 'volumen' => 0, 'e1rm' => 0];
+            $s = &$sesiones[$ej][$fecha];
+            $s['series'][] = ['repeticiones' => $reps, 'peso' => $peso];
+            $s['volumen'] += $vol;
+            if ($peso !== null) {
+                $s['pesoMax'] = max($s['pesoMax'] ?? 0, $peso);
+                $s['e1rm'] = max($s['e1rm'], round($peso * (1 + $reps / 30), 1));
+            }
+            unset($s);
+
+            // Semana ISO (lunes) para la gráfica semanal
+            $lunes = (new \DateTimeImmutable($fecha))->modify('monday this week')->format('Y-m-d');
+            $semanas[$lunes] ??= ['semana' => $lunes, 'volumen' => 0, 'series' => 0, 'dias' => []];
+            $semanas[$lunes]['volumen'] += $vol;
+            $semanas[$lunes]['series']++;
+            $semanas[$lunes]['dias'][$fecha] = true;
+
+            $fechas[$fecha] = true;
+            $totalSeries++;
+            $totalVolumen += $vol;
+        }
+
+        $ejercicios = [];
+        foreach ($plan as $p) {
+            $ej = (int) $p['ejercicio_id'];
+            if (isset($ejercicios[$ej])) {
+                if (!\in_array((int) $p['dia_semana'], $ejercicios[$ej]['dias'], true)) {
+                    $ejercicios[$ej]['dias'][] = (int) $p['dia_semana'];
+                }
+                continue;
+            }
+            $lista = array_values($sesiones[$ej] ?? []);
+            $primera = $lista[0] ?? null;
+            $ultima = $lista ? end($lista) : null;
+            $ejercicios[$ej] = [
+                'ejercicioId' => $ej,
+                'nombre' => $p['nombre'],
+                'grupoMuscular' => $p['grupo_muscular'],
+                'dias' => [(int) $p['dia_semana']],
+                'plan' => ['series' => (int) $p['series'], 'repeticiones' => (int) $p['repeticiones']],
+                'sesiones' => \count($lista),
+                'ultima' => $ultima,
+                'mejorPeso' => $lista ? max(array_map(fn ($x) => (float) ($x['pesoMax'] ?? 0), $lista)) : null,
+                'mejora' => $primera && $ultima && \count($lista) > 1 && $primera['e1rm'] > 0
+                    ? round(($ultima['e1rm'] - $primera['e1rm']) / $primera['e1rm'] * 100, 1)
+                    : null,
+                'evolucion' => array_map(fn ($x) => [
+                    'fecha' => $x['fecha'],
+                    'pesoMax' => $x['pesoMax'],
+                    'e1rm' => $x['e1rm'],
+                    'volumen' => (int) round($x['volumen']),
+                ], \array_slice($lista, -12)),
+            ];
+        }
+
+        $semanas = array_map(fn ($s) => [
+            'semana' => $s['semana'],
+            'volumen' => (int) round($s['volumen']),
+            'series' => $s['series'],
+            'dias' => \count($s['dias']),
+        ], \array_slice(array_values($semanas), -12));
+
+        return $this->json([
+            'success' => true,
+            'rutina' => ['id' => $id, 'nombre' => $nombre],
+            'totales' => [
+                'sesiones' => \count($fechas),
+                'series' => $totalSeries,
+                'volumen' => (int) round($totalVolumen),
+            ],
+            'semanas' => $semanas,
+            'ejercicios' => array_values($ejercicios),
+        ]);
+    }
+
+    // ============================================
     // HELPERS
     // ============================================
 

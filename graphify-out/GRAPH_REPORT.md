@@ -1,11 +1,11 @@
-# Graph Report - .  (2026-11-19)
+# Graph Report - .  (2026-11-20)
 
 ## Corpus Check
-- 238 files · ~2,170,028 words
+- 253 files · ~3,852,166 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1570 nodes · 1598 edges · 233 communities detected
+- 1677 nodes · 1731 edges · 248 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -243,6 +243,21 @@
 - [[_COMMUNITY_Community 230|Community 230]]
 - [[_COMMUNITY_Community 231|Community 231]]
 - [[_COMMUNITY_Community 232|Community 232]]
+- [[_COMMUNITY_Community 233|Community 233]]
+- [[_COMMUNITY_Community 234|Community 234]]
+- [[_COMMUNITY_Community 235|Community 235]]
+- [[_COMMUNITY_Community 236|Community 236]]
+- [[_COMMUNITY_Community 237|Community 237]]
+- [[_COMMUNITY_Community 238|Community 238]]
+- [[_COMMUNITY_Community 239|Community 239]]
+- [[_COMMUNITY_Community 240|Community 240]]
+- [[_COMMUNITY_Community 241|Community 241]]
+- [[_COMMUNITY_Community 242|Community 242]]
+- [[_COMMUNITY_Community 243|Community 243]]
+- [[_COMMUNITY_Community 244|Community 244]]
+- [[_COMMUNITY_Community 245|Community 245]]
+- [[_COMMUNITY_Community 246|Community 246]]
+- [[_COMMUNITY_Community 247|Community 247]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `Usuario` - 89 edges
@@ -254,7 +269,7 @@
 7. `BlogPost()` - 30 edges
 8. `HistorialPago` - 29 edges
 9. `Ejercicio` - 26 edges
-10. `Suscripcion` - 25 edges
+10. `SocialController` - 25 edges
 
 ## Surprising Connections (you probably didn't know these)
 - None detected - all connections are within the same source files.
@@ -298,12 +313,12 @@ Cohesion: 0.07
 Nodes (1): Ejercicio
 
 ### Community 9 - "Community 9"
-Cohesion: 0.08
-Nodes (1): Suscripcion
-
-### Community 10 - "Community 10"
 Cohesion: 0.16
 Nodes (1): SocialController
+
+### Community 10 - "Community 10"
+Cohesion: 0.08
+Nodes (1): Suscripcion
 
 ### Community 11 - "Community 11"
 Cohesion: 0.09
@@ -334,436 +349,436 @@ Cohesion: 0.11
 Nodes (1): SuscripcionRepository
 
 ### Community 18 - "Community 18"
+Cohesion: 0.18
+Nodes (10): Cta(), Dato(), Eyebrow(), Grafica(), Lista(), Mito(), PlatoEscena(), Punto() (+2 more)
+
+### Community 19 - "Community 19"
 Cohesion: 0.13
 Nodes (1): UsuarioController
 
-### Community 19 - "Community 19"
+### Community 20 - "Community 20"
 Cohesion: 0.12
 Nodes (1): DiaEjercicio
 
-### Community 20 - "Community 20"
+### Community 21 - "Community 21"
 Cohesion: 0.12
 Nodes (1): DiaEntrenamiento
 
-### Community 21 - "Community 21"
+### Community 22 - "Community 22"
 Cohesion: 0.12
 Nodes (1): EntrenamientoEjercicio
 
-### Community 22 - "Community 22"
+### Community 23 - "Community 23"
+Cohesion: 0.16
+Nodes (8): Bascula(), Batido(), Capsula(), Mancuerna(), MonedaLogo(), Plato(), useMat(), useTexturaLogo()
+
+### Community 24 - "Community 24"
 Cohesion: 0.27
 Nodes (1): EjercicioController
 
-### Community 23 - "Community 23"
+### Community 25 - "Community 25"
 Cohesion: 0.2
 Nodes (1): EntrenadorController
 
-### Community 24 - "Community 24"
+### Community 26 - "Community 26"
 Cohesion: 0.28
 Nodes (1): CargarContenidoCommand
 
-### Community 25 - "Community 25"
+### Community 27 - "Community 27"
 Cohesion: 0.26
 Nodes (1): BlogController
 
-### Community 26 - "Community 26"
+### Community 28 - "Community 28"
 Cohesion: 0.18
 Nodes (1): SolicitudEntrenamientoController
 
-### Community 27 - "Community 27"
+### Community 29 - "Community 29"
 Cohesion: 0.13
 Nodes (1): DietaPlato
 
-### Community 28 - "Community 28"
+### Community 30 - "Community 30"
 Cohesion: 0.13
 Nodes (1): PlatoAlimento
 
-### Community 29 - "Community 29"
+### Community 31 - "Community 31"
 Cohesion: 0.13
 Nodes (1): PlatoRepository
 
-### Community 30 - "Community 30"
+### Community 32 - "Community 32"
 Cohesion: 0.2
 Nodes (1): VisibilidadService
 
-### Community 31 - "Community 31"
+### Community 33 - "Community 33"
 Cohesion: 0.24
 Nodes (1): EntrenamientoController
 
-### Community 32 - "Community 32"
+### Community 34 - "Community 34"
 Cohesion: 0.18
 Nodes (1): CalendarioUsuarioRepository
 
-### Community 33 - "Community 33"
+### Community 35 - "Community 35"
 Cohesion: 0.14
 Nodes (1): HistorialPagoRepository
 
-### Community 34 - "Community 34"
+### Community 36 - "Community 36"
 Cohesion: 0.23
 Nodes (1): DietaController
 
-### Community 35 - "Community 35"
+### Community 37 - "Community 37"
 Cohesion: 0.15
 Nodes (1): EntrenamientoRepository
 
-### Community 36 - "Community 36"
+### Community 38 - "Community 38"
 Cohesion: 0.28
 Nodes (1): AvatarStorage
 
-### Community 37 - "Community 37"
+### Community 39 - "Community 39"
 Cohesion: 0.27
 Nodes (1): PlatoController
 
-### Community 38 - "Community 38"
+### Community 40 - "Community 40"
+Cohesion: 0.24
+Nodes (1): ProgresoController
+
+### Community 41 - "Community 41"
 Cohesion: 0.17
 Nodes (1): AlimentoRepository
 
-### Community 39 - "Community 39"
+### Community 42 - "Community 42"
 Cohesion: 0.17
 Nodes (1): EjercicioRepository
 
-### Community 40 - "Community 40"
+### Community 43 - "Community 43"
 Cohesion: 0.24
 Nodes (7): cargarImagen(), dibujarCubriendo(), formatoSeries(), generarTarjetaPng(), gruposDe(), nombresGrupos(), textoAjustado()
 
-### Community 41 - "Community 41"
+### Community 44 - "Community 44"
 Cohesion: 0.31
 Nodes (1): AlimentoController
 
-### Community 42 - "Community 42"
+### Community 45 - "Community 45"
 Cohesion: 0.42
 Nodes (1): CuentaController
 
-### Community 43 - "Community 43"
+### Community 46 - "Community 46"
+Cohesion: 0.4
+Nodes (1): EdicionRutinaController
+
+### Community 47 - "Community 47"
 Cohesion: 0.18
 Nodes (1): DietaRepository
 
-### Community 44 - "Community 44"
+### Community 48 - "Community 48"
 Cohesion: 0.4
 Nodes (1): CorreosCuenta
 
-### Community 45 - "Community 45"
+### Community 49 - "Community 49"
 Cohesion: 0.27
 Nodes (1): PerfilController
 
-### Community 46 - "Community 46"
-Cohesion: 0.31
-Nodes (1): ProgresoController
-
-### Community 47 - "Community 47"
+### Community 50 - "Community 50"
 Cohesion: 0.4
 Nodes (1): LimiteIntentosSubscriber
 
-### Community 48 - "Community 48"
+### Community 51 - "Community 51"
 Cohesion: 0.36
 Nodes (1): RoleChecker
 
-### Community 49 - "Community 49"
+### Community 52 - "Community 52"
 Cohesion: 0.22
 Nodes (0): 
 
-### Community 50 - "Community 50"
+### Community 53 - "Community 53"
+Cohesion: 0.36
+Nodes (5): claveSesion(), DetalleEntrenamiento(), dos(), fechaHoy(), reloj()
+
+### Community 54 - "Community 54"
 Cohesion: 0.25
 Nodes (2): datosAPerfil(), datosARegistro()
 
-### Community 51 - "Community 51"
+### Community 55 - "Community 55"
 Cohesion: 0.36
 Nodes (1): RepararDatosCommand
 
-### Community 52 - "Community 52"
+### Community 56 - "Community 56"
 Cohesion: 0.25
 Nodes (1): SolicitudEntrenamientoService
 
-### Community 53 - "Community 53"
+### Community 57 - "Community 57"
 Cohesion: 0.29
 Nodes (1): CalendarioController
 
-### Community 54 - "Community 54"
+### Community 58 - "Community 58"
 Cohesion: 0.38
 Nodes (1): StripeController
 
-### Community 55 - "Community 55"
+### Community 59 - "Community 59"
 Cohesion: 0.29
 Nodes (1): SubscripcionController
 
-### Community 56 - "Community 56"
+### Community 60 - "Community 60"
 Cohesion: 0.29
 Nodes (1): SolicitudEntrenamientoRepository
 
-### Community 57 - "Community 57"
+### Community 61 - "Community 61"
 Cohesion: 0.33
 Nodes (1): UsuarioProvider
 
-### Community 58 - "Community 58"
+### Community 62 - "Community 62"
 Cohesion: 0.29
 Nodes (1): VerificacionEmail
 
-### Community 59 - "Community 59"
+### Community 63 - "Community 63"
+Cohesion: 0.33
+Nodes (2): miles(), ProgresoRutina()
+
+### Community 64 - "Community 64"
 Cohesion: 0.29
 Nodes (0): 
 
-### Community 60 - "Community 60"
+### Community 65 - "Community 65"
+Cohesion: 0.29
+Nodes (0): 
+
+### Community 66 - "Community 66"
 Cohesion: 0.48
 Nodes (5): borrarCookiesAnalitica(), cargarAnalitica(), guardarConsentimiento(), leer(), leerConsentimiento()
 
-### Community 61 - "Community 61"
+### Community 67 - "Community 67"
+Cohesion: 0.52
+Nodes (5): cargarImagen(), cubrir(), generarHistoria(), lineas(), svgAImagen()
+
+### Community 68 - "Community 68"
+Cohesion: 0.29
+Nodes (0): 
+
+### Community 69 - "Community 69"
 Cohesion: 0.33
 Nodes (1): MisClientesController
 
-### Community 62 - "Community 62"
+### Community 70 - "Community 70"
 Cohesion: 0.53
 Nodes (1): PublicBlogController
 
-### Community 63 - "Community 63"
+### Community 71 - "Community 71"
 Cohesion: 0.47
 Nodes (1): UsuarioEntrenamientosController
 
-### Community 64 - "Community 64"
+### Community 72 - "Community 72"
 Cohesion: 0.47
 Nodes (1): Correo
 
-### Community 65 - "Community 65"
+### Community 73 - "Community 73"
 Cohesion: 0.53
 Nodes (4): fechaCorta(), hoy(), kg(), RegistroSeries()
 
-### Community 66 - "Community 66"
+### Community 74 - "Community 74"
 Cohesion: 0.4
 Nodes (1): Version20251201103433
 
-### Community 67 - "Community 67"
+### Community 75 - "Community 75"
 Cohesion: 0.4
 Nodes (1): Version20251205192455
 
-### Community 68 - "Community 68"
+### Community 76 - "Community 76"
 Cohesion: 0.4
 Nodes (1): Version20260922140000
 
-### Community 69 - "Community 69"
+### Community 77 - "Community 77"
 Cohesion: 0.4
 Nodes (1): Version20261025120000
 
-### Community 70 - "Community 70"
+### Community 78 - "Community 78"
 Cohesion: 0.4
 Nodes (1): Version20261107125138
 
-### Community 71 - "Community 71"
+### Community 79 - "Community 79"
 Cohesion: 0.4
 Nodes (1): Version20261111100000
 
-### Community 72 - "Community 72"
+### Community 80 - "Community 80"
 Cohesion: 0.4
 Nodes (1): Version20261112100000
 
-### Community 73 - "Community 73"
+### Community 81 - "Community 81"
 Cohesion: 0.4
 Nodes (1): Version20261113100000
 
-### Community 74 - "Community 74"
+### Community 82 - "Community 82"
 Cohesion: 0.4
 Nodes (1): Version20261115100000
 
-### Community 75 - "Community 75"
+### Community 83 - "Community 83"
 Cohesion: 0.4
 Nodes (1): Version20261116100000
 
-### Community 76 - "Community 76"
-Cohesion: 0.5
-Nodes (1): SincronizarMigracionesCommand
-
-### Community 77 - "Community 77"
-Cohesion: 0.5
-Nodes (1): ContactoController
-
-### Community 78 - "Community 78"
-Cohesion: 0.4
-Nodes (1): EntrenadorDietasController
-
-### Community 79 - "Community 79"
-Cohesion: 0.4
-Nodes (1): MisDietasController
-
-### Community 80 - "Community 80"
-Cohesion: 0.4
-Nodes (1): VerificacionEmailController
-
-### Community 81 - "Community 81"
-Cohesion: 0.4
-Nodes (1): DietaPlatoRepository
-
-### Community 82 - "Community 82"
-Cohesion: 0.4
-Nodes (0): 
-
-### Community 83 - "Community 83"
-Cohesion: 0.4
-Nodes (0): 
-
 ### Community 84 - "Community 84"
 Cohesion: 0.4
-Nodes (0): 
+Nodes (1): Version20261120100000
 
 ### Community 85 - "Community 85"
 Cohesion: 0.5
-Nodes (1): CrearEntrenamientoController
+Nodes (1): SincronizarMigracionesCommand
 
 ### Community 86 - "Community 86"
-Cohesion: 0.67
-Nodes (1): EntrenadorEntrenamientoDetalleController
+Cohesion: 0.5
+Nodes (1): ContactoController
 
 ### Community 87 - "Community 87"
-Cohesion: 0.67
-Nodes (1): EntrenadorEntrenamientosController
+Cohesion: 0.4
+Nodes (1): EntrenadorDietasController
 
 ### Community 88 - "Community 88"
-Cohesion: 0.5
-Nodes (1): GuardarDietaController
+Cohesion: 0.4
+Nodes (1): MisDietasController
 
 ### Community 89 - "Community 89"
-Cohesion: 0.5
-Nodes (1): PagoController
+Cohesion: 0.4
+Nodes (1): VerificacionEmailController
 
 ### Community 90 - "Community 90"
-Cohesion: 0.5
-Nodes (1): RegistroController
+Cohesion: 0.4
+Nodes (1): DietaPlatoRepository
 
 ### Community 91 - "Community 91"
-Cohesion: 0.5
-Nodes (1): UsuarioDietasController
+Cohesion: 0.6
+Nodes (3): MuscleMap(), musculosDe(), normalizarGrupo()
 
 ### Community 92 - "Community 92"
-Cohesion: 0.5
-Nodes (1): AdminAccessSubscriber
+Cohesion: 0.4
+Nodes (0): 
 
 ### Community 93 - "Community 93"
-Cohesion: 0.5
-Nodes (1): OwnerAccessSubscriber
+Cohesion: 0.4
+Nodes (0): 
 
 ### Community 94 - "Community 94"
-Cohesion: 0.5
-Nodes (1): SeguridadRespuestaSubscriber
+Cohesion: 0.4
+Nodes (0): 
 
 ### Community 95 - "Community 95"
 Cohesion: 0.5
-Nodes (1): EntrenadorLoginSuccessHandler
+Nodes (1): CrearEntrenamientoController
 
 ### Community 96 - "Community 96"
-Cohesion: 0.5
-Nodes (1): LoginFailureHandler
+Cohesion: 0.67
+Nodes (1): EntrenadorEntrenamientoDetalleController
 
 ### Community 97 - "Community 97"
-Cohesion: 0.5
-Nodes (1): UsuarioLoginSuccessHandler
+Cohesion: 0.67
+Nodes (1): EntrenadorEntrenamientosController
 
 ### Community 98 - "Community 98"
 Cohesion: 0.5
-Nodes (1): VerificacionEmailChecker
+Nodes (1): GuardarDietaController
 
 ### Community 99 - "Community 99"
-Cohesion: 0.83
-Nodes (3): MuscleMap(), musculosDe(), normalizarGrupo()
+Cohesion: 0.5
+Nodes (1): PagoController
 
 ### Community 100 - "Community 100"
 Cohesion: 0.5
-Nodes (0): 
+Nodes (1): RegistroController
 
 ### Community 101 - "Community 101"
-Cohesion: 0.83
-Nodes (3): enlaceDetalle(), humanizar(), TarjetaItemSocial()
+Cohesion: 0.5
+Nodes (1): UsuarioDietasController
 
 ### Community 102 - "Community 102"
 Cohesion: 0.5
-Nodes (0): 
+Nodes (1): AdminAccessSubscriber
 
 ### Community 103 - "Community 103"
 Cohesion: 0.5
-Nodes (0): 
+Nodes (1): OwnerAccessSubscriber
 
 ### Community 104 - "Community 104"
 Cohesion: 0.5
-Nodes (0): 
+Nodes (1): SeguridadRespuestaSubscriber
 
 ### Community 105 - "Community 105"
-Cohesion: 0.67
-Nodes (1): Kernel
+Cohesion: 0.5
+Nodes (1): EntrenadorLoginSuccessHandler
 
 ### Community 106 - "Community 106"
-Cohesion: 0.67
-Nodes (1): AuthController
+Cohesion: 0.5
+Nodes (1): LoginFailureHandler
 
 ### Community 107 - "Community 107"
-Cohesion: 0.67
-Nodes (1): DietasPublicasController
+Cohesion: 0.5
+Nodes (1): UsuarioLoginSuccessHandler
 
 ### Community 108 - "Community 108"
-Cohesion: 0.67
-Nodes (1): EntrenadorAuthController
+Cohesion: 0.5
+Nodes (1): VerificacionEmailChecker
 
 ### Community 109 - "Community 109"
-Cohesion: 0.67
-Nodes (1): HealthController
+Cohesion: 0.5
+Nodes (0): 
 
 ### Community 110 - "Community 110"
-Cohesion: 0.67
-Nodes (1): Guardado
+Cohesion: 0.83
+Nodes (3): enlaceDetalle(), humanizar(), TarjetaItemSocial()
 
 ### Community 111 - "Community 111"
-Cohesion: 0.67
-Nodes (1): RegistroSerie
+Cohesion: 0.5
+Nodes (0): 
 
 ### Community 112 - "Community 112"
-Cohesion: 0.67
-Nodes (1): Seguimiento
+Cohesion: 0.5
+Nodes (0): 
 
 ### Community 113 - "Community 113"
-Cohesion: 0.67
-Nodes (1): ResponseListener
+Cohesion: 0.5
+Nodes (0): 
 
 ### Community 114 - "Community 114"
 Cohesion: 0.67
-Nodes (1): DiaEjercicioRepository
+Nodes (1): Kernel
 
 ### Community 115 - "Community 115"
 Cohesion: 0.67
-Nodes (1): DiaEntrenamientoRepository
+Nodes (1): AuthController
 
 ### Community 116 - "Community 116"
 Cohesion: 0.67
-Nodes (1): EntrenamientoEjercicioRepository
+Nodes (1): DietasPublicasController
 
 ### Community 117 - "Community 117"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): EntrenadorAuthController
 
 ### Community 118 - "Community 118"
 Cohesion: 0.67
-Nodes (1): Button()
+Nodes (1): HealthController
 
 ### Community 119 - "Community 119"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): Guardado
 
 ### Community 120 - "Community 120"
-Cohesion: 1.0
-Nodes (2): Avatar(), iniciales()
+Cohesion: 0.67
+Nodes (1): RegistroSerie
 
 ### Community 121 - "Community 121"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): Seguimiento
 
 ### Community 122 - "Community 122"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): ResponseListener
 
 ### Community 123 - "Community 123"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): DiaEjercicioRepository
 
 ### Community 124 - "Community 124"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): DiaEntrenamientoRepository
 
 ### Community 125 - "Community 125"
 Cohesion: 0.67
-Nodes (1): CrearPlato()
+Nodes (1): EntrenamientoEjercicioRepository
 
 ### Community 126 - "Community 126"
 Cohesion: 0.67
@@ -771,7 +786,7 @@ Nodes (0):
 
 ### Community 127 - "Community 127"
 Cohesion: 0.67
-Nodes (1): DetalleDieta()
+Nodes (1): Button()
 
 ### Community 128 - "Community 128"
 Cohesion: 0.67
@@ -779,7 +794,7 @@ Nodes (0):
 
 ### Community 129 - "Community 129"
 Cohesion: 0.67
-Nodes (1): MisPlatos()
+Nodes (0): 
 
 ### Community 130 - "Community 130"
 Cohesion: 0.67
@@ -791,50 +806,50 @@ Nodes (0):
 
 ### Community 132 - "Community 132"
 Cohesion: 1.0
-Nodes (0): 
+Nodes (2): Avatar(), iniciales()
 
 ### Community 133 - "Community 133"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 134 - "Community 134"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 135 - "Community 135"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 136 - "Community 136"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 137 - "Community 137"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.67
+Nodes (1): CrearPlato()
 
 ### Community 138 - "Community 138"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 139 - "Community 139"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.67
+Nodes (1): DetalleDieta()
 
 ### Community 140 - "Community 140"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 141 - "Community 141"
-Cohesion: 1.0
-Nodes (0): 
+Cohesion: 0.67
+Nodes (1): MisPlatos()
 
 ### Community 142 - "Community 142"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 143 - "Community 143"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 144 - "Community 144"
@@ -1193,208 +1208,274 @@ Nodes (0):
 Cohesion: 1.0
 Nodes (0): 
 
+### Community 233 - "Community 233"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 234 - "Community 234"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 235 - "Community 235"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 236 - "Community 236"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 237 - "Community 237"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 238 - "Community 238"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 239 - "Community 239"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 240 - "Community 240"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 241 - "Community 241"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 242 - "Community 242"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 243 - "Community 243"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 244 - "Community 244"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 245 - "Community 245"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 246 - "Community 246"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 247 - "Community 247"
+Cohesion: 1.0
+Nodes (0): 
+
 ## Knowledge Gaps
-- **Thin community `Community 132`** (2 nodes): `walk()`, `check_links.js`
+- **Thin community `Community 144`** (2 nodes): `walk()`, `check_links.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 133`** (2 nodes): `replace-emojis.js`, `processFile()`
+- **Thin community `Community 145`** (2 nodes): `replace-emojis.js`, `processFile()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 134`** (2 nodes): `ModalReceta.jsx`, `ModalReceta()`
+- **Thin community `Community 146`** (2 nodes): `ModalReceta.jsx`, `ModalReceta()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 135`** (2 nodes): `ProtectedRouteEntrenador.jsx`, `ProtectedRouteEntrenador()`
+- **Thin community `Community 147`** (2 nodes): `ProtectedRouteEntrenador.jsx`, `ProtectedRouteEntrenador()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 136`** (2 nodes): `Modal.jsx`, `Modal()`
+- **Thin community `Community 148`** (2 nodes): `Modal.jsx`, `Modal()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 137`** (2 nodes): `BlogCard()`, `BlogCard.jsx`
+- **Thin community `Community 149`** (2 nodes): `BlogCard()`, `BlogCard.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 138`** (2 nodes): `SelectorDietaDia.jsx`, `SelectorDietaDia()`
+- **Thin community `Community 150`** (2 nodes): `SelectorDietaDia.jsx`, `SelectorDietaDia()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 139`** (2 nodes): `Badge()`, `Badge.jsx`
+- **Thin community `Community 151`** (2 nodes): `Badge()`, `Badge.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 140`** (2 nodes): `Card()`, `Card.jsx`
+- **Thin community `Community 152`** (2 nodes): `Card()`, `Card.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 141`** (2 nodes): `CookieBanner()`, `CookieBanner.jsx`
+- **Thin community `Community 153`** (2 nodes): `CookieBanner()`, `CookieBanner.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 142`** (2 nodes): `Icono.jsx`, `Icono()`
+- **Thin community `Community 154`** (2 nodes): `Icono.jsx`, `Icono()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 143`** (2 nodes): `Input.jsx`, `Input()`
+- **Thin community `Community 155`** (2 nodes): `Input.jsx`, `Input()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 144`** (2 nodes): `PageHeader.jsx`, `PageHeader()`
+- **Thin community `Community 156`** (2 nodes): `PageHeader.jsx`, `PageHeader()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 145`** (2 nodes): `ProtectedRoute.jsx`, `ProtectedRoute()`
+- **Thin community `Community 157`** (2 nodes): `ProtectedRoute.jsx`, `ProtectedRoute()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 146`** (2 nodes): `Reveal.jsx`, `Reveal()`
+- **Thin community `Community 158`** (2 nodes): `Reveal.jsx`, `Reveal()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 147`** (2 nodes): `ScrollToTop.jsx`, `ScrollToTop()`
+- **Thin community `Community 159`** (2 nodes): `ScrollToTop.jsx`, `ScrollToTop()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 148`** (2 nodes): `SEO.jsx`, `SEO()`
+- **Thin community `Community 160`** (2 nodes): `SEO.jsx`, `SEO()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 149`** (2 nodes): `TarjetaEntrenador.jsx`, `TarjetaEntrenador()`
+- **Thin community `Community 161`** (2 nodes): `TarjetaEntrenador.jsx`, `TarjetaEntrenador()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 150`** (2 nodes): `Toast.jsx`, `Toast()`
+- **Thin community `Community 162`** (2 nodes): `Toast.jsx`, `Toast()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 151`** (2 nodes): `BuscadorAlimentos()`, `BuscadorAlimentos.jsx`
+- **Thin community `Community 163`** (2 nodes): `BuscadorAlimentos()`, `BuscadorAlimentos.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 152`** (2 nodes): `ConstructorPlatos()`, `ConstructorPlatos.jsx`
+- **Thin community `Community 164`** (2 nodes): `ConstructorPlatos()`, `ConstructorPlatos.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 153`** (2 nodes): `PanelTotales.jsx`, `PanelTotales()`
+- **Thin community `Community 165`** (2 nodes): `PanelTotales.jsx`, `PanelTotales()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 154`** (2 nodes): `SeccionComida.jsx`, `SeccionComida()`
+- **Thin community `Community 166`** (2 nodes): `SeccionComida.jsx`, `SeccionComida()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 155`** (2 nodes): `SelectorPlatos.jsx`, `SelectorPlatos()`
+- **Thin community `Community 167`** (2 nodes): `SelectorPlatos.jsx`, `SelectorPlatos()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 156`** (2 nodes): `BarraFiltros()`, `BarraFiltros.jsx`
+- **Thin community `Community 168`** (2 nodes): `BarraFiltros()`, `BarraFiltros.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 157`** (2 nodes): `BibliotecaEjercicios()`, `BibliotecaEjercicios.jsx`
+- **Thin community `Community 169`** (2 nodes): `BibliotecaEjercicios()`, `BibliotecaEjercicios.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 158`** (2 nodes): `ModalEjercicio.jsx`, `ModalEjercicio()`
+- **Thin community `Community 170`** (2 nodes): `ModalEjercicio.jsx`, `ModalEjercicio()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 159`** (2 nodes): `TarjetaEjercicio.jsx`, `TarjetaEjercicio()`
+- **Thin community `Community 171`** (2 nodes): `TarjetaEjercicio.jsx`, `TarjetaEjercicio()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 160`** (2 nodes): `Footer()`, `Footer.jsx`
+- **Thin community `Community 172`** (2 nodes): `Footer()`, `Footer.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 161`** (2 nodes): `Navbar.jsx`, `Navbar()`
+- **Thin community `Community 173`** (2 nodes): `Navbar.jsx`, `Navbar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 162`** (2 nodes): `GraficoProgreso.jsx`, `GraficoProgreso()`
+- **Thin community `Community 174`** (2 nodes): `CompletarEntreno()`, `CompletarEntreno.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 163`** (2 nodes): `AjustesPrivacidad()`, `AjustesPrivacidad.jsx`
+- **Thin community `Community 175`** (2 nodes): `ultimaSesion()`, `formato.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 164`** (2 nodes): `BotonSeguir()`, `BotonSeguir.jsx`
+- **Thin community `Community 176`** (2 nodes): `GraficoProgreso.jsx`, `GraficoProgreso()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 165`** (2 nodes): `FeedEntrenos()`, `FeedEntrenos.jsx`
+- **Thin community `Community 177`** (2 nodes): `ProgresoRutinas.jsx`, `ProgresoRutinas()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 166`** (2 nodes): `ListaCuentasModal.jsx`, `ListaCuentasModal()`
+- **Thin community `Community 178`** (2 nodes): `AjustesPrivacidad()`, `AjustesPrivacidad.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 167`** (2 nodes): `PanelSocial.jsx`, `PanelSocial()`
+- **Thin community `Community 179`** (2 nodes): `BotonSeguir()`, `BotonSeguir.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 168`** (2 nodes): `RegistrarEntreno.jsx`, `RegistrarEntreno()`
+- **Thin community `Community 180`** (2 nodes): `FeedEntrenos()`, `FeedEntrenos.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 169`** (2 nodes): `RutinasOficiales.jsx`, `RutinasOficiales()`
+- **Thin community `Community 181`** (2 nodes): `ListaCuentasModal.jsx`, `ListaCuentasModal()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 170`** (2 nodes): `SubirAvatar.jsx`, `SubirAvatar()`
+- **Thin community `Community 182`** (2 nodes): `PanelSocial.jsx`, `PanelSocial()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 171`** (2 nodes): `TarjetaEntreno.jsx`, `fechaCorta()`
+- **Thin community `Community 183`** (2 nodes): `RegistrarEntreno.jsx`, `RegistrarEntreno()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 172`** (2 nodes): `EntrenadorCard()`, `EntrenadorCard.jsx`
+- **Thin community `Community 184`** (2 nodes): `RutinasOficiales.jsx`, `RutinasOficiales()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 173`** (2 nodes): `legal.js`, `dato()`
+- **Thin community `Community 185`** (2 nodes): `SubirAvatar.jsx`, `SubirAvatar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 174`** (2 nodes): `DashboardRouter()`, `DashboardRouter.jsx`
+- **Thin community `Community 186`** (2 nodes): `TarjetaEntreno.jsx`, `fechaCorta()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 175`** (2 nodes): `DashboardAdmin()`, `DashboardAdmin.jsx`
+- **Thin community `Community 187`** (2 nodes): `EntrenadorCard()`, `EntrenadorCard.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 176`** (2 nodes): `CrearDietaCliente()`, `CrearDietaCliente.jsx`
+- **Thin community `Community 188`** (2 nodes): `legal.js`, `dato()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 177`** (2 nodes): `CrearEntrenamientoCliente()`, `CrearEntrenamientoCliente.jsx`
+- **Thin community `Community 189`** (2 nodes): `DashboardRouter()`, `DashboardRouter.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 178`** (2 nodes): `DashboardEntrenador()`, `DashboardEntrenador.jsx`
+- **Thin community `Community 190`** (2 nodes): `DashboardAdmin()`, `DashboardAdmin.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 179`** (2 nodes): `DetalleDietaEntrenador()`, `DetalleDietaEntrenador.jsx`
+- **Thin community `Community 191`** (2 nodes): `CrearDietaCliente()`, `CrearDietaCliente.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 180`** (2 nodes): `LoginEntrenador.jsx`, `LoginEntrenador()`
+- **Thin community `Community 192`** (2 nodes): `CrearEntrenamientoCliente()`, `CrearEntrenamientoCliente.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 181`** (2 nodes): `MisDietasEntrenador.jsx`, `MisDietasEntrenador()`
+- **Thin community `Community 193`** (2 nodes): `DashboardEntrenador()`, `DashboardEntrenador.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 182`** (2 nodes): `MisEntrenamientosEntrenador.jsx`, `MisEntrenamientosEntrenador()`
+- **Thin community `Community 194`** (2 nodes): `DetalleDietaEntrenador()`, `DetalleDietaEntrenador.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 183`** (2 nodes): `MisPlatosEntrenador.jsx`, `MisPlatosEntrenador()`
+- **Thin community `Community 195`** (2 nodes): `LoginEntrenador.jsx`, `LoginEntrenador()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 184`** (2 nodes): `Dashboard()`, `Dashboard.jsx`
+- **Thin community `Community 196`** (2 nodes): `MisDietasEntrenador.jsx`, `MisDietasEntrenador()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 185`** (2 nodes): `PlanificadorSemanal.jsx`, `PlanificadorSemanal()`
+- **Thin community `Community 197`** (2 nodes): `MisEntrenamientosEntrenador.jsx`, `MisEntrenamientosEntrenador()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 186`** (2 nodes): `Usuarios.jsx`, `Usuarios()`
+- **Thin community `Community 198`** (2 nodes): `MisPlatosEntrenador.jsx`, `MisPlatosEntrenador()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 187`** (2 nodes): `AvisoLegal()`, `AvisoLegal.jsx`
+- **Thin community `Community 199`** (2 nodes): `Dashboard()`, `Dashboard.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 188`** (2 nodes): `Blog()`, `Blog.jsx`
+- **Thin community `Community 200`** (2 nodes): `PlanificadorSemanal.jsx`, `PlanificadorSemanal()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 189`** (2 nodes): `Contacto()`, `Contacto.jsx`
+- **Thin community `Community 201`** (2 nodes): `Usuarios.jsx`, `Usuarios()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 190`** (2 nodes): `CrearDieta()`, `CrearDieta.jsx`
+- **Thin community `Community 202`** (2 nodes): `AvisoLegal()`, `AvisoLegal.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 191`** (2 nodes): `DetallePlato()`, `DetallePlato.jsx`
+- **Thin community `Community 203`** (2 nodes): `Blog()`, `Blog.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 192`** (2 nodes): `Gym.jsx`, `Gym()`
+- **Thin community `Community 204`** (2 nodes): `Contacto()`, `Contacto.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 193`** (2 nodes): `Login.jsx`, `Login()`
+- **Thin community `Community 205`** (2 nodes): `CrearDieta()`, `CrearDieta.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 194`** (2 nodes): `PoliticaCookies.jsx`, `PoliticaCookies()`
+- **Thin community `Community 206`** (2 nodes): `DetallePlato()`, `DetallePlato.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 195`** (2 nodes): `PoliticaPrivacidad.jsx`, `PoliticaPrivacidad()`
+- **Thin community `Community 207`** (2 nodes): `Gym.jsx`, `Gym()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 196`** (2 nodes): `Register.jsx`, `Register()`
+- **Thin community `Community 208`** (2 nodes): `Login.jsx`, `Login()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 197`** (2 nodes): `Servicios.jsx`, `Servicios()`
+- **Thin community `Community 209`** (2 nodes): `PoliticaCookies.jsx`, `PoliticaCookies()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 198`** (2 nodes): `Suplementos.jsx`, `Suplementos()`
+- **Thin community `Community 210`** (2 nodes): `PoliticaPrivacidad.jsx`, `PoliticaPrivacidad()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 199`** (2 nodes): `TerminosCondiciones.jsx`, `TerminosCondiciones()`
+- **Thin community `Community 211`** (2 nodes): `Register.jsx`, `Register()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 200`** (2 nodes): `UpgradePremium.jsx`, `UpgradePremium()`
+- **Thin community `Community 212`** (2 nodes): `Servicios.jsx`, `Servicios()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 201`** (2 nodes): `VerificarEmail.jsx`, `VerificarEmail()`
+- **Thin community `Community 213`** (2 nodes): `Suplementos.jsx`, `Suplementos()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 202`** (2 nodes): `Workout.jsx`, `Workout()`
+- **Thin community `Community 214`** (2 nodes): `TerminosCondiciones.jsx`, `TerminosCondiciones()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 203`** (2 nodes): `DescubrirEntrenadores()`, `DescubrirEntrenadores.jsx`
+- **Thin community `Community 215`** (2 nodes): `UpgradePremium.jsx`, `UpgradePremium()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 204`** (2 nodes): `DetalleEntrenamiento()`, `DetalleEntrenamiento.jsx`
+- **Thin community `Community 216`** (2 nodes): `VerificarEmail.jsx`, `VerificarEmail()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 205`** (2 nodes): `MiDieta.jsx`, `MiDieta()`
+- **Thin community `Community 217`** (2 nodes): `Workout.jsx`, `Workout()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 206`** (2 nodes): `MisDatosPersonales.jsx`, `MisDatosPersonales()`
+- **Thin community `Community 218`** (2 nodes): `DescubrirEntrenadores()`, `DescubrirEntrenadores.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 207`** (2 nodes): `MisDietas.jsx`, `MisDietas()`
+- **Thin community `Community 219`** (2 nodes): `MiDieta.jsx`, `MiDieta()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 208`** (2 nodes): `MisEntrenamientos.jsx`, `MisEntrenamientos()`
+- **Thin community `Community 220`** (2 nodes): `MisDatosPersonales.jsx`, `MisDatosPersonales()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 209`** (2 nodes): `MiSuscripcion.jsx`, `MiSuscripcion()`
+- **Thin community `Community 221`** (2 nodes): `MisDietas.jsx`, `MisDietas()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 210`** (2 nodes): `isPublicUrl()`, `api.js`
+- **Thin community `Community 222`** (2 nodes): `MisEntrenamientos.jsx`, `MisEntrenamientos()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 211`** (2 nodes): `progresoService.js`, `datos()`
+- **Thin community `Community 223`** (2 nodes): `MiSuscripcion.jsx`, `MiSuscripcion()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 212`** (2 nodes): `Header.jsx`, `Header()`
+- **Thin community `Community 224`** (2 nodes): `isPublicUrl()`, `api.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 213`** (2 nodes): `Page.jsx`, `Page()`
+- **Thin community `Community 225`** (2 nodes): `progresoService.js`, `datos()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 214`** (2 nodes): `voz.ps1`, `Esperar()`
+- **Thin community `Community 226`** (2 nodes): `Header.jsx`, `Header()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 215`** (2 nodes): `facil()`, `comun.js`
+- **Thin community `Community 227`** (2 nodes): `Page.jsx`, `Page()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 216`** (1 nodes): `bundles.php`
+- **Thin community `Community 228`** (2 nodes): `voz.ps1`, `Esperar()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 217`** (1 nodes): `preload.php`
+- **Thin community `Community 229`** (2 nodes): `Raiz()`, `index.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 218`** (1 nodes): `contenido_inicial.php`
+- **Thin community `Community 230`** (2 nodes): `facil()`, `comun.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 219`** (1 nodes): `index.php`
+- **Thin community `Community 231`** (1 nodes): `bundles.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 220`** (1 nodes): `Privacidad.php`
+- **Thin community `Community 232`** (1 nodes): `preload.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 221`** (1 nodes): `check_exact.js`
+- **Thin community `Community 233`** (1 nodes): `contenido_inicial.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 222`** (1 nodes): `eslint.config.js`
+- **Thin community `Community 234`** (1 nodes): `index.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 223`** (1 nodes): `postcss.config.js`
+- **Thin community `Community 235`** (1 nodes): `Privacidad.php`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 224`** (1 nodes): `vite.config.js`
+- **Thin community `Community 236`** (1 nodes): `check_exact.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 225`** (1 nodes): `main.jsx`
+- **Thin community `Community 237`** (1 nodes): `eslint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 226`** (1 nodes): `index.js`
+- **Thin community `Community 238`** (1 nodes): `postcss.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 227`** (1 nodes): `funciones.js`
+- **Thin community `Community 239`** (1 nodes): `vite.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 228`** (1 nodes): `authServiceEntrenador.js`
+- **Thin community `Community 240`** (1 nodes): `main.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 229`** (1 nodes): `solicitudesService.js`
+- **Thin community `Community 241`** (1 nodes): `index.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 230`** (1 nodes): `Button.stories.js`
+- **Thin community `Community 242`** (1 nodes): `funciones.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 231`** (1 nodes): `Header.stories.js`
+- **Thin community `Community 243`** (1 nodes): `authServiceEntrenador.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 232`** (1 nodes): `Page.stories.js`
+- **Thin community `Community 244`** (1 nodes): `solicitudesService.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 245`** (1 nodes): `Button.stories.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 246`** (1 nodes): `Header.stories.js`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 247`** (1 nodes): `Page.stories.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions

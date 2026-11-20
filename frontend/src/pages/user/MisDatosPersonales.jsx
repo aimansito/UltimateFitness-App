@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
 import SubirAvatar from "../../components/social/SubirAvatar";
+import ProgresoRutinas from "../../components/progreso/ProgresoRutinas";
+import ObjetivosCumplidos from "../../components/progreso/ObjetivosCumplidos";
 import {
   User,
   Mail,
@@ -473,6 +475,14 @@ function MisDatosPersonales() {
               )}
             </div>
           </form>
+        </div>
+
+        {/* Rutinas completadas con su foto y progreso de las rutinas */}
+        <div className="mt-8">
+          <ObjetivosCumplidos />
+        </div>
+        <div className="mt-8">
+          <ProgresoRutinas />
         </div>
       </div>
     </div>

@@ -7,185 +7,25 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import { execFileSync } from 'node:child_process';
 import { VIDEOS, POSTS, VOZ, MARCA } from './guion.mjs';
 import { DIR, carpeta, barras } from './lib/rutas.mjs';
-import { ffmpeg, ejecutar } from '../video-cambio/lib/ffmpeg.mjs';
+import { ffmpeg } from '../video-cambio/lib/ffmpeg.mjs';
+import { generarVoz, lineaDeTiempo, crearAudio, srt } from './lib/tiempo.mjs';
 import { abrirNavegador, cerrarNavegador } from '../video-cambio/lib/navegador.mjs';
 import { capturarApp, faltanCapturas, rutaApp } from './lib/capturas.mjs';
 
 const W = 1080, H = 1920, FPS = 30;
-const ENTRADA = 0.35;   // silencio antes de la primera frase
-const COLA = 1.8;       // el cierre se queda en pantalla después de la voz
 const args = process.argv.slice(2);
 const filtros = args.filter((a) => !a.startsWith('--'));
 const prueba = args.find((a) => a.startsWith('--prueba='))?.split('=')[1];
 const quiere = (tipo, id) => !filtros.length || filtros.includes(tipo) || filtros.includes(id);
 const url = (ruta) => pathToFileURL(ruta).href;
-const winPath = (p) => p.replace(/\//g, '\\');
 
 const FONDOS = {
   empuje: { archivo: '../empuje/empujeoriginal.mp4', desde: 1.6, hasta: 15.5 },
   tiron: { archivo: '../tiron/tironoriginal.mp4', desde: 1.8, hasta: 16.2 },
 };
 const HASHTAGS = '#gym #fitness #gymtok #nutricion #entrenamiento #rutina #ultimatefitness';
-
-async function duracion(archivo) {
-  return parseFloat((await ejecutar('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', archivo])).trim());
-}
-
-// ---------------------------------------------------------------- voz
-/** Sintetiza las frases que hayan cambiado (todas las de todos los vídeos en una sola llamada) */
-function generarVoz(videos) {
-  const pendientes = [];
-  for (const v of videos) {
-    const dir = carpeta(DIR.build, v.id, 'voz');
-    v.frases.forEach((f, i) => {
-      const base = path.join(dir, String(i));
-      const hablado = f.voz ?? f.texto;
-      const firma = `${VOZ.nombre}|${VOZ.velocidad}|${hablado}`;
-      const previo = fs.existsSync(`${base}.txt`) ? fs.readFileSync(`${base}.txt`, 'utf8') : '';
-      if (previo !== firma || !fs.existsSync(`${base}.wav`)) {
-        pendientes.push({ salida: winPath(base), texto: hablado });
-        fs.writeFileSync(`${base}.txt`, firma);
-      }
-    });
-  }
-  if (!pendientes.length) return;
-  const lista = path.join(carpeta(DIR.build), 'voz-pendiente.json');
-  fs.writeFileSync(lista, JSON.stringify(pendientes));
-  console.log(`Voz: ${pendientes.length} frases…`);
-  execFileSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(path.dirname(DIR.escenas), 'lib', 'voz.ps1'),
-    '-Lista', lista, '-Voz', VOZ.nombre, '-Velocidad', String(VOZ.velocidad)], { stdio: 'inherit' });
-}
-
-/** Instante de cada palabra del texto en pantalla a partir de las marcas de la voz */
-function palabrasConTiempo(texto, marcas, dur) {
-  const tokens = texto.split(/\s+/).filter(Boolean);
-  // La voz repite la marca de los números («500 calorías» aparece dos veces): se agrupan
-  const grupos = [];
-  for (const m of marcas) {
-    const ultimo = grupos[grupos.length - 1];
-    if (ultimo && ultimo.w === m.w) ultimo.tiempos.push(m.t);
-    else grupos.push({ w: m.w, tiempos: [m.t] });
-  }
-  const tiempos = [];
-  for (const g of grupos) {
-    const n = g.w.split(/\s+/).filter(Boolean).length;
-    for (let j = 0; j < n; j++) tiempos.push(g.tiempos[Math.min(j, g.tiempos.length - 1)]);
-  }
-  if (tiempos.length === tokens.length) return tokens.map((w, i) => ({ w, t: tiempos[i] }));
-  // Si no casan, se reparte por longitud de palabra (aviso para revisar el texto)
-  console.warn(`  aviso: subtítulos repartidos por longitud en «${texto.slice(0, 40)}…» (${tiempos.length} marcas / ${tokens.length} palabras)`);
-  const total = tokens.reduce((s, w) => s + w.length + 1, 0);
-  let acum = 0;
-  return tokens.map((w) => { const t = (acum / total) * dur; acum += w.length + 1; return { w, t }; });
-}
-
-/** Trocea la frase en golpes de 1 a 4 palabras, cortando también en la puntuación */
-function fragmentar(palabras, finFrase) {
-  const fragmentos = [];
-  let actual = [];
-  palabras.forEach((p, i) => {
-    actual.push(p);
-    const corte = /[,.:;?!]$/.test(p.w) || actual.length >= 4 || i === palabras.length - 1;
-    if (corte) { fragmentos.push(actual); actual = []; }
-  });
-  return fragmentos.map((ps, i) => ({
-    palabras: ps,
-    ini: ps[0].t,
-    fin: fragmentos[i + 1] ? fragmentos[i + 1][0].t : Math.min(finFrase, ps[ps.length - 1].t + 0.9),
-  }));
-}
-
-// Locución propia (ElevenLabs u otra) en fuentes/<id>.mp3: si existe, sustituye a la voz de Windows
-const audioExterno = (v) => {
-  const ruta = path.join(path.dirname(DIR.escenas), 'fuentes', `${v.id}.mp3`);
-  return fs.existsSync(ruta) ? ruta : null;
-};
-
-async function silencios(archivo) {
-  const salida = await ejecutar('ffmpeg', ['-hide_banner', '-i', archivo, '-af', 'silencedetect=noise=-38dB:d=0.12', '-f', 'null', '-']);
-  const lista = [];
-  for (const m of salida.matchAll(/silence_start: ([\d.]+)[\s\S]*?silence_end: ([\d.]+)/g)) lista.push({ ini: +m[1], fin: +m[2] });
-  return lista;
-}
-
-/**
- * Elige en qué pausas del audio empieza cada frase. Las pausas entre frases y dentro de una frase
- * duran parecido, así que se combina la duración de la pausa con dónde «debería» caer el corte
- * según lo que dura cada frase con la voz de Windows (programación dinámica, en orden).
- */
-function elegirCortes(pausas, pesos, iniVoz, finVoz) {
-  const n = pesos.length - 1;
-  const total = pesos.reduce((a, b) => a + b, 0);
-  const esperado = [];
-  let acum = 0;
-  for (let k = 0; k < n; k++) { acum += pesos[k]; esperado.push(iniVoz + (acum / total) * (finVoz - iniVoz)); }
-  const cand = pausas.filter((p) => p.ini > iniVoz + 0.3 && p.fin < finVoz - 0.3);
-  if (cand.length < n) return null;
-  const puntos = (k, j) => 4 * (cand[j].fin - cand[j].ini) - Math.abs((cand[j].ini + cand[j].fin) / 2 - esperado[k]);
-  const mejor = Array.from({ length: n }, () => new Array(cand.length).fill(-Infinity));
-  const previo = Array.from({ length: n }, () => new Array(cand.length).fill(-1));
-  for (let j = 0; j < cand.length; j++) mejor[0][j] = puntos(0, j);
-  for (let k = 1; k < n; k++) {
-    for (let j = k; j < cand.length; j++) {
-      for (let i = k - 1; i < j; i++) {
-        const s = mejor[k - 1][i] + puntos(k, j);
-        if (s > mejor[k][j]) { mejor[k][j] = s; previo[k][j] = i; }
-      }
-    }
-  }
-  let j = mejor[n - 1].indexOf(Math.max(...mejor[n - 1]));
-  const elegidos = [];
-  for (let k = n - 1; k >= 0; k--) { elegidos.unshift(cand[j]); j = previo[k][j]; }
-  return elegidos;
-}
-
-async function lineaDeTiempo(v) {
-  const dir = path.join(DIR.build, v.id, 'voz');
-  const frases = [], fragmentos = [], audios = [];
-  const voces = [];
-  for (const [i, f] of v.frases.entries()) {
-    const wav = path.join(dir, `${i}.wav`);
-    const dur = await duracion(wav);
-    const marcas = JSON.parse(fs.readFileSync(path.join(dir, `${i}.json`), 'utf8').replace(/^﻿/, ''));
-    voces.push({ wav, dur, palabras: palabrasConTiempo(f.texto, marcas, dur) });
-  }
-
-  // Tramos de voz de cada frase: [inicio, fin] en segundos del vídeo
-  let tramos;
-  const externo = audioExterno(v);
-  if (externo) {
-    const durExterno = await duracion(externo);
-    const pausas = await silencios(externo);
-    const iniVoz = pausas[0] && pausas[0].ini < 0.05 ? pausas[0].fin : 0;
-    const ultima = pausas[pausas.length - 1];
-    const finVoz = ultima && ultima.fin > durExterno - 0.05 ? ultima.ini : durExterno;
-    const cortes = elegirCortes(pausas, voces.map((x) => x.dur), iniVoz, finVoz);
-    if (!cortes) throw new Error(`${v.id}: el audio no tiene pausas suficientes para separar las ${v.frases.length} frases`);
-    const limites = [iniVoz, ...cortes.flatMap((c) => [c.ini, c.fin]), finVoz];
-    tramos = v.frases.map((_, i) => [limites[2 * i] + ENTRADA, limites[2 * i + 1] + ENTRADA]);
-    audios.push({ wav: externo, ini: ENTRADA });
-    console.log(`[${v.id}] audio propio: ${tramos.map(([a, b]) => `${a.toFixed(1)}-${b.toFixed(1)}`).join(' | ')}`);
-  } else {
-    let t = ENTRADA;
-    tramos = voces.map((x) => { const tramo = [t, t + x.dur]; t += x.dur + VOZ.pausa; return tramo; });
-    voces.forEach((x, i) => audios.push({ wav: x.wav, ini: tramos[i][0] }));
-  }
-
-  for (const [i, f] of v.frases.entries()) {
-    const [ini, fin] = tramos[i];
-    // Las palabras se reparten en el tramo real con el ritmo relativo de la voz de referencia
-    const escala = (fin - ini) / voces[i].dur;
-    const palabras = voces[i].palabras.map((p) => ({ ...p, t: ini + p.t * escala }));
-    fragmentos.push(...fragmentar(palabras, fin));
-    frases.push({ ...f, ini: i === 0 ? 0 : ini - 0.12 });
-  }
-  const total = tramos[tramos.length - 1][1] + COLA;
-  frases.forEach((f, i) => { f.fin = frases[i + 1]?.ini ?? total; });
-  return { frases, fragmentos, audios, total };
-}
 
 // ---------------------------------------------------------------- vídeo
 async function crearFondo(v, total, destino) {
@@ -203,13 +43,6 @@ async function crearFondo(v, total, destino) {
   await ffmpeg(['-stream_loop', '-1', '-i', barras(tramo), '-t', String(total), '-c', 'copy', barras(destino)]);
 }
 
-async function crearAudio(audios, total, destino) {
-  const entradas = audios.flatMap((a) => ['-i', barras(a.wav)]);
-  const retardos = audios.map((a, i) => `[${i}:a]aresample=48000,adelay=${Math.round(a.ini * 1000)}|${Math.round(a.ini * 1000)}[a${i}]`).join(';');
-  const mezcla = `${audios.map((_, i) => `[a${i}]`).join('')}amix=inputs=${audios.length}:normalize=0,loudnorm=I=-15:TP=-1.5:LRA=9,apad=whole_dur=${total}[s]`;
-  await ffmpeg([...entradas, '-filter_complex', `${retardos};${mezcla}`, '-map', '[s]', '-ac', '2', '-ar', '48000', '-t', String(total), barras(destino)]);
-}
-
 async function abrirPagina(plantilla, ancho, alto) {
   const navegador = await abrirNavegador();
   const pagina = await navegador.newPage({ viewport: { width: ancho, height: alto }, deviceScaleFactor: 1 });
@@ -218,15 +51,10 @@ async function abrirPagina(plantilla, ancho, alto) {
   return pagina;
 }
 
-const srtTiempo = (s) => {
-  const ms = Math.round(s * 1000);
-  const p = (n, l = 2) => String(n).padStart(l, '0');
-  return `${p(Math.floor(ms / 3600000))}:${p(Math.floor(ms / 60000) % 60)}:${p(Math.floor(ms / 1000) % 60)},${p(ms % 1000, 3)}`;
-};
-
 async function montarVideo(v) {
   const build = carpeta(DIR.build, v.id);
-  const { frases, fragmentos, audios, total } = await lineaDeTiempo(v);
+  const externo = path.join(path.dirname(DIR.escenas), 'fuentes', `${v.id}.mp3`);
+  const { frases, fragmentos, audios, total } = await lineaDeTiempo(v, { build: DIR.build, voz: VOZ, externo: fs.existsSync(externo) ? externo : null });
   const datos = {
     web: MARCA.web, usuario: MARCA.usuario, fragmentos,
     frases: frases.map((f) => ({ ...f, imagen: f.captura ? url(rutaApp(f.captura)) : null })),
@@ -279,8 +107,7 @@ async function montarVideo(v) {
   ]);
 
   // Subtítulos aparte (por si la red social los pide como archivo) y textos para publicar
-  const srt = fragmentos.map((c, i) => `${i + 1}\n${srtTiempo(c.ini)} --> ${srtTiempo(c.fin)}\n${c.palabras.map((p) => p.w).join(' ')}\n`).join('\n');
-  fs.writeFileSync(path.join(destino, 'subtitulos.srt'), srt);
+  fs.writeFileSync(path.join(destino, 'subtitulos.srt'), srt(fragmentos));
   fs.writeFileSync(path.join(destino, 'guion.txt'), v.frases.map((f) => f.texto).join('\n') + '\n');
   const cuerpo = v.descripcion ?? `Todo esto lo tienes gratis en ${MARCA.web} (enlace en la bio).`;
   fs.writeFileSync(path.join(destino, 'descripcion.txt'), `${v.titulo}\n\n${cuerpo}\n\n${v.hashtags ?? HASHTAGS}\n`);
@@ -312,7 +139,7 @@ try {
   const posts = prueba ? [] : POSTS.filter((p) => quiere('posts', p.id));
   for (const p of posts) await montarPost(p);
   if (videos.length) {
-    generarVoz(videos);
+    generarVoz(videos, { build: DIR.build, voz: VOZ });
     await Promise.all(videos.map(montarVideo));
   }
 } finally {

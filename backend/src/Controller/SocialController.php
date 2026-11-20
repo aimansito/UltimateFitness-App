@@ -335,7 +335,7 @@ class SocialController extends AbstractController
 
         $hoy = $this->conn->fetchAllAssociative(
             'SELECT cu.id, cu.completado, cu.compartido_en_feed, cu.fecha_completado,
-                    cu.foto_url, cu.dia_hecho, cu.ejercicios_hechos,
+                    cu.foto_url, cu.foto_es_tarjeta, cu.duracion_minutos AS duracion_real, cu.dia_hecho, cu.ejercicios_hechos,
                     e.id AS entrenamiento_id, e.nombre, e.tipo, e.duracion_minutos
              FROM calendario_usuario cu
              INNER JOIN entrenamientos e ON e.id = cu.entrenamiento_id
@@ -360,6 +360,8 @@ class SocialController extends AbstractController
                 'compartido' => (bool) $f['compartido_en_feed'],
                 'hora' => $f['fecha_completado'] ? substr((string) $f['fecha_completado'], 11, 5) : null,
                 'fotoUrl' => $f['foto_url'],
+                'fotoEsTarjeta' => (bool) $f['foto_es_tarjeta'],
+                'duracionReal' => $f['duracion_real'] !== null ? (int) $f['duracion_real'] : null,
                 'diaHecho' => $f['dia_hecho'],
                 'ejercicios' => self::ejerciciosHechos($f['ejercicios_hechos']),
                 'entrenamiento' => [
@@ -388,6 +390,11 @@ class SocialController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $entrenamientoId = is_array($data) ? (int) ($data['entrenamientoId'] ?? 0) : 0;
         $compartir = is_array($data) && ($data['compartir'] ?? false) === true;
+        // Minutos reales medidos por el cronómetro de la sesión (opcional)
+        $duracion = is_array($data) && isset($data['duracionMinutos']) ? (int) $data['duracionMinutos'] : null;
+        if ($duracion !== null && ($duracion < 1 || $duracion > 600)) {
+            $duracion = null;
+        }
 
         if ($entrenamientoId < 1 || $this->visibilidad->itemVisible($actor, 'entrenamiento', $entrenamientoId) === null) {
             return $this->noEncontrado();
@@ -427,17 +434,18 @@ class SocialController extends AbstractController
             $this->conn->executeStatement(
                 'UPDATE calendario_usuario
                  SET completado = 1, fecha_completado = COALESCE(fecha_completado, NOW()), compartido_en_feed = ?,
-                     dia_hecho = IF(?, ?, dia_hecho), ejercicios_hechos = IF(?, ?, ejercicios_hechos)
+                     dia_hecho = IF(?, ?, dia_hecho), ejercicios_hechos = IF(?, ?, ejercicios_hechos),
+                     duracion_minutos = COALESCE(?, duracion_minutos)
                  WHERE id = ? AND usuario_id = ?',
-                [$compartir ? 1 : 0, $json !== null, $diaHecho, $json !== null, $json, $filaId, $actor['id']]
+                [$compartir ? 1 : 0, $json !== null, $diaHecho, $json !== null, $json, $duracion, $filaId, $actor['id']]
             );
         } else {
             $this->conn->executeStatement(
                 'INSERT INTO calendario_usuario
                     (usuario_id, entrenamiento_id, dia_semana, completado, fecha_asignacion, fecha_completado,
-                     compartido_en_feed, dia_hecho, ejercicios_hechos)
-                 VALUES (?, ?, ?, 1, CURDATE(), NOW(), ?, ?, ?)',
-                [$actor['id'], $entrenamientoId, $dia, $compartir ? 1 : 0, $diaHecho, $json]
+                     compartido_en_feed, dia_hecho, ejercicios_hechos, duracion_minutos)
+                 VALUES (?, ?, ?, 1, CURDATE(), NOW(), ?, ?, ?, ?)',
+                [$actor['id'], $entrenamientoId, $dia, $compartir ? 1 : 0, $diaHecho, $json, $duracion]
             );
             $filaId = $this->conn->lastInsertId();
         }
@@ -584,10 +592,15 @@ class SocialController extends AbstractController
             return $this->json(['success' => false, 'error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->conn->executeStatement('UPDATE calendario_usuario SET foto_url = ? WHERE id = ? AND usuario_id = ?', [$url, $id, $actor['id']]);
+        // tarjeta=1: la imagen ya lleva el diseño (logo, figura, tiempo); el feed la muestra tal cual
+        $tarjeta = $request->request->get('tarjeta') === '1';
+        $this->conn->executeStatement(
+            'UPDATE calendario_usuario SET foto_url = ?, foto_es_tarjeta = ? WHERE id = ? AND usuario_id = ?',
+            [$url, $tarjeta ? 1 : 0, $id, $actor['id']]
+        );
         $this->imagenes->borrarFotoEntreno($anterior['foto_url']);
 
-        return $this->json(['success' => true, 'fotoUrl' => $url]);
+        return $this->json(['success' => true, 'fotoUrl' => $url, 'fotoEsTarjeta' => $tarjeta]);
     }
 
     #[Route('/entreno-hoy/{id}/foto', name: 'social_entreno_hoy_foto_borrar', requirements: ['id' => '\d+'], methods: ['DELETE'])]
@@ -601,7 +614,7 @@ class SocialController extends AbstractController
         if ($foto === false) {
             return $this->noEncontrado();
         }
-        $this->conn->executeStatement('UPDATE calendario_usuario SET foto_url = NULL WHERE id = ? AND usuario_id = ?', [$id, $actor['id']]);
+        $this->conn->executeStatement('UPDATE calendario_usuario SET foto_url = NULL, foto_es_tarjeta = 0 WHERE id = ? AND usuario_id = ?', [$id, $actor['id']]);
         $this->imagenes->borrarFotoEntreno($foto);
 
         return $this->json(['success' => true]);
@@ -619,7 +632,7 @@ class SocialController extends AbstractController
         $this->conn->executeStatement(
             'UPDATE calendario_usuario
              SET completado = 0, fecha_completado = NULL, compartido_en_feed = 0,
-                 foto_url = NULL, dia_hecho = NULL, ejercicios_hechos = NULL
+                 foto_url = NULL, foto_es_tarjeta = 0, dia_hecho = NULL, ejercicios_hechos = NULL, duracion_minutos = NULL
              WHERE id = ? AND usuario_id = ?',
             [$id, $actor['id']]
         );
@@ -642,7 +655,7 @@ class SocialController extends AbstractController
 
         // Misma regla que VisibilidadService::motivoBloqueo, aplicada en SQL para poder paginar
         $filas = $this->conn->fetchAllAssociative(
-            "SELECT cu.id, cu.fecha_completado, cu.foto_url AS foto_entreno, cu.dia_hecho, cu.ejercicios_hechos,
+            "SELECT cu.id, cu.fecha_completado, cu.foto_url AS foto_entreno, cu.foto_es_tarjeta, cu.duracion_minutos AS duracion_real, cu.dia_hecho, cu.ejercicios_hechos,
                     u.id AS usuario_id, u.nombre, u.apellidos, u.foto_url,
                     e.id AS entrenamiento_id, e.nombre AS entrenamiento, e.tipo, e.duracion_minutos,
                     e.nivel_dificultad, e.es_publico, e.creador_usuario_id, e.asignado_ausuario_id
@@ -686,6 +699,8 @@ class SocialController extends AbstractController
                     'id' => (int) $f['id'],
                     'hora' => substr((string) $f['fecha_completado'], 11, 5),
                     'fotoUrl' => $f['foto_entreno'],
+                    'fotoEsTarjeta' => (bool) $f['foto_es_tarjeta'],
+                    'duracionReal' => $f['duracion_real'] !== null ? (int) $f['duracion_real'] : null,
                     'diaHecho' => $f['dia_hecho'],
                     'ejercicios' => array_map(
                         fn (array $e) => ['nombre' => $e['nombre'] ?? '', 'grupo' => $e['grupo'] ?? null],
@@ -706,6 +721,56 @@ class SocialController extends AbstractController
                     ],
                 ];
             }, $filas),
+        ]);
+    }
+
+    // ============================================
+    // MIS ENTRENOS COMPLETADOS (objetivos cumplidos del perfil)
+    // ============================================
+    #[Route('/mis-entrenos', name: 'social_mis_entrenos', methods: ['GET'])]
+    public function misEntrenos(Request $request): JsonResponse
+    {
+        $actor = $this->visibilidad->actor($this->getUser());
+        if ($actor === null || $actor['tipo'] !== 'usuario') {
+            return $this->noAutenticado();
+        }
+        $pagina = max(1, $request->query->getInt('pagina', 1));
+
+        $filas = $this->conn->fetchAllAssociative(
+            'SELECT cu.id, cu.fecha_completado, cu.foto_url, cu.foto_es_tarjeta, cu.duracion_minutos, cu.dia_hecho,
+                    cu.ejercicios_hechos, cu.compartido_en_feed, e.id AS entrenamiento_id, e.nombre
+             FROM calendario_usuario cu
+             INNER JOIN entrenamientos e ON e.id = cu.entrenamiento_id
+             WHERE cu.usuario_id = ? AND cu.completado = 1 AND cu.fecha_completado IS NOT NULL
+             ORDER BY cu.fecha_completado DESC, cu.id DESC
+             LIMIT ' . (self::POR_PAGINA + 1) . ' OFFSET ' . (($pagina - 1) * self::POR_PAGINA),
+            [$actor['id']]
+        );
+        $hayMas = \count($filas) > self::POR_PAGINA;
+        $filas = \array_slice($filas, 0, self::POR_PAGINA);
+
+        $total = (int) $this->conn->fetchOne(
+            'SELECT COUNT(*) FROM calendario_usuario WHERE usuario_id = ? AND completado = 1 AND fecha_completado IS NOT NULL',
+            [$actor['id']]
+        );
+
+        return $this->json([
+            'success' => true,
+            'pagina' => $pagina,
+            'hayMas' => $hayMas,
+            'total' => $total,
+            'entrenos' => array_map(fn (array $f) => [
+                'id' => (int) $f['id'],
+                'fecha' => substr((string) $f['fecha_completado'], 0, 10),
+                'hora' => substr((string) $f['fecha_completado'], 11, 5),
+                'fotoUrl' => $f['foto_url'],
+                'fotoEsTarjeta' => (bool) $f['foto_es_tarjeta'],
+                'duracionMinutos' => $f['duracion_minutos'] !== null ? (int) $f['duracion_minutos'] : null,
+                'diaHecho' => $f['dia_hecho'],
+                'compartido' => (bool) $f['compartido_en_feed'],
+                'ejercicios' => \count(self::ejerciciosHechos($f['ejercicios_hechos'])),
+                'entrenamiento' => ['id' => (int) $f['entrenamiento_id'], 'nombre' => $f['nombre']],
+            ], $filas),
         ]);
     }
 

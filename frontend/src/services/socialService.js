@@ -52,13 +52,16 @@ const socialService = {
   completarEntrenoHoy: (entrenamientoId, compartir, detalle) =>
     datos(api.post('/social/entreno-hoy', { entrenamientoId, compartir, ...(detalle || {}) })),
   rutinaParaMarcar: (entrenamientoId) => datos(api.get(`/social/entreno-hoy/rutina/${entrenamientoId}`)),
-  subirFotoEntreno: (calendarioId, blob) => {
+  // tarjeta: la imagen ya es la composición final (logo, figura, tiempo) y se muestra tal cual
+  subirFotoEntreno: (calendarioId, blob, tarjeta = false) => {
     const form = new FormData();
     form.append('foto', blob, 'entreno.jpg');
+    if (tarjeta) form.append('tarjeta', '1');
     return datos(api.post(`/social/entreno-hoy/${calendarioId}/foto`, form, { headers: { 'Content-Type': undefined } }));
   },
   borrarFotoEntreno: (calendarioId) => datos(api.delete(`/social/entreno-hoy/${calendarioId}/foto`)),
   deshacerEntrenoHoy: (calendarioId) => datos(api.delete(`/social/entreno-hoy/${calendarioId}`)),
+  misEntrenos: (pagina = 1) => datos(api.get('/social/mis-entrenos', { params: { pagina } })),
   feedEntrenos: (pagina = 1) => datos(api.get('/social/feed/entrenos', { params: { pagina } })),
 };
 

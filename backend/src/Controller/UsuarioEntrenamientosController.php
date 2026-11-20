@@ -166,6 +166,9 @@ class UsuarioEntrenamientosController extends AbstractController
 
             // Agregar d�as y ejercicios
             $entrenamiento = $this->agregarDiasYEjercicios($entrenamiento, $conn);
+            // Solo quien la creó puede cambiar sus ejercicios (las asignadas por un entrenador no)
+            $entrenamiento['editable'] = $usuarioActual instanceof Usuario
+                && $entrenamientoCheck->getCreadorUsuario()?->getId() === $usuarioActual->getId();
 
             return $this->json([
                 'success' => true,

@@ -321,7 +321,15 @@ h1, h2, h3, h4, h5, h6, .font-anton {
 
 /* Mapa muscular: transición suave al cambiar de grupo */
 .uf-muscle-map polygon {
-  transition: fill 0.45s ease;
+  transition: fill 0.45s ease, filter 0.2s ease;
+  cursor: default !important;
+}
+/* Figura que se puede pulsar para elegir grupos musculares */
+.uf-muscle-map--interactivo polygon {
+  cursor: pointer !important;
+}
+.uf-muscle-map--interactivo polygon:hover {
+  filter: brightness(1.6);
 }
 }
 

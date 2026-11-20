@@ -9,6 +9,7 @@ import SEO from '../../components/common/SEO';
 import MuscleMap from '../../components/common/MuscleMap';
 import GraficoProgreso from '../../components/progreso/GraficoProgreso';
 import RegistroSeries from '../../components/progreso/RegistroSeries';
+import ProgresoRutinas from '../../components/progreso/ProgresoRutinas';
 
 const fechaCorta = (f) => new Date(`${f}T00:00:00`).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
 
@@ -62,6 +63,14 @@ function MiProgreso() {
               <Total icono={<Layers className="mx-auto h-5 w-5 text-uf-gold" aria-hidden="true" />} valor={datos.totales.series} nombre="Series" />
               <Total icono={<Weight className="mx-auto h-5 w-5 text-uf-gold" aria-hidden="true" />} valor={`${datos.totales.volumen.toLocaleString('es-ES')} kg`} nombre="Volumen total" />
             </dl>
+
+            <div className="mb-10">
+              <ProgresoRutinas />
+            </div>
+
+            <h2 className="mb-4 font-anton text-2xl uppercase text-white">
+              Todos tus <span className="uf-text-gold">ejercicios</span>
+            </h2>
 
             {ejercicios.length === 0 ? (
               <div className="uf-card flex flex-col items-center p-10 text-center">

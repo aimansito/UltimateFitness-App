@@ -90,7 +90,7 @@ function FeedEntrenos({ refresco = 0 }) {
                   src={urlFoto(e.fotoUrl)}
                   alt={`Foto del entreno de ${e.autor.nombre}`}
                   loading="lazy"
-                  className="aspect-[4/5] max-h-80 w-full object-cover"
+                  className={e.fotoEsTarjeta ? 'mx-auto aspect-[9/16] max-h-[30rem] w-full bg-black object-contain' : 'aspect-[4/5] max-h-80 w-full object-cover'}
                 />
               )}
 

@@ -9,19 +9,7 @@ import api from '../../services/api';
 import socialService, { mensajeError } from '../../services/socialService';
 import { useToast } from '../../context/ToastContext';
 import MuscleMap, { normalizarGrupo } from '../common/MuscleMap';
-
-const GRUPOS_PANEL = [
-  { id: 'pecho', nombre: 'Pecho' },
-  { id: 'espalda', nombre: 'Espalda' },
-  { id: 'piernas', nombre: 'Piernas' },
-  { id: 'hombros', nombre: 'Hombros' },
-  { id: 'biceps', nombre: 'Bíceps' },
-  { id: 'triceps', nombre: 'Tríceps' },
-  { id: 'core', nombre: 'Core' },
-  { id: 'gluteos', nombre: 'Glúteos' },
-  { id: 'fullbody', nombre: 'Full body' },
-  { id: 'cardio', nombre: 'Cardio' },
-];
+import { ALIAS, GRUPOS_PANEL, guardarCache, nombreGrupo, useBiblioteca } from './biblioteca';
 
 const NIVELES = [
   { id: '', nombre: 'Todos los niveles' },
@@ -30,28 +18,16 @@ const NIVELES = [
   { id: 'avanzado', nombre: 'Avanzado' },
 ];
 
-// Grupos del catálogo que también encajan en un chip (p. ej. "brazos" sale en bíceps y tríceps)
-const ALIAS = {
-  biceps: ['biceps', 'brazos'],
-  triceps: ['triceps', 'brazos'],
-  gluteos: ['gluteos', 'cadera'],
-  piernas: ['piernas', 'cadera'],
-};
-
 const POR_PAGINA = 40;
 const FORMULARIO_VACIO = { nombre: '', grupoMuscular: 'pecho', nivelDificultad: 'intermedio', descripcion: '' };
 
 const sinAcentos = (t) => (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-const nombreGrupo = (g) => GRUPOS_PANEL.find((x) => x.id === normalizarGrupo(g))?.nombre || g || 'General';
-
-// La biblioteca se descarga una vez por sesión y se reutiliza entre días y páginas
-let cacheEjercicios = null;
 
 function PanelEjercicios({ destino, destinos, onCambiarDestino, onAnadir, idsAnadidos = [] }) {
   const toast = useToast();
-  const [ejercicios, setEjercicios] = useState(cacheEjercicios || []);
-  const [cargando, setCargando] = useState(!cacheEjercicios);
-  const [error, setError] = useState(false);
+  const biblioteca = useBiblioteca();
+  const { cargando, error } = biblioteca;
+  const [ejercicios, setEjercicios] = useState(biblioteca.ejercicios);
   const [grupo, setGrupo] = useState('todos');
   const [nivel, setNivel] = useState('');
   const [busqueda, setBusqueda] = useState('');
@@ -61,24 +37,11 @@ function PanelEjercicios({ destino, destinos, onCambiarDestino, onAnadir, idsAna
   const [formulario, setFormulario] = useState(FORMULARIO_VACIO);
   const [guardando, setGuardando] = useState(false);
 
-  useEffect(() => {
-    if (cacheEjercicios) return;
-    let vigente = true;
-    api
-      .get('/custom/ejercicios?limit=300')
-      .then((r) => {
-        cacheEjercicios = r.data?.ejercicios ?? [];
-        if (vigente) setEjercicios(cacheEjercicios);
-      })
-      .catch(() => vigente && setError(true))
-      .finally(() => vigente && setCargando(false));
-    return () => {
-      vigente = false;
-    };
-  }, []);
+  // Cuando termina la descarga del catálogo
+  useEffect(() => setEjercicios(biblioteca.ejercicios), [biblioteca.ejercicios]);
 
   const actualizar = (lista) => {
-    cacheEjercicios = lista;
+    guardarCache(lista);
     setEjercicios(lista);
   };
 

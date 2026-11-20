@@ -40,12 +40,26 @@ const musculosDe = (grupos = []) => [
   ...new Set(grupos.flatMap((g) => GRUPOS[normalizarGrupo(g)]?.musculos || [])),
 ];
 
+// Músculo pulsado en la figura -> grupo de la app (para elegir grupos tocando el cuerpo)
+const GRUPO_DE_MUSCULO = {
+  chest: 'pecho',
+  trapezius: 'espalda', 'upper-back': 'espalda', 'lower-back': 'espalda',
+  quadriceps: 'piernas', adductor: 'piernas', abductors: 'piernas', hamstring: 'piernas', calves: 'piernas', 'left-soleus': 'piernas', 'right-soleus': 'piernas',
+  'front-deltoids': 'hombros', 'back-deltoids': 'hombros',
+  biceps: 'biceps', forearm: 'biceps',
+  triceps: 'triceps',
+  abs: 'core', obliques: 'core',
+  gluteal: 'gluteos',
+};
+const grupoDeMusculo = (musculo) => GRUPO_DE_MUSCULO[musculo] || null;
+
 /**
  * Figura anatómica con lo trabajado resaltado en dorado.
  * grupo: un grupo muscular · grupos: varios a la vez (p. ej. los ejercicios de un entreno)
  * vista: 'auto' (la que mejor muestra el grupo) | 'anterior' | 'posterior' | 'ambas'
+ * onGrupo (opcional): la figura se puede pulsar y devuelve el grupo de la app del músculo tocado
  */
-function MuscleMap({ grupo, grupos, vista = 'auto', className = '', color = GOLD, bodyColor = BODY }) {
+function MuscleMap({ grupo, grupos, vista = 'auto', className = '', color = GOLD, bodyColor = BODY, onGrupo }) {
   const lista = grupos?.length ? grupos : grupo ? [grupo] : [];
   const config = lista.length === 1 ? GRUPOS[normalizarGrupo(lista[0])] : null;
   const musculos = musculosDe(lista);
@@ -55,8 +69,8 @@ function MuscleMap({ grupo, grupos, vista = 'auto', className = '', color = GOLD
 
   return (
     <div
-      className={`uf-muscle-map flex items-center justify-center gap-[6%] ${className}`}
-      role="img"
+      className={`uf-muscle-map flex items-center justify-center gap-[6%] ${onGrupo ? 'uf-muscle-map--interactivo' : ''} ${className}`}
+      role={onGrupo ? 'group' : 'img'}
       aria-label={musculos.length ? `Zona trabajada: ${lista.join(', ')}` : 'Figura anatómica'}
     >
       {vistas.map((v) => (
@@ -66,6 +80,14 @@ function MuscleMap({ grupo, grupos, vista = 'auto', className = '', color = GOLD
           data={data}
           bodyColor={bodyColor}
           highlightedColors={[color]}
+          onClick={
+            onGrupo
+              ? ({ muscle }) => {
+                  const g = grupoDeMusculo(muscle);
+                  if (g) onGrupo(g);
+                }
+              : undefined
+          }
           style={{ height: '100%', flex: '1 1 0', minWidth: 0, display: 'flex', justifyContent: 'center' }}
           svgStyle={{ height: '100%', width: 'auto', maxWidth: '100%' }}
         />
