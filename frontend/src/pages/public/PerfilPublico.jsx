@@ -4,16 +4,17 @@
 import { ENTRENADORES } from "../../config/funciones";
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Dumbbell, Heart, Lock, Salad, Settings, UserX, Users } from 'lucide-react';
+import { Camera, Clock, Dumbbell, Heart, Lock, Salad, Settings, UserX, Users, X } from 'lucide-react';
 import SEO from '../../components/common/SEO';
 import Icono from '../../components/common/Icono';
 import Avatar from '../../components/social/Avatar';
 import BotonSeguir from '../../components/social/BotonSeguir';
 import ListaCuentasModal from '../../components/social/ListaCuentasModal';
 import TarjetaItemSocial from '../../components/social/TarjetaItemSocial';
-import socialService from '../../services/socialService';
+import socialService, { urlFoto } from '../../services/socialService';
 
 const PESTANAS = [
+  { id: 'publicaciones', nombre: 'Publicaciones', Icono: Camera, vacio: 'Todavía no ha publicado ningún entreno.', vacioMio: 'Cuando completes un entreno, pulsa «Publicar en mi perfil» y aparecerá aquí.' },
   { id: 'entrenamientos', nombre: 'Entrenamientos', Icono: Dumbbell, vacio: 'Todavía no ha publicado ninguna rutina.', vacioMio: 'Aún no tienes rutinas. Las que crees aparecerán aquí y podrás decidir cuáles se ven.' },
   { id: 'dietas', nombre: 'Dietas', Icono: Salad, vacio: 'Todavía no ha publicado ninguna dieta.', vacioMio: 'Aún no tienes dietas creadas por ti.' },
   { id: 'favoritos', nombre: 'Favoritos', Icono: Heart, vacio: 'Todavía no ha guardado nada.', vacioMio: 'Guarda rutinas, dietas y platos de otras personas para tenerlos aquí.' },
@@ -31,6 +32,7 @@ function PerfilPublico() {
   const [estado, setEstado] = useState('cargando'); // cargando | listo | no_encontrado | error
   const [pestana, setPestana] = useState('entrenamientos');
   const [lista, setLista] = useState(null); // 'seguidores' | 'seguidos' | null
+  const [ampliada, setAmpliada] = useState(null); // publicación abierta en grande
 
   const cargar = useCallback(
     async (silencioso = false) => {
@@ -42,6 +44,8 @@ function PerfilPublico() {
         }
         const r = await socialService.perfilPublico(tipo, id);
         setDatos(r);
+        // Los perfiles de entrenador no tienen publicaciones: se empieza por sus rutinas
+        if (!silencioso) setPestana(r.publicaciones ? 'publicaciones' : 'entrenamientos');
         setEstado('listo');
       } catch (error) {
         setEstado(error?.response?.status === 404 ? 'no_encontrado' : 'error');
@@ -51,8 +55,8 @@ function PerfilPublico() {
   );
 
   useEffect(() => {
-    setPestana('entrenamientos');
     setLista(null);
+    setAmpliada(null);
     cargar();
   }, [cargar]);
 
@@ -94,6 +98,7 @@ function PerfilPublico() {
   const { perfil } = datos;
   const oculto = !perfil.perfilPublico && !perfil.esMio && perfil.seguidores === null;
   const bloque = datos[pestana];
+  const pestanas = PESTANAS.filter((p) => datos[p.id]);
   const pestanaActual = PESTANAS.find((p) => p.id === pestana);
 
   const alSeguir = ({ loSigo, seguidores, delta }) => {
@@ -194,7 +199,7 @@ function PerfilPublico() {
 
             {/* PESTAÑAS */}
             <div role="tablist" aria-label="Contenido del perfil" className="mb-8 flex gap-1 overflow-x-auto rounded-full border border-uf-line bg-uf-card p-1">
-              {PESTANAS.map(({ id: pid, nombre, Icono: IconoPestana }) => {
+              {pestanas.map(({ id: pid, nombre, Icono: IconoPestana }) => {
                 const activa = pestana === pid;
                 return (
                   <button
@@ -233,7 +238,17 @@ function PerfilPublico() {
                 </div>
               )}
 
-              {bloque.visible && bloque.items.length > 0 && (
+              {pestana === 'publicaciones' && bloque.visible && bloque.items.length > 0 && (
+                <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                  {bloque.items.map((pub) => (
+                    <li key={pub.id} className="min-w-0">
+                      <TarjetaPublicacion pub={pub} onAbrir={() => setAmpliada(pub)} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {pestana !== 'publicaciones' && bloque.visible && bloque.items.length > 0 && (
                 <>
                   {perfil.esMio && pestana !== 'favoritos' && (
                     <p className="mb-4 text-sm text-uf-muted">
@@ -257,10 +272,63 @@ function PerfilPublico() {
         )}
       </div>
 
+      {ampliada?.fotoUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Entreno: ${ampliada.entrenamiento}`}
+          onClick={() => setAmpliada(null)}
+        >
+          <button type="button" onClick={() => setAmpliada(null)} aria-label="Cerrar" className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full border border-uf-line bg-black/60 text-white">
+            <X className="h-5 w-5" />
+          </button>
+          <img src={urlFoto(ampliada.fotoUrl)} alt={`Entreno ${ampliada.entrenamiento}`} className="max-h-full max-w-full rounded-2xl object-contain" />
+        </div>
+      )}
+
       {lista && (
         <ListaCuentasModal tipo={perfil.tipo} id={perfil.id} modo={lista} onCerrar={() => setLista(null)} />
       )}
     </div>
+  );
+}
+
+const fechaCorta = (f) => (f ? new Date(f.replace(' ', 'T')).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : '');
+
+function TarjetaPublicacion({ pub, onAbrir }) {
+  const pie = (
+    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-3 pt-10 text-left">
+      <span className="block truncate font-anton text-lg uppercase leading-tight text-white">{pub.entrenamiento}</span>
+      <span className="mt-0.5 flex items-center gap-2 text-[11px] uppercase tracking-wider text-gray-300">
+        {fechaCorta(pub.fecha)}
+        {pub.duracionMinutos ? (
+          <span className="inline-flex items-center gap-1">
+            <Clock className="h-3 w-3" aria-hidden="true" />
+            {pub.duracionMinutos} min
+          </span>
+        ) : null}
+      </span>
+    </span>
+  );
+  if (!pub.fotoUrl) {
+    return (
+      <div className="relative flex aspect-[9/16] items-center justify-center overflow-hidden rounded-2xl border border-uf-line bg-uf-card">
+        <Dumbbell className="h-10 w-10 text-uf-gold/60" aria-hidden="true" />
+        {pie}
+      </div>
+    );
+  }
+  return (
+    <button
+      type="button"
+      onClick={onAbrir}
+      className="group relative block aspect-[9/16] w-full overflow-hidden rounded-2xl border border-uf-line bg-black transition hover:border-uf-gold/60"
+      aria-label={`Ver entreno ${pub.entrenamiento}`}
+    >
+      <img src={urlFoto(pub.fotoUrl)} alt="" loading="lazy" className={`h-full w-full transition group-hover:scale-[1.02] ${pub.fotoEsTarjeta ? 'object-contain' : 'object-cover'}`} />
+      {!pub.fotoEsTarjeta && pie}
+    </button>
   );
 }
 

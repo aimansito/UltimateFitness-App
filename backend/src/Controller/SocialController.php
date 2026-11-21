@@ -590,6 +590,13 @@ class SocialController extends AbstractController
             $url = $this->imagenes->guardarFotoEntreno($archivo);
         } catch (\InvalidArgumentException $e) {
             return $this->json(['success' => false, 'error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        } catch (\Throwable $e) {
+            // Almacenamiento de imágenes caído o mal configurado: el entreno ya está guardado
+            error_log('Foto de entreno: no se pudo guardar: ' . $e->getMessage());
+            return $this->json(
+                ['success' => false, 'error' => 'Ahora mismo no se pueden guardar fotos. Tu entreno sí ha quedado registrado.'],
+                Response::HTTP_SERVICE_UNAVAILABLE
+            );
         }
 
         // tarjeta=1: la imagen ya lleva el diseño (logo, figura, tiempo); el feed la muestra tal cual

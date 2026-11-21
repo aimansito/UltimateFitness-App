@@ -58,9 +58,10 @@ async function asegurarRutina(token, video) {
   return r.entrenamiento_id;
 }
 
-export const faltanCapturas = () => Object.keys(VIDEOS).some((k) => !fs.existsSync(rutaCaptura(k)));
+/** Claves (de las pedidas) que aún no tienen captura */
+export const faltanCapturas = (claves) => claves.filter((k) => !fs.existsSync(rutaCaptura(k)));
 
-export async function capturarApp() {
+export async function capturarApp(claves) {
   const { token } = await api('/login', { method: 'POST', body: JSON.stringify({ email: APP.usuario, password: APP.clave }) });
 
   const navegador = await abrirNavegador();
@@ -76,7 +77,8 @@ export async function capturarApp() {
   await pagina.click('button[type=submit]');
   await pagina.waitForURL(/dashboard|calculadora/, { timeout: ESPERA });
 
-  for (const [clave, video] of Object.entries(VIDEOS)) {
+  for (const clave of claves) {
+    const video = VIDEOS[clave];
     const id = await asegurarRutina(token, video);
     await pagina.goto(`${APP.url}/mis-entrenamientos/${id}`, { waitUntil: 'networkidle', timeout: ESPERA });
     await pagina.getByText(`Rutina de ${video.titulo}`).first().waitFor({ timeout: ESPERA });

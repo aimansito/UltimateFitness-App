@@ -594,7 +594,7 @@
       "source_file": "backend\\src\\Kernel.php",
       "source_location": "L1",
       "id": "backend_src_kernel_php",
-      "community": 115,
+      "community": 116,
       "norm_label": "kernel.php"
     },
     {
@@ -603,7 +603,7 @@
       "source_file": "backend\\src\\Kernel.php",
       "source_location": "L8",
       "id": "kernel_kernel",
-      "community": 115,
+      "community": 116,
       "norm_label": "kernel"
     },
     {
@@ -612,7 +612,7 @@
       "source_file": "backend\\src\\Kernel.php",
       "source_location": "L12",
       "id": "kernel_kernel_registerbundles",
-      "community": 115,
+      "community": 116,
       "norm_label": ".registerbundles()"
     },
     {
@@ -1296,7 +1296,7 @@
       "source_file": "backend\\src\\Controller\\AuthController.php",
       "source_location": "L1",
       "id": "backend_src_controller_authcontroller_php",
-      "community": 116,
+      "community": 117,
       "norm_label": "authcontroller.php"
     },
     {
@@ -1305,7 +1305,7 @@
       "source_file": "backend\\src\\Controller\\AuthController.php",
       "source_location": "L9",
       "id": "authcontroller_authcontroller",
-      "community": 116,
+      "community": 117,
       "norm_label": "authcontroller"
     },
     {
@@ -1314,7 +1314,7 @@
       "source_file": "backend\\src\\Controller\\AuthController.php",
       "source_location": "L11",
       "id": "authcontroller_authcontroller_login",
-      "community": 116,
+      "community": 117,
       "norm_label": ".login()"
     },
     {
@@ -1566,7 +1566,7 @@
       "source_file": "backend\\src\\Controller\\CrearEntrenamientoController.php",
       "source_location": "L1",
       "id": "backend_src_controller_crearentrenamientocontroller_php",
-      "community": 96,
+      "community": 97,
       "norm_label": "crearentrenamientocontroller.php"
     },
     {
@@ -1575,7 +1575,7 @@
       "source_file": "backend\\src\\Controller\\CrearEntrenamientoController.php",
       "source_location": "L13",
       "id": "crearentrenamientocontroller_crearentrenamientocontroller",
-      "community": 96,
+      "community": 97,
       "norm_label": "crearentrenamientocontroller"
     },
     {
@@ -1584,7 +1584,7 @@
       "source_file": "backend\\src\\Controller\\CrearEntrenamientoController.php",
       "source_location": "L18",
       "id": "crearentrenamientocontroller_crearentrenamientocontroller_construct",
-      "community": 96,
+      "community": 97,
       "norm_label": ".__construct()"
     },
     {
@@ -1593,7 +1593,7 @@
       "source_file": "backend\\src\\Controller\\CrearEntrenamientoController.php",
       "source_location": "L23",
       "id": "crearentrenamientocontroller_crearentrenamientocontroller_crearentrenamiento",
-      "community": 96,
+      "community": 97,
       "norm_label": ".crearentrenamiento()"
     },
     {
@@ -1818,7 +1818,7 @@
       "source_file": "backend\\src\\Controller\\DietasPublicasController.php",
       "source_location": "L1",
       "id": "backend_src_controller_dietaspublicascontroller_php",
-      "community": 117,
+      "community": 118,
       "norm_label": "dietaspublicascontroller.php"
     },
     {
@@ -1827,7 +1827,7 @@
       "source_file": "backend\\src\\Controller\\DietasPublicasController.php",
       "source_location": "L11",
       "id": "dietaspublicascontroller_dietaspublicascontroller",
-      "community": 117,
+      "community": 118,
       "norm_label": "dietaspublicascontroller"
     },
     {
@@ -1836,7 +1836,7 @@
       "source_file": "backend\\src\\Controller\\DietasPublicasController.php",
       "source_location": "L17",
       "id": "dietaspublicascontroller_dietaspublicascontroller_listardietaspublicas",
-      "community": 117,
+      "community": 118,
       "norm_label": ".listardietaspublicas()"
     },
     {
@@ -2088,7 +2088,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorAuthController.php",
       "source_location": "L1",
       "id": "backend_src_controller_entrenadorauthcontroller_php",
-      "community": 118,
+      "community": 119,
       "norm_label": "entrenadorauthcontroller.php"
     },
     {
@@ -2097,7 +2097,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorAuthController.php",
       "source_location": "L9",
       "id": "entrenadorauthcontroller_entrenadorauthcontroller",
-      "community": 118,
+      "community": 119,
       "norm_label": "entrenadorauthcontroller"
     },
     {
@@ -2106,7 +2106,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorAuthController.php",
       "source_location": "L11",
       "id": "entrenadorauthcontroller_entrenadorauthcontroller_login",
-      "community": 118,
+      "community": 119,
       "norm_label": ".login()"
     },
     {
@@ -2304,7 +2304,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientoDetalleController.php",
       "source_location": "L1",
       "id": "backend_src_controller_entrenadorentrenamientodetallecontroller_php",
-      "community": 97,
+      "community": 98,
       "norm_label": "entrenadorentrenamientodetallecontroller.php"
     },
     {
@@ -2313,7 +2313,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientoDetalleController.php",
       "source_location": "L11",
       "id": "entrenadorentrenamientodetallecontroller_entrenadorentrenamientodetallecontroller",
-      "community": 97,
+      "community": 98,
       "norm_label": "entrenadorentrenamientodetallecontroller"
     },
     {
@@ -2322,7 +2322,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientoDetalleController.php",
       "source_location": "L18",
       "id": "entrenadorentrenamientodetallecontroller_entrenadorentrenamientodetallecontroller_detalle",
-      "community": 97,
+      "community": 98,
       "norm_label": ".detalle()"
     },
     {
@@ -2331,7 +2331,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientoDetalleController.php",
       "source_location": "L92",
       "id": "entrenadorentrenamientodetallecontroller_entrenadorentrenamientodetallecontroller_agregardiasyejercicios",
-      "community": 97,
+      "community": 98,
       "norm_label": ".agregardiasyejercicios()"
     },
     {
@@ -2340,7 +2340,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientosController.php",
       "source_location": "L1",
       "id": "backend_src_controller_entrenadorentrenamientoscontroller_php",
-      "community": 98,
+      "community": 99,
       "norm_label": "entrenadorentrenamientoscontroller.php"
     },
     {
@@ -2349,7 +2349,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientosController.php",
       "source_location": "L11",
       "id": "entrenadorentrenamientoscontroller_entrenadorentrenamientoscontroller",
-      "community": 98,
+      "community": 99,
       "norm_label": "entrenadorentrenamientoscontroller"
     },
     {
@@ -2358,7 +2358,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientosController.php",
       "source_location": "L18",
       "id": "entrenadorentrenamientoscontroller_entrenadorentrenamientoscontroller_listarentrenamientos",
-      "community": 98,
+      "community": 99,
       "norm_label": ".listarentrenamientos()"
     },
     {
@@ -2367,7 +2367,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientosController.php",
       "source_location": "L79",
       "id": "entrenadorentrenamientoscontroller_entrenadorentrenamientoscontroller_agregardiasyejercicios",
-      "community": 98,
+      "community": 99,
       "norm_label": ".agregardiasyejercicios()"
     },
     {
@@ -2502,7 +2502,7 @@
       "source_file": "backend\\src\\Controller\\GuardarDietaController.php",
       "source_location": "L1",
       "id": "backend_src_controller_guardardietacontroller_php",
-      "community": 99,
+      "community": 100,
       "norm_label": "guardardietacontroller.php"
     },
     {
@@ -2511,7 +2511,7 @@
       "source_file": "backend\\src\\Controller\\GuardarDietaController.php",
       "source_location": "L13",
       "id": "guardardietacontroller_guardardietacontroller",
-      "community": 99,
+      "community": 100,
       "norm_label": "guardardietacontroller"
     },
     {
@@ -2520,7 +2520,7 @@
       "source_file": "backend\\src\\Controller\\GuardarDietaController.php",
       "source_location": "L18",
       "id": "guardardietacontroller_guardardietacontroller_construct",
-      "community": 99,
+      "community": 100,
       "norm_label": ".__construct()"
     },
     {
@@ -2529,7 +2529,7 @@
       "source_file": "backend\\src\\Controller\\GuardarDietaController.php",
       "source_location": "L23",
       "id": "guardardietacontroller_guardardietacontroller_creardieta",
-      "community": 99,
+      "community": 100,
       "norm_label": ".creardieta()"
     },
     {
@@ -2538,7 +2538,7 @@
       "source_file": "backend\\src\\Controller\\HealthController.php",
       "source_location": "L1",
       "id": "backend_src_controller_healthcontroller_php",
-      "community": 119,
+      "community": 120,
       "norm_label": "healthcontroller.php"
     },
     {
@@ -2547,7 +2547,7 @@
       "source_file": "backend\\src\\Controller\\HealthController.php",
       "source_location": "L8",
       "id": "healthcontroller_healthcontroller",
-      "community": 119,
+      "community": 120,
       "norm_label": "healthcontroller"
     },
     {
@@ -2556,7 +2556,7 @@
       "source_file": "backend\\src\\Controller\\HealthController.php",
       "source_location": "L10",
       "id": "healthcontroller_healthcontroller_health",
-      "community": 119,
+      "community": 120,
       "norm_label": ".health()"
     },
     {
@@ -2664,7 +2664,7 @@
       "source_file": "backend\\src\\Controller\\PagoController.php",
       "source_location": "L1",
       "id": "backend_src_controller_pagocontroller_php",
-      "community": 100,
+      "community": 101,
       "norm_label": "pagocontroller.php"
     },
     {
@@ -2673,7 +2673,7 @@
       "source_file": "backend\\src\\Controller\\PagoController.php",
       "source_location": "L20",
       "id": "pagocontroller_pagocontroller",
-      "community": 100,
+      "community": 101,
       "norm_label": "pagocontroller"
     },
     {
@@ -2682,7 +2682,7 @@
       "source_file": "backend\\src\\Controller\\PagoController.php",
       "source_location": "L23",
       "id": "pagocontroller_pagocontroller_construct",
-      "community": 100,
+      "community": 101,
       "norm_label": ".__construct()"
     },
     {
@@ -2691,7 +2691,7 @@
       "source_file": "backend\\src\\Controller\\PagoController.php",
       "source_location": "L33",
       "id": "pagocontroller_pagocontroller_historialusuario",
-      "community": 100,
+      "community": 101,
       "norm_label": ".historialusuario()"
     },
     {
@@ -2743,7 +2743,7 @@
       "label": ".mio()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L101",
+      "source_location": "L127",
       "id": "perfilcontroller_perfilcontroller_mio",
       "community": 49,
       "norm_label": ".mio()"
@@ -2752,7 +2752,7 @@
       "label": ".privacidad()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L124",
+      "source_location": "L150",
       "id": "perfilcontroller_perfilcontroller_privacidad",
       "community": 49,
       "norm_label": ".privacidad()"
@@ -2761,7 +2761,7 @@
       "label": ".subirAvatar()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L179",
+      "source_location": "L205",
       "id": "perfilcontroller_perfilcontroller_subiravatar",
       "community": 49,
       "norm_label": ".subiravatar()"
@@ -2770,7 +2770,7 @@
       "label": ".borrarAvatar()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L211",
+      "source_location": "L237",
       "id": "perfilcontroller_perfilcontroller_borraravatar",
       "community": 49,
       "norm_label": ".borraravatar()"
@@ -2779,7 +2779,7 @@
       "label": ".privacidadDe()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L227",
+      "source_location": "L253",
       "id": "perfilcontroller_perfilcontroller_privacidadde",
       "community": 49,
       "norm_label": ".privacidadde()"
@@ -3060,7 +3060,7 @@
       "source_file": "backend\\src\\Controller\\RegistroController.php",
       "source_location": "L1",
       "id": "backend_src_controller_registrocontroller_php",
-      "community": 101,
+      "community": 102,
       "norm_label": "registrocontroller.php"
     },
     {
@@ -3069,7 +3069,7 @@
       "source_file": "backend\\src\\Controller\\RegistroController.php",
       "source_location": "L17",
       "id": "registrocontroller_registrocontroller",
-      "community": 101,
+      "community": 102,
       "norm_label": "registrocontroller"
     },
     {
@@ -3078,7 +3078,7 @@
       "source_file": "backend\\src\\Controller\\RegistroController.php",
       "source_location": "L23",
       "id": "registrocontroller_registrocontroller_construct",
-      "community": 101,
+      "community": 102,
       "norm_label": ".__construct()"
     },
     {
@@ -3087,7 +3087,7 @@
       "source_file": "backend\\src\\Controller\\RegistroController.php",
       "source_location": "L39",
       "id": "registrocontroller_registrocontroller_register",
-      "community": 101,
+      "community": 102,
       "norm_label": ".register()"
     },
     {
@@ -3274,7 +3274,7 @@
       "label": ".borrarFotoEntreno()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L606",
+      "source_location": "L613",
       "id": "socialcontroller_socialcontroller_borrarfotoentreno",
       "community": 9,
       "norm_label": ".borrarfotoentreno()"
@@ -3283,7 +3283,7 @@
       "label": ".deshacerEntrenoHoy()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L623",
+      "source_location": "L630",
       "id": "socialcontroller_socialcontroller_deshacerentrenohoy",
       "community": 9,
       "norm_label": ".deshacerentrenohoy()"
@@ -3292,7 +3292,7 @@
       "label": ".feedEntrenos()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L649",
+      "source_location": "L656",
       "id": "socialcontroller_socialcontroller_feedentrenos",
       "community": 9,
       "norm_label": ".feedentrenos()"
@@ -3301,7 +3301,7 @@
       "label": ".misEntrenos()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L730",
+      "source_location": "L737",
       "id": "socialcontroller_socialcontroller_misentrenos",
       "community": 9,
       "norm_label": ".misentrenos()"
@@ -3310,7 +3310,7 @@
       "label": ".noAutenticado()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L777",
+      "source_location": "L784",
       "id": "socialcontroller_socialcontroller_noautenticado",
       "community": 9,
       "norm_label": ".noautenticado()"
@@ -3319,7 +3319,7 @@
       "label": ".noEncontrado()",
       "file_type": "code",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L782",
+      "source_location": "L789",
       "id": "socialcontroller_socialcontroller_noencontrado",
       "community": 9,
       "norm_label": ".noencontrado()"
@@ -3744,7 +3744,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioDietasController.php",
       "source_location": "L1",
       "id": "backend_src_controller_usuariodietascontroller_php",
-      "community": 102,
+      "community": 103,
       "norm_label": "usuariodietascontroller.php"
     },
     {
@@ -3753,7 +3753,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioDietasController.php",
       "source_location": "L15",
       "id": "usuariodietascontroller_usuariodietascontroller",
-      "community": 102,
+      "community": 103,
       "norm_label": "usuariodietascontroller"
     },
     {
@@ -3762,7 +3762,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioDietasController.php",
       "source_location": "L21",
       "id": "usuariodietascontroller_usuariodietascontroller_listardietas",
-      "community": 102,
+      "community": 103,
       "norm_label": ".listardietas()"
     },
     {
@@ -3771,7 +3771,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioDietasController.php",
       "source_location": "L96",
       "id": "usuariodietascontroller_usuariodietascontroller_verdetalledieta",
-      "community": 102,
+      "community": 103,
       "norm_label": ".verdetalledieta()"
     },
     {
@@ -6561,7 +6561,7 @@
       "source_file": "backend\\src\\Entity\\Guardado.php",
       "source_location": "L1",
       "id": "backend_src_entity_guardado_php",
-      "community": 120,
+      "community": 121,
       "norm_label": "guardado.php"
     },
     {
@@ -6570,7 +6570,7 @@
       "source_file": "backend\\src\\Entity\\Guardado.php",
       "source_location": "L11",
       "id": "guardado_guardado",
-      "community": 120,
+      "community": 121,
       "norm_label": "guardado"
     },
     {
@@ -6579,7 +6579,7 @@
       "source_file": "backend\\src\\Entity\\Guardado.php",
       "source_location": "L36",
       "id": "guardado_guardado_getid",
-      "community": 120,
+      "community": 121,
       "norm_label": ".getid()"
     },
     {
@@ -7443,7 +7443,7 @@
       "source_file": "backend\\src\\Entity\\RegistroSerie.php",
       "source_location": "L1",
       "id": "backend_src_entity_registroserie_php",
-      "community": 121,
+      "community": 122,
       "norm_label": "registroserie.php"
     },
     {
@@ -7452,7 +7452,7 @@
       "source_file": "backend\\src\\Entity\\RegistroSerie.php",
       "source_location": "L11",
       "id": "registroserie_registroserie",
-      "community": 121,
+      "community": 122,
       "norm_label": "registroserie"
     },
     {
@@ -7461,7 +7461,7 @@
       "source_file": "backend\\src\\Entity\\RegistroSerie.php",
       "source_location": "L47",
       "id": "registroserie_registroserie_getid",
-      "community": 121,
+      "community": 122,
       "norm_label": ".getid()"
     },
     {
@@ -7470,7 +7470,7 @@
       "source_file": "backend\\src\\Entity\\Seguimiento.php",
       "source_location": "L1",
       "id": "backend_src_entity_seguimiento_php",
-      "community": 122,
+      "community": 123,
       "norm_label": "seguimiento.php"
     },
     {
@@ -7479,7 +7479,7 @@
       "source_file": "backend\\src\\Entity\\Seguimiento.php",
       "source_location": "L11",
       "id": "seguimiento_seguimiento",
-      "community": 122,
+      "community": 123,
       "norm_label": "seguimiento"
     },
     {
@@ -7488,7 +7488,7 @@
       "source_file": "backend\\src\\Entity\\Seguimiento.php",
       "source_location": "L37",
       "id": "seguimiento_seguimiento_getid",
-      "community": 122,
+      "community": 123,
       "norm_label": ".getid()"
     },
     {
@@ -8748,7 +8748,7 @@
       "source_file": "backend\\src\\EventListener\\AdminAccessSubscriber.php",
       "source_location": "L1",
       "id": "backend_src_eventlistener_adminaccesssubscriber_php",
-      "community": 103,
+      "community": 104,
       "norm_label": "adminaccesssubscriber.php"
     },
     {
@@ -8757,7 +8757,7 @@
       "source_file": "backend\\src\\EventListener\\AdminAccessSubscriber.php",
       "source_location": "L16",
       "id": "adminaccesssubscriber_adminaccesssubscriber",
-      "community": 103,
+      "community": 104,
       "norm_label": "adminaccesssubscriber"
     },
     {
@@ -8766,7 +8766,7 @@
       "source_file": "backend\\src\\EventListener\\AdminAccessSubscriber.php",
       "source_location": "L19",
       "id": "adminaccesssubscriber_adminaccesssubscriber_construct",
-      "community": 103,
+      "community": 104,
       "norm_label": ".__construct()"
     },
     {
@@ -8775,7 +8775,7 @@
       "source_file": "backend\\src\\EventListener\\AdminAccessSubscriber.php",
       "source_location": "L25",
       "id": "adminaccesssubscriber_adminaccesssubscriber_invoke",
-      "community": 103,
+      "community": 104,
       "norm_label": ".__invoke()"
     },
     {
@@ -8874,7 +8874,7 @@
       "source_file": "backend\\src\\EventListener\\OwnerAccessSubscriber.php",
       "source_location": "L1",
       "id": "backend_src_eventlistener_owneraccesssubscriber_php",
-      "community": 104,
+      "community": 105,
       "norm_label": "owneraccesssubscriber.php"
     },
     {
@@ -8883,7 +8883,7 @@
       "source_file": "backend\\src\\EventListener\\OwnerAccessSubscriber.php",
       "source_location": "L19",
       "id": "owneraccesssubscriber_owneraccesssubscriber",
-      "community": 104,
+      "community": 105,
       "norm_label": "owneraccesssubscriber"
     },
     {
@@ -8892,7 +8892,7 @@
       "source_file": "backend\\src\\EventListener\\OwnerAccessSubscriber.php",
       "source_location": "L42",
       "id": "owneraccesssubscriber_owneraccesssubscriber_construct",
-      "community": 104,
+      "community": 105,
       "norm_label": ".__construct()"
     },
     {
@@ -8901,7 +8901,7 @@
       "source_file": "backend\\src\\EventListener\\OwnerAccessSubscriber.php",
       "source_location": "L49",
       "id": "owneraccesssubscriber_owneraccesssubscriber_invoke",
-      "community": 104,
+      "community": 105,
       "norm_label": ".__invoke()"
     },
     {
@@ -8910,7 +8910,7 @@
       "source_file": "backend\\src\\EventListener\\ResponseListener.php",
       "source_location": "L1",
       "id": "backend_src_eventlistener_responselistener_php",
-      "community": 123,
+      "community": 124,
       "norm_label": "responselistener.php"
     },
     {
@@ -8919,7 +8919,7 @@
       "source_file": "backend\\src\\EventListener\\ResponseListener.php",
       "source_location": "L9",
       "id": "responselistener_responselistener",
-      "community": 123,
+      "community": 124,
       "norm_label": "responselistener"
     },
     {
@@ -8928,7 +8928,7 @@
       "source_file": "backend\\src\\EventListener\\ResponseListener.php",
       "source_location": "L12",
       "id": "responselistener_responselistener_invoke",
-      "community": 123,
+      "community": 124,
       "norm_label": ".__invoke()"
     },
     {
@@ -8937,7 +8937,7 @@
       "source_file": "backend\\src\\EventListener\\SeguridadRespuestaSubscriber.php",
       "source_location": "L1",
       "id": "backend_src_eventlistener_seguridadrespuestasubscriber_php",
-      "community": 105,
+      "community": 106,
       "norm_label": "seguridadrespuestasubscriber.php"
     },
     {
@@ -8946,7 +8946,7 @@
       "source_file": "backend\\src\\EventListener\\SeguridadRespuestaSubscriber.php",
       "source_location": "L18",
       "id": "seguridadrespuestasubscriber_seguridadrespuestasubscriber",
-      "community": 105,
+      "community": 106,
       "norm_label": "seguridadrespuestasubscriber"
     },
     {
@@ -8955,7 +8955,7 @@
       "source_file": "backend\\src\\EventListener\\SeguridadRespuestaSubscriber.php",
       "source_location": "L20",
       "id": "seguridadrespuestasubscriber_seguridadrespuestasubscriber_construct",
-      "community": 105,
+      "community": 106,
       "norm_label": ".__construct()"
     },
     {
@@ -8964,7 +8964,7 @@
       "source_file": "backend\\src\\EventListener\\SeguridadRespuestaSubscriber.php",
       "source_location": "L26",
       "id": "seguridadrespuestasubscriber_seguridadrespuestasubscriber_invoke",
-      "community": 105,
+      "community": 106,
       "norm_label": ".__invoke()"
     },
     {
@@ -9414,7 +9414,7 @@
       "source_file": "backend\\src\\Repository\\DiaEjercicioRepository.php",
       "source_location": "L1",
       "id": "backend_src_repository_diaejerciciorepository_php",
-      "community": 124,
+      "community": 125,
       "norm_label": "diaejerciciorepository.php"
     },
     {
@@ -9423,7 +9423,7 @@
       "source_file": "backend\\src\\Repository\\DiaEjercicioRepository.php",
       "source_location": "L12",
       "id": "diaejerciciorepository_diaejerciciorepository",
-      "community": 124,
+      "community": 125,
       "norm_label": "diaejerciciorepository"
     },
     {
@@ -9432,7 +9432,7 @@
       "source_file": "backend\\src\\Repository\\DiaEjercicioRepository.php",
       "source_location": "L14",
       "id": "diaejerciciorepository_diaejerciciorepository_construct",
-      "community": 124,
+      "community": 125,
       "norm_label": ".__construct()"
     },
     {
@@ -9441,7 +9441,7 @@
       "source_file": "backend\\src\\Repository\\DiaEntrenamientoRepository.php",
       "source_location": "L1",
       "id": "backend_src_repository_diaentrenamientorepository_php",
-      "community": 125,
+      "community": 126,
       "norm_label": "diaentrenamientorepository.php"
     },
     {
@@ -9450,7 +9450,7 @@
       "source_file": "backend\\src\\Repository\\DiaEntrenamientoRepository.php",
       "source_location": "L12",
       "id": "diaentrenamientorepository_diaentrenamientorepository",
-      "community": 125,
+      "community": 126,
       "norm_label": "diaentrenamientorepository"
     },
     {
@@ -9459,7 +9459,7 @@
       "source_file": "backend\\src\\Repository\\DiaEntrenamientoRepository.php",
       "source_location": "L14",
       "id": "diaentrenamientorepository_diaentrenamientorepository_construct",
-      "community": 125,
+      "community": 126,
       "norm_label": ".__construct()"
     },
     {
@@ -9909,7 +9909,7 @@
       "source_file": "backend\\src\\Repository\\EntrenamientoEjercicioRepository.php",
       "source_location": "L1",
       "id": "backend_src_repository_entrenamientoejerciciorepository_php",
-      "community": 126,
+      "community": 127,
       "norm_label": "entrenamientoejerciciorepository.php"
     },
     {
@@ -9918,7 +9918,7 @@
       "source_file": "backend\\src\\Repository\\EntrenamientoEjercicioRepository.php",
       "source_location": "L12",
       "id": "entrenamientoejerciciorepository_entrenamientoejerciciorepository",
-      "community": 126,
+      "community": 127,
       "norm_label": "entrenamientoejerciciorepository"
     },
     {
@@ -9927,7 +9927,7 @@
       "source_file": "backend\\src\\Repository\\EntrenamientoEjercicioRepository.php",
       "source_location": "L14",
       "id": "entrenamientoejerciciorepository_entrenamientoejerciciorepository_construct",
-      "community": 126,
+      "community": 127,
       "norm_label": ".__construct()"
     },
     {
@@ -10773,7 +10773,7 @@
       "source_file": "backend\\src\\Security\\EntrenadorLoginSuccessHandler.php",
       "source_location": "L1",
       "id": "backend_src_security_entrenadorloginsuccesshandler_php",
-      "community": 106,
+      "community": 107,
       "norm_label": "entrenadorloginsuccesshandler.php"
     },
     {
@@ -10782,7 +10782,7 @@
       "source_file": "backend\\src\\Security\\EntrenadorLoginSuccessHandler.php",
       "source_location": "L10",
       "id": "entrenadorloginsuccesshandler_entrenadorloginsuccesshandler",
-      "community": 106,
+      "community": 107,
       "norm_label": "entrenadorloginsuccesshandler"
     },
     {
@@ -10791,7 +10791,7 @@
       "source_file": "backend\\src\\Security\\EntrenadorLoginSuccessHandler.php",
       "source_location": "L15",
       "id": "entrenadorloginsuccesshandler_entrenadorloginsuccesshandler_construct",
-      "community": 106,
+      "community": 107,
       "norm_label": ".__construct()"
     },
     {
@@ -10800,7 +10800,7 @@
       "source_file": "backend\\src\\Security\\EntrenadorLoginSuccessHandler.php",
       "source_location": "L21",
       "id": "entrenadorloginsuccesshandler_entrenadorloginsuccesshandler_onauthenticationsuccess",
-      "community": 106,
+      "community": 107,
       "norm_label": ".onauthenticationsuccess()"
     },
     {
@@ -10809,7 +10809,7 @@
       "source_file": "backend\\src\\Security\\LoginFailureHandler.php",
       "source_location": "L1",
       "id": "backend_src_security_loginfailurehandler_php",
-      "community": 107,
+      "community": 108,
       "norm_label": "loginfailurehandler.php"
     },
     {
@@ -10818,7 +10818,7 @@
       "source_file": "backend\\src\\Security\\LoginFailureHandler.php",
       "source_location": "L17",
       "id": "loginfailurehandler_loginfailurehandler",
-      "community": 107,
+      "community": 108,
       "norm_label": "loginfailurehandler"
     },
     {
@@ -10827,7 +10827,7 @@
       "source_file": "backend\\src\\Security\\LoginFailureHandler.php",
       "source_location": "L19",
       "id": "loginfailurehandler_loginfailurehandler_construct",
-      "community": 107,
+      "community": 108,
       "norm_label": ".__construct()"
     },
     {
@@ -10836,7 +10836,7 @@
       "source_file": "backend\\src\\Security\\LoginFailureHandler.php",
       "source_location": "L25",
       "id": "loginfailurehandler_loginfailurehandler_onauthenticationfailure",
-      "community": 107,
+      "community": 108,
       "norm_label": ".onauthenticationfailure()"
     },
     {
@@ -10935,7 +10935,7 @@
       "source_file": "backend\\src\\Security\\UsuarioLoginSuccessHandler.php",
       "source_location": "L1",
       "id": "backend_src_security_usuariologinsuccesshandler_php",
-      "community": 108,
+      "community": 109,
       "norm_label": "usuariologinsuccesshandler.php"
     },
     {
@@ -10944,7 +10944,7 @@
       "source_file": "backend\\src\\Security\\UsuarioLoginSuccessHandler.php",
       "source_location": "L10",
       "id": "usuariologinsuccesshandler_usuariologinsuccesshandler",
-      "community": 108,
+      "community": 109,
       "norm_label": "usuariologinsuccesshandler"
     },
     {
@@ -10953,7 +10953,7 @@
       "source_file": "backend\\src\\Security\\UsuarioLoginSuccessHandler.php",
       "source_location": "L15",
       "id": "usuariologinsuccesshandler_usuariologinsuccesshandler_construct",
-      "community": 108,
+      "community": 109,
       "norm_label": ".__construct()"
     },
     {
@@ -10962,7 +10962,7 @@
       "source_file": "backend\\src\\Security\\UsuarioLoginSuccessHandler.php",
       "source_location": "L21",
       "id": "usuariologinsuccesshandler_usuariologinsuccesshandler_onauthenticationsuccess",
-      "community": 108,
+      "community": 109,
       "norm_label": ".onauthenticationsuccess()"
     },
     {
@@ -11034,7 +11034,7 @@
       "source_file": "backend\\src\\Security\\VerificacionEmailChecker.php",
       "source_location": "L1",
       "id": "backend_src_security_verificacionemailchecker_php",
-      "community": 109,
+      "community": 110,
       "norm_label": "verificacionemailchecker.php"
     },
     {
@@ -11043,7 +11043,7 @@
       "source_file": "backend\\src\\Security\\VerificacionEmailChecker.php",
       "source_location": "L15",
       "id": "verificacionemailchecker_verificacionemailchecker",
-      "community": 109,
+      "community": 110,
       "norm_label": "verificacionemailchecker"
     },
     {
@@ -11052,7 +11052,7 @@
       "source_file": "backend\\src\\Security\\VerificacionEmailChecker.php",
       "source_location": "L19",
       "id": "verificacionemailchecker_verificacionemailchecker_checkpreauth",
-      "community": 109,
+      "community": 110,
       "norm_label": ".checkpreauth()"
     },
     {
@@ -11061,7 +11061,7 @@
       "source_file": "backend\\src\\Security\\VerificacionEmailChecker.php",
       "source_location": "L23",
       "id": "verificacionemailchecker_verificacionemailchecker_checkpostauth",
-      "community": 109,
+      "community": 110,
       "norm_label": ".checkpostauth()"
     },
     {
@@ -11682,7 +11682,7 @@
       "source_file": "frontend\\src\\App.jsx",
       "source_location": "L1",
       "id": "frontend_src_app_jsx",
-      "community": 127,
+      "community": 128,
       "norm_label": "app.jsx"
     },
     {
@@ -11691,7 +11691,7 @@
       "source_file": "frontend\\src\\App.jsx",
       "source_location": "L75",
       "id": "app_cargando",
-      "community": 127,
+      "community": 128,
       "norm_label": "cargando()"
     },
     {
@@ -11700,7 +11700,7 @@
       "source_file": "frontend\\src\\App.jsx",
       "source_location": "L84",
       "id": "app_app",
-      "community": 127,
+      "community": 128,
       "norm_label": "app()"
     },
     {
@@ -11826,7 +11826,7 @@
       "source_file": "frontend\\src\\components\\common\\Button.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_button_jsx",
-      "community": 128,
+      "community": 129,
       "norm_label": "button.jsx"
     },
     {
@@ -11835,7 +11835,7 @@
       "source_file": "frontend\\src\\stories\\Button.jsx",
       "source_location": "L8",
       "id": "button_button",
-      "community": 128,
+      "community": 129,
       "norm_label": "button()"
     },
     {
@@ -12114,7 +12114,7 @@
       "source_file": "frontend\\src\\components\\dieta\\CalculadoraNutricional.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_dieta_calculadoranutricional_jsx",
-      "community": 129,
+      "community": 130,
       "norm_label": "calculadoranutricional.jsx"
     },
     {
@@ -12123,7 +12123,7 @@
       "source_file": "frontend\\src\\components\\dieta\\CalculadoraNutricional.jsx",
       "source_location": "L24",
       "id": "calculadoranutricional_calculadoranutricional",
-      "community": 129,
+      "community": 130,
       "norm_label": "calculadoranutricional()"
     },
     {
@@ -12132,7 +12132,7 @@
       "source_file": "frontend\\src\\components\\dieta\\CalculadoraNutricional.jsx",
       "source_location": "L171",
       "id": "calculadoranutricional_dato",
-      "community": 129,
+      "community": 130,
       "norm_label": "dato()"
     },
     {
@@ -12231,7 +12231,7 @@
       "source_file": "frontend\\src\\components\\gym\\biblioteca.js",
       "source_location": "L1",
       "id": "frontend_src_components_gym_biblioteca_js",
-      "community": 110,
+      "community": 111,
       "norm_label": "biblioteca.js"
     },
     {
@@ -12240,7 +12240,7 @@
       "source_file": "frontend\\src\\components\\gym\\biblioteca.js",
       "source_location": "L30",
       "id": "biblioteca_nombregrupo",
-      "community": 110,
+      "community": 111,
       "norm_label": "nombregrupo()"
     },
     {
@@ -12249,7 +12249,7 @@
       "source_file": "frontend\\src\\components\\gym\\biblioteca.js",
       "source_location": "L36",
       "id": "biblioteca_guardarcache",
-      "community": 110,
+      "community": 111,
       "norm_label": "guardarcache()"
     },
     {
@@ -12258,7 +12258,7 @@
       "source_file": "frontend\\src\\components\\gym\\biblioteca.js",
       "source_location": "L40",
       "id": "biblioteca_usebiblioteca",
-      "community": 110,
+      "community": 111,
       "norm_label": "usebiblioteca()"
     },
     {
@@ -12303,7 +12303,7 @@
       "source_file": "frontend\\src\\components\\gym\\PanelEjercicios.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_gym_panelejercicios_jsx",
-      "community": 130,
+      "community": 131,
       "norm_label": "panelejercicios.jsx"
     },
     {
@@ -12312,7 +12312,7 @@
       "source_file": "frontend\\src\\components\\gym\\PanelEjercicios.jsx",
       "source_location": "L24",
       "id": "panelejercicios_sinacentos",
-      "community": 130,
+      "community": 131,
       "norm_label": "sinacentos()"
     },
     {
@@ -12321,7 +12321,7 @@
       "source_file": "frontend\\src\\components\\gym\\PanelEjercicios.jsx",
       "source_location": "L26",
       "id": "panelejercicios_panelejercicios",
-      "community": 130,
+      "community": 131,
       "norm_label": "panelejercicios()"
     },
     {
@@ -12330,7 +12330,7 @@
       "source_file": "frontend\\src\\components\\gym\\SelectorMusculos.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_gym_selectormusculos_jsx",
-      "community": 131,
+      "community": 132,
       "norm_label": "selectormusculos.jsx"
     },
     {
@@ -12339,7 +12339,7 @@
       "source_file": "frontend\\src\\components\\gym\\SelectorMusculos.jsx",
       "source_location": "L11",
       "id": "selectormusculos_sinacentos",
-      "community": 131,
+      "community": 132,
       "norm_label": "sinacentos()"
     },
     {
@@ -12348,7 +12348,7 @@
       "source_file": "frontend\\src\\components\\gym\\SelectorMusculos.jsx",
       "source_location": "L19",
       "id": "selectormusculos_selectormusculos",
-      "community": 131,
+      "community": 132,
       "norm_label": "selectormusculos()"
     },
     {
@@ -12463,7 +12463,7 @@
       "label": "CompletarEntreno()",
       "file_type": "code",
       "source_file": "frontend\\src\\components\\progreso\\CompletarEntreno.jsx",
-      "source_location": "L22",
+      "source_location": "L24",
       "id": "completarentreno_completarentreno",
       "community": 175,
       "norm_label": "completarentreno()"
@@ -12510,7 +12510,7 @@
       "source_file": "frontend\\src\\components\\progreso\\ObjetivosCumplidos.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_progreso_objetivoscumplidos_jsx",
-      "community": 132,
+      "community": 133,
       "norm_label": "objetivoscumplidos.jsx"
     },
     {
@@ -12519,7 +12519,7 @@
       "source_file": "frontend\\src\\components\\progreso\\ObjetivosCumplidos.jsx",
       "source_location": "L11",
       "id": "objetivoscumplidos_fechacorta",
-      "community": 132,
+      "community": 133,
       "norm_label": "fechacorta()"
     },
     {
@@ -12528,7 +12528,7 @@
       "source_file": "frontend\\src\\components\\progreso\\ObjetivosCumplidos.jsx",
       "source_location": "L13",
       "id": "objetivoscumplidos_objetivoscumplidos",
-      "community": 132,
+      "community": 133,
       "norm_label": "objetivoscumplidos()"
     },
     {
@@ -12690,7 +12690,7 @@
       "source_file": "frontend\\src\\components\\social\\Avatar.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_avatar_jsx",
-      "community": 133,
+      "community": 134,
       "norm_label": "avatar.jsx"
     },
     {
@@ -12699,7 +12699,7 @@
       "source_file": "frontend\\src\\components\\social\\Avatar.jsx",
       "source_location": "L11",
       "id": "avatar_iniciales",
-      "community": 133,
+      "community": 134,
       "norm_label": "iniciales()"
     },
     {
@@ -12708,7 +12708,7 @@
       "source_file": "frontend\\src\\components\\social\\Avatar.jsx",
       "source_location": "L20",
       "id": "avatar_avatar",
-      "community": 133,
+      "community": 134,
       "norm_label": "avatar()"
     },
     {
@@ -12735,7 +12735,7 @@
       "source_file": "frontend\\src\\components\\social\\EntrenoHoy.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_entrenohoy_jsx",
-      "community": 134,
+      "community": 135,
       "norm_label": "entrenohoy.jsx"
     },
     {
@@ -12744,7 +12744,7 @@
       "source_file": "frontend\\src\\components\\social\\EntrenoHoy.jsx",
       "source_location": "L9",
       "id": "entrenohoy_entrenohoy",
-      "community": 134,
+      "community": 135,
       "norm_label": "entrenohoy()"
     },
     {
@@ -12753,7 +12753,7 @@
       "source_file": "frontend\\src\\components\\social\\EntrenoHoy.jsx",
       "source_location": "L208",
       "id": "entrenohoy_interruptor",
-      "community": 134,
+      "community": 135,
       "norm_label": "interruptor()"
     },
     {
@@ -12888,7 +12888,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaItemSocial.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_tarjetaitemsocial_jsx",
-      "community": 111,
+      "community": 112,
       "norm_label": "tarjetaitemsocial.jsx"
     },
     {
@@ -12897,7 +12897,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaItemSocial.jsx",
       "source_location": "L14",
       "id": "tarjetaitemsocial_enlacedetalle",
-      "community": 111,
+      "community": 112,
       "norm_label": "enlacedetalle()"
     },
     {
@@ -12906,7 +12906,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaItemSocial.jsx",
       "source_location": "L20",
       "id": "tarjetaitemsocial_humanizar",
-      "community": 111,
+      "community": 112,
       "norm_label": "humanizar()"
     },
     {
@@ -12915,7 +12915,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaItemSocial.jsx",
       "source_location": "L25",
       "id": "tarjetaitemsocial_tarjetaitemsocial",
-      "community": 111,
+      "community": 112,
       "norm_label": "tarjetaitemsocial()"
     },
     {
@@ -12969,7 +12969,7 @@
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
       "source_location": "L1",
       "id": "frontend_src_context_authcontext_jsx",
-      "community": 135,
+      "community": 136,
       "norm_label": "authcontext.jsx"
     },
     {
@@ -12978,7 +12978,7 @@
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
       "source_location": "L9",
       "id": "authcontext_authprovider",
-      "community": 135,
+      "community": 136,
       "norm_label": "authprovider()"
     },
     {
@@ -12987,7 +12987,7 @@
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
       "source_location": "L141",
       "id": "authcontext_useauth",
-      "community": 135,
+      "community": 136,
       "norm_label": "useauth()"
     },
     {
@@ -12996,7 +12996,7 @@
       "source_file": "frontend\\src\\context\\AuthContextEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_context_authcontextentrenador_jsx",
-      "community": 136,
+      "community": 137,
       "norm_label": "authcontextentrenador.jsx"
     },
     {
@@ -13005,7 +13005,7 @@
       "source_file": "frontend\\src\\context\\AuthContextEntrenador.jsx",
       "source_location": "L6",
       "id": "authcontextentrenador_authproviderentrenador",
-      "community": 136,
+      "community": 137,
       "norm_label": "authproviderentrenador()"
     },
     {
@@ -13014,7 +13014,7 @@
       "source_file": "frontend\\src\\context\\AuthContextEntrenador.jsx",
       "source_location": "L38",
       "id": "authcontextentrenador_useauthentrenador",
-      "community": 136,
+      "community": 137,
       "norm_label": "useauthentrenador()"
     },
     {
@@ -13023,7 +13023,7 @@
       "source_file": "frontend\\src\\context\\ToastContext.jsx",
       "source_location": "L1",
       "id": "frontend_src_context_toastcontext_jsx",
-      "community": 137,
+      "community": 138,
       "norm_label": "toastcontext.jsx"
     },
     {
@@ -13032,7 +13032,7 @@
       "source_file": "frontend\\src\\context\\ToastContext.jsx",
       "source_location": "L6",
       "id": "toastcontext_usetoast",
-      "community": 137,
+      "community": 138,
       "norm_label": "usetoast()"
     },
     {
@@ -13041,7 +13041,7 @@
       "source_file": "frontend\\src\\context\\ToastContext.jsx",
       "source_location": "L14",
       "id": "toastcontext_toastprovider",
-      "community": 137,
+      "community": 138,
       "norm_label": "toastprovider()"
     },
     {
@@ -13122,7 +13122,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\CrearPlato.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_crearplato_jsx",
-      "community": 138,
+      "community": 139,
       "norm_label": "crearplato.jsx"
     },
     {
@@ -13131,7 +13131,7 @@
       "source_file": "frontend\\src\\pages\\user\\CrearPlato.jsx",
       "source_location": "L10",
       "id": "crearplato_crearplato",
-      "community": 138,
+      "community": 139,
       "norm_label": "crearplato()"
     },
     {
@@ -13302,7 +13302,7 @@
       "source_file": "frontend\\src\\pages\\public\\Alimentacion.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_alimentacion_jsx",
-      "community": 139,
+      "community": 140,
       "norm_label": "alimentacion.jsx"
     },
     {
@@ -13311,7 +13311,7 @@
       "source_file": "frontend\\src\\pages\\public\\Alimentacion.jsx",
       "source_location": "L39",
       "id": "alimentacion_alimentacion",
-      "community": 139,
+      "community": 140,
       "norm_label": "alimentacion()"
     },
     {
@@ -13320,7 +13320,7 @@
       "source_file": "frontend\\src\\pages\\public\\Alimentacion.jsx",
       "source_location": "L219",
       "id": "alimentacion_tarjetadieta",
-      "community": 139,
+      "community": 140,
       "norm_label": "tarjetadieta()"
     },
     {
@@ -13410,7 +13410,7 @@
       "source_file": "frontend\\src\\pages\\public\\DetalleDieta.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_detalledieta_jsx",
-      "community": 140,
+      "community": 141,
       "norm_label": "detalledieta.jsx"
     },
     {
@@ -13419,7 +13419,7 @@
       "source_file": "frontend\\src\\pages\\user\\DetalleDieta.jsx",
       "source_location": "L7",
       "id": "detalledieta_detalledieta",
-      "community": 140,
+      "community": 141,
       "norm_label": "detalledieta()"
     },
     {
@@ -13464,7 +13464,7 @@
       "source_file": "frontend\\src\\pages\\public\\Home.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_home_jsx",
-      "community": 141,
+      "community": 142,
       "norm_label": "home.jsx"
     },
     {
@@ -13473,7 +13473,7 @@
       "source_file": "frontend\\src\\pages\\public\\Home.jsx",
       "source_location": "L130",
       "id": "home_sectionheader",
-      "community": 141,
+      "community": 142,
       "norm_label": "sectionheader()"
     },
     {
@@ -13482,7 +13482,7 @@
       "source_file": "frontend\\src\\pages\\public\\Home.jsx",
       "source_location": "L153",
       "id": "home_home",
-      "community": 141,
+      "community": 142,
       "norm_label": "home()"
     },
     {
@@ -13509,7 +13509,7 @@
       "source_file": "frontend\\src\\pages\\public\\MisPlatos.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_misplatos_jsx",
-      "community": 142,
+      "community": 143,
       "norm_label": "misplatos.jsx"
     },
     {
@@ -13518,7 +13518,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisPlatos.jsx",
       "source_location": "L14",
       "id": "misplatos_misplatos",
-      "community": 142,
+      "community": 143,
       "norm_label": "misplatos()"
     },
     {
@@ -13527,25 +13527,43 @@
       "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_perfilpublico_jsx",
-      "community": 143,
+      "community": 94,
       "norm_label": "perfilpublico.jsx"
     },
     {
       "label": "PerfilPublico()",
       "file_type": "code",
       "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
-      "source_location": "L28",
+      "source_location": "L29",
       "id": "perfilpublico_perfilpublico",
-      "community": 143,
+      "community": 94,
       "norm_label": "perfilpublico()"
+    },
+    {
+      "label": "fechaCorta()",
+      "file_type": "code",
+      "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
+      "source_location": "L297",
+      "id": "perfilpublico_fechacorta",
+      "community": 94,
+      "norm_label": "fechacorta()"
+    },
+    {
+      "label": "TarjetaPublicacion()",
+      "file_type": "code",
+      "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
+      "source_location": "L299",
+      "id": "perfilpublico_tarjetapublicacion",
+      "community": 94,
+      "norm_label": "tarjetapublicacion()"
     },
     {
       "label": "EstadoBloqueado()",
       "file_type": "code",
       "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
-      "source_location": "L267",
+      "source_location": "L335",
       "id": "perfilpublico_estadobloqueado",
-      "community": 143,
+      "community": 94,
       "norm_label": "estadobloqueado()"
     },
     {
@@ -13806,7 +13824,7 @@
       "source_file": "frontend\\src\\pages\\user\\CrearPlato.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_crearplato_jsx",
-      "community": 138,
+      "community": 139,
       "norm_label": "crearplato.jsx"
     },
     {
@@ -13815,7 +13833,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_dashboardusuario_jsx",
-      "community": 94,
+      "community": 95,
       "norm_label": "dashboardusuario.jsx"
     },
     {
@@ -13824,7 +13842,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L35",
       "id": "dashboardusuario_dashboardusuario",
-      "community": 94,
+      "community": 95,
       "norm_label": "dashboardusuario()"
     },
     {
@@ -13833,7 +13851,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L357",
       "id": "dashboardusuario_card",
-      "community": 94,
+      "community": 95,
       "norm_label": "card()"
     },
     {
@@ -13842,7 +13860,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L375",
       "id": "dashboardusuario_stat",
-      "community": 94,
+      "community": 95,
       "norm_label": "stat()"
     },
     {
@@ -13851,7 +13869,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L387",
       "id": "dashboardusuario_quick",
-      "community": 94,
+      "community": 95,
       "norm_label": "quick()"
     },
     {
@@ -13878,7 +13896,7 @@
       "source_file": "frontend\\src\\pages\\user\\DetalleDieta.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_detalledieta_jsx",
-      "community": 140,
+      "community": 141,
       "norm_label": "detalledieta.jsx"
     },
     {
@@ -14049,7 +14067,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiProgreso.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_miprogreso_jsx",
-      "community": 112,
+      "community": 113,
       "norm_label": "miprogreso.jsx"
     },
     {
@@ -14058,7 +14076,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiProgreso.jsx",
       "source_location": "L14",
       "id": "miprogreso_fechacorta",
-      "community": 112,
+      "community": 113,
       "norm_label": "fechacorta()"
     },
     {
@@ -14067,7 +14085,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiProgreso.jsx",
       "source_location": "L16",
       "id": "miprogreso_miprogreso",
-      "community": 112,
+      "community": 113,
       "norm_label": "miprogreso()"
     },
     {
@@ -14076,7 +14094,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiProgreso.jsx",
       "source_location": "L145",
       "id": "miprogreso_total",
-      "community": 112,
+      "community": 113,
       "norm_label": "total()"
     },
     {
@@ -14139,7 +14157,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisPlatos.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_misplatos_jsx",
-      "community": 142,
+      "community": 143,
       "norm_label": "misplatos.jsx"
     },
     {
@@ -14184,7 +14202,7 @@
       "source_file": "frontend\\src\\services\\authService.js",
       "source_location": "L1",
       "id": "frontend_src_services_authservice_js",
-      "community": 113,
+      "community": 114,
       "norm_label": "authservice.js"
     },
     {
@@ -14193,7 +14211,7 @@
       "source_file": "frontend\\src\\services\\authService.js",
       "source_location": "L45",
       "id": "authservice_logout",
-      "community": 113,
+      "community": 114,
       "norm_label": "logout()"
     },
     {
@@ -14202,7 +14220,7 @@
       "source_file": "frontend\\src\\services\\authService.js",
       "source_location": "L50",
       "id": "authservice_getuser",
-      "community": 113,
+      "community": 114,
       "norm_label": "getuser()"
     },
     {
@@ -14211,7 +14229,7 @@
       "source_file": "frontend\\src\\services\\authService.js",
       "source_location": "L54",
       "id": "authservice_gettoken",
-      "community": 113,
+      "community": 114,
       "norm_label": "gettoken()"
     },
     {
@@ -14247,7 +14265,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L1",
       "id": "frontend_src_services_socialservice_js",
-      "community": 95,
+      "community": 96,
       "norm_label": "socialservice.js"
     },
     {
@@ -14256,7 +14274,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L9",
       "id": "socialservice_urlfoto",
-      "community": 95,
+      "community": 96,
       "norm_label": "urlfoto()"
     },
     {
@@ -14265,7 +14283,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L14",
       "id": "socialservice_rutaperfil",
-      "community": 95,
+      "community": 96,
       "norm_label": "rutaperfil()"
     },
     {
@@ -14274,7 +14292,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L17",
       "id": "socialservice_mensajeerror",
-      "community": 95,
+      "community": 96,
       "norm_label": "mensajeerror()"
     },
     {
@@ -14283,7 +14301,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L20",
       "id": "socialservice_datos",
-      "community": 95,
+      "community": 96,
       "norm_label": "datos()"
     },
     {
@@ -14301,7 +14319,7 @@
       "source_file": "frontend\\src\\stories\\Button.jsx",
       "source_location": "L1",
       "id": "frontend_src_stories_button_jsx",
-      "community": 128,
+      "community": 129,
       "norm_label": "button.jsx"
     },
     {
@@ -14868,7 +14886,7 @@
       "source_file": "marketing\\remotion\\src\\estilo.js",
       "source_location": "L1",
       "id": "marketing_remotion_src_estilo_js",
-      "community": 114,
+      "community": 115,
       "norm_label": "estilo.js"
     },
     {
@@ -14877,7 +14895,7 @@
       "source_file": "marketing\\remotion\\src\\estilo.js",
       "source_location": "L19",
       "id": "estilo_entrada",
-      "community": 114,
+      "community": 115,
       "norm_label": "entrada()"
     },
     {
@@ -14886,7 +14904,7 @@
       "source_file": "marketing\\remotion\\src\\estilo.js",
       "source_location": "L23",
       "id": "estilo_tramo",
-      "community": 114,
+      "community": 115,
       "norm_label": "tramo()"
     },
     {
@@ -14895,7 +14913,7 @@
       "source_file": "marketing\\remotion\\src\\estilo.js",
       "source_location": "L27",
       "id": "estilo_tamtitular",
-      "community": 114,
+      "community": 115,
       "norm_label": "tamtitular()"
     },
     {
@@ -19980,7 +19998,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L101",
+      "source_location": "L127",
       "weight": 1.0,
       "_src": "perfilcontroller_perfilcontroller",
       "_tgt": "perfilcontroller_perfilcontroller_mio",
@@ -19992,7 +20010,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L124",
+      "source_location": "L150",
       "weight": 1.0,
       "_src": "perfilcontroller_perfilcontroller",
       "_tgt": "perfilcontroller_perfilcontroller_privacidad",
@@ -20004,7 +20022,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L179",
+      "source_location": "L205",
       "weight": 1.0,
       "_src": "perfilcontroller_perfilcontroller",
       "_tgt": "perfilcontroller_perfilcontroller_subiravatar",
@@ -20016,7 +20034,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L211",
+      "source_location": "L237",
       "weight": 1.0,
       "_src": "perfilcontroller_perfilcontroller",
       "_tgt": "perfilcontroller_perfilcontroller_borraravatar",
@@ -20028,7 +20046,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L227",
+      "source_location": "L253",
       "weight": 1.0,
       "_src": "perfilcontroller_perfilcontroller",
       "_tgt": "perfilcontroller_perfilcontroller_privacidadde",
@@ -20052,7 +20070,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L92",
+      "source_location": "L118",
       "weight": 1.0,
       "_src": "perfilcontroller_perfilcontroller_publico",
       "_tgt": "perfilcontroller_perfilcontroller_privacidadde",
@@ -20064,7 +20082,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\PerfilController.php",
-      "source_location": "L120",
+      "source_location": "L146",
       "weight": 1.0,
       "_src": "perfilcontroller_perfilcontroller_mio",
       "_tgt": "perfilcontroller_perfilcontroller_privacidadde",
@@ -20844,7 +20862,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L606",
+      "source_location": "L613",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller",
       "_tgt": "socialcontroller_socialcontroller_borrarfotoentreno",
@@ -20856,7 +20874,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L623",
+      "source_location": "L630",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller",
       "_tgt": "socialcontroller_socialcontroller_deshacerentrenohoy",
@@ -20868,7 +20886,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L649",
+      "source_location": "L656",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller",
       "_tgt": "socialcontroller_socialcontroller_feedentrenos",
@@ -20880,7 +20898,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L730",
+      "source_location": "L737",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller",
       "_tgt": "socialcontroller_socialcontroller_misentrenos",
@@ -20892,7 +20910,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L777",
+      "source_location": "L784",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller",
       "_tgt": "socialcontroller_socialcontroller_noautenticado",
@@ -20904,7 +20922,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L782",
+      "source_location": "L789",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller",
       "_tgt": "socialcontroller_socialcontroller_noencontrado",
@@ -21156,7 +21174,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L601",
+      "source_location": "L608",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller_subirfotoentreno",
       "_tgt": "socialcontroller_socialcontroller_borrarfotoentreno",
@@ -21168,7 +21186,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L611",
+      "source_location": "L618",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller_borrarfotoentreno",
       "_tgt": "socialcontroller_socialcontroller_noautenticado",
@@ -21180,7 +21198,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L615",
+      "source_location": "L622",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller_borrarfotoentreno",
       "_tgt": "socialcontroller_socialcontroller_noencontrado",
@@ -21192,7 +21210,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L640",
+      "source_location": "L647",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller_deshacerentrenohoy",
       "_tgt": "socialcontroller_socialcontroller_borrarfotoentreno",
@@ -21204,7 +21222,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L628",
+      "source_location": "L635",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller_deshacerentrenohoy",
       "_tgt": "socialcontroller_socialcontroller_noautenticado",
@@ -21216,7 +21234,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "backend\\src\\Controller\\SocialController.php",
-      "source_location": "L735",
+      "source_location": "L742",
       "weight": 1.0,
       "_src": "socialcontroller_socialcontroller_misentrenos",
       "_tgt": "socialcontroller_socialcontroller_noautenticado",
@@ -33012,7 +33030,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\components\\progreso\\CompletarEntreno.jsx",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 1.0,
       "_src": "frontend_src_components_progreso_completarentreno_jsx",
       "_tgt": "completarentreno_completarentreno",
@@ -33948,7 +33966,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0,
       "_src": "frontend_src_pages_public_perfilpublico_jsx",
       "_tgt": "perfilpublico_perfilpublico",
@@ -33960,12 +33978,48 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
-      "source_location": "L267",
+      "source_location": "L297",
+      "weight": 1.0,
+      "_src": "frontend_src_pages_public_perfilpublico_jsx",
+      "_tgt": "perfilpublico_fechacorta",
+      "source": "frontend_src_pages_public_perfilpublico_jsx",
+      "target": "perfilpublico_fechacorta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
+      "source_location": "L299",
+      "weight": 1.0,
+      "_src": "frontend_src_pages_public_perfilpublico_jsx",
+      "_tgt": "perfilpublico_tarjetapublicacion",
+      "source": "frontend_src_pages_public_perfilpublico_jsx",
+      "target": "perfilpublico_tarjetapublicacion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
+      "source_location": "L335",
       "weight": 1.0,
       "_src": "frontend_src_pages_public_perfilpublico_jsx",
       "_tgt": "perfilpublico_estadobloqueado",
       "source": "frontend_src_pages_public_perfilpublico_jsx",
       "target": "perfilpublico_estadobloqueado",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
+      "source_location": "L304",
+      "weight": 1.0,
+      "_src": "perfilpublico_tarjetapublicacion",
+      "_tgt": "perfilpublico_fechacorta",
+      "source": "perfilpublico_fechacorta",
+      "target": "perfilpublico_tarjetapublicacion",
       "confidence_score": 1.0
     },
     {

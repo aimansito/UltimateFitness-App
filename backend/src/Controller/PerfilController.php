@@ -88,6 +88,32 @@ class PerfilController extends AbstractController
             ];
         }
 
+        // Publicaciones: entrenos completados que la persona ha publicado (foto/tarjeta del día).
+        // Siguen la misma privacidad que sus rutinas.
+        if ($tipo === 'usuario') {
+            $motivo = $this->visibilidad->motivoBloqueo($actor, $cuenta, 'entrenamientos');
+            $respuesta['publicaciones'] = [
+                'visible' => $motivo === null,
+                'motivo' => $motivo,
+                'items' => $motivo !== null ? [] : array_map(fn (array $f) => [
+                    'id' => (int) $f['id'],
+                    'fecha' => $f['fecha_completado'],
+                    'fotoUrl' => $f['foto_url'],
+                    'fotoEsTarjeta' => (bool) $f['foto_es_tarjeta'],
+                    'duracionMinutos' => $f['duracion_minutos'] !== null ? (int) $f['duracion_minutos'] : null,
+                    'entrenamiento' => $f['nombre'],
+                ], $this->entityManager->getConnection()->fetchAllAssociative(
+                    'SELECT cu.id, cu.fecha_completado, cu.foto_url, cu.foto_es_tarjeta, cu.duracion_minutos, e.nombre
+                     FROM calendario_usuario cu
+                     INNER JOIN entrenamientos e ON e.id = cu.entrenamiento_id
+                     WHERE cu.usuario_id = ? AND cu.completado = 1 AND cu.compartido_en_feed = 1
+                     ORDER BY cu.fecha_completado DESC, cu.id DESC
+                     LIMIT 60',
+                    [$id]
+                )),
+            ];
+        }
+
         if ($esMio) {
             $respuesta['privacidad'] = $this->privacidadDe($cuenta);
         }

@@ -1,11 +1,11 @@
 # Graph Report - .  (2026-11-21)
 
 ## Corpus Check
-- 254 files · ~3,852,963 words
+- 254 files · ~3,922,323 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1683 nodes · 1736 edges · 249 communities detected
+- 1685 nodes · 1739 edges · 249 communities detected
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
@@ -654,80 +654,80 @@ Cohesion: 0.4
 Nodes (0): 
 
 ### Community 94 - "Community 94"
-Cohesion: 0.4
-Nodes (0): 
+Cohesion: 0.5
+Nodes (2): fechaCorta(), TarjetaPublicacion()
 
 ### Community 95 - "Community 95"
 Cohesion: 0.4
 Nodes (0): 
 
 ### Community 96 - "Community 96"
+Cohesion: 0.4
+Nodes (0): 
+
+### Community 97 - "Community 97"
 Cohesion: 0.5
 Nodes (1): CrearEntrenamientoController
 
-### Community 97 - "Community 97"
+### Community 98 - "Community 98"
 Cohesion: 0.67
 Nodes (1): EntrenadorEntrenamientoDetalleController
 
-### Community 98 - "Community 98"
+### Community 99 - "Community 99"
 Cohesion: 0.67
 Nodes (1): EntrenadorEntrenamientosController
 
-### Community 99 - "Community 99"
+### Community 100 - "Community 100"
 Cohesion: 0.5
 Nodes (1): GuardarDietaController
 
-### Community 100 - "Community 100"
+### Community 101 - "Community 101"
 Cohesion: 0.5
 Nodes (1): PagoController
 
-### Community 101 - "Community 101"
+### Community 102 - "Community 102"
 Cohesion: 0.5
 Nodes (1): RegistroController
 
-### Community 102 - "Community 102"
+### Community 103 - "Community 103"
 Cohesion: 0.5
 Nodes (1): UsuarioDietasController
 
-### Community 103 - "Community 103"
+### Community 104 - "Community 104"
 Cohesion: 0.5
 Nodes (1): AdminAccessSubscriber
 
-### Community 104 - "Community 104"
+### Community 105 - "Community 105"
 Cohesion: 0.5
 Nodes (1): OwnerAccessSubscriber
 
-### Community 105 - "Community 105"
+### Community 106 - "Community 106"
 Cohesion: 0.5
 Nodes (1): SeguridadRespuestaSubscriber
 
-### Community 106 - "Community 106"
+### Community 107 - "Community 107"
 Cohesion: 0.5
 Nodes (1): EntrenadorLoginSuccessHandler
 
-### Community 107 - "Community 107"
+### Community 108 - "Community 108"
 Cohesion: 0.5
 Nodes (1): LoginFailureHandler
 
-### Community 108 - "Community 108"
+### Community 109 - "Community 109"
 Cohesion: 0.5
 Nodes (1): UsuarioLoginSuccessHandler
 
-### Community 109 - "Community 109"
+### Community 110 - "Community 110"
 Cohesion: 0.5
 Nodes (1): VerificacionEmailChecker
 
-### Community 110 - "Community 110"
+### Community 111 - "Community 111"
 Cohesion: 0.5
 Nodes (0): 
-
-### Community 111 - "Community 111"
-Cohesion: 0.83
-Nodes (3): enlaceDetalle(), humanizar(), TarjetaItemSocial()
 
 ### Community 112 - "Community 112"
-Cohesion: 0.5
-Nodes (0): 
+Cohesion: 0.83
+Nodes (3): enlaceDetalle(), humanizar(), TarjetaItemSocial()
 
 ### Community 113 - "Community 113"
 Cohesion: 0.5
@@ -738,64 +738,64 @@ Cohesion: 0.5
 Nodes (0): 
 
 ### Community 115 - "Community 115"
-Cohesion: 0.67
-Nodes (1): Kernel
+Cohesion: 0.5
+Nodes (0): 
 
 ### Community 116 - "Community 116"
 Cohesion: 0.67
-Nodes (1): AuthController
+Nodes (1): Kernel
 
 ### Community 117 - "Community 117"
 Cohesion: 0.67
-Nodes (1): DietasPublicasController
+Nodes (1): AuthController
 
 ### Community 118 - "Community 118"
 Cohesion: 0.67
-Nodes (1): EntrenadorAuthController
+Nodes (1): DietasPublicasController
 
 ### Community 119 - "Community 119"
 Cohesion: 0.67
-Nodes (1): HealthController
+Nodes (1): EntrenadorAuthController
 
 ### Community 120 - "Community 120"
 Cohesion: 0.67
-Nodes (1): Guardado
+Nodes (1): HealthController
 
 ### Community 121 - "Community 121"
 Cohesion: 0.67
-Nodes (1): RegistroSerie
+Nodes (1): Guardado
 
 ### Community 122 - "Community 122"
 Cohesion: 0.67
-Nodes (1): Seguimiento
+Nodes (1): RegistroSerie
 
 ### Community 123 - "Community 123"
 Cohesion: 0.67
-Nodes (1): ResponseListener
+Nodes (1): Seguimiento
 
 ### Community 124 - "Community 124"
 Cohesion: 0.67
-Nodes (1): DiaEjercicioRepository
+Nodes (1): ResponseListener
 
 ### Community 125 - "Community 125"
 Cohesion: 0.67
-Nodes (1): DiaEntrenamientoRepository
+Nodes (1): DiaEjercicioRepository
 
 ### Community 126 - "Community 126"
 Cohesion: 0.67
-Nodes (1): EntrenamientoEjercicioRepository
+Nodes (1): DiaEntrenamientoRepository
 
 ### Community 127 - "Community 127"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): EntrenamientoEjercicioRepository
 
 ### Community 128 - "Community 128"
 Cohesion: 0.67
-Nodes (1): Button()
+Nodes (0): 
 
 ### Community 129 - "Community 129"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): Button()
 
 ### Community 130 - "Community 130"
 Cohesion: 0.67
@@ -810,12 +810,12 @@ Cohesion: 0.67
 Nodes (0): 
 
 ### Community 133 - "Community 133"
-Cohesion: 1.0
-Nodes (2): Avatar(), iniciales()
-
-### Community 134 - "Community 134"
 Cohesion: 0.67
 Nodes (0): 
+
+### Community 134 - "Community 134"
+Cohesion: 1.0
+Nodes (2): Avatar(), iniciales()
 
 ### Community 135 - "Community 135"
 Cohesion: 0.67
@@ -831,27 +831,27 @@ Nodes (0):
 
 ### Community 138 - "Community 138"
 Cohesion: 0.67
-Nodes (1): CrearPlato()
+Nodes (0): 
 
 ### Community 139 - "Community 139"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): CrearPlato()
 
 ### Community 140 - "Community 140"
 Cohesion: 0.67
-Nodes (1): DetalleDieta()
+Nodes (0): 
 
 ### Community 141 - "Community 141"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): DetalleDieta()
 
 ### Community 142 - "Community 142"
 Cohesion: 0.67
-Nodes (1): MisPlatos()
+Nodes (0): 
 
 ### Community 143 - "Community 143"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (1): MisPlatos()
 
 ### Community 144 - "Community 144"
 Cohesion: 0.67

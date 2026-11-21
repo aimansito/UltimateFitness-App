@@ -51,4 +51,21 @@ export const VIDEOS = {
       { ini: 14.6333, nombre: 'Trapecio', series: '3 × 10', zona: 'Trapecio', musculos: ['trapezius'], vista: 'posterior', catalogo: 101 },
     ],
   },
+  // Original unido a partir de los 7 clips de marketing/pierna (ver README)
+  pierna: {
+    origen: '../pierna/piernaoriginal.mp4',
+    titulo: 'Pierna',
+    grupos: ['Cuádriceps', 'Femoral', 'Glúteo', 'Gemelo'],
+    duracion: '1 h 10 min',
+    portadaFin: 1.6,
+    ejercicios: [
+      { ini: 1.6, nombre: 'Sentadilla hack', series: '4 × 8', zona: 'Cuádriceps', musculos: ['quadriceps'], vista: 'anterior', catalogo: 93 },
+      { ini: 5.0, nombre: 'Prensa de pierna', series: '3 × 10', zona: 'Cuádriceps y glúteo', musculos: ['quadriceps', 'adductor'], vista: 'anterior', catalogo: 21 },
+      { ini: 9.0, nombre: 'Extensión de cuádriceps', series: '3 × 12', zona: 'Cuádriceps', musculos: ['quadriceps'], vista: 'anterior', catalogo: 88 },
+      { ini: 11.8, nombre: 'Peso muerto rumano', detalle: 'Con mancuernas', series: '3 × 10', zona: 'Femoral y glúteo', musculos: ['hamstring', 'gluteal'], vista: 'posterior', catalogo: 168 },
+      { ini: 16.4, nombre: 'Curl femoral unilateral', detalle: 'De pie', series: '3 × 12', zona: 'Femoral', musculos: ['hamstring'], vista: 'posterior', catalogo: 169 },
+      { ini: 20.2, nombre: 'Patada de glúteo', detalle: 'En máquina', series: '3 × 12', zona: 'Glúteo', musculos: ['gluteal'], vista: 'posterior', catalogo: 172 },
+      { ini: 23.1, nombre: 'Gemelos en máquina', series: '4 × 15', zona: 'Gemelo', musculos: ['calves'], vista: 'posterior', catalogo: 91 },
+    ],
+  },
 };

@@ -22,7 +22,12 @@ node montar.mjs tiron --prueba=0,2.5,17   # solo esos instantes, en build/tiron/
 node montar.mjs --capturas # rehace las capturas de la app (necesita la app local arrancada)
 ```
 
-Salida: `salida/rutina-empuje.mp4` y `salida/rutina-tiron.mp4`.
+Salida: `salida/rutina-<clave>.mp4`.
+
+**Pierna** viene en 7 clips sueltos (`marketing/pierna/WhatsApp Video …`). Se unen primero en
+`marketing/pierna/piernaoriginal.mp4` (576×768, 30 fps), en el orden hack, prensa, extensión, rumano,
+curl femoral, patada y gemelos, recortados a 5 / 4 / 2,8 / 4,6 / 3,8 / 2,9 / 3,2 s. Los `ini` de `guion.mjs`
+son esos cortes acumulados. Después: `node montar.mjs pierna`.
 
 ## Qué tocar: `guion.mjs`
 

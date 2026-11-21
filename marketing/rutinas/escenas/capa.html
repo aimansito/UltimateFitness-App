@@ -177,6 +177,22 @@
       $('barraTitulo').textContent = datos.titulo.toUpperCase();
       $('cierreNombre').textContent = `Rutina de ${datos.titulo}`;
       $('cierreDatos').textContent = `${datos.grupos.join(' · ')} · ${datos.duracion}`;
+      // Con muchos grupos la línea llegaría a los bordes: se reduce hasta que quepa con margen
+      for (const id of ['grupos', 'cierreDatos']) {
+        const el = $(id);
+        // Se mide una copia visible: el cierre está oculto al empezar y mediría 0
+        const copia = el.cloneNode(true);
+        const estilo = getComputedStyle(el);
+        Object.assign(copia.style, { position: 'absolute', left: '0', top: '0', visibility: 'hidden', display: 'inline-block', whiteSpace: 'nowrap', width: 'auto' });
+        for (const p of ['fontFamily', 'fontWeight', 'letterSpacing', 'textTransform', 'paddingLeft']) copia.style[p] = estilo[p];
+        let px = parseFloat(estilo.fontSize);
+        copia.style.fontSize = `${px}px`;
+        document.body.appendChild(copia);
+        while (copia.getBoundingClientRect().width > 960 && px > 16) copia.style.fontSize = `${--px}px`;
+        copia.remove();
+        el.style.whiteSpace = 'nowrap';
+        el.style.fontSize = `${px}px`;
+      }
       $('web').textContent = datos.web;
       $('appImg').src = datos.app;
       const segmentos = $('segmentos');

@@ -1,4 +1,4 @@
-// Monta los vídeos de rutina: node montar.mjs [empuje|tiron] [--capturas] [--sin-capa]
+// Monta los vídeos de rutina: node montar.mjs [empuje|tiron|pierna] [--capturas] [--sin-capa]
 //   1. Base: el clip original a 1080x1920 (fondo desenfocado a los lados) + negro para el cierre.
 //   2. Fotogramas congelados en cada corte (para las transiciones).
 //   3. Capa gráfica (portada, rótulos, transiciones, cierre) renderizada fotograma a fotograma.
@@ -154,9 +154,10 @@ async function montar(clave) {
 }
 
 try {
-  if (args.includes('--capturas') || faltanCapturas()) {
+  const capturar = args.includes('--capturas') ? claves : faltanCapturas(claves);
+  if (capturar.length) {
     console.log('Capturando la app…');
-    await capturarApp();
+    await capturarApp(capturar);
   }
   await Promise.all(claves.map(montar));
 } finally {

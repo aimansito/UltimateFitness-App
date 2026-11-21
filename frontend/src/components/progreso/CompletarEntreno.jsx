@@ -4,7 +4,9 @@
 // ejercicios), la guarda en el perfil como objetivo cumplido y deja compartirla en redes.
 // ============================================
 import { useEffect, useRef, useState } from 'react';
-import { Check, Download, Globe, Lock, Share2, Trophy, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Check, Download, Share2, Trophy, UserCheck, UserPlus, X } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import socialService, { mensajeError } from '../../services/socialService';
 import { useToast } from '../../context/ToastContext';
 import MuscleMap from '../common/MuscleMap';
@@ -21,12 +23,14 @@ const DIAS = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado
  */
 function CompletarEntreno({ foto, entrenamiento, dia, duracionMinutos, volumen, onClose, onGuardado }) {
   const toast = useToast();
+  const { user } = useAuth();
   const mapaRef = useRef(null);
   const [imagen, setImagen] = useState(null); // { blob, url }
   const [estado, setEstado] = useState('creando'); // creando | guardando | listo | error
   const [error, setError] = useState(null);
   const [registro, setRegistro] = useState(null);
-  const [publico, setPublico] = useState(true);
+  // Publicado en el perfil (y ese día en el feed de quien te sigue): lo decide la persona
+  const [publico, setPublico] = useState(false);
 
   const ejercicios = dia.ejercicios || [];
   const grupos = ejercicios.map((e) => e.grupo_muscular);
@@ -61,14 +65,20 @@ function CompletarEntreno({ foto, entrenamiento, dia, duracionMinutos, volumen, 
         setEstado('guardando');
 
         // Guardar como objetivo cumplido del día (y publicación en el feed)
-        const r = await socialService.completarEntrenoHoy(entrenamiento.id, true, {
+        const r = await socialService.completarEntrenoHoy(entrenamiento.id, false, {
           diaId: dia.id,
           ejercicios: ejercicios.map((e) => e.ejercicio_id),
           duracionMinutos,
         });
-        await socialService.subirFotoEntreno(r.id, blob, true);
         if (!vigente) return;
         setRegistro(r.id);
+        // El entreno ya cuenta como hecho; si la foto no se sube, se avisa pero se puede compartir igual
+        try {
+          await socialService.subirFotoEntreno(r.id, blob, true);
+        } catch (e) {
+          if (vigente) setError(mensajeError(e, 'No se pudo subir la foto a tu perfil, pero tu entreno sí ha quedado registrado.'));
+        }
+        if (!vigente) return;
         setEstado('listo');
         onGuardado?.();
       } catch (e) {
@@ -110,9 +120,10 @@ function CompletarEntreno({ foto, entrenamiento, dia, duracionMinutos, volumen, 
     setPublico(nuevo);
     try {
       await socialService.completarEntrenoHoy(entrenamiento.id, nuevo);
+      if (nuevo) toast.success('Publicado en tu perfil');
     } catch (e) {
       setPublico(!nuevo);
-      toast.error(mensajeError(e, 'No se pudo cambiar la visibilidad'));
+      toast.error(mensajeError(e, nuevo ? 'No se pudo publicar en tu perfil' : 'No se pudo quitar de tu perfil'));
     }
   };
 
@@ -148,11 +159,12 @@ function CompletarEntreno({ foto, entrenamiento, dia, duracionMinutos, volumen, 
         </div>
 
         {estado === 'error' && <p role="alert" className="mt-4 text-center text-sm text-red-300">{error}</p>}
+        {estado === 'listo' && error && <p role="alert" className="mt-4 text-center text-sm text-amber-200">{error}</p>}
         <p className="mt-3 flex items-center gap-1.5 text-xs text-uf-muted" role="status">
           {estado === 'guardando' && 'Guardando en tu perfil...'}
           {estado === 'listo' && (
             <>
-              <Check className="h-4 w-4 text-uf-gold" /> Guardado en tu perfil
+              <Check className="h-4 w-4 text-uf-gold" /> {error ? 'Entreno registrado (sin foto)' : 'Guardado en tu perfil'}
             </>
           )}
         </p>
@@ -164,11 +176,22 @@ function CompletarEntreno({ foto, entrenamiento, dia, duracionMinutos, volumen, 
           <button type="button" onClick={() => imagen && descargarBlob(imagen.blob, nombreArchivo)} disabled={!imagen} className="uf-btn uf-btn-ghost disabled:opacity-50">
             <Download className="h-4 w-4" /> Descargar
           </button>
-          <button type="button" onClick={cambiarPublico} disabled={!registro} aria-pressed={publico} className="uf-btn uf-btn-ghost disabled:opacity-50">
-            {publico ? <Globe className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
-            {publico ? 'En el feed' : 'Solo yo'}
+          <button
+            type="button"
+            onClick={cambiarPublico}
+            disabled={!registro}
+            aria-pressed={publico}
+            className={`uf-btn disabled:opacity-50 ${publico ? 'uf-btn-ghost !border-uf-gold !text-uf-gold' : 'uf-btn-ghost'}`}
+          >
+            {publico ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
+            {publico ? 'Publicado' : 'Publicar en mi perfil'}
           </button>
         </div>
+        {publico && user?.id && (
+          <Link to={`/perfil/usuario/${user.id}`} className="mt-3 text-xs font-bold uppercase tracking-wider text-uf-gold hover:underline">
+            Ver en mi perfil
+          </Link>
+        )}
       </div>
     </div>
   );
