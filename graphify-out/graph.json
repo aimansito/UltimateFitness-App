@@ -9,7 +9,7 @@
       "source_file": "backend\\config\\bundles.php",
       "source_location": "L1",
       "id": "backend_config_bundles_php",
-      "community": 231,
+      "community": 232,
       "norm_label": "bundles.php"
     },
     {
@@ -18,7 +18,7 @@
       "source_file": "backend\\config\\preload.php",
       "source_location": "L1",
       "id": "backend_config_preload_php",
-      "community": 232,
+      "community": 233,
       "norm_label": "preload.php"
     },
     {
@@ -27,7 +27,7 @@
       "source_file": "backend\\datos\\contenido_inicial.php",
       "source_location": "L1",
       "id": "backend_datos_contenido_inicial_php",
-      "community": 233,
+      "community": 234,
       "norm_label": "contenido_inicial.php"
     },
     {
@@ -36,7 +36,7 @@
       "source_file": "backend\\migrations\\Version20251201103433.php",
       "source_location": "L1",
       "id": "backend_migrations_version20251201103433_php",
-      "community": 74,
+      "community": 75,
       "norm_label": "version20251201103433.php"
     },
     {
@@ -45,7 +45,7 @@
       "source_file": "backend\\migrations\\Version20251201103433.php",
       "source_location": "L13",
       "id": "version20251201103433_version20251201103433",
-      "community": 74,
+      "community": 75,
       "norm_label": "version20251201103433"
     },
     {
@@ -54,7 +54,7 @@
       "source_file": "backend\\migrations\\Version20251201103433.php",
       "source_location": "L15",
       "id": "version20251201103433_version20251201103433_getdescription",
-      "community": 74,
+      "community": 75,
       "norm_label": ".getdescription()"
     },
     {
@@ -63,7 +63,7 @@
       "source_file": "backend\\migrations\\Version20251201103433.php",
       "source_location": "L20",
       "id": "version20251201103433_version20251201103433_up",
-      "community": 74,
+      "community": 75,
       "norm_label": ".up()"
     },
     {
@@ -72,7 +72,7 @@
       "source_file": "backend\\migrations\\Version20251201103433.php",
       "source_location": "L38",
       "id": "version20251201103433_version20251201103433_down",
-      "community": 74,
+      "community": 75,
       "norm_label": ".down()"
     },
     {
@@ -81,7 +81,7 @@
       "source_file": "backend\\migrations\\Version20251205192455.php",
       "source_location": "L1",
       "id": "backend_migrations_version20251205192455_php",
-      "community": 75,
+      "community": 76,
       "norm_label": "version20251205192455.php"
     },
     {
@@ -90,7 +90,7 @@
       "source_file": "backend\\migrations\\Version20251205192455.php",
       "source_location": "L13",
       "id": "version20251205192455_version20251205192455",
-      "community": 75,
+      "community": 76,
       "norm_label": "version20251205192455"
     },
     {
@@ -99,7 +99,7 @@
       "source_file": "backend\\migrations\\Version20251205192455.php",
       "source_location": "L15",
       "id": "version20251205192455_version20251205192455_getdescription",
-      "community": 75,
+      "community": 76,
       "norm_label": ".getdescription()"
     },
     {
@@ -108,7 +108,7 @@
       "source_file": "backend\\migrations\\Version20251205192455.php",
       "source_location": "L20",
       "id": "version20251205192455_version20251205192455_up",
-      "community": 75,
+      "community": 76,
       "norm_label": ".up()"
     },
     {
@@ -117,7 +117,7 @@
       "source_file": "backend\\migrations\\Version20251205192455.php",
       "source_location": "L83",
       "id": "version20251205192455_version20251205192455_down",
-      "community": 75,
+      "community": 76,
       "norm_label": ".down()"
     },
     {
@@ -126,7 +126,7 @@
       "source_file": "backend\\migrations\\Version20260922140000.php",
       "source_location": "L1",
       "id": "backend_migrations_version20260922140000_php",
-      "community": 76,
+      "community": 77,
       "norm_label": "version20260922140000.php"
     },
     {
@@ -135,7 +135,7 @@
       "source_file": "backend\\migrations\\Version20260922140000.php",
       "source_location": "L14",
       "id": "version20260922140000_version20260922140000",
-      "community": 76,
+      "community": 77,
       "norm_label": "version20260922140000"
     },
     {
@@ -144,7 +144,7 @@
       "source_file": "backend\\migrations\\Version20260922140000.php",
       "source_location": "L16",
       "id": "version20260922140000_version20260922140000_getdescription",
-      "community": 76,
+      "community": 77,
       "norm_label": ".getdescription()"
     },
     {
@@ -153,7 +153,7 @@
       "source_file": "backend\\migrations\\Version20260922140000.php",
       "source_location": "L21",
       "id": "version20260922140000_version20260922140000_up",
-      "community": 76,
+      "community": 77,
       "norm_label": ".up()"
     },
     {
@@ -162,7 +162,7 @@
       "source_file": "backend\\migrations\\Version20260922140000.php",
       "source_location": "L29",
       "id": "version20260922140000_version20260922140000_down",
-      "community": 76,
+      "community": 77,
       "norm_label": ".down()"
     },
     {
@@ -171,7 +171,7 @@
       "source_file": "backend\\migrations\\Version20261025120000.php",
       "source_location": "L1",
       "id": "backend_migrations_version20261025120000_php",
-      "community": 77,
+      "community": 78,
       "norm_label": "version20261025120000.php"
     },
     {
@@ -180,7 +180,7 @@
       "source_file": "backend\\migrations\\Version20261025120000.php",
       "source_location": "L14",
       "id": "version20261025120000_version20261025120000",
-      "community": 77,
+      "community": 78,
       "norm_label": "version20261025120000"
     },
     {
@@ -189,7 +189,7 @@
       "source_file": "backend\\migrations\\Version20261025120000.php",
       "source_location": "L16",
       "id": "version20261025120000_version20261025120000_getdescription",
-      "community": 77,
+      "community": 78,
       "norm_label": ".getdescription()"
     },
     {
@@ -198,7 +198,7 @@
       "source_file": "backend\\migrations\\Version20261025120000.php",
       "source_location": "L21",
       "id": "version20261025120000_version20261025120000_up",
-      "community": 77,
+      "community": 78,
       "norm_label": ".up()"
     },
     {
@@ -207,7 +207,7 @@
       "source_file": "backend\\migrations\\Version20261025120000.php",
       "source_location": "L27",
       "id": "version20261025120000_version20261025120000_down",
-      "community": 77,
+      "community": 78,
       "norm_label": ".down()"
     },
     {
@@ -216,7 +216,7 @@
       "source_file": "backend\\migrations\\Version20261107125138.php",
       "source_location": "L1",
       "id": "backend_migrations_version20261107125138_php",
-      "community": 78,
+      "community": 79,
       "norm_label": "version20261107125138.php"
     },
     {
@@ -225,7 +225,7 @@
       "source_file": "backend\\migrations\\Version20261107125138.php",
       "source_location": "L10",
       "id": "version20261107125138_version20261107125138",
-      "community": 78,
+      "community": 79,
       "norm_label": "version20261107125138"
     },
     {
@@ -234,7 +234,7 @@
       "source_file": "backend\\migrations\\Version20261107125138.php",
       "source_location": "L12",
       "id": "version20261107125138_version20261107125138_getdescription",
-      "community": 78,
+      "community": 79,
       "norm_label": ".getdescription()"
     },
     {
@@ -243,7 +243,7 @@
       "source_file": "backend\\migrations\\Version20261107125138.php",
       "source_location": "L17",
       "id": "version20261107125138_version20261107125138_up",
-      "community": 78,
+      "community": 79,
       "norm_label": ".up()"
     },
     {
@@ -252,7 +252,7 @@
       "source_file": "backend\\migrations\\Version20261107125138.php",
       "source_location": "L22",
       "id": "version20261107125138_version20261107125138_down",
-      "community": 78,
+      "community": 79,
       "norm_label": ".down()"
     },
     {
@@ -261,7 +261,7 @@
       "source_file": "backend\\migrations\\Version20261111100000.php",
       "source_location": "L1",
       "id": "backend_migrations_version20261111100000_php",
-      "community": 79,
+      "community": 80,
       "norm_label": "version20261111100000.php"
     },
     {
@@ -270,7 +270,7 @@
       "source_file": "backend\\migrations\\Version20261111100000.php",
       "source_location": "L10",
       "id": "version20261111100000_version20261111100000",
-      "community": 79,
+      "community": 80,
       "norm_label": "version20261111100000"
     },
     {
@@ -279,7 +279,7 @@
       "source_file": "backend\\migrations\\Version20261111100000.php",
       "source_location": "L12",
       "id": "version20261111100000_version20261111100000_getdescription",
-      "community": 79,
+      "community": 80,
       "norm_label": ".getdescription()"
     },
     {
@@ -288,7 +288,7 @@
       "source_file": "backend\\migrations\\Version20261111100000.php",
       "source_location": "L17",
       "id": "version20261111100000_version20261111100000_up",
-      "community": 79,
+      "community": 80,
       "norm_label": ".up()"
     },
     {
@@ -297,7 +297,7 @@
       "source_file": "backend\\migrations\\Version20261111100000.php",
       "source_location": "L54",
       "id": "version20261111100000_version20261111100000_down",
-      "community": 79,
+      "community": 80,
       "norm_label": ".down()"
     },
     {
@@ -306,7 +306,7 @@
       "source_file": "backend\\migrations\\Version20261112100000.php",
       "source_location": "L1",
       "id": "backend_migrations_version20261112100000_php",
-      "community": 80,
+      "community": 81,
       "norm_label": "version20261112100000.php"
     },
     {
@@ -315,7 +315,7 @@
       "source_file": "backend\\migrations\\Version20261112100000.php",
       "source_location": "L10",
       "id": "version20261112100000_version20261112100000",
-      "community": 80,
+      "community": 81,
       "norm_label": "version20261112100000"
     },
     {
@@ -324,7 +324,7 @@
       "source_file": "backend\\migrations\\Version20261112100000.php",
       "source_location": "L12",
       "id": "version20261112100000_version20261112100000_getdescription",
-      "community": 80,
+      "community": 81,
       "norm_label": ".getdescription()"
     },
     {
@@ -333,7 +333,7 @@
       "source_file": "backend\\migrations\\Version20261112100000.php",
       "source_location": "L17",
       "id": "version20261112100000_version20261112100000_up",
-      "community": 80,
+      "community": 81,
       "norm_label": ".up()"
     },
     {
@@ -342,7 +342,7 @@
       "source_file": "backend\\migrations\\Version20261112100000.php",
       "source_location": "L25",
       "id": "version20261112100000_version20261112100000_down",
-      "community": 80,
+      "community": 81,
       "norm_label": ".down()"
     },
     {
@@ -351,7 +351,7 @@
       "source_file": "backend\\migrations\\Version20261113100000.php",
       "source_location": "L1",
       "id": "backend_migrations_version20261113100000_php",
-      "community": 81,
+      "community": 82,
       "norm_label": "version20261113100000.php"
     },
     {
@@ -360,7 +360,7 @@
       "source_file": "backend\\migrations\\Version20261113100000.php",
       "source_location": "L10",
       "id": "version20261113100000_version20261113100000",
-      "community": 81,
+      "community": 82,
       "norm_label": "version20261113100000"
     },
     {
@@ -369,7 +369,7 @@
       "source_file": "backend\\migrations\\Version20261113100000.php",
       "source_location": "L12",
       "id": "version20261113100000_version20261113100000_getdescription",
-      "community": 81,
+      "community": 82,
       "norm_label": ".getdescription()"
     },
     {
@@ -378,7 +378,7 @@
       "source_file": "backend\\migrations\\Version20261113100000.php",
       "source_location": "L17",
       "id": "version20261113100000_version20261113100000_up",
-      "community": 81,
+      "community": 82,
       "norm_label": ".up()"
     },
     {
@@ -387,7 +387,7 @@
       "source_file": "backend\\migrations\\Version20261113100000.php",
       "source_location": "L30",
       "id": "version20261113100000_version20261113100000_down",
-      "community": 81,
+      "community": 82,
       "norm_label": ".down()"
     },
     {
@@ -396,7 +396,7 @@
       "source_file": "backend\\migrations\\Version20261115100000.php",
       "source_location": "L1",
       "id": "backend_migrations_version20261115100000_php",
-      "community": 82,
+      "community": 83,
       "norm_label": "version20261115100000.php"
     },
     {
@@ -405,7 +405,7 @@
       "source_file": "backend\\migrations\\Version20261115100000.php",
       "source_location": "L10",
       "id": "version20261115100000_version20261115100000",
-      "community": 82,
+      "community": 83,
       "norm_label": "version20261115100000"
     },
     {
@@ -414,7 +414,7 @@
       "source_file": "backend\\migrations\\Version20261115100000.php",
       "source_location": "L12",
       "id": "version20261115100000_version20261115100000_getdescription",
-      "community": 82,
+      "community": 83,
       "norm_label": ".getdescription()"
     },
     {
@@ -423,7 +423,7 @@
       "source_file": "backend\\migrations\\Version20261115100000.php",
       "source_location": "L17",
       "id": "version20261115100000_version20261115100000_up",
-      "community": 82,
+      "community": 83,
       "norm_label": ".up()"
     },
     {
@@ -432,7 +432,7 @@
       "source_file": "backend\\migrations\\Version20261115100000.php",
       "source_location": "L24",
       "id": "version20261115100000_version20261115100000_down",
-      "community": 82,
+      "community": 83,
       "norm_label": ".down()"
     },
     {
@@ -441,7 +441,7 @@
       "source_file": "backend\\migrations\\Version20261116100000.php",
       "source_location": "L1",
       "id": "backend_migrations_version20261116100000_php",
-      "community": 83,
+      "community": 84,
       "norm_label": "version20261116100000.php"
     },
     {
@@ -450,7 +450,7 @@
       "source_file": "backend\\migrations\\Version20261116100000.php",
       "source_location": "L10",
       "id": "version20261116100000_version20261116100000",
-      "community": 83,
+      "community": 84,
       "norm_label": "version20261116100000"
     },
     {
@@ -459,7 +459,7 @@
       "source_file": "backend\\migrations\\Version20261116100000.php",
       "source_location": "L12",
       "id": "version20261116100000_version20261116100000_getdescription",
-      "community": 83,
+      "community": 84,
       "norm_label": ".getdescription()"
     },
     {
@@ -468,7 +468,7 @@
       "source_file": "backend\\migrations\\Version20261116100000.php",
       "source_location": "L17",
       "id": "version20261116100000_version20261116100000_up",
-      "community": 83,
+      "community": 84,
       "norm_label": ".up()"
     },
     {
@@ -477,7 +477,7 @@
       "source_file": "backend\\migrations\\Version20261116100000.php",
       "source_location": "L37",
       "id": "version20261116100000_version20261116100000_down",
-      "community": 83,
+      "community": 84,
       "norm_label": ".down()"
     },
     {
@@ -486,7 +486,7 @@
       "source_file": "backend\\migrations\\Version20261120100000.php",
       "source_location": "L1",
       "id": "backend_migrations_version20261120100000_php",
-      "community": 84,
+      "community": 85,
       "norm_label": "version20261120100000.php"
     },
     {
@@ -495,7 +495,7 @@
       "source_file": "backend\\migrations\\Version20261120100000.php",
       "source_location": "L10",
       "id": "version20261120100000_version20261120100000",
-      "community": 84,
+      "community": 85,
       "norm_label": "version20261120100000"
     },
     {
@@ -504,7 +504,7 @@
       "source_file": "backend\\migrations\\Version20261120100000.php",
       "source_location": "L12",
       "id": "version20261120100000_version20261120100000_getdescription",
-      "community": 84,
+      "community": 85,
       "norm_label": ".getdescription()"
     },
     {
@@ -513,7 +513,7 @@
       "source_file": "backend\\migrations\\Version20261120100000.php",
       "source_location": "L17",
       "id": "version20261120100000_version20261120100000_up",
-      "community": 84,
+      "community": 85,
       "norm_label": ".up()"
     },
     {
@@ -522,7 +522,61 @@
       "source_file": "backend\\migrations\\Version20261120100000.php",
       "source_location": "L22",
       "id": "version20261120100000_version20261120100000_down",
-      "community": 84,
+      "community": 85,
+      "norm_label": ".down()"
+    },
+    {
+      "label": "Version20261121100000.php",
+      "file_type": "code",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L1",
+      "id": "backend_migrations_version20261121100000_php",
+      "community": 69,
+      "norm_label": "version20261121100000.php"
+    },
+    {
+      "label": "Version20261121100000",
+      "file_type": "code",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L15",
+      "id": "version20261121100000_version20261121100000",
+      "community": 69,
+      "norm_label": "version20261121100000"
+    },
+    {
+      "label": ".getDescription()",
+      "file_type": "code",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L43",
+      "id": "version20261121100000_version20261121100000_getdescription",
+      "community": 69,
+      "norm_label": ".getdescription()"
+    },
+    {
+      "label": ".up()",
+      "file_type": "code",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L48",
+      "id": "version20261121100000_version20261121100000_up",
+      "community": 69,
+      "norm_label": ".up()"
+    },
+    {
+      "label": ".sinTildes()",
+      "file_type": "code",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L61",
+      "id": "version20261121100000_version20261121100000_sintildes",
+      "community": 69,
+      "norm_label": ".sintildes()"
+    },
+    {
+      "label": ".down()",
+      "file_type": "code",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L66",
+      "id": "version20261121100000_version20261121100000_down",
+      "community": 69,
       "norm_label": ".down()"
     },
     {
@@ -531,7 +585,7 @@
       "source_file": "backend\\public\\index.php",
       "source_location": "L1",
       "id": "backend_public_index_php",
-      "community": 234,
+      "community": 235,
       "norm_label": "index.php"
     },
     {
@@ -540,7 +594,7 @@
       "source_file": "backend\\src\\Kernel.php",
       "source_location": "L1",
       "id": "backend_src_kernel_php",
-      "community": 114,
+      "community": 115,
       "norm_label": "kernel.php"
     },
     {
@@ -549,7 +603,7 @@
       "source_file": "backend\\src\\Kernel.php",
       "source_location": "L8",
       "id": "kernel_kernel",
-      "community": 114,
+      "community": 115,
       "norm_label": "kernel"
     },
     {
@@ -558,7 +612,7 @@
       "source_file": "backend\\src\\Kernel.php",
       "source_location": "L12",
       "id": "kernel_kernel_registerbundles",
-      "community": 114,
+      "community": 115,
       "norm_label": ".registerbundles()"
     },
     {
@@ -774,7 +828,7 @@
       "source_file": "backend\\src\\Command\\SincronizarMigracionesCommand.php",
       "source_location": "L1",
       "id": "backend_src_command_sincronizarmigracionescommand_php",
-      "community": 85,
+      "community": 86,
       "norm_label": "sincronizarmigracionescommand.php"
     },
     {
@@ -783,7 +837,7 @@
       "source_file": "backend\\src\\Command\\SincronizarMigracionesCommand.php",
       "source_location": "L22",
       "id": "sincronizarmigracionescommand_sincronizarmigracionescommand",
-      "community": 85,
+      "community": 86,
       "norm_label": "sincronizarmigracionescommand"
     },
     {
@@ -792,7 +846,7 @@
       "source_file": "backend\\src\\Command\\SincronizarMigracionesCommand.php",
       "source_location": "L39",
       "id": "sincronizarmigracionescommand_sincronizarmigracionescommand_construct",
-      "community": 85,
+      "community": 86,
       "norm_label": ".__construct()"
     },
     {
@@ -801,7 +855,7 @@
       "source_file": "backend\\src\\Command\\SincronizarMigracionesCommand.php",
       "source_location": "L44",
       "id": "sincronizarmigracionescommand_sincronizarmigracionescommand_execute",
-      "community": 85,
+      "community": 86,
       "norm_label": ".execute()"
     },
     {
@@ -810,7 +864,7 @@
       "source_file": "backend\\src\\Command\\SincronizarMigracionesCommand.php",
       "source_location": "L100",
       "id": "sincronizarmigracionescommand_sincronizarmigracionescommand_ejecutar",
-      "community": 85,
+      "community": 86,
       "norm_label": ".ejecutar()"
     },
     {
@@ -1242,7 +1296,7 @@
       "source_file": "backend\\src\\Controller\\AuthController.php",
       "source_location": "L1",
       "id": "backend_src_controller_authcontroller_php",
-      "community": 115,
+      "community": 116,
       "norm_label": "authcontroller.php"
     },
     {
@@ -1251,7 +1305,7 @@
       "source_file": "backend\\src\\Controller\\AuthController.php",
       "source_location": "L9",
       "id": "authcontroller_authcontroller",
-      "community": 115,
+      "community": 116,
       "norm_label": "authcontroller"
     },
     {
@@ -1260,7 +1314,7 @@
       "source_file": "backend\\src\\Controller\\AuthController.php",
       "source_location": "L11",
       "id": "authcontroller_authcontroller_login",
-      "community": 115,
+      "community": 116,
       "norm_label": ".login()"
     },
     {
@@ -1467,7 +1521,7 @@
       "source_file": "backend\\src\\Controller\\ContactoController.php",
       "source_location": "L1",
       "id": "backend_src_controller_contactocontroller_php",
-      "community": 86,
+      "community": 87,
       "norm_label": "contactocontroller.php"
     },
     {
@@ -1476,7 +1530,7 @@
       "source_file": "backend\\src\\Controller\\ContactoController.php",
       "source_location": "L18",
       "id": "contactocontroller_contactocontroller",
-      "community": 86,
+      "community": 87,
       "norm_label": "contactocontroller"
     },
     {
@@ -1485,7 +1539,7 @@
       "source_file": "backend\\src\\Controller\\ContactoController.php",
       "source_location": "L28",
       "id": "contactocontroller_contactocontroller_construct",
-      "community": 86,
+      "community": 87,
       "norm_label": ".__construct()"
     },
     {
@@ -1494,7 +1548,7 @@
       "source_file": "backend\\src\\Controller\\ContactoController.php",
       "source_location": "L35",
       "id": "contactocontroller_contactocontroller_enviar",
-      "community": 86,
+      "community": 87,
       "norm_label": ".enviar()"
     },
     {
@@ -1503,7 +1557,7 @@
       "source_file": "backend\\src\\Controller\\ContactoController.php",
       "source_location": "L81",
       "id": "contactocontroller_contactocontroller_error",
-      "community": 86,
+      "community": 87,
       "norm_label": ".error()"
     },
     {
@@ -1512,7 +1566,7 @@
       "source_file": "backend\\src\\Controller\\CrearEntrenamientoController.php",
       "source_location": "L1",
       "id": "backend_src_controller_crearentrenamientocontroller_php",
-      "community": 95,
+      "community": 96,
       "norm_label": "crearentrenamientocontroller.php"
     },
     {
@@ -1521,7 +1575,7 @@
       "source_file": "backend\\src\\Controller\\CrearEntrenamientoController.php",
       "source_location": "L13",
       "id": "crearentrenamientocontroller_crearentrenamientocontroller",
-      "community": 95,
+      "community": 96,
       "norm_label": "crearentrenamientocontroller"
     },
     {
@@ -1530,7 +1584,7 @@
       "source_file": "backend\\src\\Controller\\CrearEntrenamientoController.php",
       "source_location": "L18",
       "id": "crearentrenamientocontroller_crearentrenamientocontroller_construct",
-      "community": 95,
+      "community": 96,
       "norm_label": ".__construct()"
     },
     {
@@ -1539,7 +1593,7 @@
       "source_file": "backend\\src\\Controller\\CrearEntrenamientoController.php",
       "source_location": "L23",
       "id": "crearentrenamientocontroller_crearentrenamientocontroller_crearentrenamiento",
-      "community": 95,
+      "community": 96,
       "norm_label": ".crearentrenamiento()"
     },
     {
@@ -1764,7 +1818,7 @@
       "source_file": "backend\\src\\Controller\\DietasPublicasController.php",
       "source_location": "L1",
       "id": "backend_src_controller_dietaspublicascontroller_php",
-      "community": 116,
+      "community": 117,
       "norm_label": "dietaspublicascontroller.php"
     },
     {
@@ -1773,7 +1827,7 @@
       "source_file": "backend\\src\\Controller\\DietasPublicasController.php",
       "source_location": "L11",
       "id": "dietaspublicascontroller_dietaspublicascontroller",
-      "community": 116,
+      "community": 117,
       "norm_label": "dietaspublicascontroller"
     },
     {
@@ -1782,7 +1836,7 @@
       "source_file": "backend\\src\\Controller\\DietasPublicasController.php",
       "source_location": "L17",
       "id": "dietaspublicascontroller_dietaspublicascontroller_listardietaspublicas",
-      "community": 116,
+      "community": 117,
       "norm_label": ".listardietaspublicas()"
     },
     {
@@ -2034,7 +2088,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorAuthController.php",
       "source_location": "L1",
       "id": "backend_src_controller_entrenadorauthcontroller_php",
-      "community": 117,
+      "community": 118,
       "norm_label": "entrenadorauthcontroller.php"
     },
     {
@@ -2043,7 +2097,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorAuthController.php",
       "source_location": "L9",
       "id": "entrenadorauthcontroller_entrenadorauthcontroller",
-      "community": 117,
+      "community": 118,
       "norm_label": "entrenadorauthcontroller"
     },
     {
@@ -2052,7 +2106,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorAuthController.php",
       "source_location": "L11",
       "id": "entrenadorauthcontroller_entrenadorauthcontroller_login",
-      "community": 117,
+      "community": 118,
       "norm_label": ".login()"
     },
     {
@@ -2205,7 +2259,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorDietasController.php",
       "source_location": "L1",
       "id": "backend_src_controller_entrenadordietascontroller_php",
-      "community": 87,
+      "community": 88,
       "norm_label": "entrenadordietascontroller.php"
     },
     {
@@ -2214,7 +2268,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorDietasController.php",
       "source_location": "L16",
       "id": "entrenadordietascontroller_entrenadordietascontroller",
-      "community": 87,
+      "community": 88,
       "norm_label": "entrenadordietascontroller"
     },
     {
@@ -2223,7 +2277,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorDietasController.php",
       "source_location": "L22",
       "id": "entrenadordietascontroller_entrenadordietascontroller_listardietas",
-      "community": 87,
+      "community": 88,
       "norm_label": ".listardietas()"
     },
     {
@@ -2232,7 +2286,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorDietasController.php",
       "source_location": "L87",
       "id": "entrenadordietascontroller_entrenadordietascontroller_usuariosasignados",
-      "community": 87,
+      "community": 88,
       "norm_label": ".usuariosasignados()"
     },
     {
@@ -2241,7 +2295,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorDietasController.php",
       "source_location": "L143",
       "id": "entrenadordietascontroller_entrenadordietascontroller_eliminardieta",
-      "community": 87,
+      "community": 88,
       "norm_label": ".eliminardieta()"
     },
     {
@@ -2250,7 +2304,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientoDetalleController.php",
       "source_location": "L1",
       "id": "backend_src_controller_entrenadorentrenamientodetallecontroller_php",
-      "community": 96,
+      "community": 97,
       "norm_label": "entrenadorentrenamientodetallecontroller.php"
     },
     {
@@ -2259,7 +2313,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientoDetalleController.php",
       "source_location": "L11",
       "id": "entrenadorentrenamientodetallecontroller_entrenadorentrenamientodetallecontroller",
-      "community": 96,
+      "community": 97,
       "norm_label": "entrenadorentrenamientodetallecontroller"
     },
     {
@@ -2268,7 +2322,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientoDetalleController.php",
       "source_location": "L18",
       "id": "entrenadorentrenamientodetallecontroller_entrenadorentrenamientodetallecontroller_detalle",
-      "community": 96,
+      "community": 97,
       "norm_label": ".detalle()"
     },
     {
@@ -2277,7 +2331,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientoDetalleController.php",
       "source_location": "L92",
       "id": "entrenadorentrenamientodetallecontroller_entrenadorentrenamientodetallecontroller_agregardiasyejercicios",
-      "community": 96,
+      "community": 97,
       "norm_label": ".agregardiasyejercicios()"
     },
     {
@@ -2286,7 +2340,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientosController.php",
       "source_location": "L1",
       "id": "backend_src_controller_entrenadorentrenamientoscontroller_php",
-      "community": 97,
+      "community": 98,
       "norm_label": "entrenadorentrenamientoscontroller.php"
     },
     {
@@ -2295,7 +2349,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientosController.php",
       "source_location": "L11",
       "id": "entrenadorentrenamientoscontroller_entrenadorentrenamientoscontroller",
-      "community": 97,
+      "community": 98,
       "norm_label": "entrenadorentrenamientoscontroller"
     },
     {
@@ -2304,7 +2358,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientosController.php",
       "source_location": "L18",
       "id": "entrenadorentrenamientoscontroller_entrenadorentrenamientoscontroller_listarentrenamientos",
-      "community": 97,
+      "community": 98,
       "norm_label": ".listarentrenamientos()"
     },
     {
@@ -2313,7 +2367,7 @@
       "source_file": "backend\\src\\Controller\\EntrenadorEntrenamientosController.php",
       "source_location": "L79",
       "id": "entrenadorentrenamientoscontroller_entrenadorentrenamientoscontroller_agregardiasyejercicios",
-      "community": 97,
+      "community": 98,
       "norm_label": ".agregardiasyejercicios()"
     },
     {
@@ -2448,7 +2502,7 @@
       "source_file": "backend\\src\\Controller\\GuardarDietaController.php",
       "source_location": "L1",
       "id": "backend_src_controller_guardardietacontroller_php",
-      "community": 98,
+      "community": 99,
       "norm_label": "guardardietacontroller.php"
     },
     {
@@ -2457,7 +2511,7 @@
       "source_file": "backend\\src\\Controller\\GuardarDietaController.php",
       "source_location": "L13",
       "id": "guardardietacontroller_guardardietacontroller",
-      "community": 98,
+      "community": 99,
       "norm_label": "guardardietacontroller"
     },
     {
@@ -2466,7 +2520,7 @@
       "source_file": "backend\\src\\Controller\\GuardarDietaController.php",
       "source_location": "L18",
       "id": "guardardietacontroller_guardardietacontroller_construct",
-      "community": 98,
+      "community": 99,
       "norm_label": ".__construct()"
     },
     {
@@ -2475,7 +2529,7 @@
       "source_file": "backend\\src\\Controller\\GuardarDietaController.php",
       "source_location": "L23",
       "id": "guardardietacontroller_guardardietacontroller_creardieta",
-      "community": 98,
+      "community": 99,
       "norm_label": ".creardieta()"
     },
     {
@@ -2484,7 +2538,7 @@
       "source_file": "backend\\src\\Controller\\HealthController.php",
       "source_location": "L1",
       "id": "backend_src_controller_healthcontroller_php",
-      "community": 118,
+      "community": 119,
       "norm_label": "healthcontroller.php"
     },
     {
@@ -2493,7 +2547,7 @@
       "source_file": "backend\\src\\Controller\\HealthController.php",
       "source_location": "L8",
       "id": "healthcontroller_healthcontroller",
-      "community": 118,
+      "community": 119,
       "norm_label": "healthcontroller"
     },
     {
@@ -2502,7 +2556,7 @@
       "source_file": "backend\\src\\Controller\\HealthController.php",
       "source_location": "L10",
       "id": "healthcontroller_healthcontroller_health",
-      "community": 118,
+      "community": 119,
       "norm_label": ".health()"
     },
     {
@@ -2511,7 +2565,7 @@
       "source_file": "backend\\src\\Controller\\MisClientesController.php",
       "source_location": "L1",
       "id": "backend_src_controller_misclientescontroller_php",
-      "community": 69,
+      "community": 70,
       "norm_label": "misclientescontroller.php"
     },
     {
@@ -2520,7 +2574,7 @@
       "source_file": "backend\\src\\Controller\\MisClientesController.php",
       "source_location": "L14",
       "id": "misclientescontroller_misclientescontroller",
-      "community": 69,
+      "community": 70,
       "norm_label": "misclientescontroller"
     },
     {
@@ -2529,7 +2583,7 @@
       "source_file": "backend\\src\\Controller\\MisClientesController.php",
       "source_location": "L21",
       "id": "misclientescontroller_misclientescontroller_construct",
-      "community": 69,
+      "community": 70,
       "norm_label": ".__construct()"
     },
     {
@@ -2538,7 +2592,7 @@
       "source_file": "backend\\src\\Controller\\MisClientesController.php",
       "source_location": "L31",
       "id": "misclientescontroller_misclientescontroller_getmisclientes",
-      "community": 69,
+      "community": 70,
       "norm_label": ".getmisclientes()"
     },
     {
@@ -2547,7 +2601,7 @@
       "source_file": "backend\\src\\Controller\\MisClientesController.php",
       "source_location": "L102",
       "id": "misclientescontroller_misclientescontroller_getdietascliente",
-      "community": 69,
+      "community": 70,
       "norm_label": ".getdietascliente()"
     },
     {
@@ -2556,7 +2610,7 @@
       "source_file": "backend\\src\\Controller\\MisClientesController.php",
       "source_location": "L148",
       "id": "misclientescontroller_misclientescontroller_getentrenamientoscliente",
-      "community": 69,
+      "community": 70,
       "norm_label": ".getentrenamientoscliente()"
     },
     {
@@ -2565,7 +2619,7 @@
       "source_file": "backend\\src\\Controller\\MisDietasController.php",
       "source_location": "L1",
       "id": "backend_src_controller_misdietascontroller_php",
-      "community": 88,
+      "community": 89,
       "norm_label": "misdietascontroller.php"
     },
     {
@@ -2574,7 +2628,7 @@
       "source_file": "backend\\src\\Controller\\MisDietasController.php",
       "source_location": "L14",
       "id": "misdietascontroller_misdietascontroller",
-      "community": 88,
+      "community": 89,
       "norm_label": "misdietascontroller"
     },
     {
@@ -2583,7 +2637,7 @@
       "source_file": "backend\\src\\Controller\\MisDietasController.php",
       "source_location": "L19",
       "id": "misdietascontroller_misdietascontroller_construct",
-      "community": 88,
+      "community": 89,
       "norm_label": ".__construct()"
     },
     {
@@ -2592,7 +2646,7 @@
       "source_file": "backend\\src\\Controller\\MisDietasController.php",
       "source_location": "L28",
       "id": "misdietascontroller_misdietascontroller_getmisdietas",
-      "community": 88,
+      "community": 89,
       "norm_label": ".getmisdietas()"
     },
     {
@@ -2601,7 +2655,7 @@
       "source_file": "backend\\src\\Controller\\MisDietasController.php",
       "source_location": "L97",
       "id": "misdietascontroller_misdietascontroller_getdetalledieta",
-      "community": 88,
+      "community": 89,
       "norm_label": ".getdetalledieta()"
     },
     {
@@ -2610,7 +2664,7 @@
       "source_file": "backend\\src\\Controller\\PagoController.php",
       "source_location": "L1",
       "id": "backend_src_controller_pagocontroller_php",
-      "community": 99,
+      "community": 100,
       "norm_label": "pagocontroller.php"
     },
     {
@@ -2619,7 +2673,7 @@
       "source_file": "backend\\src\\Controller\\PagoController.php",
       "source_location": "L20",
       "id": "pagocontroller_pagocontroller",
-      "community": 99,
+      "community": 100,
       "norm_label": "pagocontroller"
     },
     {
@@ -2628,7 +2682,7 @@
       "source_file": "backend\\src\\Controller\\PagoController.php",
       "source_location": "L23",
       "id": "pagocontroller_pagocontroller_construct",
-      "community": 99,
+      "community": 100,
       "norm_label": ".__construct()"
     },
     {
@@ -2637,7 +2691,7 @@
       "source_file": "backend\\src\\Controller\\PagoController.php",
       "source_location": "L33",
       "id": "pagocontroller_pagocontroller_historialusuario",
-      "community": 99,
+      "community": 100,
       "norm_label": ".historialusuario()"
     },
     {
@@ -2952,7 +3006,7 @@
       "source_file": "backend\\src\\Controller\\PublicBlogController.php",
       "source_location": "L1",
       "id": "backend_src_controller_publicblogcontroller_php",
-      "community": 70,
+      "community": 71,
       "norm_label": "publicblogcontroller.php"
     },
     {
@@ -2961,7 +3015,7 @@
       "source_file": "backend\\src\\Controller\\PublicBlogController.php",
       "source_location": "L15",
       "id": "publicblogcontroller_publicblogcontroller",
-      "community": 70,
+      "community": 71,
       "norm_label": "publicblogcontroller"
     },
     {
@@ -2970,7 +3024,7 @@
       "source_file": "backend\\src\\Controller\\PublicBlogController.php",
       "source_location": "L22",
       "id": "publicblogcontroller_publicblogcontroller_preview",
-      "community": 70,
+      "community": 71,
       "norm_label": ".preview()"
     },
     {
@@ -2979,7 +3033,7 @@
       "source_file": "backend\\src\\Controller\\PublicBlogController.php",
       "source_location": "L48",
       "id": "publicblogcontroller_publicblogcontroller_list",
-      "community": 70,
+      "community": 71,
       "norm_label": ".list()"
     },
     {
@@ -2988,7 +3042,7 @@
       "source_file": "backend\\src\\Controller\\PublicBlogController.php",
       "source_location": "L89",
       "id": "publicblogcontroller_publicblogcontroller_detail",
-      "community": 70,
+      "community": 71,
       "norm_label": ".detail()"
     },
     {
@@ -2997,7 +3051,7 @@
       "source_file": "backend\\src\\Controller\\PublicBlogController.php",
       "source_location": "L112",
       "id": "publicblogcontroller_publicblogcontroller_serializepost",
-      "community": 70,
+      "community": 71,
       "norm_label": ".serializepost()"
     },
     {
@@ -3006,7 +3060,7 @@
       "source_file": "backend\\src\\Controller\\RegistroController.php",
       "source_location": "L1",
       "id": "backend_src_controller_registrocontroller_php",
-      "community": 100,
+      "community": 101,
       "norm_label": "registrocontroller.php"
     },
     {
@@ -3015,7 +3069,7 @@
       "source_file": "backend\\src\\Controller\\RegistroController.php",
       "source_location": "L17",
       "id": "registrocontroller_registrocontroller",
-      "community": 100,
+      "community": 101,
       "norm_label": "registrocontroller"
     },
     {
@@ -3024,7 +3078,7 @@
       "source_file": "backend\\src\\Controller\\RegistroController.php",
       "source_location": "L23",
       "id": "registrocontroller_registrocontroller_construct",
-      "community": 100,
+      "community": 101,
       "norm_label": ".__construct()"
     },
     {
@@ -3033,7 +3087,7 @@
       "source_file": "backend\\src\\Controller\\RegistroController.php",
       "source_location": "L39",
       "id": "registrocontroller_registrocontroller_register",
-      "community": 100,
+      "community": 101,
       "norm_label": ".register()"
     },
     {
@@ -3690,7 +3744,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioDietasController.php",
       "source_location": "L1",
       "id": "backend_src_controller_usuariodietascontroller_php",
-      "community": 101,
+      "community": 102,
       "norm_label": "usuariodietascontroller.php"
     },
     {
@@ -3699,7 +3753,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioDietasController.php",
       "source_location": "L15",
       "id": "usuariodietascontroller_usuariodietascontroller",
-      "community": 101,
+      "community": 102,
       "norm_label": "usuariodietascontroller"
     },
     {
@@ -3708,7 +3762,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioDietasController.php",
       "source_location": "L21",
       "id": "usuariodietascontroller_usuariodietascontroller_listardietas",
-      "community": 101,
+      "community": 102,
       "norm_label": ".listardietas()"
     },
     {
@@ -3717,7 +3771,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioDietasController.php",
       "source_location": "L96",
       "id": "usuariodietascontroller_usuariodietascontroller_verdetalledieta",
-      "community": 101,
+      "community": 102,
       "norm_label": ".verdetalledieta()"
     },
     {
@@ -3726,7 +3780,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioEntrenamientosController.php",
       "source_location": "L1",
       "id": "backend_src_controller_usuarioentrenamientoscontroller_php",
-      "community": 71,
+      "community": 72,
       "norm_label": "usuarioentrenamientoscontroller.php"
     },
     {
@@ -3735,7 +3789,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioEntrenamientosController.php",
       "source_location": "L15",
       "id": "usuarioentrenamientoscontroller_usuarioentrenamientoscontroller",
-      "community": 71,
+      "community": 72,
       "norm_label": "usuarioentrenamientoscontroller"
     },
     {
@@ -3744,7 +3798,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioEntrenamientosController.php",
       "source_location": "L22",
       "id": "usuarioentrenamientoscontroller_usuarioentrenamientoscontroller_listarentrenamientos",
-      "community": 71,
+      "community": 72,
       "norm_label": ".listarentrenamientos()"
     },
     {
@@ -3753,7 +3807,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioEntrenamientosController.php",
       "source_location": "L109",
       "id": "usuarioentrenamientoscontroller_usuarioentrenamientoscontroller_detalleentrenamiento",
-      "community": 71,
+      "community": 72,
       "norm_label": ".detalleentrenamiento()"
     },
     {
@@ -3762,7 +3816,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioEntrenamientosController.php",
       "source_location": "L189",
       "id": "usuarioentrenamientoscontroller_usuarioentrenamientoscontroller_agregardiasyejercicios",
-      "community": 71,
+      "community": 72,
       "norm_label": ".agregardiasyejercicios()"
     },
     {
@@ -3771,7 +3825,7 @@
       "source_file": "backend\\src\\Controller\\UsuarioEntrenamientosController.php",
       "source_location": "L252",
       "id": "usuarioentrenamientoscontroller_usuarioentrenamientoscontroller_crearentrenamiento",
-      "community": 71,
+      "community": 72,
       "norm_label": ".crearentrenamiento()"
     },
     {
@@ -3780,7 +3834,7 @@
       "source_file": "backend\\src\\Controller\\VerificacionEmailController.php",
       "source_location": "L1",
       "id": "backend_src_controller_verificacionemailcontroller_php",
-      "community": 89,
+      "community": 90,
       "norm_label": "verificacionemailcontroller.php"
     },
     {
@@ -3789,7 +3843,7 @@
       "source_file": "backend\\src\\Controller\\VerificacionEmailController.php",
       "source_location": "L16",
       "id": "verificacionemailcontroller_verificacionemailcontroller",
-      "community": 89,
+      "community": 90,
       "norm_label": "verificacionemailcontroller"
     },
     {
@@ -3798,7 +3852,7 @@
       "source_file": "backend\\src\\Controller\\VerificacionEmailController.php",
       "source_location": "L18",
       "id": "verificacionemailcontroller_verificacionemailcontroller_construct",
-      "community": 89,
+      "community": 90,
       "norm_label": ".__construct()"
     },
     {
@@ -3807,7 +3861,7 @@
       "source_file": "backend\\src\\Controller\\VerificacionEmailController.php",
       "source_location": "L25",
       "id": "verificacionemailcontroller_verificacionemailcontroller_verificar",
-      "community": 89,
+      "community": 90,
       "norm_label": ".verificar()"
     },
     {
@@ -3816,7 +3870,7 @@
       "source_file": "backend\\src\\Controller\\VerificacionEmailController.php",
       "source_location": "L43",
       "id": "verificacionemailcontroller_verificacionemailcontroller_reenviar",
-      "community": 89,
+      "community": 90,
       "norm_label": ".reenviar()"
     },
     {
@@ -6507,7 +6561,7 @@
       "source_file": "backend\\src\\Entity\\Guardado.php",
       "source_location": "L1",
       "id": "backend_src_entity_guardado_php",
-      "community": 119,
+      "community": 120,
       "norm_label": "guardado.php"
     },
     {
@@ -6516,7 +6570,7 @@
       "source_file": "backend\\src\\Entity\\Guardado.php",
       "source_location": "L11",
       "id": "guardado_guardado",
-      "community": 119,
+      "community": 120,
       "norm_label": "guardado"
     },
     {
@@ -6525,7 +6579,7 @@
       "source_file": "backend\\src\\Entity\\Guardado.php",
       "source_location": "L36",
       "id": "guardado_guardado_getid",
-      "community": 119,
+      "community": 120,
       "norm_label": ".getid()"
     },
     {
@@ -7389,7 +7443,7 @@
       "source_file": "backend\\src\\Entity\\RegistroSerie.php",
       "source_location": "L1",
       "id": "backend_src_entity_registroserie_php",
-      "community": 120,
+      "community": 121,
       "norm_label": "registroserie.php"
     },
     {
@@ -7398,7 +7452,7 @@
       "source_file": "backend\\src\\Entity\\RegistroSerie.php",
       "source_location": "L11",
       "id": "registroserie_registroserie",
-      "community": 120,
+      "community": 121,
       "norm_label": "registroserie"
     },
     {
@@ -7407,7 +7461,7 @@
       "source_file": "backend\\src\\Entity\\RegistroSerie.php",
       "source_location": "L47",
       "id": "registroserie_registroserie_getid",
-      "community": 120,
+      "community": 121,
       "norm_label": ".getid()"
     },
     {
@@ -7416,7 +7470,7 @@
       "source_file": "backend\\src\\Entity\\Seguimiento.php",
       "source_location": "L1",
       "id": "backend_src_entity_seguimiento_php",
-      "community": 121,
+      "community": 122,
       "norm_label": "seguimiento.php"
     },
     {
@@ -7425,7 +7479,7 @@
       "source_file": "backend\\src\\Entity\\Seguimiento.php",
       "source_location": "L11",
       "id": "seguimiento_seguimiento",
-      "community": 121,
+      "community": 122,
       "norm_label": "seguimiento"
     },
     {
@@ -7434,7 +7488,7 @@
       "source_file": "backend\\src\\Entity\\Seguimiento.php",
       "source_location": "L37",
       "id": "seguimiento_seguimiento_getid",
-      "community": 121,
+      "community": 122,
       "norm_label": ".getid()"
     },
     {
@@ -8685,7 +8739,7 @@
       "source_file": "backend\\src\\Enum\\Privacidad.php",
       "source_location": "L1",
       "id": "backend_src_enum_privacidad_php",
-      "community": 235,
+      "community": 236,
       "norm_label": "privacidad.php"
     },
     {
@@ -8694,7 +8748,7 @@
       "source_file": "backend\\src\\EventListener\\AdminAccessSubscriber.php",
       "source_location": "L1",
       "id": "backend_src_eventlistener_adminaccesssubscriber_php",
-      "community": 102,
+      "community": 103,
       "norm_label": "adminaccesssubscriber.php"
     },
     {
@@ -8703,7 +8757,7 @@
       "source_file": "backend\\src\\EventListener\\AdminAccessSubscriber.php",
       "source_location": "L16",
       "id": "adminaccesssubscriber_adminaccesssubscriber",
-      "community": 102,
+      "community": 103,
       "norm_label": "adminaccesssubscriber"
     },
     {
@@ -8712,7 +8766,7 @@
       "source_file": "backend\\src\\EventListener\\AdminAccessSubscriber.php",
       "source_location": "L19",
       "id": "adminaccesssubscriber_adminaccesssubscriber_construct",
-      "community": 102,
+      "community": 103,
       "norm_label": ".__construct()"
     },
     {
@@ -8721,7 +8775,7 @@
       "source_file": "backend\\src\\EventListener\\AdminAccessSubscriber.php",
       "source_location": "L25",
       "id": "adminaccesssubscriber_adminaccesssubscriber_invoke",
-      "community": 102,
+      "community": 103,
       "norm_label": ".__invoke()"
     },
     {
@@ -8820,7 +8874,7 @@
       "source_file": "backend\\src\\EventListener\\OwnerAccessSubscriber.php",
       "source_location": "L1",
       "id": "backend_src_eventlistener_owneraccesssubscriber_php",
-      "community": 103,
+      "community": 104,
       "norm_label": "owneraccesssubscriber.php"
     },
     {
@@ -8829,7 +8883,7 @@
       "source_file": "backend\\src\\EventListener\\OwnerAccessSubscriber.php",
       "source_location": "L19",
       "id": "owneraccesssubscriber_owneraccesssubscriber",
-      "community": 103,
+      "community": 104,
       "norm_label": "owneraccesssubscriber"
     },
     {
@@ -8838,7 +8892,7 @@
       "source_file": "backend\\src\\EventListener\\OwnerAccessSubscriber.php",
       "source_location": "L42",
       "id": "owneraccesssubscriber_owneraccesssubscriber_construct",
-      "community": 103,
+      "community": 104,
       "norm_label": ".__construct()"
     },
     {
@@ -8847,7 +8901,7 @@
       "source_file": "backend\\src\\EventListener\\OwnerAccessSubscriber.php",
       "source_location": "L49",
       "id": "owneraccesssubscriber_owneraccesssubscriber_invoke",
-      "community": 103,
+      "community": 104,
       "norm_label": ".__invoke()"
     },
     {
@@ -8856,7 +8910,7 @@
       "source_file": "backend\\src\\EventListener\\ResponseListener.php",
       "source_location": "L1",
       "id": "backend_src_eventlistener_responselistener_php",
-      "community": 122,
+      "community": 123,
       "norm_label": "responselistener.php"
     },
     {
@@ -8865,7 +8919,7 @@
       "source_file": "backend\\src\\EventListener\\ResponseListener.php",
       "source_location": "L9",
       "id": "responselistener_responselistener",
-      "community": 122,
+      "community": 123,
       "norm_label": "responselistener"
     },
     {
@@ -8874,7 +8928,7 @@
       "source_file": "backend\\src\\EventListener\\ResponseListener.php",
       "source_location": "L12",
       "id": "responselistener_responselistener_invoke",
-      "community": 122,
+      "community": 123,
       "norm_label": ".__invoke()"
     },
     {
@@ -8883,7 +8937,7 @@
       "source_file": "backend\\src\\EventListener\\SeguridadRespuestaSubscriber.php",
       "source_location": "L1",
       "id": "backend_src_eventlistener_seguridadrespuestasubscriber_php",
-      "community": 104,
+      "community": 105,
       "norm_label": "seguridadrespuestasubscriber.php"
     },
     {
@@ -8892,7 +8946,7 @@
       "source_file": "backend\\src\\EventListener\\SeguridadRespuestaSubscriber.php",
       "source_location": "L18",
       "id": "seguridadrespuestasubscriber_seguridadrespuestasubscriber",
-      "community": 104,
+      "community": 105,
       "norm_label": "seguridadrespuestasubscriber"
     },
     {
@@ -8901,7 +8955,7 @@
       "source_file": "backend\\src\\EventListener\\SeguridadRespuestaSubscriber.php",
       "source_location": "L20",
       "id": "seguridadrespuestasubscriber_seguridadrespuestasubscriber_construct",
-      "community": 104,
+      "community": 105,
       "norm_label": ".__construct()"
     },
     {
@@ -8910,7 +8964,7 @@
       "source_file": "backend\\src\\EventListener\\SeguridadRespuestaSubscriber.php",
       "source_location": "L26",
       "id": "seguridadrespuestasubscriber_seguridadrespuestasubscriber_invoke",
-      "community": 104,
+      "community": 105,
       "norm_label": ".__invoke()"
     },
     {
@@ -9360,7 +9414,7 @@
       "source_file": "backend\\src\\Repository\\DiaEjercicioRepository.php",
       "source_location": "L1",
       "id": "backend_src_repository_diaejerciciorepository_php",
-      "community": 123,
+      "community": 124,
       "norm_label": "diaejerciciorepository.php"
     },
     {
@@ -9369,7 +9423,7 @@
       "source_file": "backend\\src\\Repository\\DiaEjercicioRepository.php",
       "source_location": "L12",
       "id": "diaejerciciorepository_diaejerciciorepository",
-      "community": 123,
+      "community": 124,
       "norm_label": "diaejerciciorepository"
     },
     {
@@ -9378,7 +9432,7 @@
       "source_file": "backend\\src\\Repository\\DiaEjercicioRepository.php",
       "source_location": "L14",
       "id": "diaejerciciorepository_diaejerciciorepository_construct",
-      "community": 123,
+      "community": 124,
       "norm_label": ".__construct()"
     },
     {
@@ -9387,7 +9441,7 @@
       "source_file": "backend\\src\\Repository\\DiaEntrenamientoRepository.php",
       "source_location": "L1",
       "id": "backend_src_repository_diaentrenamientorepository_php",
-      "community": 124,
+      "community": 125,
       "norm_label": "diaentrenamientorepository.php"
     },
     {
@@ -9396,7 +9450,7 @@
       "source_file": "backend\\src\\Repository\\DiaEntrenamientoRepository.php",
       "source_location": "L12",
       "id": "diaentrenamientorepository_diaentrenamientorepository",
-      "community": 124,
+      "community": 125,
       "norm_label": "diaentrenamientorepository"
     },
     {
@@ -9405,7 +9459,7 @@
       "source_file": "backend\\src\\Repository\\DiaEntrenamientoRepository.php",
       "source_location": "L14",
       "id": "diaentrenamientorepository_diaentrenamientorepository_construct",
-      "community": 124,
+      "community": 125,
       "norm_label": ".__construct()"
     },
     {
@@ -9414,7 +9468,7 @@
       "source_file": "backend\\src\\Repository\\DietaPlatoRepository.php",
       "source_location": "L1",
       "id": "backend_src_repository_dietaplatorepository_php",
-      "community": 90,
+      "community": 91,
       "norm_label": "dietaplatorepository.php"
     },
     {
@@ -9423,7 +9477,7 @@
       "source_file": "backend\\src\\Repository\\DietaPlatoRepository.php",
       "source_location": "L12",
       "id": "dietaplatorepository_dietaplatorepository",
-      "community": 90,
+      "community": 91,
       "norm_label": "dietaplatorepository"
     },
     {
@@ -9432,7 +9486,7 @@
       "source_file": "backend\\src\\Repository\\DietaPlatoRepository.php",
       "source_location": "L14",
       "id": "dietaplatorepository_dietaplatorepository_construct",
-      "community": 90,
+      "community": 91,
       "norm_label": ".__construct()"
     },
     {
@@ -9441,7 +9495,7 @@
       "source_file": "backend\\src\\Repository\\DietaPlatoRepository.php",
       "source_location": "L22",
       "id": "dietaplatorepository_dietaplatorepository_findbydietaanddia",
-      "community": 90,
+      "community": 91,
       "norm_label": ".findbydietaanddia()"
     },
     {
@@ -9450,7 +9504,7 @@
       "source_file": "backend\\src\\Repository\\DietaPlatoRepository.php",
       "source_location": "L37",
       "id": "dietaplatorepository_dietaplatorepository_findbydietadiaandtipo",
-      "community": 90,
+      "community": 91,
       "norm_label": ".findbydietadiaandtipo()"
     },
     {
@@ -9855,7 +9909,7 @@
       "source_file": "backend\\src\\Repository\\EntrenamientoEjercicioRepository.php",
       "source_location": "L1",
       "id": "backend_src_repository_entrenamientoejerciciorepository_php",
-      "community": 125,
+      "community": 126,
       "norm_label": "entrenamientoejerciciorepository.php"
     },
     {
@@ -9864,7 +9918,7 @@
       "source_file": "backend\\src\\Repository\\EntrenamientoEjercicioRepository.php",
       "source_location": "L12",
       "id": "entrenamientoejerciciorepository_entrenamientoejerciciorepository",
-      "community": 125,
+      "community": 126,
       "norm_label": "entrenamientoejerciciorepository"
     },
     {
@@ -9873,7 +9927,7 @@
       "source_file": "backend\\src\\Repository\\EntrenamientoEjercicioRepository.php",
       "source_location": "L14",
       "id": "entrenamientoejerciciorepository_entrenamientoejerciciorepository_construct",
-      "community": 125,
+      "community": 126,
       "norm_label": ".__construct()"
     },
     {
@@ -10719,7 +10773,7 @@
       "source_file": "backend\\src\\Security\\EntrenadorLoginSuccessHandler.php",
       "source_location": "L1",
       "id": "backend_src_security_entrenadorloginsuccesshandler_php",
-      "community": 105,
+      "community": 106,
       "norm_label": "entrenadorloginsuccesshandler.php"
     },
     {
@@ -10728,7 +10782,7 @@
       "source_file": "backend\\src\\Security\\EntrenadorLoginSuccessHandler.php",
       "source_location": "L10",
       "id": "entrenadorloginsuccesshandler_entrenadorloginsuccesshandler",
-      "community": 105,
+      "community": 106,
       "norm_label": "entrenadorloginsuccesshandler"
     },
     {
@@ -10737,7 +10791,7 @@
       "source_file": "backend\\src\\Security\\EntrenadorLoginSuccessHandler.php",
       "source_location": "L15",
       "id": "entrenadorloginsuccesshandler_entrenadorloginsuccesshandler_construct",
-      "community": 105,
+      "community": 106,
       "norm_label": ".__construct()"
     },
     {
@@ -10746,7 +10800,7 @@
       "source_file": "backend\\src\\Security\\EntrenadorLoginSuccessHandler.php",
       "source_location": "L21",
       "id": "entrenadorloginsuccesshandler_entrenadorloginsuccesshandler_onauthenticationsuccess",
-      "community": 105,
+      "community": 106,
       "norm_label": ".onauthenticationsuccess()"
     },
     {
@@ -10755,7 +10809,7 @@
       "source_file": "backend\\src\\Security\\LoginFailureHandler.php",
       "source_location": "L1",
       "id": "backend_src_security_loginfailurehandler_php",
-      "community": 106,
+      "community": 107,
       "norm_label": "loginfailurehandler.php"
     },
     {
@@ -10764,7 +10818,7 @@
       "source_file": "backend\\src\\Security\\LoginFailureHandler.php",
       "source_location": "L17",
       "id": "loginfailurehandler_loginfailurehandler",
-      "community": 106,
+      "community": 107,
       "norm_label": "loginfailurehandler"
     },
     {
@@ -10773,7 +10827,7 @@
       "source_file": "backend\\src\\Security\\LoginFailureHandler.php",
       "source_location": "L19",
       "id": "loginfailurehandler_loginfailurehandler_construct",
-      "community": 106,
+      "community": 107,
       "norm_label": ".__construct()"
     },
     {
@@ -10782,7 +10836,7 @@
       "source_file": "backend\\src\\Security\\LoginFailureHandler.php",
       "source_location": "L25",
       "id": "loginfailurehandler_loginfailurehandler_onauthenticationfailure",
-      "community": 106,
+      "community": 107,
       "norm_label": ".onauthenticationfailure()"
     },
     {
@@ -10881,7 +10935,7 @@
       "source_file": "backend\\src\\Security\\UsuarioLoginSuccessHandler.php",
       "source_location": "L1",
       "id": "backend_src_security_usuariologinsuccesshandler_php",
-      "community": 107,
+      "community": 108,
       "norm_label": "usuariologinsuccesshandler.php"
     },
     {
@@ -10890,7 +10944,7 @@
       "source_file": "backend\\src\\Security\\UsuarioLoginSuccessHandler.php",
       "source_location": "L10",
       "id": "usuariologinsuccesshandler_usuariologinsuccesshandler",
-      "community": 107,
+      "community": 108,
       "norm_label": "usuariologinsuccesshandler"
     },
     {
@@ -10899,7 +10953,7 @@
       "source_file": "backend\\src\\Security\\UsuarioLoginSuccessHandler.php",
       "source_location": "L15",
       "id": "usuariologinsuccesshandler_usuariologinsuccesshandler_construct",
-      "community": 107,
+      "community": 108,
       "norm_label": ".__construct()"
     },
     {
@@ -10908,7 +10962,7 @@
       "source_file": "backend\\src\\Security\\UsuarioLoginSuccessHandler.php",
       "source_location": "L21",
       "id": "usuariologinsuccesshandler_usuariologinsuccesshandler_onauthenticationsuccess",
-      "community": 107,
+      "community": 108,
       "norm_label": ".onauthenticationsuccess()"
     },
     {
@@ -10980,7 +11034,7 @@
       "source_file": "backend\\src\\Security\\VerificacionEmailChecker.php",
       "source_location": "L1",
       "id": "backend_src_security_verificacionemailchecker_php",
-      "community": 108,
+      "community": 109,
       "norm_label": "verificacionemailchecker.php"
     },
     {
@@ -10989,7 +11043,7 @@
       "source_file": "backend\\src\\Security\\VerificacionEmailChecker.php",
       "source_location": "L15",
       "id": "verificacionemailchecker_verificacionemailchecker",
-      "community": 108,
+      "community": 109,
       "norm_label": "verificacionemailchecker"
     },
     {
@@ -10998,7 +11052,7 @@
       "source_file": "backend\\src\\Security\\VerificacionEmailChecker.php",
       "source_location": "L19",
       "id": "verificacionemailchecker_verificacionemailchecker_checkpreauth",
-      "community": 108,
+      "community": 109,
       "norm_label": ".checkpreauth()"
     },
     {
@@ -11007,7 +11061,7 @@
       "source_file": "backend\\src\\Security\\VerificacionEmailChecker.php",
       "source_location": "L23",
       "id": "verificacionemailchecker_verificacionemailchecker_checkpostauth",
-      "community": 108,
+      "community": 109,
       "norm_label": ".checkpostauth()"
     },
     {
@@ -11133,7 +11187,7 @@
       "source_file": "backend\\src\\Service\\Correo.php",
       "source_location": "L1",
       "id": "backend_src_service_correo_php",
-      "community": 72,
+      "community": 73,
       "norm_label": "correo.php"
     },
     {
@@ -11142,7 +11196,7 @@
       "source_file": "backend\\src\\Service\\Correo.php",
       "source_location": "L20",
       "id": "correo_correo",
-      "community": 72,
+      "community": 73,
       "norm_label": "correo"
     },
     {
@@ -11151,7 +11205,7 @@
       "source_file": "backend\\src\\Service\\Correo.php",
       "source_location": "L22",
       "id": "correo_correo_construct",
-      "community": 72,
+      "community": 73,
       "norm_label": ".__construct()"
     },
     {
@@ -11160,7 +11214,7 @@
       "source_file": "backend\\src\\Service\\Correo.php",
       "source_location": "L32",
       "id": "correo_correo_configurado",
-      "community": 72,
+      "community": 73,
       "norm_label": ".configurado()"
     },
     {
@@ -11169,7 +11223,7 @@
       "source_file": "backend\\src\\Service\\Correo.php",
       "source_location": "L38",
       "id": "correo_correo_enviar",
-      "community": 72,
+      "community": 73,
       "norm_label": ".enviar()"
     },
     {
@@ -11178,7 +11232,7 @@
       "source_file": "backend\\src\\Service\\Correo.php",
       "source_location": "L75",
       "id": "correo_correo_remitente",
-      "community": 72,
+      "community": 73,
       "norm_label": ".remitente()"
     },
     {
@@ -11556,7 +11610,7 @@
       "source_file": "frontend\\check_exact.js",
       "source_location": "L1",
       "id": "frontend_check_exact_js",
-      "community": 236,
+      "community": 237,
       "norm_label": "check_exact.js"
     },
     {
@@ -11565,7 +11619,7 @@
       "source_file": "frontend\\check_links.js",
       "source_location": "L1",
       "id": "frontend_check_links_js",
-      "community": 144,
+      "community": 145,
       "norm_label": "check_links.js"
     },
     {
@@ -11574,7 +11628,7 @@
       "source_file": "frontend\\check_links.js",
       "source_location": "L4",
       "id": "check_links_walk",
-      "community": 144,
+      "community": 145,
       "norm_label": "walk()"
     },
     {
@@ -11583,7 +11637,7 @@
       "source_file": "frontend\\eslint.config.js",
       "source_location": "L1",
       "id": "frontend_eslint_config_js",
-      "community": 237,
+      "community": 238,
       "norm_label": "eslint.config.js"
     },
     {
@@ -11592,7 +11646,7 @@
       "source_file": "frontend\\postcss.config.js",
       "source_location": "L1",
       "id": "frontend_postcss_config_js",
-      "community": 238,
+      "community": 239,
       "norm_label": "postcss.config.js"
     },
     {
@@ -11601,7 +11655,7 @@
       "source_file": "frontend\\replace-emojis.js",
       "source_location": "L1",
       "id": "frontend_replace_emojis_js",
-      "community": 145,
+      "community": 146,
       "norm_label": "replace-emojis.js"
     },
     {
@@ -11610,7 +11664,7 @@
       "source_file": "frontend\\replace-emojis.js",
       "source_location": "L50",
       "id": "replace_emojis_processfile",
-      "community": 145,
+      "community": 146,
       "norm_label": "processfile()"
     },
     {
@@ -11619,7 +11673,7 @@
       "source_file": "frontend\\vite.config.js",
       "source_location": "L1",
       "id": "frontend_vite_config_js",
-      "community": 239,
+      "community": 240,
       "norm_label": "vite.config.js"
     },
     {
@@ -11628,7 +11682,7 @@
       "source_file": "frontend\\src\\App.jsx",
       "source_location": "L1",
       "id": "frontend_src_app_jsx",
-      "community": 126,
+      "community": 127,
       "norm_label": "app.jsx"
     },
     {
@@ -11637,7 +11691,7 @@
       "source_file": "frontend\\src\\App.jsx",
       "source_location": "L75",
       "id": "app_cargando",
-      "community": 126,
+      "community": 127,
       "norm_label": "cargando()"
     },
     {
@@ -11646,7 +11700,7 @@
       "source_file": "frontend\\src\\App.jsx",
       "source_location": "L84",
       "id": "app_app",
-      "community": 126,
+      "community": 127,
       "norm_label": "app()"
     },
     {
@@ -11655,7 +11709,7 @@
       "source_file": "frontend\\src\\main.jsx",
       "source_location": "L1",
       "id": "frontend_src_main_jsx",
-      "community": 240,
+      "community": 241,
       "norm_label": "main.jsx"
     },
     {
@@ -11664,7 +11718,7 @@
       "source_file": "frontend\\src\\components\\ModalReceta.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_modalreceta_jsx",
-      "community": 146,
+      "community": 147,
       "norm_label": "modalreceta.jsx"
     },
     {
@@ -11673,7 +11727,7 @@
       "source_file": "frontend\\src\\components\\ModalReceta.jsx",
       "source_location": "L7",
       "id": "modalreceta_modalreceta",
-      "community": 146,
+      "community": 147,
       "norm_label": "modalreceta()"
     },
     {
@@ -11682,7 +11736,7 @@
       "source_file": "frontend\\src\\components\\ProtectedRouteEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_protectedrouteentrenador_jsx",
-      "community": 147,
+      "community": 148,
       "norm_label": "protectedrouteentrenador.jsx"
     },
     {
@@ -11691,7 +11745,7 @@
       "source_file": "frontend\\src\\components\\ProtectedRouteEntrenador.jsx",
       "source_location": "L4",
       "id": "protectedrouteentrenador_protectedrouteentrenador",
-      "community": 147,
+      "community": 148,
       "norm_label": "protectedrouteentrenador()"
     },
     {
@@ -11700,7 +11754,7 @@
       "source_file": "frontend\\src\\components\\admin\\Modal.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_admin_modal_jsx",
-      "community": 148,
+      "community": 149,
       "norm_label": "modal.jsx"
     },
     {
@@ -11709,7 +11763,7 @@
       "source_file": "frontend\\src\\components\\admin\\Modal.jsx",
       "source_location": "L3",
       "id": "modal_modal",
-      "community": 148,
+      "community": 149,
       "norm_label": "modal()"
     },
     {
@@ -11718,7 +11772,7 @@
       "source_file": "frontend\\src\\components\\blog\\BlogCard.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_blog_blogcard_jsx",
-      "community": 149,
+      "community": 150,
       "norm_label": "blogcard.jsx"
     },
     {
@@ -11727,7 +11781,7 @@
       "source_file": "frontend\\src\\components\\blog\\BlogCard.jsx",
       "source_location": "L6",
       "id": "blogcard_blogcard",
-      "community": 149,
+      "community": 150,
       "norm_label": "blogcard()"
     },
     {
@@ -11736,7 +11790,7 @@
       "source_file": "frontend\\src\\components\\calendario\\SelectorDietaDia.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_calendario_selectordietadia_jsx",
-      "community": 150,
+      "community": 151,
       "norm_label": "selectordietadia.jsx"
     },
     {
@@ -11745,7 +11799,7 @@
       "source_file": "frontend\\src\\components\\calendario\\SelectorDietaDia.jsx",
       "source_location": "L12",
       "id": "selectordietadia_selectordietadia",
-      "community": 150,
+      "community": 151,
       "norm_label": "selectordietadia()"
     },
     {
@@ -11754,7 +11808,7 @@
       "source_file": "frontend\\src\\components\\common\\Badge.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_badge_jsx",
-      "community": 151,
+      "community": 152,
       "norm_label": "badge.jsx"
     },
     {
@@ -11763,7 +11817,7 @@
       "source_file": "frontend\\src\\components\\common\\Badge.jsx",
       "source_location": "L3",
       "id": "badge_badge",
-      "community": 151,
+      "community": 152,
       "norm_label": "badge()"
     },
     {
@@ -11772,7 +11826,7 @@
       "source_file": "frontend\\src\\components\\common\\Button.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_button_jsx",
-      "community": 127,
+      "community": 128,
       "norm_label": "button.jsx"
     },
     {
@@ -11781,7 +11835,7 @@
       "source_file": "frontend\\src\\stories\\Button.jsx",
       "source_location": "L8",
       "id": "button_button",
-      "community": 127,
+      "community": 128,
       "norm_label": "button()"
     },
     {
@@ -11790,7 +11844,7 @@
       "source_file": "frontend\\src\\components\\common\\Card.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_card_jsx",
-      "community": 152,
+      "community": 153,
       "norm_label": "card.jsx"
     },
     {
@@ -11799,7 +11853,7 @@
       "source_file": "frontend\\src\\components\\common\\Card.jsx",
       "source_location": "L1",
       "id": "card_card",
-      "community": 152,
+      "community": 153,
       "norm_label": "card()"
     },
     {
@@ -11808,7 +11862,7 @@
       "source_file": "frontend\\src\\components\\common\\CookieBanner.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_cookiebanner_jsx",
-      "community": 153,
+      "community": 154,
       "norm_label": "cookiebanner.jsx"
     },
     {
@@ -11817,7 +11871,7 @@
       "source_file": "frontend\\src\\components\\common\\CookieBanner.jsx",
       "source_location": "L14",
       "id": "cookiebanner_cookiebanner",
-      "community": 153,
+      "community": 154,
       "norm_label": "cookiebanner()"
     },
     {
@@ -11826,7 +11880,7 @@
       "source_file": "frontend\\src\\components\\common\\Icono.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_icono_jsx",
-      "community": 154,
+      "community": 155,
       "norm_label": "icono.jsx"
     },
     {
@@ -11835,7 +11889,7 @@
       "source_file": "frontend\\src\\components\\common\\Icono.jsx",
       "source_location": "L2",
       "id": "icono_icono",
-      "community": 154,
+      "community": 155,
       "norm_label": "icono()"
     },
     {
@@ -11844,7 +11898,7 @@
       "source_file": "frontend\\src\\components\\common\\index.js",
       "source_location": "L1",
       "id": "frontend_src_components_common_index_js",
-      "community": 241,
+      "community": 242,
       "norm_label": "index.js"
     },
     {
@@ -11853,7 +11907,7 @@
       "source_file": "frontend\\src\\components\\common\\Input.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_input_jsx",
-      "community": 155,
+      "community": 156,
       "norm_label": "input.jsx"
     },
     {
@@ -11862,7 +11916,7 @@
       "source_file": "frontend\\src\\components\\common\\Input.jsx",
       "source_location": "L1",
       "id": "input_input",
-      "community": 155,
+      "community": 156,
       "norm_label": "input()"
     },
     {
@@ -11871,7 +11925,7 @@
       "source_file": "frontend\\src\\components\\common\\MuscleMap.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_musclemap_jsx",
-      "community": 91,
+      "community": 92,
       "norm_label": "musclemap.jsx"
     },
     {
@@ -11880,7 +11934,7 @@
       "source_file": "frontend\\src\\components\\common\\MuscleMap.jsx",
       "source_location": "L29",
       "id": "musclemap_normalizargrupo",
-      "community": 91,
+      "community": 92,
       "norm_label": "normalizargrupo()"
     },
     {
@@ -11889,7 +11943,7 @@
       "source_file": "frontend\\src\\components\\common\\MuscleMap.jsx",
       "source_location": "L39",
       "id": "musclemap_musculosde",
-      "community": 91,
+      "community": 92,
       "norm_label": "musculosde()"
     },
     {
@@ -11898,7 +11952,7 @@
       "source_file": "frontend\\src\\components\\common\\MuscleMap.jsx",
       "source_location": "L54",
       "id": "musclemap_grupodemusculo",
-      "community": 91,
+      "community": 92,
       "norm_label": "grupodemusculo()"
     },
     {
@@ -11907,7 +11961,7 @@
       "source_file": "frontend\\src\\components\\common\\MuscleMap.jsx",
       "source_location": "L62",
       "id": "musclemap_musclemap",
-      "community": 91,
+      "community": 92,
       "norm_label": "musclemap()"
     },
     {
@@ -11916,7 +11970,7 @@
       "source_file": "frontend\\src\\components\\common\\PageHeader.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_pageheader_jsx",
-      "community": 156,
+      "community": 157,
       "norm_label": "pageheader.jsx"
     },
     {
@@ -11925,7 +11979,7 @@
       "source_file": "frontend\\src\\components\\common\\PageHeader.jsx",
       "source_location": "L2",
       "id": "pageheader_pageheader",
-      "community": 156,
+      "community": 157,
       "norm_label": "pageheader()"
     },
     {
@@ -11934,7 +11988,7 @@
       "source_file": "frontend\\src\\components\\common\\ProtectedRoute.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_protectedroute_jsx",
-      "community": 157,
+      "community": 158,
       "norm_label": "protectedroute.jsx"
     },
     {
@@ -11943,7 +11997,7 @@
       "source_file": "frontend\\src\\components\\common\\ProtectedRoute.jsx",
       "source_location": "L15",
       "id": "protectedroute_protectedroute",
-      "community": 157,
+      "community": 158,
       "norm_label": "protectedroute()"
     },
     {
@@ -11952,7 +12006,7 @@
       "source_file": "frontend\\src\\components\\common\\Reveal.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_reveal_jsx",
-      "community": 158,
+      "community": 159,
       "norm_label": "reveal.jsx"
     },
     {
@@ -11961,7 +12015,7 @@
       "source_file": "frontend\\src\\components\\common\\Reveal.jsx",
       "source_location": "L4",
       "id": "reveal_reveal",
-      "community": 158,
+      "community": 159,
       "norm_label": "reveal()"
     },
     {
@@ -11970,7 +12024,7 @@
       "source_file": "frontend\\src\\components\\common\\ScrollToTop.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_scrolltotop_jsx",
-      "community": 159,
+      "community": 160,
       "norm_label": "scrolltotop.jsx"
     },
     {
@@ -11979,7 +12033,7 @@
       "source_file": "frontend\\src\\components\\common\\ScrollToTop.jsx",
       "source_location": "L4",
       "id": "scrolltotop_scrolltotop",
-      "community": 159,
+      "community": 160,
       "norm_label": "scrolltotop()"
     },
     {
@@ -11988,7 +12042,7 @@
       "source_file": "frontend\\src\\components\\common\\SEO.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_seo_jsx",
-      "community": 160,
+      "community": 161,
       "norm_label": "seo.jsx"
     },
     {
@@ -11997,7 +12051,7 @@
       "source_file": "frontend\\src\\components\\common\\SEO.jsx",
       "source_location": "L5",
       "id": "seo_seo",
-      "community": 160,
+      "community": 161,
       "norm_label": "seo()"
     },
     {
@@ -12006,7 +12060,7 @@
       "source_file": "frontend\\src\\components\\common\\TarjetaEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_tarjetaentrenador_jsx",
-      "community": 161,
+      "community": 162,
       "norm_label": "tarjetaentrenador.jsx"
     },
     {
@@ -12015,7 +12069,7 @@
       "source_file": "frontend\\src\\components\\common\\TarjetaEntrenador.jsx",
       "source_location": "L5",
       "id": "tarjetaentrenador_tarjetaentrenador",
-      "community": 161,
+      "community": 162,
       "norm_label": "tarjetaentrenador()"
     },
     {
@@ -12024,7 +12078,7 @@
       "source_file": "frontend\\src\\components\\common\\Toast.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_common_toast_jsx",
-      "community": 162,
+      "community": 163,
       "norm_label": "toast.jsx"
     },
     {
@@ -12033,7 +12087,7 @@
       "source_file": "frontend\\src\\components\\common\\Toast.jsx",
       "source_location": "L4",
       "id": "toast_toast",
-      "community": 162,
+      "community": 163,
       "norm_label": "toast()"
     },
     {
@@ -12042,7 +12096,7 @@
       "source_file": "frontend\\src\\components\\dieta\\BuscadorAlimentos.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_dieta_buscadoralimentos_jsx",
-      "community": 163,
+      "community": 164,
       "norm_label": "buscadoralimentos.jsx"
     },
     {
@@ -12051,7 +12105,7 @@
       "source_file": "frontend\\src\\components\\dieta\\BuscadorAlimentos.jsx",
       "source_location": "L8",
       "id": "buscadoralimentos_buscadoralimentos",
-      "community": 163,
+      "community": 164,
       "norm_label": "buscadoralimentos()"
     },
     {
@@ -12060,7 +12114,7 @@
       "source_file": "frontend\\src\\components\\dieta\\CalculadoraNutricional.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_dieta_calculadoranutricional_jsx",
-      "community": 128,
+      "community": 129,
       "norm_label": "calculadoranutricional.jsx"
     },
     {
@@ -12069,7 +12123,7 @@
       "source_file": "frontend\\src\\components\\dieta\\CalculadoraNutricional.jsx",
       "source_location": "L24",
       "id": "calculadoranutricional_calculadoranutricional",
-      "community": 128,
+      "community": 129,
       "norm_label": "calculadoranutricional()"
     },
     {
@@ -12078,7 +12132,7 @@
       "source_file": "frontend\\src\\components\\dieta\\CalculadoraNutricional.jsx",
       "source_location": "L171",
       "id": "calculadoranutricional_dato",
-      "community": 128,
+      "community": 129,
       "norm_label": "dato()"
     },
     {
@@ -12087,7 +12141,7 @@
       "source_file": "frontend\\src\\components\\dieta\\ConstructorPlatos.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_dieta_constructorplatos_jsx",
-      "community": 164,
+      "community": 165,
       "norm_label": "constructorplatos.jsx"
     },
     {
@@ -12096,7 +12150,7 @@
       "source_file": "frontend\\src\\components\\dieta\\ConstructorPlatos.jsx",
       "source_location": "L11",
       "id": "constructorplatos_constructorplatos",
-      "community": 164,
+      "community": 165,
       "norm_label": "constructorplatos()"
     },
     {
@@ -12105,7 +12159,7 @@
       "source_file": "frontend\\src\\components\\dieta\\PanelTotales.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_dieta_paneltotales_jsx",
-      "community": 165,
+      "community": 166,
       "norm_label": "paneltotales.jsx"
     },
     {
@@ -12114,7 +12168,7 @@
       "source_file": "frontend\\src\\components\\dieta\\PanelTotales.jsx",
       "source_location": "L7",
       "id": "paneltotales_paneltotales",
-      "community": 165,
+      "community": 166,
       "norm_label": "paneltotales()"
     },
     {
@@ -12123,7 +12177,7 @@
       "source_file": "frontend\\src\\components\\dieta\\SeccionComida.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_dieta_seccioncomida_jsx",
-      "community": 166,
+      "community": 167,
       "norm_label": "seccioncomida.jsx"
     },
     {
@@ -12132,7 +12186,7 @@
       "source_file": "frontend\\src\\components\\dieta\\SeccionComida.jsx",
       "source_location": "L10",
       "id": "seccioncomida_seccioncomida",
-      "community": 166,
+      "community": 167,
       "norm_label": "seccioncomida()"
     },
     {
@@ -12141,7 +12195,7 @@
       "source_file": "frontend\\src\\components\\dieta\\SelectorPlatos.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_dieta_selectorplatos_jsx",
-      "community": 167,
+      "community": 168,
       "norm_label": "selectorplatos.jsx"
     },
     {
@@ -12150,7 +12204,7 @@
       "source_file": "frontend\\src\\components\\dieta\\SelectorPlatos.jsx",
       "source_location": "L9",
       "id": "selectorplatos_selectorplatos",
-      "community": 167,
+      "community": 168,
       "norm_label": "selectorplatos()"
     },
     {
@@ -12159,7 +12213,7 @@
       "source_file": "frontend\\src\\components\\gym\\BarraFiltros.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_gym_barrafiltros_jsx",
-      "community": 168,
+      "community": 169,
       "norm_label": "barrafiltros.jsx"
     },
     {
@@ -12168,7 +12222,7 @@
       "source_file": "frontend\\src\\components\\gym\\BarraFiltros.jsx",
       "source_location": "L11",
       "id": "barrafiltros_barrafiltros",
-      "community": 168,
+      "community": 169,
       "norm_label": "barrafiltros()"
     },
     {
@@ -12177,7 +12231,7 @@
       "source_file": "frontend\\src\\components\\gym\\biblioteca.js",
       "source_location": "L1",
       "id": "frontend_src_components_gym_biblioteca_js",
-      "community": 109,
+      "community": 110,
       "norm_label": "biblioteca.js"
     },
     {
@@ -12186,7 +12240,7 @@
       "source_file": "frontend\\src\\components\\gym\\biblioteca.js",
       "source_location": "L30",
       "id": "biblioteca_nombregrupo",
-      "community": 109,
+      "community": 110,
       "norm_label": "nombregrupo()"
     },
     {
@@ -12195,7 +12249,7 @@
       "source_file": "frontend\\src\\components\\gym\\biblioteca.js",
       "source_location": "L36",
       "id": "biblioteca_guardarcache",
-      "community": 109,
+      "community": 110,
       "norm_label": "guardarcache()"
     },
     {
@@ -12204,7 +12258,7 @@
       "source_file": "frontend\\src\\components\\gym\\biblioteca.js",
       "source_location": "L40",
       "id": "biblioteca_usebiblioteca",
-      "community": 109,
+      "community": 110,
       "norm_label": "usebiblioteca()"
     },
     {
@@ -12213,7 +12267,7 @@
       "source_file": "frontend\\src\\components\\gym\\BibliotecaEjercicios.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_gym_bibliotecaejercicios_jsx",
-      "community": 169,
+      "community": 170,
       "norm_label": "bibliotecaejercicios.jsx"
     },
     {
@@ -12222,7 +12276,7 @@
       "source_file": "frontend\\src\\components\\gym\\BibliotecaEjercicios.jsx",
       "source_location": "L29",
       "id": "bibliotecaejercicios_bibliotecaejercicios",
-      "community": 169,
+      "community": 170,
       "norm_label": "bibliotecaejercicios()"
     },
     {
@@ -12231,7 +12285,7 @@
       "source_file": "frontend\\src\\components\\gym\\ModalEjercicio.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_gym_modalejercicio_jsx",
-      "community": 170,
+      "community": 171,
       "norm_label": "modalejercicio.jsx"
     },
     {
@@ -12240,7 +12294,7 @@
       "source_file": "frontend\\src\\components\\gym\\ModalEjercicio.jsx",
       "source_location": "L16",
       "id": "modalejercicio_modalejercicio",
-      "community": 170,
+      "community": 171,
       "norm_label": "modalejercicio()"
     },
     {
@@ -12249,7 +12303,7 @@
       "source_file": "frontend\\src\\components\\gym\\PanelEjercicios.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_gym_panelejercicios_jsx",
-      "community": 129,
+      "community": 130,
       "norm_label": "panelejercicios.jsx"
     },
     {
@@ -12258,7 +12312,7 @@
       "source_file": "frontend\\src\\components\\gym\\PanelEjercicios.jsx",
       "source_location": "L24",
       "id": "panelejercicios_sinacentos",
-      "community": 129,
+      "community": 130,
       "norm_label": "sinacentos()"
     },
     {
@@ -12267,7 +12321,7 @@
       "source_file": "frontend\\src\\components\\gym\\PanelEjercicios.jsx",
       "source_location": "L26",
       "id": "panelejercicios_panelejercicios",
-      "community": 129,
+      "community": 130,
       "norm_label": "panelejercicios()"
     },
     {
@@ -12276,7 +12330,7 @@
       "source_file": "frontend\\src\\components\\gym\\SelectorMusculos.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_gym_selectormusculos_jsx",
-      "community": 130,
+      "community": 131,
       "norm_label": "selectormusculos.jsx"
     },
     {
@@ -12285,7 +12339,7 @@
       "source_file": "frontend\\src\\components\\gym\\SelectorMusculos.jsx",
       "source_location": "L11",
       "id": "selectormusculos_sinacentos",
-      "community": 130,
+      "community": 131,
       "norm_label": "sinacentos()"
     },
     {
@@ -12294,7 +12348,7 @@
       "source_file": "frontend\\src\\components\\gym\\SelectorMusculos.jsx",
       "source_location": "L19",
       "id": "selectormusculos_selectormusculos",
-      "community": 130,
+      "community": 131,
       "norm_label": "selectormusculos()"
     },
     {
@@ -12303,7 +12357,7 @@
       "source_file": "frontend\\src\\components\\gym\\TarjetaEjercicio.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_gym_tarjetaejercicio_jsx",
-      "community": 171,
+      "community": 172,
       "norm_label": "tarjetaejercicio.jsx"
     },
     {
@@ -12312,7 +12366,7 @@
       "source_file": "frontend\\src\\components\\gym\\TarjetaEjercicio.jsx",
       "source_location": "L13",
       "id": "tarjetaejercicio_tarjetaejercicio",
-      "community": 171,
+      "community": 172,
       "norm_label": "tarjetaejercicio()"
     },
     {
@@ -12321,7 +12375,7 @@
       "source_file": "frontend\\src\\components\\layout\\Footer.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_layout_footer_jsx",
-      "community": 172,
+      "community": 173,
       "norm_label": "footer.jsx"
     },
     {
@@ -12330,7 +12384,7 @@
       "source_file": "frontend\\src\\components\\layout\\Footer.jsx",
       "source_location": "L8",
       "id": "footer_footer",
-      "community": 172,
+      "community": 173,
       "norm_label": "footer()"
     },
     {
@@ -12339,7 +12393,7 @@
       "source_file": "frontend\\src\\components\\layout\\Navbar.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_layout_navbar_jsx",
-      "community": 173,
+      "community": 174,
       "norm_label": "navbar.jsx"
     },
     {
@@ -12348,7 +12402,7 @@
       "source_file": "frontend\\src\\components\\layout\\Navbar.jsx",
       "source_location": "L27",
       "id": "navbar_navbar",
-      "community": 173,
+      "community": 174,
       "norm_label": "navbar()"
     },
     {
@@ -12357,7 +12411,7 @@
       "source_file": "frontend\\src\\components\\legal\\PaginaLegal.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_legal_paginalegal_jsx",
-      "community": 92,
+      "community": 93,
       "norm_label": "paginalegal.jsx"
     },
     {
@@ -12366,7 +12420,7 @@
       "source_file": "frontend\\src\\components\\legal\\PaginaLegal.jsx",
       "source_location": "L8",
       "id": "paginalegal_paginalegal",
-      "community": 92,
+      "community": 93,
       "norm_label": "paginalegal()"
     },
     {
@@ -12375,7 +12429,7 @@
       "source_file": "frontend\\src\\components\\legal\\PaginaLegal.jsx",
       "source_location": "L56",
       "id": "paginalegal_lista",
-      "community": 92,
+      "community": 93,
       "norm_label": "lista()"
     },
     {
@@ -12384,7 +12438,7 @@
       "source_file": "frontend\\src\\components\\legal\\PaginaLegal.jsx",
       "source_location": "L60",
       "id": "paginalegal_tabla",
-      "community": 92,
+      "community": 93,
       "norm_label": "tabla()"
     },
     {
@@ -12393,7 +12447,7 @@
       "source_file": "frontend\\src\\components\\legal\\PaginaLegal.jsx",
       "source_location": "L89",
       "id": "paginalegal_correo",
-      "community": 92,
+      "community": 93,
       "norm_label": "correo()"
     },
     {
@@ -12402,7 +12456,7 @@
       "source_file": "frontend\\src\\components\\progreso\\CompletarEntreno.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_progreso_completarentreno_jsx",
-      "community": 174,
+      "community": 175,
       "norm_label": "completarentreno.jsx"
     },
     {
@@ -12411,7 +12465,7 @@
       "source_file": "frontend\\src\\components\\progreso\\CompletarEntreno.jsx",
       "source_location": "L22",
       "id": "completarentreno_completarentreno",
-      "community": 174,
+      "community": 175,
       "norm_label": "completarentreno()"
     },
     {
@@ -12420,7 +12474,7 @@
       "source_file": "frontend\\src\\components\\progreso\\formato.js",
       "source_location": "L1",
       "id": "frontend_src_components_progreso_formato_js",
-      "community": 175,
+      "community": 176,
       "norm_label": "formato.js"
     },
     {
@@ -12429,7 +12483,7 @@
       "source_file": "frontend\\src\\components\\progreso\\formato.js",
       "source_location": "L4",
       "id": "formato_ultimasesion",
-      "community": 175,
+      "community": 176,
       "norm_label": "ultimasesion()"
     },
     {
@@ -12438,7 +12492,7 @@
       "source_file": "frontend\\src\\components\\progreso\\GraficoProgreso.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_progreso_graficoprogreso_jsx",
-      "community": 176,
+      "community": 177,
       "norm_label": "graficoprogreso.jsx"
     },
     {
@@ -12447,7 +12501,7 @@
       "source_file": "frontend\\src\\components\\progreso\\GraficoProgreso.jsx",
       "source_location": "L5",
       "id": "graficoprogreso_graficoprogreso",
-      "community": 176,
+      "community": 177,
       "norm_label": "graficoprogreso()"
     },
     {
@@ -12456,7 +12510,7 @@
       "source_file": "frontend\\src\\components\\progreso\\ObjetivosCumplidos.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_progreso_objetivoscumplidos_jsx",
-      "community": 131,
+      "community": 132,
       "norm_label": "objetivoscumplidos.jsx"
     },
     {
@@ -12465,7 +12519,7 @@
       "source_file": "frontend\\src\\components\\progreso\\ObjetivosCumplidos.jsx",
       "source_location": "L11",
       "id": "objetivoscumplidos_fechacorta",
-      "community": 131,
+      "community": 132,
       "norm_label": "fechacorta()"
     },
     {
@@ -12474,7 +12528,7 @@
       "source_file": "frontend\\src\\components\\progreso\\ObjetivosCumplidos.jsx",
       "source_location": "L13",
       "id": "objetivoscumplidos_objetivoscumplidos",
-      "community": 131,
+      "community": 132,
       "norm_label": "objetivoscumplidos()"
     },
     {
@@ -12546,7 +12600,7 @@
       "source_file": "frontend\\src\\components\\progreso\\ProgresoRutinas.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_progreso_progresorutinas_jsx",
-      "community": 177,
+      "community": 178,
       "norm_label": "progresorutinas.jsx"
     },
     {
@@ -12555,7 +12609,7 @@
       "source_file": "frontend\\src\\components\\progreso\\ProgresoRutinas.jsx",
       "source_location": "L11",
       "id": "progresorutinas_progresorutinas",
-      "community": 177,
+      "community": 178,
       "norm_label": "progresorutinas()"
     },
     {
@@ -12564,7 +12618,7 @@
       "source_file": "frontend\\src\\components\\progreso\\RegistroSeries.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_progreso_registroseries_jsx",
-      "community": 73,
+      "community": 74,
       "norm_label": "registroseries.jsx"
     },
     {
@@ -12573,7 +12627,7 @@
       "source_file": "frontend\\src\\components\\progreso\\RegistroSeries.jsx",
       "source_location": "L13",
       "id": "registroseries_hoy",
-      "community": 73,
+      "community": 74,
       "norm_label": "hoy()"
     },
     {
@@ -12582,7 +12636,7 @@
       "source_file": "frontend\\src\\components\\progreso\\RegistroSeries.jsx",
       "source_location": "L17",
       "id": "registroseries_fechacorta",
-      "community": 73,
+      "community": 74,
       "norm_label": "fechacorta()"
     },
     {
@@ -12591,7 +12645,7 @@
       "source_file": "frontend\\src\\components\\progreso\\RegistroSeries.jsx",
       "source_location": "L18",
       "id": "registroseries_kg",
-      "community": 73,
+      "community": 74,
       "norm_label": "kg()"
     },
     {
@@ -12600,7 +12654,7 @@
       "source_file": "frontend\\src\\components\\progreso\\RegistroSeries.jsx",
       "source_location": "L24",
       "id": "registroseries_registroseries",
-      "community": 73,
+      "community": 74,
       "norm_label": "registroseries()"
     },
     {
@@ -12609,7 +12663,7 @@
       "source_file": "frontend\\src\\components\\progreso\\RegistroSeries.jsx",
       "source_location": "L198",
       "id": "registroseries_dato",
-      "community": 73,
+      "community": 74,
       "norm_label": "dato()"
     },
     {
@@ -12618,7 +12672,7 @@
       "source_file": "frontend\\src\\components\\social\\AjustesPrivacidad.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_ajustesprivacidad_jsx",
-      "community": 178,
+      "community": 179,
       "norm_label": "ajustesprivacidad.jsx"
     },
     {
@@ -12627,7 +12681,7 @@
       "source_file": "frontend\\src\\components\\social\\AjustesPrivacidad.jsx",
       "source_location": "L20",
       "id": "ajustesprivacidad_ajustesprivacidad",
-      "community": 178,
+      "community": 179,
       "norm_label": "ajustesprivacidad()"
     },
     {
@@ -12636,7 +12690,7 @@
       "source_file": "frontend\\src\\components\\social\\Avatar.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_avatar_jsx",
-      "community": 132,
+      "community": 133,
       "norm_label": "avatar.jsx"
     },
     {
@@ -12645,7 +12699,7 @@
       "source_file": "frontend\\src\\components\\social\\Avatar.jsx",
       "source_location": "L11",
       "id": "avatar_iniciales",
-      "community": 132,
+      "community": 133,
       "norm_label": "iniciales()"
     },
     {
@@ -12654,7 +12708,7 @@
       "source_file": "frontend\\src\\components\\social\\Avatar.jsx",
       "source_location": "L20",
       "id": "avatar_avatar",
-      "community": 132,
+      "community": 133,
       "norm_label": "avatar()"
     },
     {
@@ -12663,7 +12717,7 @@
       "source_file": "frontend\\src\\components\\social\\BotonSeguir.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_botonseguir_jsx",
-      "community": 179,
+      "community": 180,
       "norm_label": "botonseguir.jsx"
     },
     {
@@ -12672,7 +12726,7 @@
       "source_file": "frontend\\src\\components\\social\\BotonSeguir.jsx",
       "source_location": "L9",
       "id": "botonseguir_botonseguir",
-      "community": 179,
+      "community": 180,
       "norm_label": "botonseguir()"
     },
     {
@@ -12681,7 +12735,7 @@
       "source_file": "frontend\\src\\components\\social\\EntrenoHoy.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_entrenohoy_jsx",
-      "community": 133,
+      "community": 134,
       "norm_label": "entrenohoy.jsx"
     },
     {
@@ -12690,7 +12744,7 @@
       "source_file": "frontend\\src\\components\\social\\EntrenoHoy.jsx",
       "source_location": "L9",
       "id": "entrenohoy_entrenohoy",
-      "community": 133,
+      "community": 134,
       "norm_label": "entrenohoy()"
     },
     {
@@ -12699,7 +12753,7 @@
       "source_file": "frontend\\src\\components\\social\\EntrenoHoy.jsx",
       "source_location": "L208",
       "id": "entrenohoy_interruptor",
-      "community": 133,
+      "community": 134,
       "norm_label": "interruptor()"
     },
     {
@@ -12708,7 +12762,7 @@
       "source_file": "frontend\\src\\components\\social\\FeedEntrenos.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_feedentrenos_jsx",
-      "community": 180,
+      "community": 181,
       "norm_label": "feedentrenos.jsx"
     },
     {
@@ -12717,7 +12771,7 @@
       "source_file": "frontend\\src\\components\\social\\FeedEntrenos.jsx",
       "source_location": "L11",
       "id": "feedentrenos_feedentrenos",
-      "community": 180,
+      "community": 181,
       "norm_label": "feedentrenos()"
     },
     {
@@ -12726,7 +12780,7 @@
       "source_file": "frontend\\src\\components\\social\\ListaCuentasModal.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_listacuentasmodal_jsx",
-      "community": 181,
+      "community": 182,
       "norm_label": "listacuentasmodal.jsx"
     },
     {
@@ -12735,7 +12789,7 @@
       "source_file": "frontend\\src\\components\\social\\ListaCuentasModal.jsx",
       "source_location": "L8",
       "id": "listacuentasmodal_listacuentasmodal",
-      "community": 181,
+      "community": 182,
       "norm_label": "listacuentasmodal()"
     },
     {
@@ -12744,7 +12798,7 @@
       "source_file": "frontend\\src\\components\\social\\PanelSocial.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_panelsocial_jsx",
-      "community": 182,
+      "community": 183,
       "norm_label": "panelsocial.jsx"
     },
     {
@@ -12753,7 +12807,7 @@
       "source_file": "frontend\\src\\components\\social\\PanelSocial.jsx",
       "source_location": "L11",
       "id": "panelsocial_panelsocial",
-      "community": 182,
+      "community": 183,
       "norm_label": "panelsocial()"
     },
     {
@@ -12762,7 +12816,7 @@
       "source_file": "frontend\\src\\components\\social\\RegistrarEntreno.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_registrarentreno_jsx",
-      "community": 183,
+      "community": 184,
       "norm_label": "registrarentreno.jsx"
     },
     {
@@ -12771,7 +12825,7 @@
       "source_file": "frontend\\src\\components\\social\\RegistrarEntreno.jsx",
       "source_location": "L16",
       "id": "registrarentreno_registrarentreno",
-      "community": 183,
+      "community": 184,
       "norm_label": "registrarentreno()"
     },
     {
@@ -12780,7 +12834,7 @@
       "source_file": "frontend\\src\\components\\social\\RutinasOficiales.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_rutinasoficiales_jsx",
-      "community": 184,
+      "community": 185,
       "norm_label": "rutinasoficiales.jsx"
     },
     {
@@ -12789,7 +12843,7 @@
       "source_file": "frontend\\src\\components\\social\\RutinasOficiales.jsx",
       "source_location": "L15",
       "id": "rutinasoficiales_rutinasoficiales",
-      "community": 184,
+      "community": 185,
       "norm_label": "rutinasoficiales()"
     },
     {
@@ -12798,7 +12852,7 @@
       "source_file": "frontend\\src\\components\\social\\SubirAvatar.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_subiravatar_jsx",
-      "community": 185,
+      "community": 186,
       "norm_label": "subiravatar.jsx"
     },
     {
@@ -12807,7 +12861,7 @@
       "source_file": "frontend\\src\\components\\social\\SubirAvatar.jsx",
       "source_location": "L11",
       "id": "subiravatar_subiravatar",
-      "community": 185,
+      "community": 186,
       "norm_label": "subiravatar()"
     },
     {
@@ -12816,7 +12870,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaEntreno.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_tarjetaentreno_jsx",
-      "community": 186,
+      "community": 187,
       "norm_label": "tarjetaentreno.jsx"
     },
     {
@@ -12825,7 +12879,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaEntreno.jsx",
       "source_location": "L5",
       "id": "tarjetaentreno_fechacorta",
-      "community": 186,
+      "community": 187,
       "norm_label": "fechacorta()"
     },
     {
@@ -12834,7 +12888,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaItemSocial.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_social_tarjetaitemsocial_jsx",
-      "community": 110,
+      "community": 111,
       "norm_label": "tarjetaitemsocial.jsx"
     },
     {
@@ -12843,7 +12897,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaItemSocial.jsx",
       "source_location": "L14",
       "id": "tarjetaitemsocial_enlacedetalle",
-      "community": 110,
+      "community": 111,
       "norm_label": "enlacedetalle()"
     },
     {
@@ -12852,7 +12906,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaItemSocial.jsx",
       "source_location": "L20",
       "id": "tarjetaitemsocial_humanizar",
-      "community": 110,
+      "community": 111,
       "norm_label": "humanizar()"
     },
     {
@@ -12861,7 +12915,7 @@
       "source_file": "frontend\\src\\components\\social\\TarjetaItemSocial.jsx",
       "source_location": "L25",
       "id": "tarjetaitemsocial_tarjetaitemsocial",
-      "community": 110,
+      "community": 111,
       "norm_label": "tarjetaitemsocial()"
     },
     {
@@ -12870,7 +12924,7 @@
       "source_file": "frontend\\src\\components\\user\\EntrenadorCard.jsx",
       "source_location": "L1",
       "id": "frontend_src_components_user_entrenadorcard_jsx",
-      "community": 187,
+      "community": 188,
       "norm_label": "entrenadorcard.jsx"
     },
     {
@@ -12879,7 +12933,7 @@
       "source_file": "frontend\\src\\components\\user\\EntrenadorCard.jsx",
       "source_location": "L4",
       "id": "entrenadorcard_entrenadorcard",
-      "community": 187,
+      "community": 188,
       "norm_label": "entrenadorcard()"
     },
     {
@@ -12888,7 +12942,7 @@
       "source_file": "frontend\\src\\config\\funciones.js",
       "source_location": "L1",
       "id": "frontend_src_config_funciones_js",
-      "community": 242,
+      "community": 243,
       "norm_label": "funciones.js"
     },
     {
@@ -12897,7 +12951,7 @@
       "source_file": "frontend\\src\\config\\legal.js",
       "source_location": "L1",
       "id": "frontend_src_config_legal_js",
-      "community": 188,
+      "community": 189,
       "norm_label": "legal.js"
     },
     {
@@ -12906,7 +12960,7 @@
       "source_file": "frontend\\src\\config\\legal.js",
       "source_location": "L18",
       "id": "legal_dato",
-      "community": 188,
+      "community": 189,
       "norm_label": "dato()"
     },
     {
@@ -12915,7 +12969,7 @@
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
       "source_location": "L1",
       "id": "frontend_src_context_authcontext_jsx",
-      "community": 134,
+      "community": 135,
       "norm_label": "authcontext.jsx"
     },
     {
@@ -12924,7 +12978,7 @@
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
       "source_location": "L9",
       "id": "authcontext_authprovider",
-      "community": 134,
+      "community": 135,
       "norm_label": "authprovider()"
     },
     {
@@ -12933,7 +12987,7 @@
       "source_file": "frontend\\src\\context\\AuthContext.jsx",
       "source_location": "L141",
       "id": "authcontext_useauth",
-      "community": 134,
+      "community": 135,
       "norm_label": "useauth()"
     },
     {
@@ -12942,7 +12996,7 @@
       "source_file": "frontend\\src\\context\\AuthContextEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_context_authcontextentrenador_jsx",
-      "community": 135,
+      "community": 136,
       "norm_label": "authcontextentrenador.jsx"
     },
     {
@@ -12951,7 +13005,7 @@
       "source_file": "frontend\\src\\context\\AuthContextEntrenador.jsx",
       "source_location": "L6",
       "id": "authcontextentrenador_authproviderentrenador",
-      "community": 135,
+      "community": 136,
       "norm_label": "authproviderentrenador()"
     },
     {
@@ -12960,7 +13014,7 @@
       "source_file": "frontend\\src\\context\\AuthContextEntrenador.jsx",
       "source_location": "L38",
       "id": "authcontextentrenador_useauthentrenador",
-      "community": 135,
+      "community": 136,
       "norm_label": "useauthentrenador()"
     },
     {
@@ -12969,7 +13023,7 @@
       "source_file": "frontend\\src\\context\\ToastContext.jsx",
       "source_location": "L1",
       "id": "frontend_src_context_toastcontext_jsx",
-      "community": 136,
+      "community": 137,
       "norm_label": "toastcontext.jsx"
     },
     {
@@ -12978,7 +13032,7 @@
       "source_file": "frontend\\src\\context\\ToastContext.jsx",
       "source_location": "L6",
       "id": "toastcontext_usetoast",
-      "community": 136,
+      "community": 137,
       "norm_label": "usetoast()"
     },
     {
@@ -12987,7 +13041,7 @@
       "source_file": "frontend\\src\\context\\ToastContext.jsx",
       "source_location": "L14",
       "id": "toastcontext_toastprovider",
-      "community": 136,
+      "community": 137,
       "norm_label": "toastprovider()"
     },
     {
@@ -12996,7 +13050,7 @@
       "source_file": "frontend\\src\\pages\\DashboardRouter.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_dashboardrouter_jsx",
-      "community": 189,
+      "community": 190,
       "norm_label": "dashboardrouter.jsx"
     },
     {
@@ -13005,7 +13059,7 @@
       "source_file": "frontend\\src\\pages\\DashboardRouter.jsx",
       "source_location": "L5",
       "id": "dashboardrouter_dashboardrouter",
-      "community": 189,
+      "community": 190,
       "norm_label": "dashboardrouter()"
     },
     {
@@ -13014,7 +13068,7 @@
       "source_file": "frontend\\src\\pages\\admin\\DashboardAdmin.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_admin_dashboardadmin_jsx",
-      "community": 190,
+      "community": 191,
       "norm_label": "dashboardadmin.jsx"
     },
     {
@@ -13023,7 +13077,7 @@
       "source_file": "frontend\\src\\pages\\admin\\DashboardAdmin.jsx",
       "source_location": "L12",
       "id": "dashboardadmin_dashboardadmin",
-      "community": 190,
+      "community": 191,
       "norm_label": "dashboardadmin()"
     },
     {
@@ -13032,7 +13086,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\CrearDietaCliente.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_creardietacliente_jsx",
-      "community": 191,
+      "community": 192,
       "norm_label": "creardietacliente.jsx"
     },
     {
@@ -13041,7 +13095,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\CrearDietaCliente.jsx",
       "source_location": "L12",
       "id": "creardietacliente_creardietacliente",
-      "community": 191,
+      "community": 192,
       "norm_label": "creardietacliente()"
     },
     {
@@ -13050,7 +13104,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\CrearEntrenamientoCliente.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_crearentrenamientocliente_jsx",
-      "community": 192,
+      "community": 193,
       "norm_label": "crearentrenamientocliente.jsx"
     },
     {
@@ -13059,7 +13113,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\CrearEntrenamientoCliente.jsx",
       "source_location": "L27",
       "id": "crearentrenamientocliente_crearentrenamientocliente",
-      "community": 192,
+      "community": 193,
       "norm_label": "crearentrenamientocliente()"
     },
     {
@@ -13068,7 +13122,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\CrearPlato.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_crearplato_jsx",
-      "community": 137,
+      "community": 138,
       "norm_label": "crearplato.jsx"
     },
     {
@@ -13077,7 +13131,7 @@
       "source_file": "frontend\\src\\pages\\user\\CrearPlato.jsx",
       "source_location": "L10",
       "id": "crearplato_crearplato",
-      "community": 137,
+      "community": 138,
       "norm_label": "crearplato()"
     },
     {
@@ -13086,7 +13140,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\DashboardEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_dashboardentrenador_jsx",
-      "community": 193,
+      "community": 194,
       "norm_label": "dashboardentrenador.jsx"
     },
     {
@@ -13095,7 +13149,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\DashboardEntrenador.jsx",
       "source_location": "L22",
       "id": "dashboardentrenador_dashboardentrenador",
-      "community": 193,
+      "community": 194,
       "norm_label": "dashboardentrenador()"
     },
     {
@@ -13104,7 +13158,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\DetalleDietaEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_detalledietaentrenador_jsx",
-      "community": 194,
+      "community": 195,
       "norm_label": "detalledietaentrenador.jsx"
     },
     {
@@ -13113,7 +13167,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\DetalleDietaEntrenador.jsx",
       "source_location": "L8",
       "id": "detalledietaentrenador_detalledietaentrenador",
-      "community": 194,
+      "community": 195,
       "norm_label": "detalledietaentrenador()"
     },
     {
@@ -13122,7 +13176,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\LoginEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_loginentrenador_jsx",
-      "community": 195,
+      "community": 196,
       "norm_label": "loginentrenador.jsx"
     },
     {
@@ -13131,7 +13185,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\LoginEntrenador.jsx",
       "source_location": "L5",
       "id": "loginentrenador_loginentrenador",
-      "community": 195,
+      "community": 196,
       "norm_label": "loginentrenador()"
     },
     {
@@ -13140,7 +13194,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\MisDietasEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_misdietasentrenador_jsx",
-      "community": 196,
+      "community": 197,
       "norm_label": "misdietasentrenador.jsx"
     },
     {
@@ -13149,7 +13203,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\MisDietasEntrenador.jsx",
       "source_location": "L18",
       "id": "misdietasentrenador_misdietasentrenador",
-      "community": 196,
+      "community": 197,
       "norm_label": "misdietasentrenador()"
     },
     {
@@ -13158,7 +13212,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\MisEntrenamientosEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_misentrenamientosentrenador_jsx",
-      "community": 197,
+      "community": 198,
       "norm_label": "misentrenamientosentrenador.jsx"
     },
     {
@@ -13167,7 +13221,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\MisEntrenamientosEntrenador.jsx",
       "source_location": "L19",
       "id": "misentrenamientosentrenador_misentrenamientosentrenador",
-      "community": 197,
+      "community": 198,
       "norm_label": "misentrenamientosentrenador()"
     },
     {
@@ -13176,7 +13230,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\MisPlatosEntrenador.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_entrenador_misplatosentrenador_jsx",
-      "community": 198,
+      "community": 199,
       "norm_label": "misplatosentrenador.jsx"
     },
     {
@@ -13185,7 +13239,7 @@
       "source_file": "frontend\\src\\pages\\entrenador\\MisPlatosEntrenador.jsx",
       "source_location": "L17",
       "id": "misplatosentrenador_misplatosentrenador",
-      "community": 198,
+      "community": 199,
       "norm_label": "misplatosentrenador()"
     },
     {
@@ -13194,7 +13248,7 @@
       "source_file": "frontend\\src\\pages\\private\\Dashboard.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_private_dashboard_jsx",
-      "community": 199,
+      "community": 200,
       "norm_label": "dashboard.jsx"
     },
     {
@@ -13203,7 +13257,7 @@
       "source_file": "frontend\\src\\pages\\private\\Dashboard.jsx",
       "source_location": "L7",
       "id": "dashboard_dashboard",
-      "community": 199,
+      "community": 200,
       "norm_label": "dashboard()"
     },
     {
@@ -13212,7 +13266,7 @@
       "source_file": "frontend\\src\\pages\\private\\PlanificadorSemanal.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_private_planificadorsemanal_jsx",
-      "community": 200,
+      "community": 201,
       "norm_label": "planificadorsemanal.jsx"
     },
     {
@@ -13221,7 +13275,7 @@
       "source_file": "frontend\\src\\pages\\private\\PlanificadorSemanal.jsx",
       "source_location": "L11",
       "id": "planificadorsemanal_planificadorsemanal",
-      "community": 200,
+      "community": 201,
       "norm_label": "planificadorsemanal()"
     },
     {
@@ -13230,7 +13284,7 @@
       "source_file": "frontend\\src\\pages\\private\\admin\\Usuarios.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_private_admin_usuarios_jsx",
-      "community": 201,
+      "community": 202,
       "norm_label": "usuarios.jsx"
     },
     {
@@ -13239,7 +13293,7 @@
       "source_file": "frontend\\src\\pages\\private\\admin\\Usuarios.jsx",
       "source_location": "L4",
       "id": "usuarios_usuarios",
-      "community": 201,
+      "community": 202,
       "norm_label": "usuarios()"
     },
     {
@@ -13248,7 +13302,7 @@
       "source_file": "frontend\\src\\pages\\public\\Alimentacion.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_alimentacion_jsx",
-      "community": 138,
+      "community": 139,
       "norm_label": "alimentacion.jsx"
     },
     {
@@ -13257,7 +13311,7 @@
       "source_file": "frontend\\src\\pages\\public\\Alimentacion.jsx",
       "source_location": "L39",
       "id": "alimentacion_alimentacion",
-      "community": 138,
+      "community": 139,
       "norm_label": "alimentacion()"
     },
     {
@@ -13266,7 +13320,7 @@
       "source_file": "frontend\\src\\pages\\public\\Alimentacion.jsx",
       "source_location": "L219",
       "id": "alimentacion_tarjetadieta",
-      "community": 138,
+      "community": 139,
       "norm_label": "tarjetadieta()"
     },
     {
@@ -13275,7 +13329,7 @@
       "source_file": "frontend\\src\\pages\\public\\AvisoLegal.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_avisolegal_jsx",
-      "community": 202,
+      "community": 203,
       "norm_label": "avisolegal.jsx"
     },
     {
@@ -13284,7 +13338,7 @@
       "source_file": "frontend\\src\\pages\\public\\AvisoLegal.jsx",
       "source_location": "L9",
       "id": "avisolegal_avisolegal",
-      "community": 202,
+      "community": 203,
       "norm_label": "avisolegal()"
     },
     {
@@ -13293,7 +13347,7 @@
       "source_file": "frontend\\src\\pages\\public\\Blog.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_blog_jsx",
-      "community": 203,
+      "community": 204,
       "norm_label": "blog.jsx"
     },
     {
@@ -13302,7 +13356,7 @@
       "source_file": "frontend\\src\\pages\\public\\Blog.jsx",
       "source_location": "L11",
       "id": "blog_blog",
-      "community": 203,
+      "community": 204,
       "norm_label": "blog()"
     },
     {
@@ -13320,7 +13374,7 @@
       "source_file": "frontend\\src\\pages\\public\\Contacto.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_contacto_jsx",
-      "community": 204,
+      "community": 205,
       "norm_label": "contacto.jsx"
     },
     {
@@ -13329,7 +13383,7 @@
       "source_file": "frontend\\src\\pages\\public\\Contacto.jsx",
       "source_location": "L13",
       "id": "contacto_contacto",
-      "community": 204,
+      "community": 205,
       "norm_label": "contacto()"
     },
     {
@@ -13338,7 +13392,7 @@
       "source_file": "frontend\\src\\pages\\public\\CrearDieta.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_creardieta_jsx",
-      "community": 205,
+      "community": 206,
       "norm_label": "creardieta.jsx"
     },
     {
@@ -13347,7 +13401,7 @@
       "source_file": "frontend\\src\\pages\\public\\CrearDieta.jsx",
       "source_location": "L12",
       "id": "creardieta_creardieta",
-      "community": 205,
+      "community": 206,
       "norm_label": "creardieta()"
     },
     {
@@ -13356,7 +13410,7 @@
       "source_file": "frontend\\src\\pages\\public\\DetalleDieta.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_detalledieta_jsx",
-      "community": 139,
+      "community": 140,
       "norm_label": "detalledieta.jsx"
     },
     {
@@ -13365,7 +13419,7 @@
       "source_file": "frontend\\src\\pages\\user\\DetalleDieta.jsx",
       "source_location": "L7",
       "id": "detalledieta_detalledieta",
-      "community": 139,
+      "community": 140,
       "norm_label": "detalledieta()"
     },
     {
@@ -13374,7 +13428,7 @@
       "source_file": "frontend\\src\\pages\\public\\DetallePlato.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_detalleplato_jsx",
-      "community": 206,
+      "community": 207,
       "norm_label": "detalleplato.jsx"
     },
     {
@@ -13383,7 +13437,7 @@
       "source_file": "frontend\\src\\pages\\public\\DetallePlato.jsx",
       "source_location": "L8",
       "id": "detalleplato_detalleplato",
-      "community": 206,
+      "community": 207,
       "norm_label": "detalleplato()"
     },
     {
@@ -13392,7 +13446,7 @@
       "source_file": "frontend\\src\\pages\\public\\Gym.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_gym_jsx",
-      "community": 207,
+      "community": 208,
       "norm_label": "gym.jsx"
     },
     {
@@ -13401,7 +13455,7 @@
       "source_file": "frontend\\src\\pages\\public\\Gym.jsx",
       "source_location": "L76",
       "id": "gym_gym",
-      "community": 207,
+      "community": 208,
       "norm_label": "gym()"
     },
     {
@@ -13410,7 +13464,7 @@
       "source_file": "frontend\\src\\pages\\public\\Home.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_home_jsx",
-      "community": 140,
+      "community": 141,
       "norm_label": "home.jsx"
     },
     {
@@ -13419,7 +13473,7 @@
       "source_file": "frontend\\src\\pages\\public\\Home.jsx",
       "source_location": "L130",
       "id": "home_sectionheader",
-      "community": 140,
+      "community": 141,
       "norm_label": "sectionheader()"
     },
     {
@@ -13428,7 +13482,7 @@
       "source_file": "frontend\\src\\pages\\public\\Home.jsx",
       "source_location": "L153",
       "id": "home_home",
-      "community": 140,
+      "community": 141,
       "norm_label": "home()"
     },
     {
@@ -13437,7 +13491,7 @@
       "source_file": "frontend\\src\\pages\\public\\Login.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_login_jsx",
-      "community": 208,
+      "community": 209,
       "norm_label": "login.jsx"
     },
     {
@@ -13446,7 +13500,7 @@
       "source_file": "frontend\\src\\pages\\public\\Login.jsx",
       "source_location": "L10",
       "id": "login_login",
-      "community": 208,
+      "community": 209,
       "norm_label": "login()"
     },
     {
@@ -13455,7 +13509,7 @@
       "source_file": "frontend\\src\\pages\\public\\MisPlatos.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_misplatos_jsx",
-      "community": 141,
+      "community": 142,
       "norm_label": "misplatos.jsx"
     },
     {
@@ -13464,7 +13518,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisPlatos.jsx",
       "source_location": "L14",
       "id": "misplatos_misplatos",
-      "community": 141,
+      "community": 142,
       "norm_label": "misplatos()"
     },
     {
@@ -13473,7 +13527,7 @@
       "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_perfilpublico_jsx",
-      "community": 142,
+      "community": 143,
       "norm_label": "perfilpublico.jsx"
     },
     {
@@ -13482,7 +13536,7 @@
       "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
       "source_location": "L28",
       "id": "perfilpublico_perfilpublico",
-      "community": 142,
+      "community": 143,
       "norm_label": "perfilpublico()"
     },
     {
@@ -13491,7 +13545,7 @@
       "source_file": "frontend\\src\\pages\\public\\PerfilPublico.jsx",
       "source_location": "L267",
       "id": "perfilpublico_estadobloqueado",
-      "community": 142,
+      "community": 143,
       "norm_label": "estadobloqueado()"
     },
     {
@@ -13500,7 +13554,7 @@
       "source_file": "frontend\\src\\pages\\public\\PoliticaCookies.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_politicacookies_jsx",
-      "community": 209,
+      "community": 210,
       "norm_label": "politicacookies.jsx"
     },
     {
@@ -13509,7 +13563,7 @@
       "source_file": "frontend\\src\\pages\\public\\PoliticaCookies.jsx",
       "source_location": "L8",
       "id": "politicacookies_politicacookies",
-      "community": 209,
+      "community": 210,
       "norm_label": "politicacookies()"
     },
     {
@@ -13518,7 +13572,7 @@
       "source_file": "frontend\\src\\pages\\public\\PoliticaPrivacidad.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_politicaprivacidad_jsx",
-      "community": 210,
+      "community": 211,
       "norm_label": "politicaprivacidad.jsx"
     },
     {
@@ -13527,7 +13581,7 @@
       "source_file": "frontend\\src\\pages\\public\\PoliticaPrivacidad.jsx",
       "source_location": "L11",
       "id": "politicaprivacidad_politicaprivacidad",
-      "community": 210,
+      "community": 211,
       "norm_label": "politicaprivacidad()"
     },
     {
@@ -13536,7 +13590,7 @@
       "source_file": "frontend\\src\\pages\\public\\Register.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_register_jsx",
-      "community": 211,
+      "community": 212,
       "norm_label": "register.jsx"
     },
     {
@@ -13545,7 +13599,7 @@
       "source_file": "frontend\\src\\pages\\public\\Register.jsx",
       "source_location": "L9",
       "id": "register_register",
-      "community": 211,
+      "community": 212,
       "norm_label": "register()"
     },
     {
@@ -13554,7 +13608,7 @@
       "source_file": "frontend\\src\\pages\\public\\Servicios.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_servicios_jsx",
-      "community": 212,
+      "community": 213,
       "norm_label": "servicios.jsx"
     },
     {
@@ -13563,7 +13617,7 @@
       "source_file": "frontend\\src\\pages\\public\\Servicios.jsx",
       "source_location": "L9",
       "id": "servicios_servicios",
-      "community": 212,
+      "community": 213,
       "norm_label": "servicios()"
     },
     {
@@ -13572,7 +13626,7 @@
       "source_file": "frontend\\src\\pages\\public\\Suplementos.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_suplementos_jsx",
-      "community": 213,
+      "community": 214,
       "norm_label": "suplementos.jsx"
     },
     {
@@ -13581,7 +13635,7 @@
       "source_file": "frontend\\src\\pages\\public\\Suplementos.jsx",
       "source_location": "L4",
       "id": "suplementos_suplementos",
-      "community": 213,
+      "community": 214,
       "norm_label": "suplementos()"
     },
     {
@@ -13590,7 +13644,7 @@
       "source_file": "frontend\\src\\pages\\public\\TerminosCondiciones.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_terminoscondiciones_jsx",
-      "community": 214,
+      "community": 215,
       "norm_label": "terminoscondiciones.jsx"
     },
     {
@@ -13599,7 +13653,7 @@
       "source_file": "frontend\\src\\pages\\public\\TerminosCondiciones.jsx",
       "source_location": "L9",
       "id": "terminoscondiciones_terminoscondiciones",
-      "community": 214,
+      "community": 215,
       "norm_label": "terminoscondiciones()"
     },
     {
@@ -13608,7 +13662,7 @@
       "source_file": "frontend\\src\\pages\\public\\UpgradePremium.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_upgradepremium_jsx",
-      "community": 215,
+      "community": 216,
       "norm_label": "upgradepremium.jsx"
     },
     {
@@ -13617,7 +13671,7 @@
       "source_file": "frontend\\src\\pages\\public\\UpgradePremium.jsx",
       "source_location": "L8",
       "id": "upgradepremium_upgradepremium",
-      "community": 215,
+      "community": 216,
       "norm_label": "upgradepremium()"
     },
     {
@@ -13626,7 +13680,7 @@
       "source_file": "frontend\\src\\pages\\public\\VerificarEmail.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_verificaremail_jsx",
-      "community": 216,
+      "community": 217,
       "norm_label": "verificaremail.jsx"
     },
     {
@@ -13635,7 +13689,7 @@
       "source_file": "frontend\\src\\pages\\public\\VerificarEmail.jsx",
       "source_location": "L11",
       "id": "verificaremail_verificaremail",
-      "community": 216,
+      "community": 217,
       "norm_label": "verificaremail()"
     },
     {
@@ -13644,7 +13698,7 @@
       "source_file": "frontend\\src\\pages\\public\\Workout.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_public_workout_jsx",
-      "community": 217,
+      "community": 218,
       "norm_label": "workout.jsx"
     },
     {
@@ -13653,7 +13707,7 @@
       "source_file": "frontend\\src\\pages\\public\\Workout.jsx",
       "source_location": "L53",
       "id": "workout_workout",
-      "community": 217,
+      "community": 218,
       "norm_label": "workout()"
     },
     {
@@ -13662,7 +13716,7 @@
       "source_file": "frontend\\src\\pages\\user\\Calculadora.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_calculadora_jsx",
-      "community": 143,
+      "community": 144,
       "norm_label": "calculadora.jsx"
     },
     {
@@ -13671,7 +13725,7 @@
       "source_file": "frontend\\src\\pages\\user\\Calculadora.jsx",
       "source_location": "L23",
       "id": "calculadora_calculadora",
-      "community": 143,
+      "community": 144,
       "norm_label": "calculadora()"
     },
     {
@@ -13680,7 +13734,7 @@
       "source_file": "frontend\\src\\pages\\user\\Calculadora.jsx",
       "source_location": "L151",
       "id": "calculadora_macro",
-      "community": 143,
+      "community": 144,
       "norm_label": "macro()"
     },
     {
@@ -13752,7 +13806,7 @@
       "source_file": "frontend\\src\\pages\\user\\CrearPlato.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_crearplato_jsx",
-      "community": 137,
+      "community": 138,
       "norm_label": "crearplato.jsx"
     },
     {
@@ -13761,7 +13815,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_dashboardusuario_jsx",
-      "community": 93,
+      "community": 94,
       "norm_label": "dashboardusuario.jsx"
     },
     {
@@ -13770,7 +13824,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L35",
       "id": "dashboardusuario_dashboardusuario",
-      "community": 93,
+      "community": 94,
       "norm_label": "dashboardusuario()"
     },
     {
@@ -13779,7 +13833,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L357",
       "id": "dashboardusuario_card",
-      "community": 93,
+      "community": 94,
       "norm_label": "card()"
     },
     {
@@ -13788,7 +13842,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L375",
       "id": "dashboardusuario_stat",
-      "community": 93,
+      "community": 94,
       "norm_label": "stat()"
     },
     {
@@ -13797,7 +13851,7 @@
       "source_file": "frontend\\src\\pages\\user\\DashboardUsuario.jsx",
       "source_location": "L387",
       "id": "dashboardusuario_quick",
-      "community": 93,
+      "community": 94,
       "norm_label": "quick()"
     },
     {
@@ -13806,7 +13860,7 @@
       "source_file": "frontend\\src\\pages\\user\\DescubrirEntrenadores.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_descubrirentrenadores_jsx",
-      "community": 218,
+      "community": 219,
       "norm_label": "descubrirentrenadores.jsx"
     },
     {
@@ -13815,7 +13869,7 @@
       "source_file": "frontend\\src\\pages\\user\\DescubrirEntrenadores.jsx",
       "source_location": "L9",
       "id": "descubrirentrenadores_descubrirentrenadores",
-      "community": 218,
+      "community": 219,
       "norm_label": "descubrirentrenadores()"
     },
     {
@@ -13824,7 +13878,7 @@
       "source_file": "frontend\\src\\pages\\user\\DetalleDieta.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_detalledieta_jsx",
-      "community": 139,
+      "community": 140,
       "norm_label": "detalledieta.jsx"
     },
     {
@@ -13977,7 +14031,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiDieta.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_midieta_jsx",
-      "community": 219,
+      "community": 220,
       "norm_label": "midieta.jsx"
     },
     {
@@ -13986,7 +14040,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiDieta.jsx",
       "source_location": "L16",
       "id": "midieta_midieta",
-      "community": 219,
+      "community": 220,
       "norm_label": "midieta()"
     },
     {
@@ -13995,7 +14049,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiProgreso.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_miprogreso_jsx",
-      "community": 111,
+      "community": 112,
       "norm_label": "miprogreso.jsx"
     },
     {
@@ -14004,7 +14058,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiProgreso.jsx",
       "source_location": "L14",
       "id": "miprogreso_fechacorta",
-      "community": 111,
+      "community": 112,
       "norm_label": "fechacorta()"
     },
     {
@@ -14013,7 +14067,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiProgreso.jsx",
       "source_location": "L16",
       "id": "miprogreso_miprogreso",
-      "community": 111,
+      "community": 112,
       "norm_label": "miprogreso()"
     },
     {
@@ -14022,7 +14076,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiProgreso.jsx",
       "source_location": "L145",
       "id": "miprogreso_total",
-      "community": 111,
+      "community": 112,
       "norm_label": "total()"
     },
     {
@@ -14031,7 +14085,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisDatosPersonales.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_misdatospersonales_jsx",
-      "community": 220,
+      "community": 221,
       "norm_label": "misdatospersonales.jsx"
     },
     {
@@ -14040,7 +14094,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisDatosPersonales.jsx",
       "source_location": "L27",
       "id": "misdatospersonales_misdatospersonales",
-      "community": 220,
+      "community": 221,
       "norm_label": "misdatospersonales()"
     },
     {
@@ -14049,7 +14103,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisDietas.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_misdietas_jsx",
-      "community": 221,
+      "community": 222,
       "norm_label": "misdietas.jsx"
     },
     {
@@ -14058,7 +14112,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisDietas.jsx",
       "source_location": "L15",
       "id": "misdietas_misdietas",
-      "community": 221,
+      "community": 222,
       "norm_label": "misdietas()"
     },
     {
@@ -14067,7 +14121,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisEntrenamientos.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_misentrenamientos_jsx",
-      "community": 222,
+      "community": 223,
       "norm_label": "misentrenamientos.jsx"
     },
     {
@@ -14076,7 +14130,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisEntrenamientos.jsx",
       "source_location": "L23",
       "id": "misentrenamientos_misentrenamientos",
-      "community": 222,
+      "community": 223,
       "norm_label": "misentrenamientos()"
     },
     {
@@ -14085,7 +14139,7 @@
       "source_file": "frontend\\src\\pages\\user\\MisPlatos.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_misplatos_jsx",
-      "community": 141,
+      "community": 142,
       "norm_label": "misplatos.jsx"
     },
     {
@@ -14094,7 +14148,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiSuscripcion.jsx",
       "source_location": "L1",
       "id": "frontend_src_pages_user_misuscripcion_jsx",
-      "community": 223,
+      "community": 224,
       "norm_label": "misuscripcion.jsx"
     },
     {
@@ -14103,7 +14157,7 @@
       "source_file": "frontend\\src\\pages\\user\\MiSuscripcion.jsx",
       "source_location": "L18",
       "id": "misuscripcion_misuscripcion",
-      "community": 223,
+      "community": 224,
       "norm_label": "misuscripcion()"
     },
     {
@@ -14112,7 +14166,7 @@
       "source_file": "frontend\\src\\services\\api.js",
       "source_location": "L1",
       "id": "frontend_src_services_api_js",
-      "community": 224,
+      "community": 225,
       "norm_label": "api.js"
     },
     {
@@ -14121,7 +14175,7 @@
       "source_file": "frontend\\src\\services\\api.js",
       "source_location": "L25",
       "id": "api_ispublicurl",
-      "community": 224,
+      "community": 225,
       "norm_label": "ispublicurl()"
     },
     {
@@ -14130,7 +14184,7 @@
       "source_file": "frontend\\src\\services\\authService.js",
       "source_location": "L1",
       "id": "frontend_src_services_authservice_js",
-      "community": 112,
+      "community": 113,
       "norm_label": "authservice.js"
     },
     {
@@ -14139,7 +14193,7 @@
       "source_file": "frontend\\src\\services\\authService.js",
       "source_location": "L45",
       "id": "authservice_logout",
-      "community": 112,
+      "community": 113,
       "norm_label": "logout()"
     },
     {
@@ -14148,7 +14202,7 @@
       "source_file": "frontend\\src\\services\\authService.js",
       "source_location": "L50",
       "id": "authservice_getuser",
-      "community": 112,
+      "community": 113,
       "norm_label": "getuser()"
     },
     {
@@ -14157,7 +14211,7 @@
       "source_file": "frontend\\src\\services\\authService.js",
       "source_location": "L54",
       "id": "authservice_gettoken",
-      "community": 112,
+      "community": 113,
       "norm_label": "gettoken()"
     },
     {
@@ -14166,7 +14220,7 @@
       "source_file": "frontend\\src\\services\\authServiceEntrenador.js",
       "source_location": "L1",
       "id": "frontend_src_services_authserviceentrenador_js",
-      "community": 243,
+      "community": 244,
       "norm_label": "authserviceentrenador.js"
     },
     {
@@ -14175,7 +14229,7 @@
       "source_file": "frontend\\src\\services\\progresoService.js",
       "source_location": "L1",
       "id": "frontend_src_services_progresoservice_js",
-      "community": 225,
+      "community": 226,
       "norm_label": "progresoservice.js"
     },
     {
@@ -14184,7 +14238,7 @@
       "source_file": "frontend\\src\\services\\progresoService.js",
       "source_location": "L6",
       "id": "progresoservice_datos",
-      "community": 225,
+      "community": 226,
       "norm_label": "datos()"
     },
     {
@@ -14193,7 +14247,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L1",
       "id": "frontend_src_services_socialservice_js",
-      "community": 94,
+      "community": 95,
       "norm_label": "socialservice.js"
     },
     {
@@ -14202,7 +14256,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L9",
       "id": "socialservice_urlfoto",
-      "community": 94,
+      "community": 95,
       "norm_label": "urlfoto()"
     },
     {
@@ -14211,7 +14265,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L14",
       "id": "socialservice_rutaperfil",
-      "community": 94,
+      "community": 95,
       "norm_label": "rutaperfil()"
     },
     {
@@ -14220,7 +14274,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L17",
       "id": "socialservice_mensajeerror",
-      "community": 94,
+      "community": 95,
       "norm_label": "mensajeerror()"
     },
     {
@@ -14229,7 +14283,7 @@
       "source_file": "frontend\\src\\services\\socialService.js",
       "source_location": "L20",
       "id": "socialservice_datos",
-      "community": 94,
+      "community": 95,
       "norm_label": "datos()"
     },
     {
@@ -14238,7 +14292,7 @@
       "source_file": "frontend\\src\\services\\solicitudesService.js",
       "source_location": "L1",
       "id": "frontend_src_services_solicitudesservice_js",
-      "community": 244,
+      "community": 245,
       "norm_label": "solicitudesservice.js"
     },
     {
@@ -14247,7 +14301,7 @@
       "source_file": "frontend\\src\\stories\\Button.jsx",
       "source_location": "L1",
       "id": "frontend_src_stories_button_jsx",
-      "community": 127,
+      "community": 128,
       "norm_label": "button.jsx"
     },
     {
@@ -14256,7 +14310,7 @@
       "source_file": "frontend\\src\\stories\\Button.stories.js",
       "source_location": "L1",
       "id": "frontend_src_stories_button_stories_js",
-      "community": 245,
+      "community": 246,
       "norm_label": "button.stories.js"
     },
     {
@@ -14265,7 +14319,7 @@
       "source_file": "frontend\\src\\stories\\Header.jsx",
       "source_location": "L1",
       "id": "frontend_src_stories_header_jsx",
-      "community": 226,
+      "community": 227,
       "norm_label": "header.jsx"
     },
     {
@@ -14274,7 +14328,7 @@
       "source_file": "frontend\\src\\stories\\Header.jsx",
       "source_location": "L8",
       "id": "header_header",
-      "community": 226,
+      "community": 227,
       "norm_label": "header()"
     },
     {
@@ -14283,7 +14337,7 @@
       "source_file": "frontend\\src\\stories\\Header.stories.js",
       "source_location": "L1",
       "id": "frontend_src_stories_header_stories_js",
-      "community": 246,
+      "community": 247,
       "norm_label": "header.stories.js"
     },
     {
@@ -14292,7 +14346,7 @@
       "source_file": "frontend\\src\\stories\\Page.jsx",
       "source_location": "L1",
       "id": "frontend_src_stories_page_jsx",
-      "community": 227,
+      "community": 228,
       "norm_label": "page.jsx"
     },
     {
@@ -14301,7 +14355,7 @@
       "source_file": "frontend\\src\\stories\\Page.jsx",
       "source_location": "L6",
       "id": "page_page",
-      "community": 227,
+      "community": 228,
       "norm_label": "page()"
     },
     {
@@ -14310,7 +14364,7 @@
       "source_file": "frontend\\src\\stories\\Page.stories.js",
       "source_location": "L1",
       "id": "frontend_src_stories_page_stories_js",
-      "community": 247,
+      "community": 248,
       "norm_label": "page.stories.js"
     },
     {
@@ -14634,7 +14688,7 @@
       "source_file": "marketing\\contenido\\lib\\voz.ps1",
       "source_location": "L1",
       "id": "marketing_contenido_lib_voz_ps1",
-      "community": 228,
+      "community": 229,
       "norm_label": "voz.ps1"
     },
     {
@@ -14643,7 +14697,7 @@
       "source_file": "marketing\\contenido\\lib\\voz.ps1",
       "source_location": "L16",
       "id": "voz_esperar",
-      "community": 228,
+      "community": 229,
       "norm_label": "esperar()"
     },
     {
@@ -14814,7 +14868,7 @@
       "source_file": "marketing\\remotion\\src\\estilo.js",
       "source_location": "L1",
       "id": "marketing_remotion_src_estilo_js",
-      "community": 113,
+      "community": 114,
       "norm_label": "estilo.js"
     },
     {
@@ -14823,7 +14877,7 @@
       "source_file": "marketing\\remotion\\src\\estilo.js",
       "source_location": "L19",
       "id": "estilo_entrada",
-      "community": 113,
+      "community": 114,
       "norm_label": "entrada()"
     },
     {
@@ -14832,7 +14886,7 @@
       "source_file": "marketing\\remotion\\src\\estilo.js",
       "source_location": "L23",
       "id": "estilo_tramo",
-      "community": 113,
+      "community": 114,
       "norm_label": "tramo()"
     },
     {
@@ -14841,7 +14895,7 @@
       "source_file": "marketing\\remotion\\src\\estilo.js",
       "source_location": "L27",
       "id": "estilo_tamtitular",
-      "community": 113,
+      "community": 114,
       "norm_label": "tamtitular()"
     },
     {
@@ -14850,7 +14904,7 @@
       "source_file": "marketing\\remotion\\src\\index.jsx",
       "source_location": "L1",
       "id": "marketing_remotion_src_index_jsx",
-      "community": 229,
+      "community": 230,
       "norm_label": "index.jsx"
     },
     {
@@ -14859,7 +14913,7 @@
       "source_file": "marketing\\remotion\\src\\index.jsx",
       "source_location": "L6",
       "id": "index_raiz",
-      "community": 229,
+      "community": 230,
       "norm_label": "raiz()"
     },
     {
@@ -15084,7 +15138,7 @@
       "source_file": "marketing\\video-cambio\\escenas\\comun.js",
       "source_location": "L1",
       "id": "marketing_video_cambio_escenas_comun_js",
-      "community": 230,
+      "community": 231,
       "norm_label": "comun.js"
     },
     {
@@ -15093,7 +15147,7 @@
       "source_file": "marketing\\video-cambio\\escenas\\comun.js",
       "source_location": "L37",
       "id": "comun_facil",
-      "community": 230,
+      "community": 231,
       "norm_label": "facil()"
     }
   ],
@@ -15624,6 +15678,66 @@
       "_tgt": "version20261120100000_version20261120100000_down",
       "source": "version20261120100000_version20261120100000",
       "target": "version20261120100000_version20261120100000_down",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "backend_migrations_version20261121100000_php",
+      "_tgt": "version20261121100000_version20261121100000",
+      "source": "backend_migrations_version20261121100000_php",
+      "target": "version20261121100000_version20261121100000",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L43",
+      "weight": 1.0,
+      "_src": "version20261121100000_version20261121100000",
+      "_tgt": "version20261121100000_version20261121100000_getdescription",
+      "source": "version20261121100000_version20261121100000",
+      "target": "version20261121100000_version20261121100000_getdescription",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L48",
+      "weight": 1.0,
+      "_src": "version20261121100000_version20261121100000",
+      "_tgt": "version20261121100000_version20261121100000_up",
+      "source": "version20261121100000_version20261121100000",
+      "target": "version20261121100000_version20261121100000_up",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_src": "version20261121100000_version20261121100000",
+      "_tgt": "version20261121100000_version20261121100000_sintildes",
+      "source": "version20261121100000_version20261121100000",
+      "target": "version20261121100000_version20261121100000_sintildes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend\\migrations\\Version20261121100000.php",
+      "source_location": "L66",
+      "weight": 1.0,
+      "_src": "version20261121100000_version20261121100000",
+      "_tgt": "version20261121100000_version20261121100000_down",
+      "source": "version20261121100000_version20261121100000",
+      "target": "version20261121100000_version20261121100000_down",
       "confidence_score": 1.0
     },
     {
